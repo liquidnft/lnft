@@ -12,16 +12,14 @@
   `;
 
   const client = new SubscriptionClient("ws://localhost:8080/v1/graphql");
-  const subscription = client
-    .request({ query })
-    .subscribe({
-      next({ data }) {
-        if (data) {
-          let { author } = data;
-          authors = [...author];
-        }
-      },
-    });
+  const subscription = client.request({ query }).subscribe({
+    next({ data }) {
+      if (data) {
+        let { author } = data;
+        authors = [...author];
+      }
+    },
+  });
 </script>
 
 <div class="p-4 m-4">
@@ -32,4 +30,10 @@
       <li>- {author.name}</li>
     {/each}
   </ul>
+<a
+  href="https://la.coinos.io/hasura/console/data/schema/public/tables/artists/insert" target="_self" class="underline text-blue-600">
+  Add Artist
+</a>
 </div>
+
+
