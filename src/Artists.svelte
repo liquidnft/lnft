@@ -21,11 +21,13 @@
       }
     },
   });
+
 </script>
 
 <div class="p-4 m-4">
   <h1 class="text-lg text-red-600 pb-2">Liquid Art</h1>
   <h2>Artists</h2>
+
   <ul>
     {#each artists as artist (artist.name)}
       <li>- {artist.name}</li>

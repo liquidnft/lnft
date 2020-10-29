@@ -1,9 +1,15 @@
 <script>
 	import TailwindStyles from './TailwindStyles.svelte';
-  import Authors from './Authors.svelte';
+  import Artists from './Artists.svelte';
+  import Secret from './Secret.svelte';
+  import { secret } from "./store";
 </script>
 
 
 <div class="text-center">
-  <Authors />
+  {#if !$secret}
+  <Secret />
+  {:else}
+  <Artists />
+{/if}
 </div>
