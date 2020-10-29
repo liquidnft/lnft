@@ -11,7 +11,16 @@
     }
   `;
 
-  const client = new SubscriptionClient("ws://localhost:8080/v1/graphql");
+  var loc = window.location, url;
+  if (loc.protocol === "https:") {
+    url = "wss:";
+  } else {
+    url = "ws:";
+  }
+  url += "//" + loc.host;
+  url += loc.pathname + "hasura/v1/graphql";
+
+  const client = new SubscriptionClient(url);
   const subscription = client.request({ query }).subscribe({
     next({ data }) {
       if (data) {
@@ -30,10 +39,10 @@
       <li>- {author.name}</li>
     {/each}
   </ul>
-<a
-  href="https://la.coinos.io/hasura/console/data/schema/public/tables/artists/insert" target="_self" class="underline text-blue-600">
-  Add Artist
-</a>
+  <a
+    href="https://la.coinos.io/hasura/console/data/schema/public/tables/artists/insert"
+    target="_self"
+    class="underline text-blue-600">
+    Add Artist
+  </a>
 </div>
-
-
