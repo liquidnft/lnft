@@ -1,6 +1,9 @@
 <script>
-  import { Router } from '@roxi/routify/runtime';
-  import { routes } from '../.routify/routes';
+	import TailwindStyles from './TailwindStyles.svelte';
+  import Authors from './Authors.svelte';
 </script>
 
-<Router {routes} />
+
+<div class="text-center">
+  <Authors />
+</div>

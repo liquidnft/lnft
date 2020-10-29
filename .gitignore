@@ -1,7 +1,4 @@
-.vscode
-.idea
+.build
+build
+web_modules
 node_modules
-dist
-dist-ssr
-.routify
-deploy.sh
