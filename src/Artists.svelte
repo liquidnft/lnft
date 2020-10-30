@@ -13,15 +13,16 @@
     }
   `;
 
-  const client = new SubscriptionClient(import.meta.env.SNOWPACK_PUBLIC_GRAPHQL);
+  const client = new SubscriptionClient(
+    import.meta.env.SNOWPACK_PUBLIC_GRAPHQL
+  );
   const subscription = client.request({ query }).subscribe({
     next({ data }) {
       if (data) {
-        artists = [...(data.artists)];
+        artists = [...data.artists];
       }
     },
   });
-
 </script>
 
 <div class="p-4 m-4">

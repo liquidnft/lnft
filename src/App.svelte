@@ -1,15 +1,14 @@
 <script>
-	import TailwindStyles from './TailwindStyles.svelte';
-  import Artists from './Artists.svelte';
-  import Secret from './Secret.svelte';
+  import TailwindStyles from "./TailwindStyles.svelte";
+  import Artists from "./Artists.svelte";
+  import Secret from "./Secret.svelte";
   import { secret } from "./store";
 </script>
 
-
 <div class="text-center">
   {#if !$secret}
-  <Secret />
+    <Secret />
   {:else}
-  <Artists />
-{/if}
+    <Artists />
+  {/if}
 </div>

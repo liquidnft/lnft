@@ -19,6 +19,7 @@
     "postcss-cli": "^7.1.1",
     "postcss-load-config": "^2.1.0",
     "prettier": "^2.1.2",
+    "prettier-plugin-svelte": "^1.4.1",
     "snowpack": "^2.15.1",
     "svelte-preprocess": "^3.9.7",
     "symbol-observable": "^2.0.3"
