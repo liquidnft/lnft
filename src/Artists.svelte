@@ -1,43 +1,51 @@
 <script>
+  import { onMount } from "svelte";
   import SubscriptionClient from "./subscribe";
   import TailwindStyles from "./TailwindStyles";
+  import { secret } from "./store";
 
-  let artists = [];
-  let hasura = import.meta.env.SNOWPACK_PUBLIC_HASURA;
+  let users = [];
+  let consoleUrl = import.meta.env.SNOWPACK_PUBLIC_HASURA;
+  let graphqlUrl = import.meta.env.SNOWPACK_PUBLIC_GRAPHQL;
 
-  const query = `
+  onMount(() => {
+    console.log("querying");
+    const query = `
     subscription {
-      artists(order_by: [{ name: asc }]) {
-        name
+      users(order_by: [{ display_name: asc }]) {
+        display_name
       }
     }
   `;
 
-  const client = new SubscriptionClient(
-    import.meta.env.SNOWPACK_PUBLIC_GRAPHQL
-  );
-  const subscription = client.request({ query }).subscribe({
-    next({ data }) {
-      if (data) {
-        artists = [...data.artists];
-      }
-    },
+    const client = new SubscriptionClient(graphqlUrl, {
+      lazy: true,
+    });
+
+    const subscription = client.request({ query }).subscribe({
+      next({ data }) {
+        console.log(data);
+        if (data) {
+          users = [...data.users];
+        }
+      },
+    });
   });
 </script>
 
 <div class="p-4 m-4">
   <h1 class="text-lg text-red-600 pb-2">Liquid Art</h1>
-  <h2>Artists</h2>
+  <h2>users</h2>
 
   <ul>
-    {#each artists as artist (artist.name)}
-      <li>- {artist.name}</li>
+    {#each users as user (user.display_name)}
+      <li>- {user.display_name}</li>
     {/each}
   </ul>
   <a
-    href={`${hasura}/console/data/schema/public/tables/artists/insert`}
+    href={`${consoleUrl}/console/data/schema/public/tables/users/insert`}
     target="_blank"
     class="underline text-blue-600">
-    Add Artist
+    Add user
   </a>
 </div>

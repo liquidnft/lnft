@@ -1,0 +1,34 @@
+version: '3.6'
+services:
+  postgres:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  graphql-engine:
+    image: hasura/graphql-engine:v1.3.2
+    ports:
+      - '8080:8080'
+    depends_on:
+      - 'postgres'
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      HASURA_GRAPHQL_ADMIN_SECRET: liquidart
+      HASURA_GRAPHQL_JWT_SECRET: '{"type": "RS256", "jwk_url": "http://hasura-backend-plus:3000/auth/jwks"}'
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
+  hasura-backend-plus:
+    image: nhost/hasura-backend-plus:latest
+    ports:
+      - '3000:3000'
+    environment:
+      SERVER_URL: http://localhost:3000
+      HASURA_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      HASURA_GRAPHQL_ADMIN_SECRET: liquidart
+      JWT_ALGORITHM: RS256
+      AUTO_MIGRATE: "true"
+volumes:
+  db_data:
