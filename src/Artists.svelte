@@ -35,17 +35,10 @@
 
 <div class="p-4 m-4">
   <h1 class="text-lg text-red-600 pb-2">Liquid Art</h1>
-  <h2>users</h2>
 
   <ul>
     {#each users as user (user.display_name)}
       <li>- {user.display_name}</li>
     {/each}
   </ul>
-  <a
-    href={`${consoleUrl}/console/data/schema/public/tables/users/insert`}
-    target="_blank"
-    class="underline text-blue-600">
-    Add user
-  </a>
 </div>

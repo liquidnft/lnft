@@ -9,7 +9,6 @@
   let password = "StrongPasswordNot1234";
 
   let login = () => {
-    console.log("logigng in");
     api
       .url("/auth/login")
       .post({
@@ -29,10 +28,7 @@
       .badRequest((err) => {
         error = JSON.parse(err.message).message;
       })
-      .res(() => {
-        console.log("yeah");
-        login();
-      });
+      .res(login);
   };
 </script>
 
