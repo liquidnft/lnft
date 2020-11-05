@@ -1,31 +1,25 @@
 {
-  "scripts": {
-    "start": "snowpack dev",
-    "build": "snowpack build"
-  },
-  "dependencies": {
-    "svelte": "^3.21.0",
-    "tailwindcss": "^1.4.6",
-    "wretch": "^1.7.4"
-  },
-  "devDependencies": {
-    "@snowpack/app-scripts-svelte": "^1.2.0",
-    "autoprefixer": "^9.8.0",
-    "backo2": "^1.0.2",
-    "cssnano": "^4.1.10",
-    "dotenv": "^8.2.0",
-    "eventemitter3": "^4.0.7",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.2.10",
-    "postcss": "^8.1.4",
-    "postcss-cli": "^7.1.1",
-    "postcss-import": "^13.0.0",
-    "postcss-load-config": "^3.0.0",
-    "postcss-preset-env": "^6.7.0",
-    "prettier": "^2.1.2",
-    "prettier-plugin-svelte": "^1.4.1",
-    "snowpack": "^2.15.1",
-    "svelte-preprocess": "^3.9.7",
-    "symbol-observable": "^2.0.3"
-  }
+	"name": "liquidart",
+	"version": "0.0.1",
+	"scripts": {
+		"start": "svelte dev -p 3700",
+		"build": "svelte build",
+		"build:tailwind": "cross-env NODE_ENV=production postcss static/tailwind.css -o static/index.css"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-node": "0.0.14",
+		"@sveltejs/kit": "0.0.25",
+		"@sveltejs/snowpack-config": "0.0.5",
+		"autoprefixer": "^10.0.1",
+		"backo2": "^1.0.2",
+		"cross-env": "^7.0.2",
+		"event-emitter3": "^1.0.4",
+		"postcss": "^8.1.6",
+		"postcss-cli": "^8.2.0",
+		"rollup": "^2.33.1",
+		"svelte": "^3.29.0",
+		"symbol-observable": "^3.0.0",
+		"tailwindcss": "^1.9.6",
+		"wretch": "^1.7.4"
+	}
 }

@@ -1,12 +1,11 @@
 <script>
   import { onMount } from "svelte";
-  import SubscriptionClient from "./subscribe";
-  import TailwindStyles from "./TailwindStyles";
-  import { secret } from "./store";
+  import SubscriptionClient from "$components/subscribe";
+  import { secret } from "$components/store";
 
   let users = [];
-  let consoleUrl = import.meta.env.SNOWPACK_PUBLIC_HASURA;
-  let graphqlUrl = import.meta.env.SNOWPACK_PUBLIC_GRAPHQL;
+  let consoleUrl = "http://localhost:8080"
+  let graphqlUrl = "ws://localhost:8080/v1/graphql"
 
   onMount(() => {
     console.log("querying");

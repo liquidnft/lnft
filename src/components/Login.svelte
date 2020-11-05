@@ -1,5 +1,5 @@
 <script>
-  import { secret } from "./store";
+  import { secret } from "$components/store";
   import wretch from "wretch";
 
   const api = wretch().url("http://localhost:3000");

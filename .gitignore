@@ -1,5 +1,5 @@
-.build
-build
-web_modules
+.DS_Store
 node_modules
-deploy.sh
+/.svelte
+/build
+/functions
