@@ -36,6 +36,10 @@
   input {
     @apply shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight;
   }
+
+  button {
+    @apply border shadow px-4 py-1;
+  }
 </style>
 
 {#if error}
@@ -47,7 +51,7 @@
   <input placeholder="Password" type="password" bind:value={password} />
 
   <button
-    class="border shadow px-4 bg-green-400"
-    on:click|preventDefault={register}>Register</button>
-  <button class="border shadow px-4 bg-blue-400" type="submit">Login</button>
+    on:click|preventDefault={register}
+    class="bg-green-400">Register</button>
+  <button class="bg-blue-400" type="submit">Login</button>
 </form>
