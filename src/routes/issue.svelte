@@ -1,15 +1,35 @@
 <script>
   import { onMount } from "svelte";
 
-  let handleFiles = ({ target: { files } }) => {
-    [...files].forEach(uploadFile);
+  let preview;
+  let fileInput;
+  let highlight;
+
+  let start = e => highlight = true;
+  let stop = e => highlight = false;
+
+  let open = (e) => {
+    fileInput.click();
   };
 
+  let previewFile = file => {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      preview = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  }
+
   let uploadFile = (file) => {
-    let url = "localhost:3000/upload";
+    previewFile(file);
+console.log(file);
+    let url = "/";
     let formData = new FormData();
 
-    formData.append("file", file);
+    formData.append("image", file);
+
 
     fetch(url, {
       method: "POST",
@@ -23,46 +43,28 @@
       });
   };
 
-  onMount(async () => {
-    let dropArea = document.getElementById("drop-area");
-    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-      dropArea.addEventListener(eventName, preventDefaults, false);
-    });
+  let handleFiles = ({ target: { files } }) => {
+    [...files].forEach(uploadFile);
+  };
 
-    function preventDefaults(e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+  let drop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let dt = e.dataTransfer;
+    let files = dt.files;
 
-    ["dragenter", "dragover"].forEach((eventName) => {
-      dropArea.addEventListener(eventName, highlight, false);
-    });
-
-    ["dragleave", "drop"].forEach((eventName) => {
-      dropArea.addEventListener(eventName, unhighlight, false);
-    });
-
-    function highlight(e) {
-      dropArea.classList.add("highlight");
-    }
-
-    function unhighlight(e) {
-      dropArea.classList.remove("highlight");
-    }
-
-    dropArea.addEventListener("drop", handleDrop, false);
-
-    function handleDrop(e) {
-      let dt = e.dataTransfer;
-      let files = dt.files;
-
-      handleFiles({ target: { files }});
-    }
-  });
+    handleFiles({ target: { files } });
+  };
 </script>
 
 <style>
+  img {
+    max-width: 300px;
+  }
+
   #drop-area {
+    min-height: 200px;
+    cursor: pointer;
     border: 2px dashed #ccc;
     border-radius: 20px;
     width: 480px;
@@ -70,24 +72,11 @@
     margin: 100px auto;
     padding: 20px;
   }
+
   #drop-area.highlight {
-    border-color: purple;
+    border-color: teal;
   }
-  p {
-    margin-top: 0;
-  }
-  .my-form {
-    margin-bottom: 10px;
-  }
-  #gallery {
-    margin-top: 10px;
-  }
-  #gallery img {
-    width: 150px;
-    margin-bottom: 10px;
-    margin-right: 10px;
-    vertical-align: middle;
-  }
+
   .button {
     display: inline-block;
     padding: 10px;
@@ -100,26 +89,31 @@
     background: #ddd;
   }
   #fileElem {
-    display: none;
+    position: fixed;
+    top: -100em;
   }
 </style>
 
-<div id="drop_zone" on:drop={dropHandler} on:dragover={dragOverHandler}>
-  <p>Drag one or more files to this Drop Zone ...</p>
-</div>
-
-<div id="drop-area">
-  <form class="my-form">
-    <p>
-      Upload multiple files with the file dialog or by dragging and dropping
-      images onto the dashed region
-    </p>
+<div
+  id="drop-area"
+  on:click={open}
+  on:dragover={start}
+  on:dragout={stop}
+  on:mouseover={start}
+  on:mouseout={stop}
+  on:drop={drop}
+  class:highlight
+  >
+  <form class="text-center">
+    Upload your artwork by dragging an image file here
     <input
+      bind:this={fileInput}
       type="file"
       id="fileElem"
       multiple
       accept="image/*"
       on:change={handleFiles} />
-    <label class="button" for="fileElem">Select some files</label>
   </form>
 </div>
+
+{#if preview}<img src={preview} class="mx-auto" />{/if}
