@@ -4,7 +4,7 @@
 	"scripts": {
 		"start": "svelte dev -p 3700",
 		"build": "svelte build",
-		"build:tailwind": "cross-env NODE_ENV=production postcss static/tailwind.css -o static/index.css"
+		"build:tailwind": "cross-env NODE_ENV=production postcss static/tailwind.css -o static/styles.css"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-node": "0.0.14",
@@ -23,5 +23,8 @@
 		"symbol-observable": "^3.0.0",
 		"tailwindcss": "^1.9.6",
 		"wretch": "^1.7.4"
+	},
+	"dependencies": {
+		"drag-drop": "^6.1.0"
 	}
 }
