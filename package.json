@@ -25,6 +25,8 @@
 		"wretch": "^1.7.4"
 	},
 	"dependencies": {
-		"drag-drop": "^6.1.0"
+		"drag-drop": "^6.1.0",
+		"svelte-dropzone": "^1.0.6",
+		"svelte-file-dropzone": "^0.0.12"
 	}
 }

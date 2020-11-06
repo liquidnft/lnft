@@ -11,6 +11,7 @@
   <div class="flex-grow-1">
     <button><a href="/market">Market</a></button>
     <button><a href="/activity">Activity</a></button>
+    <button><a href="/issue">Issue</a></button>
     <button><a href="/login">Sign In</a></button>
   </div>
 </div>
