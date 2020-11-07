@@ -1,8 +1,8 @@
 <script>
-  import { secret } from "$components/store";
+  import { token } from "$components/store";
   import wretch from "wretch";
 
-  const api = wretch().url("http://localhost:3000");
+  const api = wretch().url("/api");
 
   let error;
   let email = "real@emailadress.com";
@@ -15,7 +15,10 @@
         email,
         password,
       })
-      .json((r) => ($secret = r.jwt_token));
+      .json((r) => {
+        $token = r.jwt_token;
+        window.sessionStorage.setItem('token', $token);
+      }); 
   };
 
   let register = () => {

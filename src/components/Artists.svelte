@@ -1,14 +1,12 @@
 <script>
   import { onMount } from "svelte";
   import SubscriptionClient from "$components/subscribe";
-  import { secret } from "$components/store";
 
   let users = [];
   let consoleUrl = "http://localhost:8080"
   let graphqlUrl = "ws://localhost:8080/v1/graphql"
 
   onMount(() => {
-    console.log("querying");
     const query = `
     subscription {
       users(order_by: [{ display_name: asc }]) {
@@ -23,7 +21,6 @@
 
     const subscription = client.request({ query }).subscribe({
       next({ data }) {
-        console.log(data);
         if (data) {
           users = [...data.users];
         }

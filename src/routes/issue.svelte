@@ -1,18 +1,27 @@
 <script>
   import { onMount } from "svelte";
+  import { token } from "$components/store";
+  import decode from "jwt-decode";
 
   let preview;
   let fileInput;
   let highlight;
 
-  let start = e => highlight = true;
-  let stop = e => highlight = false;
+  let start = (e) => {
+    e.preventDefault();
+    highlight = true;
+  };
+
+  let stop = (e) => {
+    e.preventDefault();
+    highlight = false;
+  };
 
   let open = (e) => {
     fileInput.click();
   };
 
-  let previewFile = file => {
+  let previewFile = (file) => {
     var reader = new FileReader();
 
     reader.onload = function (e) {
@@ -20,27 +29,23 @@
     };
 
     reader.readAsDataURL(file);
-  }
+  };
 
   let uploadFile = (file) => {
+    let id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
     previewFile(file);
-console.log(file);
-    let url = "/";
+    let url = `/api/storage/o/user/${id}/${file.name}`;
     let formData = new FormData();
 
     formData.append("image", file);
 
-
     fetch(url, {
       method: "POST",
       body: formData,
+      headers: {
+        Authorization: `Bearer ${$token}`,
+      },
     })
-      .then(() => {
-        console.log("done");
-      })
-      .catch(() => {
-        console.log("bad");
-      });
   };
 
   let handleFiles = ({ target: { files } }) => {
@@ -48,8 +53,7 @@ console.log(file);
   };
 
   let drop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    stop(e);
     let dt = e.dataTransfer;
     let files = dt.files;
 
@@ -97,13 +101,13 @@ console.log(file);
 <div
   id="drop-area"
   on:click={open}
+  on:dragenter={start}
   on:dragover={start}
-  on:dragout={stop}
+  on:dragleave={stop}
   on:mouseover={start}
   on:mouseout={stop}
   on:drop={drop}
-  class:highlight
-  >
+  class:highlight>
   <form class="text-center">
     Upload your artwork by dragging an image file here
     <input

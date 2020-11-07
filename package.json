@@ -2,7 +2,7 @@
 	"name": "liquidart",
 	"version": "0.0.1",
 	"scripts": {
-		"start": "svelte dev -p 3700",
+		"start": "svelte dev",
 		"build": "svelte build",
 		"build:tailwind": "cross-env NODE_ENV=production postcss static/tailwind.css -o static/styles.css"
 	},
@@ -25,7 +25,9 @@
 		"wretch": "^1.7.4"
 	},
 	"dependencies": {
+		"@snowpack/plugin-dotenv": "^2.0.4",
 		"drag-drop": "^6.1.0",
+		"jwt-decode": "^3.1.1",
 		"svelte-dropzone": "^1.0.6",
 		"svelte-file-dropzone": "^0.0.12"
 	}
