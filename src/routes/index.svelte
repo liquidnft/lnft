@@ -4,8 +4,13 @@
   import { token } from "$components/store";
 
   let users = [];
-  let consoleUrl = import.meta.env.SNOWPACK_PUBLIC_HASURA
-  let graphqlUrl = import.meta.env.SNOWPACK_PUBLIC_GRAPHQL
+
+  let graphqlUrl;
+  if (import.meta.env) {
+    graphqlUrl = import.meta.env.SNOWPACK_PUBLIC_GRAPHQL
+  } else {
+    graphqlUrl = "wss://la.coinos.io/hasura/v1/graphql"
+  } 
 
   onMount(() => {
     const query = `
