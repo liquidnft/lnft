@@ -15,11 +15,14 @@
         email,
         password,
       })
+      .badRequest((err) => {
+        error = JSON.parse(err.message).message;
+      })
       .json((r) => {
         $token = r.jwt_token;
-        window.sessionStorage.setItem('token', $token);
-        window.location = '/issue';
-      }); 
+        window.sessionStorage.setItem("token", $token);
+        window.location = "/issue";
+      })
   };
 
   let register = () => {
@@ -42,20 +45,35 @@
   }
 
   button {
-    @apply border shadow px-4 py-1;
+    @apply border shadow px-4 py-2;
   }
 </style>
 
 {#if error}
-  <div>{error}</div>
-{/if}
+  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+  <strong class="font-bold">Error!</strong>
+  <span class="block sm:inline">{ error }</span>
+</div>{/if}
 
-<form on:submit|preventDefault={login} class="mt-4">
-  <input placeholder="Email" bind:value={email} />
-  <input placeholder="Password" type="password" bind:value={password} />
-
-  <button
-    on:click|preventDefault={register}
-    class="bg-green-400">Register</button>
-  <button class="bg-blue-400" type="submit">Login</button>
+<form class="mb-6" on:submit|preventDefault={login} autocomplete="off">
+  <div class="flex flex-col mb-4">
+    <label
+      class="mb-2 uppercase font-medium text-gray-600"
+      for="first_name">Email</label>
+    <input placeholder="Email" bind:value={email} />
+  </div>
+  <div class="flex flex-col mb-4">
+    <label
+      class="mb-2 uppercase font-medium text-gray-600"
+      for="last_name">Password</label>
+    <input placeholder="Password" type="password" bind:value={password} />
+  </div>
+  <div class="flex">
+    <button
+      class="block bg-teal-600 hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1 ml-1"
+      type="submit">Login</button>
+    <button
+      on:click|preventDefault={register}
+      class="block bg-teal-400 hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Register</button>
+  </div>
 </form>

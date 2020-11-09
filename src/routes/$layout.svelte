@@ -30,7 +30,7 @@
 </style>
 
 <div class="flex p-4">
-  <h1 class="flex-auto my-auto text-teal-600 text-lg">
+  <h1 class="flex-auto my-auto text-teal-600 text-3xl">
     <a href="/">Liquid Art</a>
   </h1>
   <div class="flex-grow-1">
@@ -44,5 +44,9 @@
 </div>
 
 <main class="p-4">
+<section class="py-12">
+  <div class="container mx-auto">
   <slot />
+</div>
+  </section>
 </main>
