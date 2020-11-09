@@ -1,0 +1,1 @@
+CREATE TABLE "public"."tags"("artwork_id" uuid NOT NULL, "tag" text NOT NULL, PRIMARY KEY ("tag") , FOREIGN KEY ("artwork_id") REFERENCES "public"."artworks"("id") ON UPDATE restrict ON DELETE cascade, UNIQUE ("tag"));

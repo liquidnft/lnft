@@ -94,6 +94,12 @@
     name: follows
 - table:
     schema: public
+    name: tags
+- table:
+    schema: public
+    name: transactions
+- table:
+    schema: public
     name: users
   object_relationships:
   - name: account
