@@ -37,7 +37,7 @@
     let url = `/api/storage/o/user/${id}/${file.name}`;
     let formData = new FormData();
 
-    formData.append("image", file);
+    formData.append("file", file);
 
     fetch(url, {
       method: "POST",

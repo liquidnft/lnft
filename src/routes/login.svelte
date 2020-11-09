@@ -18,6 +18,7 @@
       .json((r) => {
         $token = r.jwt_token;
         window.sessionStorage.setItem('token', $token);
+        window.location = '/issue';
       }); 
   };
 
