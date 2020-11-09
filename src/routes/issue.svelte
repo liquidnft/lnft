@@ -59,15 +59,13 @@
   };
 
   let handleFiles = ({ target: { files } }) => {
-    [...files].forEach(uploadFile);
   };
 
   let drop = (e) => {
     stop(e);
     let dt = e.dataTransfer;
     let files = dt.files;
-
-    handleFiles({ target: { files } });
+    uploadFile(dt.files[0]);
   };
 </script>
 
@@ -131,7 +129,8 @@
       id="fileElem"
       multiple
       accept="image/*"
-      on:change={handleFiles} />
+      on:change={e => uploadFile(e.target.files[0])}
+ />
   </form>
 </div>
 {/if}
