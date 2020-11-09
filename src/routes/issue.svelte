@@ -31,6 +31,17 @@
     reader.readAsDataURL(file);
   };
 
+  let percent;
+  let progress = (event) => {
+    percent = Math.round((event.loaded / event.total) * 100);
+  }
+
+  $: width = `width: ${percent}%`;
+
+  let complete = (event) => {
+    console.log(event);
+  }
+
   let uploadFile = (file) => {
     let id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
     previewFile(file);
@@ -39,6 +50,14 @@
 
     formData.append("file", file);
 
+    var ajax = new XMLHttpRequest();
+    ajax.upload.addEventListener("progress", progress, false);
+    ajax.addEventListener("load", complete, false);
+    ajax.open("POST", url);
+    ajax.setRequestHeader("Authorization", `Bearer ${$token}`);
+    ajax.send(formData);
+
+    /*
     fetch(url, {
       method: "POST",
       body: formData,
@@ -46,6 +65,7 @@
         Authorization: `Bearer ${$token}`,
       },
     })
+     */
   };
 
   let handleFiles = ({ target: { files } }) => {
@@ -98,6 +118,11 @@
   }
 </style>
 
+{#if percent}
+<div class="shadow w-full bg-grey-light mt-2 mb-2">
+    <div class="bg-teal-400 text-xs leading-none py-1 text-center text-white" style={width}>{percent}%</div>
+  </div>
+{:else}
 <div
   id="drop-area"
   on:click={open}
@@ -119,5 +144,6 @@
       on:change={handleFiles} />
   </form>
 </div>
+{/if}
 
 {#if preview}<img src={preview} class="mx-auto" />{/if}
