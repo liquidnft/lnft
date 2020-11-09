@@ -88,6 +88,12 @@
           name: accounts
 - table:
     schema: public
+    name: artworks
+- table:
+    schema: public
+    name: follows
+- table:
+    schema: public
     name: users
   object_relationships:
   - name: account

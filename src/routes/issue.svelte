@@ -50,22 +50,12 @@
 
     formData.append("file", file);
 
-    var ajax = new XMLHttpRequest();
+    let ajax = new XMLHttpRequest();
     ajax.upload.addEventListener("progress", progress, false);
     ajax.addEventListener("load", complete, false);
     ajax.open("POST", url);
     ajax.setRequestHeader("Authorization", `Bearer ${$token}`);
     ajax.send(formData);
-
-    /*
-    fetch(url, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${$token}`,
-      },
-    })
-     */
   };
 
   let handleFiles = ({ target: { files } }) => {
