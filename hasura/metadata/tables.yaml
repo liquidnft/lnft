@@ -91,6 +91,9 @@
     name: artworks
 - table:
     schema: public
+    name: favorites
+- table:
+    schema: public
     name: follows
 - table:
     schema: public
