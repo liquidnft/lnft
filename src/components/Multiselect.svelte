@@ -8,6 +8,8 @@
     { value: "chips", label: "Chips", group: "Savory" },
     { value: "ice-cream", label: "Ice Cream", group: "Sweet" },
   ];
+
+  let selectedValue = [];
 </script>
 
 <Select items={complexItems} isMulti={true} placeholder="Tags" />

@@ -2,9 +2,9 @@
   import { onMount } from "svelte";
   import { token } from "$components/store";
   import decode from "jwt-decode";
+
   import Dropzone from "$components/Dropzone";
   import IssueForm from "$components/IssueForm";
-  import Multiselect from "$components/Multiselect";
 
   let preview;
 
@@ -59,6 +59,7 @@
 
 {#if preview}
   <div class="flex flex-wrap">
+    <IssueForm />
     <div class="ml-2 text-center flex-1 flex">
       <div class="mx-auto">
         <img src={preview} />
