@@ -7,10 +7,10 @@
 </script>
 
 <script>
-  import Avatar from "$components/Avatar.svelte";
-  import Eye from "$components/Eye.svelte";
-  import Heart from "$components/Heart.svelte";
-  import Card from "$components/Card.svelte";
+  import Avatar from "$components/Avatar";
+  import Eye from "$components/Eye";
+  import Heart from "$components/Heart";
+  import Card from "$components/Card";
   export let id;
   let description = "Some say the Hexagon is the Bestagon";
 </script>

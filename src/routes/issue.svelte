@@ -3,16 +3,10 @@
   import { token } from "$components/store";
   import decode from "jwt-decode";
   import Dropzone from "$components/Dropzone";
+  import IssueForm from "$components/IssueForm";
   import Multiselect from "$components/Multiselect";
 
   let preview;
-
-  let title;
-  let description;
-
-  let issue = (e) => {
-    console.log(e);
-  };
 
   let previewFile = (file) => {
     var reader = new FileReader();
@@ -65,25 +59,6 @@
 
 {#if preview}
   <div class="flex flex-wrap">
-    <form
-      class="w-full md:w-1/2 mb-6"
-      on:submit|preventDefault={issue}
-      autocomplete="off">
-      <div class="flex flex-col mb-4">
-        <input placeholder="Title" bind:value={title} />
-      </div>
-      <div class="flex flex-col mb-4">
-        <textarea placeholder="Description" bind:value={description} />
-      </div>
-      <div class="flex flex-col mb-4">
-        <Multiselect />
-      </div>
-      <div class="flex">
-        <button
-          on:click|preventDefault={issue}
-          class="block bg-teal-400 hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
-      </div>
-    </form>
     <div class="ml-2 text-center flex-1 flex">
       <div class="mx-auto">
         <img src={preview} />

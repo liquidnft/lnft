@@ -1,5 +1,5 @@
 <script>
-  import Activity from "$components/Activity.svelte";
+  import Activity from "$components/Activity";
 </script>
 
 <div>

@@ -7,7 +7,7 @@
 </script>
 
 <script>
-  import Avatar from "$components/Avatar.svelte";
+  import Avatar from "$components/Avatar";
   export let id;
 </script>
 

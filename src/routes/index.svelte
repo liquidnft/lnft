@@ -1,5 +1,5 @@
 <script>
-  import Market from "./market.svelte";
+  import Market from "./market";
 </script>
 
 <Market />
