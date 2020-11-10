@@ -89,12 +89,44 @@
 - table:
     schema: public
     name: artworks
+  object_relationships:
+  - name: artist
+    using:
+      foreign_key_constraint_on: artist_id
+  - name: owner
+    using:
+      foreign_key_constraint_on: owner_id
+  array_relationships:
+  - name: favorites
+    using:
+      foreign_key_constraint_on:
+        column: artwork_id
+        table:
+          schema: public
+          name: favorites
+  - name: tags
+    using:
+      foreign_key_constraint_on:
+        column: artwork_id
+        table:
+          schema: public
+          name: tags
+  - name: transactions
+    using:
+      foreign_key_constraint_on:
+        column: artwork_id
+        table:
+          schema: public
+          name: transactions
   insert_permissions:
   - role: user
     permission:
       check:
         artist_id:
           _eq: X-Hasura-User-Id
+      set:
+        artist_id: x-hasura-User-Id
+        owner_id: x-hasura-User-Id
       columns:
       - id
       - artist_id
@@ -138,15 +170,71 @@
 - table:
     schema: public
     name: favorites
+  object_relationships:
+  - name: artwork
+    using:
+      foreign_key_constraint_on: artwork_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
 - table:
     schema: public
     name: follows
+  object_relationships:
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
+  - name: userByFollowerId
+    using:
+      foreign_key_constraint_on: follower_id
 - table:
     schema: public
     name: tags
+  object_relationships:
+  - name: artwork
+    using:
+      foreign_key_constraint_on: artwork_id
+  insert_permissions:
+  - role: user
+    permission:
+      check:
+        artwork:
+          owner_id:
+            _eq: X-Hasura-User-Id
+      columns:
+      - tag
+      - artwork_id
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns: []
+      filter: {}
+  update_permissions:
+  - role: user
+    permission:
+      columns:
+      - tag
+      - artwork_id
+      filter:
+        artwork:
+          owner_id:
+            _eq: X-Hasura-User-Id
+      check: null
+  delete_permissions:
+  - role: user
+    permission:
+      filter:
+        artwork:
+          owner_id:
+            _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: transactions
+  object_relationships:
+  - name: artwork
+    using:
+      foreign_key_constraint_on: artwork_id
 - table:
     schema: public
     name: users
@@ -159,6 +247,42 @@
           name: accounts
         column_mapping:
           id: user_id
+  array_relationships:
+  - name: artworks
+    using:
+      foreign_key_constraint_on:
+        column: artist_id
+        table:
+          schema: public
+          name: artworks
+  - name: artworksByOwnerId
+    using:
+      foreign_key_constraint_on:
+        column: owner_id
+        table:
+          schema: public
+          name: artworks
+  - name: favorites
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          schema: public
+          name: favorites
+  - name: follows
+    using:
+      foreign_key_constraint_on:
+        column: follower_id
+        table:
+          schema: public
+          name: follows
+  - name: followsByUserId
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          schema: public
+          name: follows
   select_permissions:
   - role: anonymous
     permission:

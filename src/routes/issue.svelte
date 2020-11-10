@@ -26,7 +26,6 @@
   $: width = `width: ${percent}%`;
 
   let uploadFile = ({ detail: file }) => {
-    console.log(file);
     let id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
     previewFile(file);
     let url = `/api/storage/o/user/${id}/${file.name}`;
@@ -43,11 +42,6 @@
 </script>
 
 <style>
-  input,
-  textarea {
-    @apply border p-4;
-  }
-
   img {
     max-width: 300px;
   }

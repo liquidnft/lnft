@@ -1,30 +1,41 @@
 <script>
-  import Multiselect from "$components/Multiselect";
+  import Select from "svelte-select";
   import { gql } from "$components/api";
   import { token } from "$components/store";
 
-  let title;
-  let description;
-
-  let params = {
-    query: `mutation insert_single_artwork($object: artworks_insert_input!) {
-  insert_artworks_one(object: $object) {
-  id
-  }
-  }`,
-    variables: {
-      object: {
-        title: "Article 1",
-        description: "Sample article content",
-        owner_id: "10b2de5b-0ba6-4da7-b2ba-b665175a51cb",
-        artist_id: "10b2de5b-0ba6-4da7-b2ba-b665175a51cb",
-      },
-    },
+  let artwork = {
+    title: "",
+    description: "",
+    tags: [],
   };
 
   let issue = async (e) => {
+    let params = {
+      query: `mutation insert_single_artwork($artwork: artworks_insert_input!) {
+      insert_artworks_one(object: $artwork) {
+        id
+      }
+    }`,
+      variables: {
+        artwork,
+      },
+    };
+
     const response = await gql.auth(`Bearer ${$token}`).post(params);
     console.log(response);
+  };
+
+  const items = [
+    { value: "chocolate", label: "Chocolate", group: "Sweet" },
+    { value: "pizza", label: "Pizza", group: "Savory" },
+    { value: "cake", label: "Cake", group: "Sweet" },
+    { value: "chips", label: "Chips", group: "Savory" },
+    { value: "ice-cream", label: "Ice Cream", group: "Sweet" },
+  ];
+
+  let handle = ({ detail }) => {
+    let tags = { data: detail.map(({ value: tag}) => ({ tag })) };
+    artwork = { ...artwork, tags };
   };
 </script>
 
@@ -40,13 +51,13 @@
   on:submit|preventDefault={issue}
   autocomplete="off">
   <div class="flex flex-col mb-4">
-    <input placeholder="Title" bind:value={title} />
+    <input placeholder="Title" bind:value={artwork.title} />
   </div>
   <div class="flex flex-col mb-4">
-    <textarea placeholder="Description" bind:value={description} />
+    <textarea placeholder="Description" bind:value={artwork.description} />
   </div>
   <div class="flex flex-col mb-4">
-    <Multiselect />
+    <Select {items} isMulti={true} placeholder="Tags" on:select={handle} />
   </div>
   <div class="flex">
     <button
