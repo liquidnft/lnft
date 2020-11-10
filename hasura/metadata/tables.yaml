@@ -89,6 +89,52 @@
 - table:
     schema: public
     name: artworks
+  insert_permissions:
+  - role: user
+    permission:
+      check:
+        artist_id:
+          _eq: X-Hasura-User-Id
+      columns:
+      - id
+      - artist_id
+      - title
+      - owner_id
+      - description
+      backend_only: false
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns: []
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - description
+      - title
+      - artist_id
+      - id
+      - owner_id
+      filter: {}
+  update_permissions:
+  - role: user
+    permission:
+      columns:
+      - description
+      - title
+      - artist_id
+      - id
+      - owner_id
+      filter:
+        artist_id:
+          _eq: X-Hasura-User-Id
+      check: null
+  delete_permissions:
+  - role: user
+    permission:
+      filter:
+        artist_id:
+          _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: favorites

@@ -1,8 +1,6 @@
 <script>
   import { token } from "$components/store";
-  import wretch from "wretch";
-
-  const api = wretch().url("/api");
+  import api from "$components/api";
 
   let error;
   let email = "real@emailadress.com";
