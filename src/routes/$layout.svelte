@@ -1,15 +1,21 @@
 <script>
   import { token } from "$components/store";
-  import { onMount, afterUpdate } from "svelte";
+  import { onMount, beforeUpdate, afterUpdate } from "svelte";
   import { routeHasChanged, trackLocation } from "$components/location";
+  import { goto } from "/_app/main/runtime/navigation";
+
+  let show;
 
   trackLocation();
   afterUpdate(() => {
-    if ($routeHasChanged) {
-      if (!$token) {
-        if (!window.location.pathname.startsWith("/login")) window.location = "/login";
-      }
-    }  
+    if (
+      $routeHasChanged &&
+      !$token &&
+      !window.location.pathname.startsWith("/login")
+    )
+      return goto("/login");
+
+    show = true;
   });
 
   onMount(() => {
@@ -19,7 +25,7 @@
   let logout = () => {
     window.sessionStorage.removeItem("token");
     $token = null;
-    window.location = '/login';
+    goto("/login");
   };
 </script>
 
@@ -30,7 +36,7 @@
 </style>
 
 <div class="flex p-4">
-  <h1 class="flex-auto my-auto text-teal-600 text-3xl">
+  <h1 class="flex-auto my-auto text-teal-400 text-3xl">
     <a href="/">Liquid Art</a>
   </h1>
   <div class="flex-grow-1">
@@ -44,9 +50,11 @@
 </div>
 
 <main class="p-4">
-<section class="py-12">
-  <div class="container mx-auto">
-  <slot />
-</div>
+  <section class="py-12">
+    <div class="container mx-auto">
+      {#if show}
+        <slot />
+      {/if}
+    </div>
   </section>
 </main>
