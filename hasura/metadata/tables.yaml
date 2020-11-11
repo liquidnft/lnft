@@ -128,35 +128,44 @@
         artist_id: x-hasura-User-Id
         owner_id: x-hasura-User-Id
       columns:
-      - id
       - artist_id
-      - title
-      - owner_id
       - description
+      - filename
+      - id
+      - owner_id
+      - title
       backend_only: false
   select_permissions:
   - role: anonymous
     permission:
-      columns: []
-      filter: {}
-  - role: user
-    permission:
       columns:
       - description
+      - filename
       - title
       - artist_id
       - id
       - owner_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - artist_id
+      - description
+      - filename
+      - id
+      - owner_id
+      - title
       filter: {}
   update_permissions:
   - role: user
     permission:
       columns:
-      - description
-      - title
       - artist_id
+      - description
+      - filename
       - id
       - owner_id
+      - title
       filter:
         artist_id:
           _eq: X-Hasura-User-Id
@@ -206,9 +215,17 @@
       - artwork_id
       backend_only: false
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - tag
+      - artwork_id
+      filter: {}
   - role: user
     permission:
-      columns: []
+      columns:
+      - artwork_id
+      - tag
       filter: {}
   update_permissions:
   - role: user
@@ -285,6 +302,15 @@
           name: follows
   select_permissions:
   - role: anonymous
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - display_name
+      - avatar_url
+      filter: {}
+  - role: user
     permission:
       columns:
       - id

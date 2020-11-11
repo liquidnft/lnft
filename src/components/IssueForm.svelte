@@ -3,9 +3,12 @@
   import { gql } from "$components/api";
   import { token } from "$components/store";
 
+  export let filename;
+
   let artwork = {
     title: "",
     description: "",
+    filename,
     tags: [],
   };
 

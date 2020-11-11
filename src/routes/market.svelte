@@ -11,7 +11,9 @@
       query: `query {
         artworks {
           id,
-          title
+          title,
+          artist_id,
+          filename
         }
       }`,
     };

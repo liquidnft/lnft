@@ -7,8 +7,10 @@
   import IssueForm from "$components/IssueForm";
 
   let preview;
+  let filename;
 
   let previewFile = (file) => {
+    filename = file.name;
     var reader = new FileReader();
 
     reader.onload = function (e) {
@@ -53,7 +55,7 @@
 
 {#if preview}
   <div class="flex flex-wrap">
-    <IssueForm />
+    <IssueForm filename={filename}/>
     <div class="ml-2 text-center flex-1 flex">
       <div class="mx-auto">
         <img src={preview} />
