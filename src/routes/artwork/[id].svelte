@@ -12,7 +12,7 @@
   import Heart from "$components/Heart";
   import Card from "$components/Card";
   import { onMount } from "svelte";
-  import { token } from "$components/store";
+  import { userId, token } from "$components/store";
   import { gql } from "$components/api";
 
   export let id;
@@ -36,6 +36,7 @@
           tags {
             tag
           },
+          favorited,
           favorites_aggregate(distinct_on: artwork_id) {
             aggregate {
               count
@@ -56,17 +57,33 @@
 
 
   let favorite = async (e) => {
-    let params = {
-      query: `mutation insert_favorites_one {
-        insert_favorites_one(object: { artwork_id: "${artwork.id}" }) {
-          user_id,
-          artwork_id
-        } 
-      }`
-    };
+    if (artwork.favorited) {
+      let params = {
+        query: `mutation delete_favorite {
+          delete_favorites_by_pk(artwork_id: "${artwork.id}", user_id: "${$userId}") {
+            user_id
+            artwork_id
+          } 
+        }`
+      };
 
-    artwork.favorites++;
-    await gql.auth(`Bearer ${$token}`).post(params);
+      artwork.favorites--;
+      artwork.favorited = false;
+      await gql.auth(`Bearer ${$token}`).post(params);
+    } else {
+      let params = {
+        query: `mutation insert_favorites_one {
+          insert_favorites_one(object: { artwork_id: "${artwork.id}" }) {
+            user_id,
+            artwork_id
+          } 
+        }`
+      };
+
+      artwork.favorites++;
+      artwork.favorited = true;
+      await gql.auth(`Bearer ${$token}`).post(params);
+    } 
   };
 </script>
 
@@ -111,10 +128,10 @@
       <hr class="mb-4" />
       <div class="flex mb-4">
         <div class="w-1/3 flex">
-          <Heart on:click={favorite} /> 
+          <Heart on:click={favorite} favorited={artwork.favorited} /> 
         </div>
         <div class="w-2/3">
-          <div>{artwork.favorites_aggregate.aggregate.count}</div>
+          <div>{artwork.favorites}</div>
           <div class="text-xs text-gray-600">Favorites</div>
         </div>
       </div>

@@ -118,6 +118,14 @@
         table:
           schema: public
           name: transactions
+  computed_fields:
+  - name: favorited
+    definition:
+      function:
+        schema: public
+        name: artwork_favorited
+      session_argument: hasura_session
+      table_argument: artwork_row
   insert_permissions:
   - role: user
     permission:
@@ -149,12 +157,15 @@
   - role: user
     permission:
       columns:
+      - id
       - artist_id
+      - title
+      - owner_id
       - description
       - filename
-      - id
-      - owner_id
-      - title
+      - created_at
+      computed_fields:
+      - favorited
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -223,6 +234,13 @@
   - name: userByFollowerId
     using:
       foreign_key_constraint_on: follower_id
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - follower_id
+      - user_id
+      filter: {}
 - table:
     schema: public
     name: tags
