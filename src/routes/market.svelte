@@ -1,33 +1,34 @@
 <script>
+  import { onMount } from "svelte";
   import Card from "$components/Card";
 
   import { gql } from "$components/api";
   import { token } from "$components/store";
 
-  let title;
-  let description;
+  let artworks = [];
+  onMount(() => {
+    let params = {
+      query: `query {
+        artworks {
+          id,
+          title
+        }
+      }`,
+    };
 
-  let params = {
-    query: `mutation insert_single_artwork($object: artworks_insert_input!) {
-  insert_artworks_one(object: $object) {
-  id
-  }
-  }`,
-    variables: {
-      object: {
-        title: "Article 1",
-        description: "Sample article content",
-        owner_id: "10b2de5b-0ba6-4da7-b2ba-b665175a51cb",
-        artist_id: "10b2de5b-0ba6-4da7-b2ba-b665175a51cb",
-      },
-    },
-  };
+    gql
+      .auth(`Bearer ${$token}`)
+      .post(params)
+      .json(({ data }) => (artworks = data.artworks));
+  });
 </script>
 
 <div>
   <h1 class="text-2xl font-black text-gray-900 pb-6 px-6 md:px-12">Market</h1>
 </div>
+
 <div class="flex flex-wrap px-6">
-  <Card />
-  <Card />
+  {#each artworks as artwork (artwork.id)}
+    <Card {artwork} />
+  {/each}
 </div>

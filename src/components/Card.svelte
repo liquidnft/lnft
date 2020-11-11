@@ -1,3 +1,7 @@
+<script>
+  export let artwork;
+</script>
+
 <div class="w-full lg:w-1/2 md:px-4 lg:px-6">
   <a href="/artwork/hexagon">
     <div class="bg-white hover:shadow-xl">
@@ -8,7 +12,7 @@
           class="h-56 w-full border-white border-8" />
       </div>
       <div class="px-4 py-4 md:px-10">
-        <h1 class="font-bold text-lg">The Soothsayer</h1>
+        <h1 class="font-bold text-lg">{artwork.title}</h1>
         <div class="flex pt-8">
           <div class="1/2 flex-1">
             <div>10.3 BTC</div>
