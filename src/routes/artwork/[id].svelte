@@ -35,7 +35,12 @@
           filename,
           tags {
             tag
-          } 
+          },
+          favorites_aggregate(distinct_on: artwork_id) {
+            aggregate {
+              count
+            }
+          }
         }
       }`,
     };
@@ -43,21 +48,39 @@
     gql
       .auth(`Bearer ${$token}`)
       .post(params)
-      .json(({ data }) => (artwork = data.artworks_by_pk));
+      .json(({ data }) => {
+        artwork = data.artworks_by_pk;
+        artwork.favorites = artwork.favorites_aggregate.aggregate.count;
+      });
   });
+
+
+  let favorite = async (e) => {
+    let params = {
+      query: `mutation insert_favorites_one {
+        insert_favorites_one(object: { artwork_id: "${artwork.id}" }) {
+          user_id,
+          artwork_id
+        } 
+      }`
+    };
+
+    artwork.favorites++;
+    await gql.auth(`Bearer ${$token}`).post(params);
+  };
 </script>
 
 {#if artwork}
   <div class="flex flex-wrap md:flex-no-wrap">
     <div class="text-center md:text-left w-1/4">
-      <h1 class="text-3xl font-black text-gray-900">{id}</h1>
+      <h1 class="text-3xl font-black text-gray-900">{artwork.title}</h1>
       <div class="font-black mb-6">Edition 1 of 1</div>
       <div class="text-sm text-gray-600">{artwork.description}</div>
       <div class="mb-6">
         {#each artwork.tags.map((t) => t.tag) as tag (tag)}
           <a
             href={`/tag/${tag}`}
-            class="underline text-teal-600 text-xs">#{tag}</a>
+            class="underline text-teal-600 text-xs">#{tag}</a>{" "}
         {/each}
       </div>
 
@@ -88,10 +111,10 @@
       <hr class="mb-4" />
       <div class="flex mb-4">
         <div class="w-1/3 flex">
-          <Heart />
+          <Heart on:click={favorite} /> 
         </div>
         <div class="w-2/3">
-          <div>2</div>
+          <div>{artwork.favorites_aggregate.aggregate.count}</div>
           <div class="text-xs text-gray-600">Favorites</div>
         </div>
       </div>

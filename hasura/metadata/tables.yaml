@@ -156,6 +156,7 @@
       - owner_id
       - title
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: user
     permission:
@@ -186,6 +187,32 @@
   - name: user
     using:
       foreign_key_constraint_on: user_id
+  insert_permissions:
+  - role: user
+    permission:
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-User-Id
+      columns:
+      - artwork_id
+      - user_id
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - user_id
+      - artwork_id
+      filter: {}
+      allow_aggregations: true
+  delete_permissions:
+  - role: user
+    permission:
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: follows

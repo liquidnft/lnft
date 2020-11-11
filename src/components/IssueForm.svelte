@@ -2,6 +2,7 @@
   import Select from "svelte-select";
   import { gql } from "$components/api";
   import { token } from "$components/store";
+  import { goto } from "/_app/main/runtime/navigation";
 
   export let filename;
 
@@ -9,7 +10,6 @@
     title: "",
     description: "",
     filename,
-    tags: [],
   };
 
   let issue = async (e) => {
@@ -24,8 +24,8 @@
       },
     };
 
-    const response = await gql.auth(`Bearer ${$token}`).post(params);
-    console.log(response);
+    await gql.auth(`Bearer ${$token}`).post(params);
+    goto("/");
   };
 
   const items = [
