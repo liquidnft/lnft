@@ -1,6 +1,7 @@
 <script>
   import { token } from "$components/store";
   import api from "$components/api";
+  import { goto } from "/_app/main/runtime/navigation";
 
   let error;
   let email = "real@emailadress.com";
@@ -19,7 +20,7 @@
       .json((r) => {
         $token = r.jwt_token;
         window.sessionStorage.setItem("token", $token);
-        window.location = "/issue";
+        goto("/market");
       })
   };
 
