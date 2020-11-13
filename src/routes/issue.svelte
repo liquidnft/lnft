@@ -30,7 +30,7 @@
   let uploadFile = ({ detail: file }) => {
     let id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
     previewFile(file);
-    let url = `/api/storage/o/user/${id}/${file.name}`;
+    let url = `/api/storage/o/public/${file.name}`;
     let formData = new FormData();
 
     formData.append("file", file);

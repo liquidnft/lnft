@@ -1,5 +1,5 @@
 <script>
-  import Avatar from '$components/Avatar.svelte';
+  import Avatar from '$components/Avatar';
   </script>
 
 <div class="flex flex-wrap mb-4">

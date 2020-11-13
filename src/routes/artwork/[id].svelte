@@ -37,7 +37,7 @@
             tag
           },
           favorited,
-          favorites_aggregate(distinct_on: artwork_id) {
+          favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
             aggregate {
               count
             }

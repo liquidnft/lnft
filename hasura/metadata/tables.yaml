@@ -126,6 +126,12 @@
         name: artwork_favorited
       session_argument: hasura_session
       table_argument: artwork_row
+  - name: num_favorites
+    definition:
+      function:
+        schema: public
+        name: artwork_favorites
+    comment: ""
   insert_permissions:
   - role: user
     permission:
@@ -147,39 +153,45 @@
   - role: anonymous
     permission:
       columns:
+      - artist_id
+      - created_at
       - description
       - filename
-      - title
-      - artist_id
       - id
+      - list_price
       - owner_id
+      - title
+      computed_fields:
+      - num_favorites
       filter: {}
   - role: user
     permission:
       columns:
-      - id
       - artist_id
-      - title
-      - owner_id
+      - created_at
       - description
       - filename
-      - created_at
+      - id
+      - list_price
+      - owner_id
+      - title
       computed_fields:
       - favorited
+      - num_favorites
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: user
     permission:
       columns:
-      - artist_id
       - description
       - filename
       - id
+      - list_price
       - owner_id
       - title
       filter:
-        artist_id:
+        owner_id:
           _eq: X-Hasura-User-Id
       check: null
   delete_permissions:

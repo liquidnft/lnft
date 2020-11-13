@@ -7,7 +7,7 @@
     <div class="bg-white hover:shadow-xl">
       <div class="">
         <img
-          src={`/api/storage/o/user/${artwork.artist_id}/${artwork.filename}`}
+          src={`/api/storage/o/public/${artwork.filename}`}
           alt=""
           class="w-full border-white border-8" />
       </div>
