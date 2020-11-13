@@ -1,8 +1,6 @@
 <script>
   import { onMount } from "svelte";
   import { token } from "$components/store";
-  import decode from "jwt-decode";
-
   import Dropzone from "$components/Dropzone";
   import IssueForm from "$components/IssueForm";
 
@@ -28,7 +26,6 @@
   $: width = `width: ${percent}%`;
 
   let uploadFile = ({ detail: file }) => {
-    let id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
     previewFile(file);
     let url = `/api/storage/o/public/${file.name}`;
     let formData = new FormData();

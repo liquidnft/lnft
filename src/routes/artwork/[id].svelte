@@ -12,7 +12,7 @@
   import Heart from "$components/Heart";
   import Card from "$components/Card";
   import { onMount } from "svelte";
-  import { userId, token } from "$components/store";
+  import { user, token } from "$components/store";
   import { gql } from "$components/api";
 
   export let id;
@@ -60,7 +60,7 @@
     if (artwork.favorited) {
       let params = {
         query: `mutation delete_favorite {
-          delete_favorites_by_pk(artwork_id: "${artwork.id}", user_id: "${$userId}") {
+          delete_favorites_by_pk(artwork_id: "${artwork.id}", user_id: "${$user.id}") {
             user_id
             artwork_id
           } 

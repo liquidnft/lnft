@@ -1,9 +1,9 @@
 <script>
-  import { userId, token } from "$components/store";
+  import { user, token } from "$components/store";
   import { onMount, beforeUpdate, afterUpdate } from "svelte";
   import { routeHasChanged, trackLocation } from "$components/location";
   import { goto } from "/_app/main/runtime/navigation";
-  import decode from "jwt-decode";
+  import getUser from "$components/getUser";
 
   let show;
 
@@ -23,7 +23,13 @@
     if (!$token) $token = window.sessionStorage.getItem("token");
   });
 
-  $: $userId = (() => $token && decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"])();
+  let hey = async (t) => {
+    console.log("hey!", t);
+    $user = await getUser(t);
+    console.log($user);
+  };
+
+  $: hey($token);
 </script>
 
 <style>
@@ -40,8 +46,8 @@
     <a href="/market"><button>Market</button></a>
     <a href="/activity"><button>Activity</button></a>
     <a href="/issue"><button>Issue</button></a>
-    {#if $userId}
-      <a href={`/user/${$userId}`}><button>Profile</button></a>
+    {#if $user}
+      <a href={`/user/${$user.id}`}><button>Profile</button></a>
     {:else}<a href="/login"><button>Sign In</button></a>{/if}
   </div>
 </div>
