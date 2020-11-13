@@ -364,15 +364,16 @@
       - id
       - created_at
       - updated_at
-      - display_name
+      - username
       - avatar_url
       filter: {}
   - role: user
     permission:
       columns:
-      - id
-      - created_at
-      - updated_at
-      - display_name
       - avatar_url
+      - created_at
+      - display_name
+      - id
+      - updated_at
+      - username
       filter: {}

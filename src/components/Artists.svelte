@@ -15,8 +15,8 @@
   onMount(() => {
     const query = `
     subscription {
-      users(order_by: [{ display_name: asc }]) {
-        display_name
+      users(order_by: [{ username: asc }]) {
+        username
       }
     }
   `;

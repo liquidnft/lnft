@@ -27,10 +27,10 @@
           description,
           artist_id,
           artist {
-            display_name
+            username
           },
           owner {
-            display_name
+            username
           },
           filename,
           tags {
@@ -113,14 +113,14 @@
       <div class="flex mb-6">
         <Avatar />
         <div class="ml-2 my-auto">
-          <div>@{artwork.artist.display_name}</div>
+          <div>@{artwork.artist.username}</div>
           <div class="text-xs text-gray-600">Artist</div>
         </div>
       </div>
       <div class="flex mb-6">
         <Avatar />
         <div class="ml-2 my-auto">
-          <div>@{artwork.owner.display_name}</div>
+          <div>@{artwork.owner.username}</div>
           <div class="text-xs text-gray-600">Owner</div>
         </div>
       </div>

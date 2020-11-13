@@ -4,14 +4,14 @@
   import { goto } from "/_app/main/runtime/navigation";
 
   let error;
-  let email = "real@emailadress.com";
-  let password = "StrongPasswordNot1234";
+  let username = "anon";
+  let password = "liquidart";
 
   let login = () => {
     api
       .url("/auth/login")
       .post({
-        email,
+        email: `${username}@liquidart.com`,
         password,
       })
       .badRequest((err) => {
@@ -28,8 +28,9 @@
     api
       .url("/auth/register")
       .post({
-        email,
+        email: `${username}@liquidart.com`,
         password,
+        user_data: { username },
       })
       .badRequest((err) => {
         error = JSON.parse(err.message).message;
@@ -58,8 +59,8 @@
   <div class="flex flex-col mb-4">
     <label
       class="mb-2 uppercase font-medium text-gray-600"
-      for="first_name">Email</label>
-    <input placeholder="Email" bind:value={email} />
+      for="first_name">Username</label>
+    <input placeholder="username" bind:value={username} />
   </div>
   <div class="flex flex-col mb-4">
     <label
