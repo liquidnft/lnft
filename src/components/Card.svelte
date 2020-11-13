@@ -15,7 +15,7 @@
         <h1 class="font-bold text-lg">{artwork.title}</h1>
         <div class="flex pt-8">
           <div class="1/2 flex-1">
-            <div>10.3 BTC</div>
+            <div>{artwork.list_price ? artwork.list_price : '---'} BTC</div>
             <div class="w-1/2 text-sm font-medium">List Price</div>
           </div>
           <div class="1/2 flex-1">
