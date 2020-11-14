@@ -48,7 +48,7 @@
       <div class="mb-2 text-sm"><a href="/history">Download tx history</a></div>
       <div class="mb-2 text-sm"><a href="/wallet">View Wallet</a></div>
       <div class="mb-2 text-sm"><a href="/settings">Update Settings</a></div>
-      <div class="text-sm"><a on:click={logout}>Sign out</a></div>
+      <div class="text-sm cursor-pointer"><a on:click={logout} class="cursor-pointer">Sign Out</a></div>
     </div>
     <div class="mb-2 ml-2">
       <div class="text-3xl">User Name</div>

@@ -13,48 +13,14 @@
   import Card from "$components/Card";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
-  import { gql } from "$lib/api";
+  import { getArtwork } from "$queries/artworks";
 
   export let id;
 
   let artwork;
-  onMount(() => {
-    let params = {
-      query: `query {
-        artworks_by_pk(id: "${id}") {
-          id,
-          title,
-          description,
-          artist_id,
-          artist {
-            username
-          },
-          owner {
-            username
-          },
-          filename,
-          tags {
-            tag
-          },
-          favorited,
-          favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
-            aggregate {
-              count
-            }
-          }
-        }
-      }`,
-    };
-
-    gql
-      .auth(`Bearer ${$token}`)
-      .post(params)
-      .json(({ data }) => {
-        artwork = data.artworks_by_pk;
-        artwork.favorites = artwork.favorites_aggregate.aggregate.count;
-      });
+  onMount(async () => {
+    artwork = await getArtwork($token, id);
   });
-
 
   let favorite = async (e) => {
     if (artwork.favorited) {
@@ -64,7 +30,7 @@
             user_id
             artwork_id
           } 
-        }`
+        }`,
       };
 
       artwork.favorites--;
@@ -77,15 +43,24 @@
             user_id,
             artwork_id
           } 
-        }`
+        }`,
       };
 
       artwork.favorites++;
       artwork.favorited = true;
       await gql.auth(`Bearer ${$token}`).post(params);
-    } 
+    }
   };
 </script>
+
+<style>
+  button {
+    @apply mb-2 border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded;
+    &:hover {
+      @apply bg-teal-200;
+    }
+  }
+</style>
 
 {#if artwork}
   <div class="flex flex-wrap md:flex-no-wrap">
@@ -97,18 +72,12 @@
         {#each artwork.tags.map((t) => t.tag) as tag (tag)}
           <a
             href={`/tag/${tag}`}
-            class="underline text-teal-600 text-xs">#{tag}</a>{" "}
+            class="underline text-teal-600 text-xs">#{tag}</a>{' '}
         {/each}
       </div>
 
-      {#if artwork.list_price}
-      <button
-        class="mb-2 hover:bg-teal-200 border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded">Buy
-        Now</button>
-    {/if}
-      <button
-        class="hover:bg-teal-200 border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded">Place
-        a Bid</button>
+      {#if artwork.list_price}<button>Buy Now</button>{/if}
+      <button>Place a Bid</button>
     </div>
     <Card {artwork} />
     <div class="w-1/4">
@@ -130,7 +99,7 @@
       <hr class="mb-4" />
       <div class="flex mb-4">
         <div class="w-1/3 flex">
-          <Heart on:click={favorite} favorited={artwork.favorited} /> 
+          <Heart on:click={favorite} favorited={artwork.favorited} />
         </div>
         <div class="w-2/3">
           <div>{artwork.favorites}</div>
