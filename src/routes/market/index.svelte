@@ -2,8 +2,8 @@
   import { onMount } from "svelte";
   import Card from "$components/Card";
 
-  import { gql } from "$components/api";
-  import { token } from "$components/store";
+  import { gql } from "$lib/api";
+  import { token } from "$lib/store";
 
   let artworks = [];
   onMount(() => {

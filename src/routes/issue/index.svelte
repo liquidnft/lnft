@@ -1,8 +1,8 @@
 <script>
   import { onMount } from "svelte";
-  import { token } from "$components/store";
+  import { token } from "$lib/store";
   import Dropzone from "$components/Dropzone";
-  import IssueForm from "$components/IssueForm";
+  import Form from "./_form";
 
   let preview;
   let filename;
@@ -52,7 +52,7 @@
 
 {#if preview}
   <div class="flex flex-wrap">
-    <IssueForm filename={filename}/>
+    <Form {filename} />
     <div class="ml-2 text-center flex-1 flex">
       <div class="mx-auto">
         <img src={preview} />

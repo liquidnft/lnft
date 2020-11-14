@@ -12,4 +12,10 @@ module.exports = {
       },
     },
   },
+  mount: {
+    'src/lib': '/_app/lib',
+  },
+  alias: {
+    '$lib': './src/lib',
+  },
 };

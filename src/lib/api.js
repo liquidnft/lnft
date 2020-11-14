@@ -1,5 +1,5 @@
 import wretch from "wretch";
-export default wretch().url("/api");
+export const api = wretch().url("/api");
 
 let url;
 if (import.meta.env) {

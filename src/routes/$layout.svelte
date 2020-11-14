@@ -1,9 +1,9 @@
 <script>
-  import { user, token } from "$components/store";
+  import { user, token } from "$lib/store";
   import { onMount, beforeUpdate, afterUpdate } from "svelte";
-  import { routeHasChanged, trackLocation } from "$components/location";
-  import { goto } from "/_app/main/runtime/navigation";
-  import getUser from "$components/getUser";
+  import { routeHasChanged, trackLocation } from "$lib/location";
+  import goto from "$lib/goto";
+  import getUser from "$lib/getUser";
 
   let show;
 
@@ -23,13 +23,7 @@
     if (!$token) $token = window.sessionStorage.getItem("token");
   });
 
-  let hey = async (t) => {
-    console.log("hey!", t);
-    $user = await getUser(t);
-    console.log($user);
-  };
-
-  $: hey($token);
+  $: (async (t) => ($user = await getUser(t)))($token);
 </script>
 
 <style>

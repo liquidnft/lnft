@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import SubscriptionClient from "$components/subscribe";
-  import { token } from "$components/store";
+  import SubscriptionClient from "$lib/subscribe";
+  import { token } from "$lib/store";
 
   let users = [];
 

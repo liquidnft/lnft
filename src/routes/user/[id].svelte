@@ -1,6 +1,6 @@
 <script>
-  import { goto } from "/_app/main/runtime/navigation";
-  import { user, token } from "$components/store";
+  import { user, token } from "$lib/store";
+  import goto from "$lib/goto";
 
   let logout = () => {
     window.sessionStorage.removeItem("token");

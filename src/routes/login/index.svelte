@@ -1,8 +1,7 @@
 <script>
-  import { user, token } from "$components/store";
-  import api from "$components/api";
-  import { goto } from "/_app/main/runtime/navigation";
-  import { gql } from "$components/api";
+  import { user, token } from "$lib/store";
+  import goto from "$lib/goto";
+  import { api, gql } from "$lib/api";
   import decode from "jwt-decode";
 
   let error;
@@ -24,25 +23,6 @@
         console.log(r);
         $token = r.jwt_token;
         window.sessionStorage.setItem("token", $token);
-
-        let id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-
-        let params = {
-          query: `query {
-            users_by_pk(id: "${id}") {
-              id,
-              username,
-            }
-          }`,
-        };
-
-        gql
-          .auth(`Bearer ${$token}`)
-          .post(params)
-          .json(({ data }) => {
-            $user = data.users_by_pk;
-          });
-
 
         goto("/market");
       });

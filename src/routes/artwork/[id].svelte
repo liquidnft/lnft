@@ -12,8 +12,8 @@
   import Heart from "$components/Heart";
   import Card from "$components/Card";
   import { onMount } from "svelte";
-  import { user, token } from "$components/store";
-  import { gql } from "$components/api";
+  import { user, token } from "$lib/store";
+  import { gql } from "$lib/api";
 
   export let id;
 
@@ -101,9 +101,11 @@
         {/each}
       </div>
 
+      {#if artwork.list_price}
       <button
         class="mb-2 hover:bg-teal-200 border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded">Buy
         Now</button>
+    {/if}
       <button
         class="hover:bg-teal-200 border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded">Place
         a Bid</button>

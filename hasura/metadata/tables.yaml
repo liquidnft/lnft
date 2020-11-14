@@ -146,6 +146,7 @@
       - description
       - filename
       - id
+      - list_price
       - owner_id
       - title
       backend_only: false

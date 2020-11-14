@@ -1,5 +1,5 @@
 import decode from "jwt-decode";
-import { gql } from "./api";
+import { gql } from "$lib/api";
 
 export default (token) => {
   if (!token) return;
@@ -18,9 +18,6 @@ export default (token) => {
     gql
       .auth(`Bearer ${token}`)
       .post(params)
-      .json(({ data }) => {
-        console.log("resolving", data.users_by_pk);
-        resolve(data.users_by_pk);
-      })
+      .json(({ data }) => resolve(data.users_by_pk))
   );
 };
