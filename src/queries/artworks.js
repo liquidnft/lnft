@@ -1,18 +1,17 @@
 import { gql } from "$lib/api";
+import { jsonToGraphQLQuery as j2q } from "json-to-graphql-query";
+
+// transform ['a', 'b', 'c'] to { a: true, b: true, c: true }
+let fields = (f) => f.reduce((a, b) => ({ ...a, [b]: true }), {});
 
 export default (token) =>
   new Promise((resolve) =>
     gql
       .auth(`Bearer ${token}`)
       .post({
-        query: `query {
-      artworks {
-          id,
-          title,
-          artist_id,
-          filename
-        }
-      }`,
+        query: j2q({
+          query: { artworks: fields(["id", "title", "artist_id", "filename"]) },
+        }),
       })
       .json((r) => resolve(r.data.artworks))
   );
@@ -22,30 +21,40 @@ export const getArtwork = (token, id) =>
     gql
       .auth(`Bearer ${token}`)
       .post({
-        query: `query {
-        artworks_by_pk(id: "${id}") {
-          id,
-          title,
-          description,
-          artist_id,
-          artist {
-            username
+        query: j2q({
+          query: {
+            artworks_by_pk: {
+              __args: { id },
+              ...fields([
+                "id",
+                "title",
+                "description",
+                "artist_id",
+                "filename",
+                "favorited",
+              ]),
+              artist: {
+                username: true,
+              },
+              owner: {
+                username: true,
+              },
+              tags: {
+                tag: true,
+              },
+              favorites_aggregate: {
+                __args: {
+                  where: {
+                    artwork_id: { _eq: id },
+                  },
+                },
+                aggregate: {
+                  count: true,
+                },
+              },
+            },
           },
-          owner {
-            username
-          },
-          filename,
-          tags {
-            tag
-          },
-          favorited,
-          favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
-            aggregate {
-              count
-            }
-          }
-        }
-      }`,
+        }),
       })
       .json((r) => {
         let artwork = r.data.artworks_by_pk;
