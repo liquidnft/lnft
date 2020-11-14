@@ -1,8 +1,9 @@
 <script>
   export let artwork;
+  export let columns = 3;
 </script>
 
-<div class="w-full lg:w-1/3 md:px-4 lg:px-6 mb-6">
+<div class={`lg:w-1/${columns} md:px-4 lg:px-6 mb-6`}>
   <a href={`/artwork/${artwork.id}`}>
     <div class="bg-white hover:shadow-xl">
       <div class="">

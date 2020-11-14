@@ -1,27 +1,12 @@
 <script>
   import { onMount } from "svelte";
   import Card from "$components/Card";
-
-  import { gql } from "$lib/api";
   import { token } from "$lib/store";
+  import getArtworks from "$queries/artworks";
 
   let artworks = [];
-  onMount(() => {
-    let params = {
-      query: `query {
-        artworks {
-          id,
-          title,
-          artist_id,
-          filename
-        }
-      }`,
-    };
-
-    gql
-      .auth(`Bearer ${$token}`)
-      .post(params)
-      .json(({ data }) => (artworks = data.artworks));
+  onMount(async () => {
+    artworks = await getArtworks($token);
   });
 </script>
 

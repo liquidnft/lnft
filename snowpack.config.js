@@ -14,8 +14,10 @@ module.exports = {
   },
   mount: {
     'src/lib': '/_app/lib',
+    'src/queries': '/_app/queries',
   },
   alias: {
     '$lib': './src/lib',
+    '$queries': './src/queries',
   },
 };
