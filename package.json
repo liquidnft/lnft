@@ -15,7 +15,6 @@
 		"backo2": "^1.0.2",
 		"cross-env": "^7.0.2",
 		"event-emitter3": "^1.0.4",
-		"json-to-graphql-query": "^2.0.0",
 		"postcss": "^8.1.6",
 		"postcss-cli": "^8.2.0",
 		"postcss-preset-env": "^6.7.0",
