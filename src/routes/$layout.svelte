@@ -5,6 +5,7 @@
   import goto from "$lib/goto";
   import getUser from "$lib/getUser";
   import Avatar from "$components/Avatar";
+  import { api } from "$lib/api";
 
   let show;
 
@@ -24,7 +25,27 @@
     if (!$token) $token = window.sessionStorage.getItem("token");
   });
 
-  $: (async (t) => ($user = await getUser(t)))($token);
+  let timeout;
+
+  let tokenUpdated = async (t) => {
+    if (t) timeout = setTimeout(() => refreshToken(t), 5000);
+    else clearTimeout(timeout);
+    $user = await getUser(t);
+  } 
+
+  let refreshToken = (t) => {
+    api
+      .url("/auth/token/refresh")
+      .auth(`Bearer ${t}`)
+      .get()
+      .json((r) => {
+        $token = r.jwt_token;
+        window.sessionStorage.setItem("token", $token);
+      });
+  };
+
+
+  $: tokenUpdated($token);
 </script>
 
 <style>
@@ -37,6 +58,7 @@
   <h1 class="flex-auto my-auto text-teal-400 text-3xl">
     <a href="/">Liquid Art</a>
   </h1>
+  <button on:click={() => refreshToken($token)}>Refresh</button>
   <div class="flex flex-grow-1">
     <a href="/market" class="my-auto"><button>Market</button></a>
     <a href="/activity" class="my-auto"><button>Activity</button></a>
@@ -59,3 +81,4 @@
     </div>
   </section>
 </main>
+

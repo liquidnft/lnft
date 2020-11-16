@@ -20,7 +20,6 @@
       })
       .unauthorized((err) => (error = "Login failed"))
       .json((r) => {
-        console.log(r);
         $token = r.jwt_token;
         window.sessionStorage.setItem("token", $token);
 
