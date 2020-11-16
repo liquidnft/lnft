@@ -6,13 +6,15 @@ export default (token) =>
       .auth(`Bearer ${token}`)
       .post({
         query: `query {
-      artworks {
-          id,
-          title,
-          artist_id,
-          filename
-        }
-      }`,
+          artworks {
+            id,
+            title,
+            artist_id,
+            owner_id,
+            filename,
+            favorited
+          }
+        }`,
       })
       .json((r) => resolve(r.data.artworks))
   );
@@ -28,6 +30,7 @@ export const getArtwork = (token, id) =>
           title,
           description,
           artist_id,
+          owner_id,
           artist {
             username
           },

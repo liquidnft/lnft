@@ -12,10 +12,18 @@
     goto("/login");
   };
 
-  let artworks = [];
+  let collection = [];
+  let creations = [];
+  let favorites = [];
+
   onMount(async () => {
-    artworks = await getArtworks($token);
+    let artworks = await getArtworks($token);
+    creations = artworks.filter(a => a.artist_id === $user.id);
+    collection = artworks.filter(a => a.owner_id === $user.id);
+    favorites = artworks.filter(a => a.favorited);
   });
+
+  let tab = 'creations';
 </script>
 
 <style>
@@ -57,19 +65,40 @@
     </div>
     <div class="w-1/2">
       <div class="flex justify-center text-center cursor-pointer tabs flex-wrap">
-        <div class="hover">Creations</div>
-        <div>Collection</div>
-        <div>Offers</div>
-        <div>Favorites</div>
+        <div class:hover={tab === 'creations'} on:click={() => tab = 'creations'}>Creations</div>
+        <div class:hover={tab === 'collection'} on:click={() => tab = 'collection'}>Collection</div>
+        <div class:hover={tab === 'offers'} on:click={() => tab = 'offers'}>Offers</div>
+        <div class:hover={tab === 'favorites'} on:click={() => tab = 'favorites'}>Favorites</div>
       </div>
+      {#if tab === 'creations'}
       <div class="w-100 flex justify-center">
-        <div />
         <div class="flex flex-wrap px-6">
-          {#each artworks as artwork (artwork.id)}
+          {#each creations as artwork (artwork.id)}
             <Card {artwork} columns="2" />
           {/each}
         </div>
       </div>
+    {:else if tab === 'collection'}
+      <div class="w-100 flex justify-center">
+        <div class="flex flex-wrap px-6">
+          {#each collection as artwork (artwork.id)}
+            <Card {artwork} columns="2" />
+          {/each}
+        </div>
+      </div>
+    {:else if tab === 'offers'}
+      <div>
+        Offers
+      </div>
+    {:else}
+      <div class="w-100 flex justify-center">
+        <div class="flex flex-wrap px-6">
+          {#each favorites as artwork (artwork.id)}
+            <Card {artwork} columns="2" />
+          {/each}
+        </div>
+      </div>
+    {/if}
     </div>
   </div>
 {/if}

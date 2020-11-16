@@ -44,7 +44,6 @@
       });
   };
 
-
   $: tokenUpdated($token);
 </script>
 
@@ -58,7 +57,6 @@
   <h1 class="flex-auto my-auto text-teal-400 text-3xl">
     <a href="/">Liquid Art</a>
   </h1>
-  <button on:click={() => refreshToken($token)}>Refresh</button>
   <div class="flex flex-grow-1">
     <a href="/market" class="my-auto"><button>Market</button></a>
     <a href="/activity" class="my-auto"><button>Activity</button></a>

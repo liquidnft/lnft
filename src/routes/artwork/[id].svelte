@@ -14,6 +14,8 @@
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { getArtwork } from "$queries/artworks";
+  import goto from "$lib/goto";
+  import { gql } from "$lib/api";
 
   export let id;
 
@@ -84,14 +86,14 @@
       <div class="flex mb-6">
         <Avatar />
         <div class="ml-2 my-auto">
-          <div>@{artwork.artist.username}</div>
+          <div><a href={`/user/${artwork.artist_id}`}>@{artwork.artist.username}</a></div>
           <div class="text-xs text-gray-600">Artist</div>
         </div>
       </div>
       <div class="flex mb-6">
         <Avatar />
         <div class="ml-2 my-auto">
-          <div>@{artwork.owner.username}</div>
+          <div><a href={`/user/${artwork.owner_id}`}>@{artwork.owner.username}</a></div>
           <div class="text-xs text-gray-600">Owner</div>
         </div>
       </div>
