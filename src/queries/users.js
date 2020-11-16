@@ -1,7 +1,7 @@
 import decode from "jwt-decode";
 import { gql } from "$lib/api";
 
-let fields = 'id, username, location, bio, email, full_name, website';
+let fields = "id, username, location, bio, email, full_name, website";
 
 export const getUser = (token) => {
   if (!token) return;
@@ -25,8 +25,6 @@ export const updateUser = (token, user) => {
   if (!token) return;
   let id = decode(token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
 
-  console.log("updating", user);
-
   let params = {
     query: `mutation update_user($user: users_set_input) {
       update_users_by_pk(pk_columns: { id: "${user.id}" }, _set: $user) {
@@ -35,7 +33,7 @@ export const updateUser = (token, user) => {
     }`,
     variables: {
       user,
-    } 
+    },
   };
 
   return new Promise((resolve) =>
@@ -45,6 +43,6 @@ export const updateUser = (token, user) => {
       .json((r) => {
         console.log("resolved", r);
         resolve(r.data.update_users_by_pk);
-      }) 
+      })
   );
 };

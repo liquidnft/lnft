@@ -20,15 +20,6 @@
   });
 </script>
 
-<style>
-  input,
-  textarea,
-  select {
-    @apply border p-4;
-    overflow-y: auto;
-  }
-</style>
-
 {#if form}
   <div class="flex mb-4 w-3/4 shadow p-6">
     <form

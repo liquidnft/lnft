@@ -1,5 +1,26 @@
 import { gql } from "$lib/api";
 
+export const createArtwork = (token, artwork) =>
+  gql.auth(`Bearer ${token}`).post({
+    query: `mutation insert_single_artwork($artwork: artworks_insert_input!) {
+      insert_artworks_one(object: $artwork) {
+        id
+      }
+    }`,
+    variables: {
+      artwork,
+    },
+  });
+
+export const destroyArtwork = (token, artwork) =>
+  gql.auth(`Bearer ${token}`).post({
+    query: `mutation {
+      delete_artworks_by_pk(id: "${artwork.id}") {
+        id
+      }
+    }`,
+  });
+
 export const getArtworks = (token) =>
   new Promise((resolve) =>
     gql
@@ -12,7 +33,8 @@ export const getArtworks = (token) =>
             artist_id,
             owner_id,
             filename,
-            favorited
+            favorited,
+            list_price
           }
         }`,
       })
@@ -31,6 +53,7 @@ export const getArtwork = (token, id) =>
           description,
           artist_id,
           owner_id,
+          list_price,
           artist {
             username
           },

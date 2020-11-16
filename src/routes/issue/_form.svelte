@@ -4,6 +4,7 @@
   import { gql } from "$lib/api";
   import { token } from "$lib/store";
   import goto from "$lib/goto";
+  import { createArtwork } from "$queries/artworks";
 
   export let filename;
 
@@ -17,42 +18,15 @@
   let error = "";
 
   let issue = async (e) => {
-    let params = {
-      query: `mutation insert_single_artwork($artwork: artworks_insert_input!) {
-      insert_artworks_one(object: $artwork) {
-        id
-      }
-    }`,
-      variables: {
-        artwork,
-      },
-    };
-
-    gql
-      .auth(`Bearer ${$token}`)
-      .post(params)
-      .json((res) => {
-        if (res.errors) {
-          res.errors.map((e) => (error += e.message));
-        } else {
-          goto("/");
-        }
-      });
+    createArtwork($token, artwork).json(() => {
+      goto('/');
+    });
   };
 
   const allTags = ["digital", "glitch", "3d", "abstract"];
   let tags = [];
   $: artwork.tags = { data: tags.map((tag) => ({ tag })) };
 </script>
-
-<style>
-  input,
-  textarea,
-  select {
-    @apply border p-4;
-    overflow-y: auto;
-  }
-</style>
 
 <form
   class="w-full md:w-1/2 mb-6"
@@ -73,9 +47,10 @@
     <div>
       <div class="mt-1 relative rounded-md shadow-sm">
         <input
-          id="price"
           class="form-input block w-full pl-7 pr-12"
-          placeholder="0.00" />
+          placeholder="0.00" 
+          bind:value={artwork.list_price}
+        />
         <div class="absolute inset-y-0 right-0 flex items-center mr-2">
           <select
             aria-label="Currency"

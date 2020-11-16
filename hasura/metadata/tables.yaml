@@ -327,6 +327,27 @@
   - name: artwork
     using:
       foreign_key_constraint_on: artwork_id
+  insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      columns:
+      - amount
+      - hash
+      - type
+      - artwork_id
+      - id
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - amount
+      - hash
+      - type
+      - artwork_id
+      - id
+      filter: {}
 - table:
     schema: public
     name: users
