@@ -11,6 +11,10 @@
   .large {
     @apply w-20 h-20;
   }
+
+  .xl {
+    @apply w-56 h-56;
+  } 
 </style>
 
 <div class={`${size} relative my-auto`}>

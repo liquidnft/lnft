@@ -50,6 +50,23 @@
         table:
           schema: auth
           name: refresh_tokens
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - email
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  update_permissions:
+  - role: user
+    permission:
+      columns:
+      - email
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+      check: null
 - table:
     schema: auth
     name: providers
@@ -367,14 +384,44 @@
       - updated_at
       - username
       - avatar_url
+      - display_name
+      - location
+      - bio
+      - website
+      - email
+      - full_name
       filter: {}
   - role: user
     permission:
       columns:
       - avatar_url
+      - bio
       - created_at
       - display_name
+      - email
+      - full_name
       - id
+      - location
       - updated_at
       - username
+      - website
       filter: {}
+  update_permissions:
+  - role: user
+    permission:
+      columns:
+      - avatar_url
+      - bio
+      - created_at
+      - display_name
+      - email
+      - full_name
+      - id
+      - location
+      - updated_at
+      - username
+      - website
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+      check: null

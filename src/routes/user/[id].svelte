@@ -3,7 +3,7 @@
   import { user, token } from "$lib/store";
   import goto from "$lib/goto";
   import Avatar from "$components/Avatar";
-  import getArtworks from "$queries/artworks";
+  import { getArtworks } from "$queries/artworks";
   import Card from "$components/Card";
 
   let logout = () => {
@@ -50,7 +50,7 @@
       </div>
 
       <div class="mb-4">
-        <button class="bg-black text-white p-2 rounded">Edit Profile</button>
+        <button class="bg-black text-white p-2 rounded" on:click={() => goto(`/user/${$user.id}/edit`)}>Edit Profile</button>
       </div>
 
       <div class="mb-2 text-sm"><a href="/history">Download tx history</a></div>
@@ -59,7 +59,7 @@
       <div class="text-sm cursor-pointer"><a on:click={logout} class="cursor-pointer">Sign Out</a></div>
     </div>
     <div class="mb-2 ml-2">
-      <div class="text-3xl">User Name</div>
+      <div class="text-3xl">{$user.full_name}</div>
       <div>Id: {$user.id}</div>
       <div class="text-gray-600">@{$user.username}</div>
     </div>

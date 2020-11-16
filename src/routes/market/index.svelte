@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import Card from "$components/Card";
   import { token } from "$lib/store";
-  import getArtworks from "$queries/artworks";
+  import { getArtworks } from "$queries/artworks";
 
   let artworks = [];
   onMount(async () => {

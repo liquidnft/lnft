@@ -3,7 +3,7 @@
   import { onMount, beforeUpdate, afterUpdate } from "svelte";
   import { routeHasChanged, trackLocation } from "$lib/location";
   import goto from "$lib/goto";
-  import getUser from "$lib/getUser";
+  import { getUser } from "$queries/users";
   import Avatar from "$components/Avatar";
   import { api } from "$lib/api";
 
@@ -64,7 +64,7 @@
     {#if $user}
       <a href={`/user/${$user.id}`}>
         <button class="flex">
-          <Avatar /> <div class="my-auto ml-2">Profile</div>
+          <Avatar /> <div class="my-auto ml-2">{$user.full_name}</div>
       </button></a>
     {:else}<a href="/login"><button>Sign In</button></a>{/if}
   </div>

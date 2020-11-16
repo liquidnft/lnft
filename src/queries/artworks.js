@@ -1,6 +1,6 @@
 import { gql } from "$lib/api";
 
-export default (token) =>
+export const getArtworks = (token) =>
   new Promise((resolve) =>
     gql
       .auth(`Bearer ${token}`)

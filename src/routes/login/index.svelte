@@ -33,7 +33,9 @@
       .post({
         email: `${username}@liquidart.com`,
         password,
-        user_data: { username },
+        user_data: { 
+          username 
+        },
       })
       .badRequest((err) => {
         error = JSON.parse(err.message).message;
