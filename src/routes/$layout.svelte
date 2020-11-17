@@ -80,9 +80,9 @@
 </div>
 
 {#if $snack}
-<div class="fixed w-full flex">
+<div class="fixed w-full flex z-10">
   <div
-    class="border-2 border-teal-400 px-4 py-3 rounded relative mb-4 mx-auto w-1/6 text-center font-bold">
+    class="border-2 border-teal-400 px-4 py-3 rounded relative mb-4 mx-auto w-1/6 text-center font-bold bg-white">
     {$snack}
   </div>
 </div>

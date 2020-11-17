@@ -39,14 +39,21 @@
 
   let placeBid = async () => {
     transaction.artwork_id = artwork.id;
-    await createTransaction($token, transaction);
-    $snack = "Bid placed!";
-    bidding = false;
+    try {
+      await createTransaction($token, transaction).json(async (r) => {
+        if (r.errors) throw new Error(r.errors[0].message);
+        artwork = await getArtwork($token, id);
+        $snack = "Bid placed!";
+        bidding = false;
+      });
+    } catch (e) {
+      $snack = e.message;
+    }
   };
 
   let destroy = async () => {
-    destroyArtwork($token, artwork).json(() => goto('/'));
-  } 
+    destroyArtwork($token, artwork).json(() => goto("/"));
+  };
 </script>
 
 <style>
@@ -58,9 +65,9 @@
 
     &.dangerous {
       &:hover {
-        @apply border-red-400
-      } 
-    } 
+        @apply border-red-400;
+      }
+    }
   }
 </style>
 
@@ -87,7 +94,7 @@
       {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
       <button on:click={destroy} class="dangerous">Destroy</button>
     </div>
-    <Card {artwork} />
+    <Card {artwork} link={false} />
     <Sidebar bind:artwork />
   </div>
 {/if}
