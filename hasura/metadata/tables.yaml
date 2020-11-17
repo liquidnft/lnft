@@ -149,6 +149,12 @@
         schema: public
         name: artwork_favorites
     comment: ""
+  - name: bidder
+    definition:
+      function:
+        schema: public
+        name: artwork_bidder
+    comment: ""
   insert_permissions:
   - role: user
     permission:
@@ -186,6 +192,7 @@
     permission:
       columns:
       - artist_id
+      - bid_price
       - created_at
       - description
       - filename
@@ -194,6 +201,7 @@
       - owner_id
       - title
       computed_fields:
+      - bidder
       - favorited
       - num_favorites
       filter: {}
@@ -331,12 +339,14 @@
   - role: user
     permission:
       check: {}
+      set:
+        user_id: x-hasura-User-Id
       columns:
       - amount
-      - hash
-      - type
       - artwork_id
+      - hash
       - id
+      - type
       backend_only: false
   select_permissions:
   - role: user
@@ -347,6 +357,7 @@
       - type
       - artwork_id
       - id
+      - user_id
       filter: {}
 - table:
     schema: public

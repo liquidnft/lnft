@@ -19,10 +19,14 @@
             <div>{artwork.list_price ? artwork.list_price : '---'} BTC</div>
             <div class="w-1/2 text-sm font-medium">List Price</div>
           </div>
+          {#if artwork.bid_price}
           <div class="1/2 flex-1">
-            <div>10.3 BTC</div>
-            <div class="text-sm font-medium">Current bid by @asoltys</div>
+            <div>{artwork.bid_price} BTC</div>
+            {#if artwork.bidder}
+            <div class="text-sm font-medium">Current bid by {artwork.bidder}</div>
+            {/if}
           </div>
+        {/if}
         </div>
       </div>
     </div>

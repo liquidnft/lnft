@@ -1,5 +1,16 @@
 import { gql } from "$lib/api";
 
+const fields = `
+  id,
+  title,
+  artist_id,
+  owner_id,
+  filename,
+  favorited,
+  list_price,
+  bidder,
+  bid_price`;
+
 export const createArtwork = (token, artwork) =>
   gql.auth(`Bearer ${token}`).post({
     query: `mutation insert_single_artwork($artwork: artworks_insert_input!) {
@@ -28,13 +39,7 @@ export const getArtworks = (token) =>
       .post({
         query: `query {
           artworks {
-            id,
-            title,
-            artist_id,
-            owner_id,
-            filename,
-            favorited,
-            list_price
+            ${fields}
           }
         }`,
       })
@@ -48,23 +53,16 @@ export const getArtwork = (token, id) =>
       .post({
         query: `query {
         artworks_by_pk(id: "${id}") {
-          id,
-          title,
-          description,
-          artist_id,
-          owner_id,
-          list_price,
+          ${fields}
           artist {
             username
           },
           owner {
             username
           },
-          filename,
           tags {
             tag
           },
-          favorited,
           favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
             aggregate {
               count
