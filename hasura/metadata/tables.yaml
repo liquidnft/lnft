@@ -110,6 +110,9 @@
   - name: artist
     using:
       foreign_key_constraint_on: artist_id
+  - name: bid
+    using:
+      foreign_key_constraint_on: bid_id
   - name: owner
     using:
       foreign_key_constraint_on: owner_id
@@ -278,6 +281,34 @@
       columns:
       - follower_id
       - user_id
+      filter: {}
+- table:
+    schema: public
+    name: offers
+  object_relationships:
+  - name: artwork
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: artworks
+        column_mapping:
+          artwork_id: id
+  - name: user
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: users
+        column_mapping:
+          user_id: id
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - artwork_id
+      - user_id
+      - bid
       filter: {}
 - table:
     schema: public

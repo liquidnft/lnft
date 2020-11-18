@@ -12,3 +12,25 @@ export const createTransaction = (token, transaction) =>
       transaction,
     },
   });
+
+export const getTransactions = (token) =>
+  new Promise((resolve) =>
+    gql
+      .auth(`Bearer ${token}`)
+      .post({
+        query: `query {
+          offers {
+            bid
+            artwork {
+              id
+              title
+              filename
+            } 
+            user {
+              username
+            } 
+          }
+        }`,
+      })
+      .json((r) => resolve(r.data.offers))
+  );

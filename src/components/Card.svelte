@@ -41,7 +41,7 @@
             {#if artwork.bidder}
               <div class="text-sm font-medium">
                 Current bid by
-                {artwork.bidder}
+                <a href={`/user/${artwork.bidder.id}`}>@{artwork.bidder}</a>
               </div>
             {/if}
           </div>

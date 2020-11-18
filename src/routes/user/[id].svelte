@@ -5,6 +5,7 @@
   import Avatar from "$components/Avatar";
   import { getArtworks } from "$queries/artworks";
   import Card from "$components/Card";
+  import Offers from "$components/Offers";
 
   let logout = () => {
     window.sessionStorage.removeItem("token");
@@ -87,9 +88,7 @@
         </div>
       </div>
     {:else if tab === 'offers'}
-      <div>
-        Offers
-      </div>
+      <Offers />
     {:else}
       <div class="w-100 flex justify-center">
         <div class="flex flex-wrap px-6">
