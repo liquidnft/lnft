@@ -3,9 +3,9 @@ import { gql } from "$lib/api";
 
 let fields = "id, username, location, bio, email, full_name, website";
 
-export const getUser = (token) => {
+export const getUser = (token, id) => {
   if (!token) return;
-  let id = decode(token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
+  if (!id) id = decode(token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
 
   let params = {
     query: `query {
@@ -23,7 +23,6 @@ export const getUser = (token) => {
 
 export const updateUser = (token, user) => {
   if (!token) return;
-  let id = decode(token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
 
   let params = {
     query: `mutation update_user($user: users_set_input) {

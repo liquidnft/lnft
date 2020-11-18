@@ -34,7 +34,8 @@
         email: `${username}@liquidart.com`,
         password,
         user_data: { 
-          username 
+          username,
+          full_name: username,
         },
       })
       .badRequest((err) => {

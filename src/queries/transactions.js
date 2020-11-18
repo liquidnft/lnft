@@ -13,7 +13,7 @@ export const createTransaction = (token, transaction) =>
     },
   });
 
-export const getTransactions = (token) =>
+export const getOffers = (token) =>
   new Promise((resolve) =>
     gql
       .auth(`Bearer ${token}`)
@@ -27,6 +27,7 @@ export const getTransactions = (token) =>
               filename
             } 
             user {
+              id 
               username
             } 
           }
@@ -34,3 +35,19 @@ export const getTransactions = (token) =>
       })
       .json((r) => resolve(r.data.offers))
   );
+
+export const acceptOffer = (token, transaction) =>
+  gql.auth(`Bearer ${token}`).post({
+    query: `mutation update_artwork {
+      update_artworks_by_pk(
+        pk_columns: { id: "${transaction.artwork.id}" }, 
+        _set: { 
+          owner_id: "${transaction.user.id}", 
+          list_price: 0, 
+          bid_price: 0 
+        }
+      ) {
+        id
+      }
+    }`,
+  });

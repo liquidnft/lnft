@@ -8,7 +8,7 @@
   let click = () => {
     if (!link) return;
     goto(`/artwork/${artwork.id}`);
-  } 
+  };
 </script>
 
 <style>
@@ -20,7 +20,7 @@
   }
 </style>
 
-<div class={`w-full md:w-1/${columns} mb-6 px-2`}>
+<div class={`w-full md:w-1/${columns} px-6`}>
   <div class="bg-white" class:link on:click={click}>
     <div class="relative" style="padding-bottom: 100%">
       <img
@@ -35,15 +35,14 @@
           <div>{artwork.list_price ? artwork.list_price : '---'} BTC</div>
           <div class="w-1/2 text-sm font-medium">List Price</div>
         </div>
-        {#if artwork.bid_price}
+        {#if artwork.bid}
           <div class="1/2 flex-1">
-            <div>{artwork.bid_price} BTC</div>
-            {#if artwork.bidder}
-              <div class="text-sm font-medium">
-                Current bid by
-                <a href={`/user/${artwork.bidder.id}`}>@{artwork.bidder}</a>
-              </div>
-            {/if}
+            <div>{artwork.bid.amount} BTC</div>
+            <div class="text-sm font-medium">
+              Current bid by
+              <a
+                href={`/user/${artwork.bid}`}>@{artwork.bid.user}</a>
+            </div>
           </div>
         {/if}
       </div>

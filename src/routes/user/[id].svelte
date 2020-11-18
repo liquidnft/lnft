@@ -1,11 +1,22 @@
+<script context="module">
+  export async function preload({ params }) {
+    let { id } = params;
+
+    return { id };
+  }
+</script>
+
 <script>
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import goto from "$lib/goto";
   import Avatar from "$components/Avatar";
   import { getArtworks } from "$queries/artworks";
+  import { getUser } from "$queries/users";
   import Card from "$components/Card";
   import Offers from "$components/Offers";
+
+  export let id;
 
   let logout = () => {
     window.sessionStorage.removeItem("token");
@@ -16,15 +27,19 @@
   let collection = [];
   let creations = [];
   let favorites = [];
+  let subject;
 
-  onMount(async () => {
+  $: initialize(id);
+
+  let initialize = async (id) => {
     let artworks = await getArtworks($token);
-    creations = artworks.filter(a => a.artist_id === $user.id);
-    collection = artworks.filter(a => a.owner_id === $user.id);
-    favorites = artworks.filter(a => a.favorited);
-  });
+    subject = await getUser($token, id);
+    creations = artworks.filter((a) => a.artist_id === subject.id);
+    collection = artworks.filter((a) => a.owner_id === subject.id);
+    favorites = artworks.filter((a) => a.favorited);
+  };
 
-  let tab = 'creations';
+  let tab = "creations";
 </script>
 
 <style>
@@ -40,7 +55,7 @@
   }
 </style>
 
-{#if $user}
+{#if $user && subject}
   <div class="flex mb-4 w-100">
     <div>
       <Avatar size="large" />
@@ -50,54 +65,85 @@
         <div>Following: 0</div>
       </div>
 
-      <div class="mb-4">
-        <button class="bg-black text-white p-2 rounded" on:click={() => goto(`/user/${$user.id}/edit`)}>Edit Profile</button>
-      </div>
+      {#if $user.id === id}
+        <div class="mb-4">
+          <button
+            class="bg-black text-white p-2 rounded"
+            on:click={() => goto(`/user/${$user.id}/edit`)}>Edit Profile</button>
+        </div>
 
-      <div class="mb-2 text-sm"><a href="/history">Download tx history</a></div>
-      <div class="mb-2 text-sm"><a href="/wallet">View Wallet</a></div>
-      <div class="mb-2 text-sm"><a href="/settings">Update Settings</a></div>
-      <div class="text-sm cursor-pointer"><a on:click={logout} class="cursor-pointer">Sign Out</a></div>
+        <div class="mb-2 text-sm">
+          <a href="/history">Download tx history</a>
+        </div>
+        <div class="mb-2 text-sm"><a href="/wallet">View Wallet</a></div>
+        <div class="mb-2 text-sm"><a href="/settings">Update Settings</a></div>
+        <div class="text-sm cursor-pointer">
+          <a on:click={logout} class="cursor-pointer">Sign Out</a>
+        </div>
+      {/if}
     </div>
     <div class="mb-2 ml-2">
-      <div class="text-3xl">{$user.full_name}</div>
-      <div>Id: {$user.id}</div>
-      <div class="text-gray-600">@{$user.username}</div>
+      <div class="text-3xl">{subject.full_name}</div>
+      <div>Id: {id}</div>
+      <div class="text-gray-600">@{subject.username}</div>
     </div>
     <div class="w-1/2">
-      <div class="flex justify-center text-center cursor-pointer tabs flex-wrap">
-        <div class:hover={tab === 'creations'} on:click={() => tab = 'creations'}>Creations</div>
-        <div class:hover={tab === 'collection'} on:click={() => tab = 'collection'}>Collection</div>
-        <div class:hover={tab === 'offers'} on:click={() => tab = 'offers'}>Offers</div>
-        <div class:hover={tab === 'favorites'} on:click={() => tab = 'favorites'}>Favorites</div>
+      <div
+        class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
+        <div
+          class:hover={tab === 'creations'}
+          on:click={() => (tab = 'creations')}>
+          Creations
+        </div>
+        <div
+          class:hover={tab === 'collection'}
+          on:click={() => (tab = 'collection')}>
+          Collection
+        </div>
+        {#if $user.id === id}
+          <div class:hover={tab === 'offers'} on:click={() => (tab = 'offers')}>
+            Offers
+          </div>
+          <div
+            class:hover={tab === 'favorites'}
+            on:click={() => (tab = 'favorites')}>
+            Favorites
+          </div>
+        {/if}
       </div>
       {#if tab === 'creations'}
-      <div class="w-100 flex justify-center">
-        <div class="flex flex-wrap px-6">
-          {#each creations as artwork (artwork.id)}
-            <Card {artwork} columns="2" />
-          {/each}
+        <div class="w-100 flex justify-center">
+          <div class="flex flex-wrap px-6">
+            {#each creations as artwork (artwork.id)}
+              <Card {artwork} columns="2" />
+            {:else}
+              <div>No creations yet</div>
+            {/each}
+          </div>
         </div>
-      </div>
-    {:else if tab === 'collection'}
-      <div class="w-100 flex justify-center">
-        <div class="flex flex-wrap px-6">
-          {#each collection as artwork (artwork.id)}
-            <Card {artwork} columns="2" />
-          {/each}
+      {:else if tab === 'collection'}
+        <div class="w-100 flex justify-center">
+          <div class="flex flex-wrap px-6">
+            {#each collection as artwork (artwork.id)}
+              <Card {artwork} columns="2" />
+            {:else}
+              <div>Nothing collected yet</div>
+            {/each}
+          </div>
         </div>
-      </div>
-    {:else if tab === 'offers'}
-      <Offers />
-    {:else}
-      <div class="w-100 flex justify-center">
-        <div class="flex flex-wrap px-6">
-          {#each favorites as artwork (artwork.id)}
-            <Card {artwork} columns="2" />
-          {/each}
+      {:else if tab === 'offers'}
+        <Offers />
+      {:else}
+        <div class="w-100 flex justify-center">
+          <div class="flex flex-wrap px-6">
+            {#each favorites as artwork (artwork.id)}
+              <Card {artwork} columns="2" />
+            {:else}
+              <div>No favorites yet</div>
+            {/each}
+          </div>
         </div>
-      </div>
-    {/if}
+      {/if}
     </div>
   </div>
 {/if}

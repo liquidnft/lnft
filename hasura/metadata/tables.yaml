@@ -110,9 +110,6 @@
   - name: artist
     using:
       foreign_key_constraint_on: artist_id
-  - name: bid
-    using:
-      foreign_key_constraint_on: bid_id
   - name: owner
     using:
       foreign_key_constraint_on: owner_id
@@ -152,12 +149,6 @@
         schema: public
         name: artwork_favorites
     comment: ""
-  - name: bidder
-    definition:
-      function:
-        schema: public
-        name: artwork_bidder
-    comment: ""
   insert_permissions:
   - role: user
     permission:
@@ -195,7 +186,6 @@
     permission:
       columns:
       - artist_id
-      - bid_price
       - created_at
       - description
       - filename
@@ -204,7 +194,6 @@
       - owner_id
       - title
       computed_fields:
-      - bidder
       - favorited
       - num_favorites
       filter: {}

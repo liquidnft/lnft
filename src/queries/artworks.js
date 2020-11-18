@@ -8,8 +8,7 @@ const fields = `
   filename,
   favorited,
   list_price,
-  bidder,
-  bid_price`;
+`;
 
 export const createArtwork = (token, artwork) =>
   gql.auth(`Bearer ${token}`).post({
@@ -40,6 +39,13 @@ export const getArtworks = (token) =>
         query: `query {
           artworks {
             ${fields}
+            bid {
+              user {
+                id
+                username
+              } 
+              amount 
+            } 
           }
         }`,
       })
@@ -54,6 +60,13 @@ export const getArtwork = (token, id) =>
         query: `query {
         artworks_by_pk(id: "${id}") {
           ${fields}
+          bid {
+            user {
+              id
+              username
+            } 
+            amount 
+          } 
           artist {
             username
           },

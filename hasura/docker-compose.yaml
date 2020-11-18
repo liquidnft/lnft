@@ -6,7 +6,9 @@ services:
     environment:
       POSTGRES_PASSWORD: postgrespassword
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - /home/adam/db_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
   graphql-engine:
     image: hasura/graphql-engine:v1.3.2
     ports:
@@ -30,7 +32,7 @@ services:
     environment:
       HASURA_ENDPOINT: http://graphql-engine:8080/v1/graphql
       HASURA_GRAPHQL_ADMIN_SECRET: liquidart
-      REGISTRATION_CUSTOM_FIELDS: username
+      REGISTRATION_CUSTOM_FIELDS: username,full_name
       JWT_ALGORITHM: RS256
       AUTO_MIGRATE: "true"
       STORAGE_ENABLE: "true"
@@ -43,7 +45,7 @@ services:
     image: minio/minio
     restart: always
     volumes:
-      - 'minio_data:/data'
+      - /home/adam/minio_data:/data
     ports:
       - '9000:9000'
     environment:
@@ -52,6 +54,6 @@ services:
       MINIO_SECRET_KEY: '${S3_SECRET_ACCESS_KEY:-liquidart}' ## min 8 character
     entrypoint: sh
     command: "-c 'mkdir -p /export/$${S3_BUCKET:-hasura-backend-plus} && /usr/bin/minio server /export'"
-volumes:
-  db_data:
-  minio_data:
+# volumes:
+#   db_data:
+#   minio_data:
