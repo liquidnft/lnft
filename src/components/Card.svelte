@@ -20,13 +20,13 @@
   }
 </style>
 
-<div class={`lg:w-1/${columns} md:px-4 lg:px-6 mb-6`}>
+<div class={`w-full md:w-1/${columns} mb-6 px-2`}>
   <div class="bg-white" class:link on:click={click}>
-    <div class="">
+    <div class="relative" style="padding-bottom: 100%">
       <img
         src={`/api/storage/o/public/${artwork.filename}`}
         alt=""
-        class="w-full border-white border-8" />
+        class="w-full object-cover absolute h-full" />
     </div>
     <div class="px-4 py-4 md:px-10">
       <h1 class="font-bold text-lg">{artwork.title}</h1>

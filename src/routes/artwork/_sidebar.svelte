@@ -19,7 +19,7 @@
   };
 </script>
 
-<div class="w-1/4">
+<div class="w-full md:w-1/4">
   <div class="flex mb-6">
     <Avatar />
     <div class="ml-2 my-auto">

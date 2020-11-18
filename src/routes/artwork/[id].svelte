@@ -72,8 +72,8 @@
 </style>
 
 {#if artwork}
-  <div class="flex flex-wrap md:flex-no-wrap">
-    <div class="text-center md:text-left w-1/4">
+  <div class="flex flex-wrap">
+    <div class="text-center md:text-left w-full md:w-1/4">
       <h1 class="text-3xl font-black text-gray-900">
         {artwork.title || 'Untitled'}
       </h1>
