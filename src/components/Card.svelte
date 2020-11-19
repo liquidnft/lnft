@@ -35,13 +35,13 @@
           <div>{artwork.list_price ? artwork.list_price : '---'} BTC</div>
           <div class="w-1/2 text-sm font-medium">List Price</div>
         </div>
-        {#if artwork.bid}
+        {#if artwork.bid[0]}
           <div class="1/2 flex-1">
-            <div>{artwork.bid.amount} BTC</div>
+            <div>{artwork.bid[0].amount} BTC</div>
             <div class="text-sm font-medium">
               Current bid by
               <a
-                href={`/user/${artwork.bid}`}>@{artwork.bid.user}</a>
+                href={`/user/${artwork.bid[0].user.id}`}>@{artwork.bid[0].user.username}</a>
             </div>
           </div>
         {/if}

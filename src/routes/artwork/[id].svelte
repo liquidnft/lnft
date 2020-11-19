@@ -40,6 +40,7 @@
   let placeBid = async () => {
     transaction.artwork_id = artwork.id;
     try {
+      console.log(transaction);
       await createTransaction($token, transaction).json(async (r) => {
         if (r.errors) throw new Error(r.errors[0].message);
         artwork = await getArtwork($token, id);

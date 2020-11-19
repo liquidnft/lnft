@@ -149,6 +149,12 @@
         schema: public
         name: artwork_favorites
     comment: ""
+  - name: bid
+    definition:
+      function:
+        schema: public
+        name: artwork_bid
+    comment: ""
   insert_permissions:
   - role: user
     permission:
@@ -355,6 +361,14 @@
   - name: artwork
     using:
       foreign_key_constraint_on: artwork_id
+  - name: user
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: users
+        column_mapping:
+          user_id: id
   insert_permissions:
   - role: user
     permission:
