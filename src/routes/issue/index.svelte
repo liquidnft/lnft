@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { tick, onMount } from "svelte";
   import { token } from "$lib/store";
   import Dropzone from "$components/Dropzone";
   import Form from "./_form";
@@ -7,17 +7,25 @@
   let preview;
   let filename;
   let type;
+  let video;
 
   let previewFile = (file) => {
     filename = file.name;
     type = file.type;
     var reader = new FileReader();
 
-    reader.onload = function (e) {
+    reader.onload = async (e) => {
       preview = e.target.result;
+      await tick();
+      if (type.includes('video')) {
+        video.src = URL.createObjectURL(file);
+        video.parentElement.load();
+      }
     };
 
     reader.readAsDataURL(file);
+
+
   };
 
   let percent;
@@ -57,7 +65,13 @@
     <Form {filename} />
     <div class="ml-2 text-center flex-1 flex">
       <div class="mx-auto">
+        {#if type.includes("image")}
         <img src={preview} />
+      {/if}
+    <video width="400" controls>
+      <source bind:this={video}>
+        Your browser does not support HTML5 video.
+    </video>
         <div class="shadow w-full bg-grey-light mt-2 mb-2">
           <div
             class="bg-gray-800 text-xs leading-none py-2 text-center text-white"
