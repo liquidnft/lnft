@@ -20,7 +20,7 @@
   }
 </style>
 
-<div class={`w-full md:w-1/${columns} px-6`}>
+<div class={`w-full md:w-1/${columns} px-6 mb-6`}>
   <div class="bg-white" class:link on:click={click}>
     <div class="relative" style="padding-bottom: 100%">
       <img

@@ -6,9 +6,11 @@
 
   let preview;
   let filename;
+  let type;
 
   let previewFile = (file) => {
     filename = file.name;
+    type = file.type;
     var reader = new FileReader();
 
     reader.onload = function (e) {

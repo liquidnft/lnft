@@ -56,8 +56,8 @@
 </style>
 
 {#if $user && subject}
-  <div class="flex mb-4 w-100">
-    <div>
+  <div class="flex flex-wrap mb-4 w-full">
+    <div class="md:w-1/6">
       <Avatar size="large" />
 
       <div class="my-4">
@@ -82,12 +82,12 @@
         </div>
       {/if}
     </div>
-    <div class="mb-2 ml-2">
+    <div class="mb-2 md:w-1/3">
       <div class="text-3xl">{subject.full_name}</div>
       <div>Id: {id}</div>
       <div class="text-gray-600">@{subject.username}</div>
     </div>
-    <div class="w-1/2">
+    <div class="md:w-1/2">
       <div
         class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
         <div
@@ -112,8 +112,8 @@
         {/if}
       </div>
       {#if tab === 'creations'}
-        <div class="w-100 flex justify-center">
-          <div class="flex flex-wrap px-6">
+        <div class="w-full flex justify-center">
+          <div class="w-full flex flex-wrap">
             {#each creations as artwork (artwork.id)}
               <Card {artwork} columns="2" />
             {:else}
@@ -122,8 +122,8 @@
           </div>
         </div>
       {:else if tab === 'collection'}
-        <div class="w-100 flex justify-center">
-          <div class="flex flex-wrap px-6">
+        <div class="w-full flex justify-center">
+          <div class="w-full flex flex-wrap">
             {#each collection as artwork (artwork.id)}
               <Card {artwork} columns="2" />
             {:else}
