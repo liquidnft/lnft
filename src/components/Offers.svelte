@@ -45,14 +45,15 @@
           class="h-20 w-20 mx-auto" />
       </div>
       <div class="my-auto mx-2 whitespace-no-wrap w-1/4 tex">
-        {offer.bid}
+        {offer.amount} 
         BTC
+        from @{offer.artwork.bid[0].user.username}
       </div>
       <div class="w-1/2 my-auto">
         <button on:click={() => accept(offer)}>Accept</button>
       </div>
     </div>
   {:else}
-    <div>No offers yet</div>
+    <div class="mx-auto">No offers yet</div>
   {/each}
 </div>

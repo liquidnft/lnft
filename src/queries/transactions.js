@@ -20,15 +20,17 @@ export const getOffers = (token) =>
       .post({
         query: `query {
           offers {
-            bid
+            amount 
             artwork {
               id
               title
               filename
-            } 
-            user {
-              id 
-              username
+              bid {
+                user {
+                  id
+                  username
+                } 
+              } 
             } 
           }
         }`,
@@ -42,9 +44,8 @@ export const acceptOffer = (token, transaction) =>
       update_artworks_by_pk(
         pk_columns: { id: "${transaction.artwork.id}" }, 
         _set: { 
-          owner_id: "${transaction.user.id}", 
-          list_price: 0, 
-          bid_price: 0 
+          owner_id: "${transaction.artwork.bid[0].user.id}", 
+          list_price: 0
         }
       ) {
         id
