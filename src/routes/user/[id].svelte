@@ -134,8 +134,8 @@
       {:else if tab === 'offers'}
         <Offers />
       {:else}
-        <div class="w-100 flex justify-center">
-          <div class="flex flex-wrap px-6">
+        <div class="w-full flex justify-center">
+          <div class="w-full flex flex-wrap">
             {#each favorites as artwork (artwork.id)}
               <Card {artwork} columns="2" />
             {:else}
