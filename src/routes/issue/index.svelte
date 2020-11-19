@@ -60,7 +60,7 @@
     <div class="ml-2 text-center flex-1 flex">
       <div class="mx-auto">
         {#if type.includes('image')}<img src={preview} />{/if}
-          <video controls class:hidden muted autoplay>
+          <video controls class:hidden muted autoplay loop>
           <source bind:this={video} />
           Your browser does not support HTML5 video.
         </video>
