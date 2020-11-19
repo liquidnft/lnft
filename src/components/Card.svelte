@@ -22,19 +22,19 @@
 
 <div class={`w-full md:w-1/${columns} px-6 mb-6`}>
   <div class="bg-white" class:link on:click={click}>
-      {#if artwork.filename.includes('mp4')}
-        <video controls>
-          <source src={`/api/storage/o/public/${artwork.filename}`} />
-          Your browser does not support HTML5 video.
-        </video>
-      {:else}
-    <div class="relative" style="padding-bottom: 100%">
+      <div class="relative" style="padding-bottom: 100%">
+    {#if artwork.filename.includes('mp4')}
+      <video controls class="object-cover absolute h-full w-full">
+        <source src={`/api/storage/o/public/${artwork.filename}`} />
+        Your browser does not support HTML5 video.
+      </video>
+    {:else}
         <img
           src={`/api/storage/o/public/${artwork.filename}`}
           alt=""
           class="w-full object-cover absolute h-full" />
-    </div>
-      {/if}
+    {/if}
+      </div>
     <div class="px-4 py-4 md:px-10">
       <h1 class="font-bold text-lg">{artwork.title}</h1>
       <div class="flex pt-8">
