@@ -2,6 +2,7 @@
   import { tick, onMount } from "svelte";
   import { token } from "$lib/store";
   import Dropzone from "$components/Dropzone";
+  import upload from "$lib/upload";
   import Form from "./_form";
 
   let preview;
@@ -36,19 +37,11 @@
 
   $: width = `width: ${percent}%`;
 
-  let uploadFile = ({ detail: file }) => {
+  const uploadFile = ({ detail: file }) => {
+    if (!file) return;
     previewFile(file);
-    let url = `/api/storage/o/public/${file.name}`;
-    let formData = new FormData();
-
-    formData.append("file", file);
-
-    let ajax = new XMLHttpRequest();
-    ajax.upload.addEventListener("progress", progress, false);
-    ajax.open("POST", url);
-    ajax.setRequestHeader("Authorization", `Bearer ${$token}`);
-    ajax.send(formData);
-  };
+    upload(file, $token, progress);
+  }
 </script>
 
 <style>
@@ -67,7 +60,7 @@
     <div class="ml-2 text-center flex-1 flex">
       <div class="mx-auto">
         {#if type.includes('image')}<img src={preview} />{/if}
-          <video controls class:hidden>
+          <video controls class:hidden muted autoplay>
           <source bind:this={video} />
           Your browser does not support HTML5 video.
         </video>

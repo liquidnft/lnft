@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  export let src; 
   export let size = "small";
 </script>
 
@@ -21,7 +22,7 @@
   <div
     class="group w-full h-full rounded-full overflow-hidden shadow-inner text-center bg-purple table cursor-pointer">
     <img
-      src="https://pickaface.net/gallery/avatar/unr_random_180410_1905_z1exb.png"
+      src={src || "https://pickaface.net/gallery/avatar/unr_random_180410_1905_z1exb.png"}
       alt="lovely avatar"
       class="object-cover object-center w-full h-full visible group-hover:hidden" />
   </div>

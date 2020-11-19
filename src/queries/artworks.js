@@ -69,9 +69,11 @@ export const getArtwork = (token, id) =>
           } 
           artist {
             username
+            avatar_url
           },
           owner {
             username
+            avatar_url
           },
           tags {
             tag

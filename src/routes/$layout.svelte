@@ -72,7 +72,7 @@
     {#if $user}
       <a href={`/user/${$user.id}`}>
         <button class="flex">
-          <Avatar />
+          <Avatar src={$user.avatar_url} />
           <div class="my-auto ml-2">{$user.full_name}</div>
         </button></a>
     {:else}<a href="/login"><button>Sign In</button></a>{/if}

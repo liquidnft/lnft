@@ -5,10 +5,45 @@
   import Avatar from "$components/Avatar";
   import { getUser, updateUser } from "$queries/users";
   import Success from "$components/Success";
+  import upload from "$lib/upload";
 
   let success;
+  let fileInput;
+  let filename;
+  let preview;
+  let file;
+  let percent;
+
+  let fileChosen = (e) => {
+    file = e.target.files[0];
+    if (!file) return;
+    filename = file.name;
+    var reader = new FileReader();
+
+    reader.onload = async (e) => {
+      preview = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  let progress = (event) => {
+    percent = Math.round((event.loaded / event.total) * 100);
+  };
+
+  let checkProgress = (resolve) => {
+    if (percent === 100) resolve();
+    else setTimeout(() => checkProgress(resolve), 500);
+  };
 
   let submit = async () => {
+    if (file) {
+      upload(file, $token, progress);
+      await new Promise(checkProgress);
+
+      form.avatar_url = "/api/storage/o/public/" + file.name;
+    }
+
     $user = await updateUser($token, form);
     success = true;
   };
@@ -53,11 +88,20 @@
           class="block bg-gray-800 rounded text-white px-4 py-2 rounded">Save</button>
       </div>
     </form>
-    <div class="text-center">
-      <Avatar size="xl" />
+    <div class="text-center" on:click={() => fileInput.click()}>
+      <Avatar size="xl" src={preview || `${$user.avatar_url}`} />
       <button
         class="mt-4 rounded-full border-radius-100 bg-gray-800 text-white p-4">Change
         Avatar</button>
+
+      <input
+        class="hidden"
+        bind:this={fileInput}
+        type="file"
+        id="fileElem"
+        multiple
+        accept="image/*"
+        on:change={fileChosen} />
     </div>
   </div>
 {/if}

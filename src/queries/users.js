@@ -1,7 +1,7 @@
 import decode from "jwt-decode";
 import { gql } from "$lib/api";
 
-let fields = "id, username, location, bio, email, full_name, website";
+let fields = "id, username, location, bio, email, full_name, website, avatar_url";
 
 export const getUser = (token, id) => {
   if (!token) return;
@@ -40,7 +40,6 @@ export const updateUser = (token, user) => {
       .auth(`Bearer ${token}`)
       .post(params)
       .json((r) => {
-        console.log("resolved", r);
         resolve(r.data.update_users_by_pk);
       })
   );

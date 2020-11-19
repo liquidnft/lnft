@@ -58,7 +58,7 @@
 {#if $user && subject}
   <div class="flex flex-wrap mb-4 w-full">
     <div class="md:w-1/6">
-      <Avatar size="large" />
+      <Avatar size="large" src={$user.avatar_url} />
 
       <div class="my-4">
         <div>Followers: 0</div>

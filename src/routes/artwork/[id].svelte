@@ -92,7 +92,9 @@
         <Amount bind:this={amount} bind:value={transaction.amount} />
         <button on:click={placeBid}>Submit</button>
       {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
+        {#if $user.id === artwork.owner_id }
       <button on:click={destroy} class="dangerous">Destroy</button>
+    {/if}
     </div>
     <Card {artwork} link={false} />
     <Sidebar bind:artwork />

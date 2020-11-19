@@ -1,9 +1,10 @@
 <script>
   import Avatar from '$components/Avatar';
+  import { user } from '$lib/store';
   </script>
 
 <div class="flex flex-wrap mb-4">
-  <Avatar />
+  <Avatar src={$user.avatar_url} />
   <div class="ml-2">
     <div>
       @asoltys placed a bid for 7.3 BTC on

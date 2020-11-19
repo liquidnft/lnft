@@ -21,7 +21,7 @@
 
 <div class="w-full md:w-1/4">
   <div class="flex mb-6">
-    <Avatar />
+    <Avatar src={artwork.artist.avatar_url} />
     <div class="ml-2 my-auto">
       <div>
         <a href={`/user/${artwork.artist_id}`}>@{artwork.artist.username}</a>
@@ -30,7 +30,7 @@
     </div>
   </div>
   <div class="flex mb-6">
-    <Avatar />
+    <Avatar src={artwork.owner.avatar_url} />
     <div class="ml-2 my-auto">
       <div>
         <a href={`/user/${artwork.owner_id}`}>@{artwork.owner.username}</a>
