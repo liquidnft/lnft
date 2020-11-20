@@ -24,6 +24,6 @@
     <img
       src={src || "https://pickaface.net/gallery/avatar/unr_random_180410_1905_z1exb.png"}
       alt="lovely avatar"
-      class="absolute object-cover object-center visible group-hover:hidden overflow-hidden" />
+      class="absolute w-full h-full object-cover object-center visible group-hover:hidden overflow-hidden" />
   </div>
 </div>
