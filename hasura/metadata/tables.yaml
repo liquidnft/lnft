@@ -270,6 +270,18 @@
   - name: userByFollowerId
     using:
       foreign_key_constraint_on: follower_id
+  insert_permissions:
+  - role: user
+    permission:
+      check:
+        follower_id:
+          _eq: X-Hasura-User-Id
+      set:
+        follower_id: x-hasura-User-Id
+      columns:
+      - follower_id
+      - user_id
+      backend_only: false
   select_permissions:
   - role: user
     permission:
@@ -277,6 +289,12 @@
       - follower_id
       - user_id
       filter: {}
+  delete_permissions:
+  - role: user
+    permission:
+      filter:
+        follower_id:
+          _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: offers
@@ -435,6 +453,27 @@
         table:
           schema: public
           name: follows
+  computed_fields:
+  - name: followed
+    definition:
+      function:
+        schema: public
+        name: user_followed
+      session_argument: hasura_session
+      table_argument: user_row
+    comment: ""
+  - name: num_followers
+    definition:
+      function:
+        schema: public
+        name: user_followers
+    comment: ""
+  - name: num_follows
+    definition:
+      function:
+        schema: public
+        name: user_follows
+    comment: ""
   select_permissions:
   - role: anonymous
     permission:
@@ -465,6 +504,10 @@
       - updated_at
       - username
       - website
+      computed_fields:
+      - followed
+      - num_followers
+      - num_follows
       filter: {}
   update_permissions:
   - role: user

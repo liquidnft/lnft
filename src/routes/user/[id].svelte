@@ -13,16 +13,12 @@
   import Avatar from "$components/Avatar";
   import { getArtworks } from "$queries/artworks";
   import { getUser } from "$queries/users";
+  import { toggleFollow } from "$queries/follows";
   import Card from "$components/Card";
   import Offers from "$components/Offers";
+  import Menu from "./_menu";
 
   export let id;
-
-  let logout = () => {
-    window.sessionStorage.removeItem("token");
-    $token = null;
-    goto("/login");
-  };
 
   let collection = [];
   let creations = [];
@@ -37,6 +33,11 @@
     creations = artworks.filter((a) => a.artist_id === subject.id);
     collection = artworks.filter((a) => a.owner_id === subject.id);
     favorites = artworks.filter((a) => a.favorited);
+  };
+
+  let follow = async () => {
+    await toggleFollow($token, subject, $user);
+    subject = await getUser($token, id);
   };
 
   let tab = "creations";
@@ -61,25 +62,17 @@
       <Avatar size="large" src={subject.avatar_url} />
 
       <div class="my-4">
-        <div>Followers: 0</div>
-        <div>Following: 0</div>
+        <div>Followers: {subject.num_followers}</div>
+        <div>Following: {subject.num_follows}</div>
       </div>
 
       {#if $user.id === id}
-        <div class="mb-4">
-          <button
-            class="bg-black text-white p-2 rounded"
-            on:click={() => goto(`/user/${$user.id}/edit`)}>Edit Profile</button>
-        </div>
-
-        <div class="mb-2 text-sm">
-          <a href="/history">Download tx history</a>
-        </div>
-        <div class="mb-2 text-sm"><a href="/wallet">View Wallet</a></div>
-        <div class="mb-2 text-sm"><a href="/settings">Update Settings</a></div>
-        <div class="text-sm cursor-pointer">
-          <a on:click={logout} class="cursor-pointer">Sign Out</a>
-        </div>
+        <Menu />
+      {:else}
+        <button
+          class="bg-black text-white p-2 rounded"
+          on:click={follow}>
+          {subject.followed ? 'Unfollow' : 'Follow'}</button>
       {/if}
     </div>
     <div class="mb-2 md:w-1/3">
