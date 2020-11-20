@@ -26,6 +26,7 @@ export const getOffers = (token) =>
               title
               filename
               bid {
+                amount
                 user {
                   id
                   username

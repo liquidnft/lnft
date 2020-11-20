@@ -9,6 +9,11 @@
     if (!link) return;
     goto(`/artwork/${artwork.id}`);
   };
+
+  let width = "full";
+  if (columns > 1) {
+    width = '1/'+columns;
+  } 
 </script>
 
 <style>
@@ -20,7 +25,7 @@
   }
 </style>
 
-<div class={`w-full md:w-1/${columns} px-6 mb-6`}>
+<div class={`w-full md:w-${width} px-6 mb-6`}>
   <div class="bg-white" class:link on:click={click}>
     <div class="relative" style="padding-bottom: 100%">
       {#if artwork.filename.includes('mp4')}
