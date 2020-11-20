@@ -62,7 +62,7 @@
 </style>
 
 <div class="flex p-4">
-  <h1 class="flex-auto my-auto text-teal-400 text-3xl">
+  <h1 class="flex-auto my-auto text-green-400 text-3xl">
     <a href="/">L<span class="text-black">iquid</span> A<span class="text-black">rt</span></a>
   </h1>
   <div class="flex flex-grow-1">
@@ -82,7 +82,7 @@
 {#if $snack}
 <div class="fixed w-full flex z-10">
   <div
-    class="border-2 border-teal-400 px-4 py-3 rounded relative mb-4 mx-auto w-1/6 text-center font-bold bg-white">
+    class="border-2 border-green-400 px-4 py-3 rounded relative mb-4 mx-auto w-1/6 text-center font-bold bg-white">
     {$snack}
   </div>
 </div>

@@ -79,10 +79,10 @@
   </div>
   <div class="flex">
     <button
-      class="block bg-teal-600 hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1 ml-1"
+      class="block bg-green-400 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1 ml-1"
       type="submit">Login</button>
     <button
       on:click|preventDefault={register}
-      class="block bg-teal-400 hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Register</button>
+      class="block bg-gray-600 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Register</button>
   </div>
 </form>

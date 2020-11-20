@@ -21,7 +21,7 @@
   button {
     @apply border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded;
     &:hover {
-      @apply border-teal-400;
+      @apply border-green-400;
     }
 
     &.dangerous {

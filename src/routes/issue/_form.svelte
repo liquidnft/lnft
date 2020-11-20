@@ -78,7 +78,7 @@
     <div class="flex">
       <button
         on:click|preventDefault={issue}
-        class="block bg-teal-400 hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
+        class="block bg-green-400 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
     </div>
   </div>
 </form>

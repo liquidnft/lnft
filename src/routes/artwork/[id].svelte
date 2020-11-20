@@ -60,7 +60,7 @@
   button {
     @apply mb-2 border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded;
     &:hover {
-      @apply border-teal-400;
+      @apply border-green-400;
     }
 
     &.dangerous {
@@ -83,7 +83,7 @@
         {#each artwork.tags.map((t) => t.tag) as tag (tag)}
           <a
             href={`/tag/${tag}`}
-            class="underline text-teal-400 text-xs">#{tag}</a>{' '}
+            class="underline text-green-400 text-xs">#{tag}</a>{' '}
         {/each}
       </div>
 
