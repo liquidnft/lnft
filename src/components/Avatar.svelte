@@ -18,12 +18,12 @@
   } 
 </style>
 
-<div class={`${size} relative my-auto`}>
+<div class={`${size} my-auto`}>
   <div
-    class="group w-full h-full rounded-full overflow-hidden shadow-inner text-center bg-purple table cursor-pointer">
+    class={`relative ${size} group rounded-full overflow-hidden shadow-inner text-center bg-purple table cursor-pointer`}>
     <img
       src={src || "https://pickaface.net/gallery/avatar/unr_random_180410_1905_z1exb.png"}
       alt="lovely avatar"
-      class="object-cover object-center w-full h-full visible group-hover:hidden" />
+      class="absolute object-cover object-center visible group-hover:hidden overflow-hidden" />
   </div>
 </div>

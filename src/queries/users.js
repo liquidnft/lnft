@@ -21,8 +21,12 @@ export const getUser = (token, id) => {
   );
 };
 
-export const updateUser = (token, user) => {
+export const updateUser = (token, userArg) => {
   if (!token) return;
+  let user = {...userArg};
+  delete user.num_follows;
+  delete user.num_followers;
+  delete user.followed;
 
   let params = {
     query: `mutation update_user($user: users_set_input) {
