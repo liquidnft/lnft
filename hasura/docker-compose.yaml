@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgrespassword
     volumes:
-      - /home/adam/db_data:/var/lib/postgresql/data
+      - '${DATA_DIR:-~/db_data}:/var/lib/postgresql/data'
     ports:
       - '5432:5432'
   graphql-engine:
@@ -45,7 +45,7 @@ services:
     image: minio/minio
     restart: always
     volumes:
-      - /home/adam/minio_data:/data
+      - '${STORAGE_DIR:-~/minio_data}:/data'
     ports:
       - '9000:9000'
     environment:
@@ -54,6 +54,3 @@ services:
       MINIO_SECRET_KEY: '${S3_SECRET_ACCESS_KEY:-liquidart}' ## min 8 character
     entrypoint: sh
     command: "-c 'mkdir -p /export/$${S3_BUCKET:-hasura-backend-plus} && /usr/bin/minio server /export'"
-# volumes:
-#   db_data:
-#   minio_data:
