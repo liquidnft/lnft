@@ -1,6 +1,7 @@
 <script>
   export let id;
   export let label;
+  let checked;
 </script>
 
 <style>
@@ -14,14 +15,17 @@
 </style>
 
 <div
-  class="relative inline-block w-10 mr-2 align-middle select-none ease-in cursor-pointer">
+  class="relative inline-block w-10 mr-2 align-middle select-none ease-in">
   <input
     type="checkbox"
     name="toggle"
     id={id}
-    class="toggle-checkbox absolute p-0 block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none" />
+    class="toggle-checkbox absolute p-0 block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none" 
+    bind:checked={checked}
+    on:change
+  />
   <label
     for={id}
     class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" />
 </div>
-<label for={id}>{label}</label>
+<label for={id} class="cursor-pointer">{label}</label>
