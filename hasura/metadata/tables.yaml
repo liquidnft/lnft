@@ -155,6 +155,12 @@
         schema: public
         name: artwork_bid2
     comment: ""
+  - name: last_active
+    definition:
+      function:
+        schema: public
+        name: artwork_last_tx
+    comment: ""
   insert_permissions:
   - role: user
     permission:
@@ -199,8 +205,10 @@
       - list_price
       - owner_id
       - title
+      - transferred_at
       computed_fields:
       - favorited
+      - last_active
       - num_favorites
       filter: {}
       allow_aggregations: true

@@ -8,6 +8,8 @@ const fields = `
   filename,
   favorited,
   list_price,
+  last_active,
+  created_at
 `;
 
 export const createArtwork = (token, artwork) =>
