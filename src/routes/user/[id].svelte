@@ -77,7 +77,6 @@
     </div>
     <div class="mb-2 md:w-1/3">
       <div class="text-3xl">{subject.full_name}</div>
-      <div>Id: {id}</div>
       <div class="text-gray-600">@{subject.username}</div>
     </div>
     <div class="md:w-1/2">

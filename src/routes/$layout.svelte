@@ -56,7 +56,7 @@
   }
 
   :global(input, textarea, select) {
-    @apply border p-4;
+    @apply border p-4 bg-white;
     overflow-y: auto;
   }
 </style>
