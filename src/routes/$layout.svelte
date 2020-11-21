@@ -6,6 +6,23 @@
   import { getUser } from "$queries/users";
   import Avatar from "$components/Avatar";
   import { api } from "$lib/api";
+  import { initClient } from "@urql/svelte";
+
+  let url;
+  if (import.meta.env) {
+    url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
+  } else {
+    url = "https://la.coinos.io/hasura/v1/graphql";
+  }
+
+  const client = initClient({
+    url,
+    fetchOptions: () => {
+      return {
+        headers: { authorization: $token ? `Bearer ${$token}` : "" },
+      };
+    },
+  });
 
   let show;
 
@@ -63,7 +80,8 @@
 
 <div class="flex p-4">
   <h1 class="flex-auto my-auto text-green-400 text-3xl">
-    <a href="/">L<span class="text-black">iquid</span> A<span class="text-black">rt</span></a>
+    <a href="/">L<span class="text-black">iquid</span>
+      A<span class="text-black">rt</span></a>
   </h1>
   <div class="flex flex-grow-1">
     <a href="/market" class="my-auto"><button>Market</button></a>
@@ -80,12 +98,12 @@
 </div>
 
 {#if $snack}
-<div class="fixed w-full flex z-10">
-  <div
-    class="border-2 border-green-400 px-4 py-3 rounded relative mb-4 mx-auto w-1/6 text-center font-bold bg-white">
-    {$snack}
+  <div class="fixed w-full flex z-10">
+    <div
+      class="border-2 border-green-400 px-4 py-3 rounded relative mb-4 mx-auto w-1/6 text-center font-bold bg-white">
+      {$snack}
+    </div>
   </div>
-</div>
 {/if}
 
 <main class="p-4">

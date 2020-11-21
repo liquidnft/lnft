@@ -11,17 +11,18 @@
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
   import { snack, user, token } from "$lib/store";
-  import { destroyArtwork, getArtwork } from "$queries/artworks";
+  import { getArtwork, destroyArtwork } from "$queries/artworks";
   import { createTransaction } from "$queries/transactions";
   import goto from "$lib/goto";
   import { gql } from "$lib/api";
+  import { query } from "@urql/svelte";
 
   export let id;
 
-  let artwork;
-  onMount(async () => {
-    artwork = await getArtwork($token, id);
-  });
+  let result = getArtwork(id);
+  query(result);
+
+  $: artwork = $result.data ? $result.data.artworks_by_pk : null;
 
   let bidding, amount;
   let startBidding = async () => {
@@ -42,7 +43,6 @@
     try {
       await createTransaction($token, transaction).json(async (r) => {
         if (r.errors) throw new Error(r.errors[0].message);
-        artwork = await getArtwork($token, id);
         $snack = "Bid placed!";
         bidding = false;
       });

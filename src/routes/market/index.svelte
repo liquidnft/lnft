@@ -4,35 +4,35 @@
   import { token } from "$lib/store";
   import { getArtworks } from "$queries/artworks";
   import ToggleSwitch from "$components/ToggleSwitch";
+  import { query } from "@urql/svelte";
 
-  let artworks = [];
-  onMount(async () => {
-    artworks = await getArtworks($token);
-  });
+  query(getArtworks);
 
   let listPrice, openBid, ownedByCreator, hasSold, sort;
 
   let filtered = [];
-  $: filtered = artworks
-    .filter(
-      (a) =>
-        (!listPrice || a.list_price) &&
-        (!openBid || a.bid[0].amount) &&
-        (!ownedByCreator || a.artist_id === a.owner_id) &&
-        (!hasSold || a.artist_id !== a.owner_id)
-    )
-    .sort(
-      (a, b) =>
-        ({
-          active:
-            new Date(b.last_active) - new Date(a.last_active) ||
-            new Date(b.created_at) - new Date(a.created_at),
-          lowest: a.list_price - b.list_price,
-          highest: b.list_price - a.list_price,
-          newest: new Date(b.created_at) - new Date(a.created_at),
-          oldest: new Date(a.created_at) - new Date(b.created_at),
-        }[sort])
-    );
+  $: filtered = $getArtworks.data
+    ? $getArtworks.data.artworks
+        .filter(
+          (a) =>
+            (!listPrice || a.list_price) &&
+            (!openBid || a.bid[0].amount) &&
+            (!ownedByCreator || a.artist_id === a.owner_id) &&
+            (!hasSold || a.artist_id !== a.owner_id)
+        )
+        .sort(
+          (a, b) =>
+            ({
+              active:
+                new Date(b.last_active) - new Date(a.last_active) ||
+                new Date(b.created_at) - new Date(a.created_at),
+              lowest: a.list_price - b.list_price,
+              highest: b.list_price - a.list_price,
+              newest: new Date(b.created_at) - new Date(a.created_at),
+              oldest: new Date(a.created_at) - new Date(b.created_at),
+            }[sort])
+        )
+    : [];
 </script>
 
 <div>

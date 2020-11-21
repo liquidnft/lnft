@@ -1,3 +1,5 @@
+import { get } from "svelte/store";
+import { operationStore, query } from "@urql/svelte";
 import { gql } from "$lib/api";
 
 const fields = `
@@ -11,6 +13,21 @@ const fields = `
   last_active,
   created_at
 `;
+
+export const getArtworks = operationStore(
+  `query {
+    artworks {
+      ${fields}
+      bid {
+        user {
+          id
+          username
+        } 
+        amount 
+      } 
+    }
+  }`
+);
 
 export const createArtwork = (token, artwork) =>
   gql.auth(`Bearer ${token}`).post({
@@ -33,64 +50,32 @@ export const destroyArtwork = (token, artwork) =>
     }`,
   });
 
-export const getArtworks = (token) =>
-  new Promise((resolve) =>
-    gql
-      .auth(`Bearer ${token}`)
-      .post({
-        query: `query {
-          artworks {
-            ${fields}
-            bid {
-              user {
-                id
-                username
-              } 
-              amount 
-            } 
-          }
-        }`,
-      })
-      .json((r) => resolve(r.data.artworks))
-  );
-
-export const getArtwork = (token, id) =>
-  new Promise((resolve) =>
-    gql
-      .auth(`Bearer ${token}`)
-      .post({
-        query: `query {
-        artworks_by_pk(id: "${id}") {
-          ${fields}
-          bid {
-            user {
-              id
-              username
-            } 
-            amount 
-          } 
-          artist {
-            username
-            avatar_url
-          },
-          owner {
-            username
-            avatar_url
-          },
-          tags {
-            tag
-          },
-          favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
-            aggregate {
-              count
-            }
-          }
+export const getArtwork = (id) =>
+  operationStore(`query {
+    artworks_by_pk(id: "${id}") {
+      ${fields}
+      bid {
+        user {
+          id
+          username
+        } 
+        amount 
+      } 
+      artist {
+        username
+        avatar_url
+      },
+      owner {
+        username
+        avatar_url
+      },
+      tags {
+        tag
+      },
+      favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
+        aggregate {
+          count
         }
-      }`,
-      })
-      .json((r) => {
-        let artwork = r.data.artworks_by_pk;
-        artwork.favorites = artwork.favorites_aggregate.aggregate.count;
-        resolve(artwork);
-      })
-  );
+      }
+    }
+  }`);

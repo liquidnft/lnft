@@ -17,6 +17,7 @@
   import Card from "$components/Card";
   import Offers from "$components/Offers";
   import Menu from "./_menu";
+  import { query } from "@urql/svelte";
 
   export let id;
 
@@ -25,10 +26,12 @@
   let favorites = [];
   let subject;
 
-  $: initialize(id);
+  query(getArtworks);
 
-  let initialize = async (id) => {
-    let artworks = await getArtworks($token);
+  $: initialize(id, $getArtworks.data);
+
+  let initialize = async (id, data) => {
+    let artworks = data ? data.artworks : [];
     subject = await getUser($token, id);
     creations = artworks.filter((a) => a.artist_id === subject.id);
     collection = artworks.filter((a) => a.owner_id === subject.id);
