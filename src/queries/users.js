@@ -1,11 +1,21 @@
 import decode from "jwt-decode";
 import { gql } from "$lib/api";
+import { operationStore, query } from "@urql/svelte";
 
-let fields = "id, username, location, bio, email, full_name, website, avatar_url, followed, num_follows, num_followers";
+let fields =
+  "id, username, location, bio, email, full_name, website, avatar_url, followed, num_follows, num_followers";
+
+export const getUser2 = (id) =>
+  operationStore(
+    `query {
+      users_by_pk(id: "${id}") { ${fields} }
+    }`
+  );
 
 export const getUser = (token, id) => {
   if (!token) return;
-  if (!id) id = decode(token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
+  if (!id)
+    id = decode(token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
 
   let params = {
     query: `query {
@@ -23,7 +33,7 @@ export const getUser = (token, id) => {
 
 export const updateUser = (token, userArg) => {
   if (!token) return;
-  let user = {...userArg};
+  let user = { ...userArg };
   delete user.num_follows;
   delete user.num_followers;
   delete user.followed;

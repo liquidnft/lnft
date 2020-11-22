@@ -12,7 +12,7 @@
   import goto from "$lib/goto";
   import Avatar from "$components/Avatar";
   import { getArtworks } from "$queries/artworks";
-  import { getUser } from "$queries/users";
+  import { getUser2 } from "$queries/users";
   import { toggleFollow } from "$queries/follows";
   import Card from "$components/Card";
   import Offers from "$components/Offers";
@@ -24,23 +24,40 @@
   let collection = [];
   let creations = [];
   let favorites = [];
+  let artworks = [];
   let subject;
 
   query(getArtworks);
 
-  $: initialize(id, $getArtworks.data);
+  $: updateArtworks($getArtworks.data);
 
-  let initialize = async (id, data) => {
-    let artworks = data ? data.artworks : [];
-    subject = await getUser($token, id);
+  let result = getUser2(id);
+  query(result);
+
+  $: updateSubject($result.data);
+
+  $: applyFilters(artworks, subject);
+
+  let updateArtworks = async (data) => {
+    if (!data) return;
+    artworks = data.artworks;
+  };
+
+  let updateSubject = async (data) => {
+    if (!data) return;
+    subject = data.users_by_pk;
+  };
+
+  let applyFilters = (artworks, subject) => {
+    if (artworks.length && subject) {
     creations = artworks.filter((a) => a.artist_id === subject.id);
     collection = artworks.filter((a) => a.owner_id === subject.id);
     favorites = artworks.filter((a) => a.favorited);
+    }
   };
 
   let follow = async () => {
     await toggleFollow($token, subject, $user);
-    subject = await getUser($token, id);
   };
 
   let tab = "creations";
@@ -72,9 +89,7 @@
       {#if $user.id === id}
         <Menu />
       {:else}
-        <button
-          class="bg-black text-white p-2 rounded"
-          on:click={follow}>
+        <button class="bg-black text-white p-2 rounded" on:click={follow}>
           {subject.followed ? 'Unfollow' : 'Follow'}</button>
       {/if}
     </div>
