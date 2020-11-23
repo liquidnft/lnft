@@ -17,7 +17,7 @@
   import Card from "$components/Card";
   import Offers from "$components/Offers";
   import Menu from "./_menu";
-  import { subscription, query, operationStore } from "@urql/svelte";
+  import { subscription, operationStore } from "@urql/svelte";
 
   export let id;
 
@@ -30,7 +30,7 @@
   subscription(artworks);
 
   let subject$ = getUser2(id);
-  query(subject$);
+  subscription(subject$);
 
   $: updateSubject($subject$.data);
   $: applyFilters($artworks, subject);

@@ -1,10 +1,7 @@
 <script>
-  import { tick } from "svelte";
-  import Select from "svelte-select";
-  import { gql } from "$lib/api";
-  import { token } from "$lib/store";
   import goto from "$lib/goto";
-  import { createArtwork } from "$queries/artworks";
+  import { create } from "$queries/artworks";
+  import { mutation } from "@urql/svelte";
 
   export let filename;
 
@@ -15,11 +12,10 @@
     tags: {},
   };
 
-  let error = "";
-
+  const createArtwork = mutation(create);
   let issue = async (e) => {
-    createArtwork($token, artwork).json(() => {
-      goto('/');
+    createArtwork({ artwork }).then(() => {
+      goto("/");
     });
   };
 
@@ -32,14 +28,6 @@
   class="w-full md:w-1/2 mb-6"
   on:submit|preventDefault={issue}
   autocomplete="off">
-  {#if error}
-    <div
-      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-      role="alert">
-      <strong class="font-bold">Error!</strong>
-      <span class="block sm:inline">{error}</span>
-    </div>
-  {/if}
   <div class="flex flex-col mb-4">
     <input placeholder="Title" bind:value={artwork.title} />
   </div>
@@ -48,9 +36,8 @@
       <div class="mt-1 relative rounded-md shadow-sm">
         <input
           class="form-input block w-full pl-7 pr-12"
-          placeholder="0.00" 
-          bind:value={artwork.list_price}
-        />
+          placeholder="0.00"
+          bind:value={artwork.list_price} />
         <div class="absolute inset-y-0 right-0 flex items-center mr-2">
           <select
             aria-label="Currency"

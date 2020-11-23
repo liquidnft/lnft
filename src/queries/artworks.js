@@ -27,17 +27,13 @@ export const getArtworks = `subscription {
  }
 }`;
 
-export const createArtwork = (token, artwork) =>
-  gql.auth(`Bearer ${token}`).post({
-    query: `mutation insert_single_artwork($artwork: artworks_insert_input!) {
+export const create = {
+  query: `mutation insert_single_artwork($artwork: artworks_insert_input!) {
       insert_artworks_one(object: $artwork) {
         id
       }
     }`,
-    variables: {
-      artwork,
-    },
-  });
+};
 
 export const destroyArtwork = (token, artwork) =>
   gql.auth(`Bearer ${token}`).post({
