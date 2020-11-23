@@ -2,30 +2,8 @@
   import { token } from "$lib/store";
   import {
     operationStore,
-    createClient,
-    setClient,
-    defaultExchanges,
-    subscriptionExchange,
     subscription,
   } from "@urql/svelte";
-  import { SubscriptionClient } from "subscriptions-transport-ws";
-  const subscriptionClient = new SubscriptionClient(
-    "ws://localhost:8080/v1/graphql"
-  );
-
-  const client = createClient({
-    url: "/graphql",
-    exchanges: [
-      ...defaultExchanges,
-      subscriptionExchange({
-        forwardSubscription(operation) {
-          return subscriptionClient.request(operation);
-        },
-      }),
-    ],
-  });
-
-  setClient(client);
 
   let limit = 2;
   let offset = 0;
@@ -40,10 +18,6 @@
   `,
     { limit, offset }
   );
-
-  const handleSubscription = (messages = [], data) => {
-    return [data.artworks, ...messages];
-  };
 
   subscription(artworks);
 </script>

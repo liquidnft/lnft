@@ -2,17 +2,17 @@
   import { onMount } from "svelte";
   import Card from "$components/Card";
   import { token } from "$lib/store";
-  import { getArtworks } from "$queries/artworks";
   import ToggleSwitch from "$components/ToggleSwitch";
-  import { query } from "@urql/svelte";
+  import { operationStore, subscription } from "@urql/svelte";
+  import { getArtworks } from "$queries/artworks";
 
-  query(getArtworks);
+  const artworks = operationStore(getArtworks);
+  subscription(artworks);
 
   let listPrice, openBid, ownedByCreator, hasSold, sort;
 
-  let filtered = [];
-  $: filtered = $getArtworks.data
-    ? $getArtworks.data.artworks
+  $: filtered = $artworks.data
+    ? $artworks.data.artworks
         .filter(
           (a) =>
             (!listPrice || a.list_price) &&

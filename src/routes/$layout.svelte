@@ -6,39 +6,7 @@
   import { getUser } from "$queries/users";
   import Avatar from "$components/Avatar";
   import { api } from "$lib/api";
-  import {
-    initClient,
-    defaultExchanges,
-    subscriptionExchange,
-  } from "@urql/svelte";
-  import { SubscriptionClient } from "subscriptions-transport-ws";
-  const subscriptionClient = new SubscriptionClient(
-    "ws://localhost:8080/v1/graphql"
-  );
-
-  let url;
-  if (import.meta.env) {
-    url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
-  } else {
-    url = "https://la.coinos.io/hasura/v1/graphql";
-  }
-
-  initClient({
-    url,
-    exchanges: [
-      ...defaultExchanges,
-      subscriptionExchange({
-        forwardSubscription(operation) {
-          return subscriptionClient.request(operation);
-        },
-      }),
-    ],
-    fetchOptions: () => {
-      return {
-        headers: { authorization: $token ? `Bearer ${$token}` : "" },
-      };
-    },
-  });
+  import urql from "$lib/urql";
 
   let show;
 
@@ -80,7 +48,8 @@
       });
   };
 
-    $: tokenUpdated($token);
+  $: tokenUpdated($token);
+  $: urql($token);
 </script>
 
 <style>

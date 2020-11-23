@@ -14,20 +14,18 @@ const fields = `
   created_at
 `;
 
-export const getArtworks = operationStore(
-  `query {
-    artworks {
-      ${fields}
-      bid {
-        user {
-          id
-          username
-        } 
-        amount 
-      } 
-    }
-  }`
-);
+export const getArtworks = `subscription {
+ artworks {
+   ${fields},
+   bid {
+     user {
+       id
+       username
+     } 
+     amount 
+   } 
+ }
+}`;
 
 export const createArtwork = (token, artwork) =>
   gql.auth(`Bearer ${token}`).post({
