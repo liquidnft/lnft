@@ -17,43 +17,35 @@
   import Card from "$components/Card";
   import Offers from "$components/Offers";
   import Menu from "./_menu";
-  import { query } from "@urql/svelte";
+  import { subscription, query, operationStore } from "@urql/svelte";
 
   export let id;
 
   let collection = [];
   let creations = [];
   let favorites = [];
-  let artworks = [];
   let subject;
 
-  query(getArtworks);
+  const artworks = operationStore(getArtworks);
+  subscription(artworks);
 
-  $: updateArtworks($getArtworks.data);
+  let subject$ = getUser2(id);
+  query(subject$);
 
-  let result = getUser2(id);
-  query(result);
-
-  $: updateSubject($result.data);
-
-  $: applyFilters(artworks, subject);
-
-  let updateArtworks = async (data) => {
-    if (!data) return;
-    artworks = data.artworks;
-  };
+  $: updateSubject($subject$.data);
+  $: applyFilters($artworks, subject);
 
   let updateSubject = async (data) => {
     if (!data) return;
     subject = data.users_by_pk;
   };
 
-  let applyFilters = (artworks, subject) => {
-    if (artworks.length && subject) {
+  let applyFilters = (artworks$, subject) => {
+    if (!(subject && artworks$ && artworks$.data)) return;
+    let { data: { artworks } } = artworks$;
     creations = artworks.filter((a) => a.artist_id === subject.id);
     collection = artworks.filter((a) => a.owner_id === subject.id);
     favorites = artworks.filter((a) => a.favorited);
-    }
   };
 
   let follow = async () => {
