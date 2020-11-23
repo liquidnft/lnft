@@ -32,6 +32,7 @@
 		"drag-drop": "^6.1.0",
 		"graphql": "^15.4.0",
 		"jwt-decode": "^3.1.1",
+		"subscriptions-transport-ws": "^0.9.18",
 		"svelte-dropzone": "^1.0.6",
 		"svelte-file-dropzone": "^0.0.12"
 	}
