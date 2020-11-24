@@ -10,30 +10,18 @@ export const get = (id) =>
       users_by_pk(id: "${id}") { ${fields} }
     }`;
 
-export const update = (token, userArg) => {
+export const update = (u) => {
   if (!token) return;
-  let user = { ...userArg };
+  let user = { ...u };
   delete user.num_follows;
   delete user.num_followers;
   delete user.followed;
 
-  let params = {
+  return {
     query: `mutation update_user($user: users_set_input) {
       update_users_by_pk(pk_columns: { id: "${user.id}" }, _set: $user) {
         ${fields}
       }
-    }`,
-    variables: {
-      user,
-    },
+    }`
   };
-
-  return new Promise((resolve) =>
-    gql
-      .auth(`Bearer ${token}`)
-      .post(params)
-      .json((r) => {
-        resolve(r.data.update_users_by_pk);
-      })
-  );
 };

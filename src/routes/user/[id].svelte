@@ -18,8 +18,8 @@
   import Card from "$components/Card";
   import Offers from "$components/Offers";
   import Menu from "./_menu";
-  import { subscription, operationStore } from "@urql/svelte";
-  import { fade } from 'svelte/transition';
+  import { mutation, subscription, operationStore } from "@urql/svelte";
+  import { fade } from "svelte/transition";
 
   export let id;
 
@@ -28,14 +28,14 @@
   let favorites = [];
   let subject;
 
-  const artworks = operationStore(getArtworks);
-  subscription(artworks);
+  let artworks$ = operationStore(getArtworks);
+  subscription(artworks$);
 
   let subject$ = operationStore(get(id));
   subscription(subject$);
 
   $: updateSubject($subject$.data);
-  $: applyFilters($artworks, subject);
+  $: applyFilters($artworks$, subject);
 
   let updateSubject = async (data) => {
     if (!data) return;
@@ -44,15 +44,29 @@
 
   let applyFilters = (artworks$, subject) => {
     if (!(subject && artworks$ && artworks$.data)) return;
-    let { data: { artworks } } = artworks$;
+    let {
+      data: { artworks },
+    } = artworks$;
     creations = artworks.filter((a) => a.artist_id === subject.id);
     collection = artworks.filter((a) => a.owner_id === subject.id);
     favorites = artworks.filter((a) => a.favorited);
   };
 
-  let follow = async () => {
-    await toggleFollow($token, subject, $user);
-  };
+  let follow;
+  $: if (subject && $user) {
+    let toggleFollow$ = mutation({
+      query: `mutation insert_follows_one {
+          insert_follows_one(object: { user_id: "${subject.id}" }) {
+            user_id
+            follower_id 
+          } 
+        }`,
+    });
+
+    follow = () => {
+      toggleFollow$().then(console.log);
+    };
+  }
 
   let tab = "creations";
 </script>
@@ -69,7 +83,6 @@
     }
   }
 </style>
-
 
 {#if $user && subject}
   <div class="flex flex-wrap mb-4 w-full" in:fade>
@@ -153,6 +166,6 @@
   </div>
 {:else}
   <div class="w-1/2 mx-auto">
-  <ProgressLinear />
-</div>
+    <ProgressLinear />
+  </div>
 {/if}
