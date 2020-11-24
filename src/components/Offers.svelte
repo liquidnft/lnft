@@ -4,16 +4,22 @@
   import Card from "$components/Card";
   import { token } from "$lib/store";
   import { getOffers, acceptOffer } from "$queries/transactions";
+  import { mutation, subscription, operationStore } from "@urql/svelte";
 
   let offers = [];
-  onMount(async () => {
-    offers = await getOffers($token);
-  });
+  subscription(operationStore(getOffers), (a, b) => ({ offers } = b));
 
-  let accept = async (offer) => {
-    await acceptOffer($token, offer);
-    offers = offers.filter(o => o.artwork_id !== offer.artwork_id);
-  };
+  let acceptOffer$ = mutation(acceptOffer);
+  let accept;
+  $: if (offers.length) {
+    accept = ({ artwork }) => {
+      console.log("hey!", artwork);
+      let variables = { id: artwork.id, owner_id: artwork.bid[0].user.id };
+      console.log("vars", variables);
+      acceptOffer$(variables);
+      //offers = offers.filter((o) => o.artwork_id !== artwork.id);
+    };
+  }
 </script>
 
 <style>
@@ -21,12 +27,6 @@
     @apply border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded;
     &:hover {
       @apply border-green-400;
-    }
-
-    &.dangerous {
-      &:hover {
-        @apply border-red-400;
-      }
     }
   }
 </style>

@@ -1,5 +1,3 @@
-import { gql } from "$lib/api";
-
 export const createTransaction = {
   query: `mutation create_transaction($transaction: transactions_insert_input!) {
     insert_transactions_one(object: $transaction) {
@@ -9,43 +7,34 @@ export const createTransaction = {
   }`,
 };
 
-export const getOffers = (token) =>
-  new Promise((resolve) =>
-    gql
-      .auth(`Bearer ${token}`)
-      .post({
-        query: `query {
-          offers {
-            amount 
-            artwork {
-              id
-              title
-              filename
-              bid {
-                amount
-                user {
-                  id
-                  username
-                } 
-              } 
-            } 
-          }
-        }`,
-      })
-      .json((r) => resolve(r.data.offers))
-  );
+export const getOffers = `subscription {
+  offers {
+    amount 
+    artwork {
+      id
+      title
+      filename
+      bid {
+        amount
+        user {
+          id
+          username
+        } 
+      } 
+    } 
+  }
+}`;
 
-export const acceptOffer = (token, transaction) =>
-  gql.auth(`Bearer ${token}`).post({
-    query: `mutation update_artwork {
-      update_artworks_by_pk(
-        pk_columns: { id: "${transaction.artwork.id}" }, 
-        _set: { 
-          owner_id: "${transaction.artwork.bid[0].user.id}", 
-          list_price: 0
-        }
-      ) {
-        id
+export const acceptOffer = () => ({
+  query: `mutation update_artwork($id: Int!, $owner_id: Int!) {
+    update_artworks_by_pk(
+      pk_columns: { id: $id }, 
+      _set: { 
+        owner_id: $owner_id,
+        list_price: 0
       }
-    }`,
-  });
+    ) {
+      id
+    }
+  }`,
+});

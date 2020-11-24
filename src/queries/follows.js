@@ -1,5 +1,3 @@
-import { gql } from "$lib/api";
-
 export const createFollow = (subject) => ({
   query: `mutation insert_follows_one {
     insert_follows_one(object: { user_id: "${subject.id}" }) {
