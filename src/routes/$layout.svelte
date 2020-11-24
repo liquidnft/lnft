@@ -17,12 +17,13 @@
   let clearSnack = () => setTimeout(() => ($snack = null), 5000);
   $: clearSnack($snack);
 
-  afterUpdate(() => { if (
-    (!$token || decode($token).exp * 1000 < Date.now()) &&
-    segment !== "login"
-  )
-    goto("/login");
-  else $show = true;
+  afterUpdate(() => {
+    if (
+      (!$token || decode($token).exp * 1000 < Date.now()) &&
+      segment !== "login"
+    )
+      goto("/login");
+    else $show = true;
   });
 
   onMount(() => {

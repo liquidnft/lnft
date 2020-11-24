@@ -15,13 +15,11 @@
   import { createTransaction } from "$queries/transactions";
   import goto from "$lib/goto";
   import { gql } from "$lib/api";
-  import { query } from "@urql/svelte";
+  import { mutation, subscription, operationStore } from "@urql/svelte";
 
   export let id;
 
-  let result = getArtwork(id);
-  query(result);
-
+  let result = subscription(operationStore(getArtwork(id)));
   $: artwork = $result.data ? $result.data.artworks_by_pk : null;
 
   let bidding, amount;
@@ -38,22 +36,28 @@
     type: "bid",
   };
 
-  let placeBid = async () => {
-    transaction.artwork_id = artwork.id;
-    try {
-      await createTransaction($token, transaction).json(async (r) => {
-        if (r.errors) throw new Error(r.errors[0].message);
+  let createTransaction$, placeBid;
+  $: if (transaction) {
+    createTransaction$ = mutation(createTransaction);
+
+    placeBid = (e) => {
+      e.preventDefault();
+      transaction.artwork_id = artwork.id;
+      createTransaction$({ transaction }).then(() => {
         $snack = "Bid placed!";
         bidding = false;
       });
-    } catch (e) {
-      $snack = e.message;
-    }
-  };
+    };
+  }
 
-  let destroy = async () => {
-    destroyArtwork($token, artwork).json(() => goto("/"));
-  };
+  let destroyArtwork$, destroy;
+  $: if (artwork) {
+    destroyArtwork$ = mutation(destroyArtwork(artwork));
+
+    destroy = async () => {
+      destroyArtwork$().then(() => goto("/market"));
+    };
+  }
 </script>
 
 <style>
@@ -89,12 +93,14 @@
 
       {#if artwork.list_price}<button>Buy Now</button>{/if}
       {#if bidding}
-        <Amount bind:this={amount} bind:value={transaction.amount} />
-        <button on:click={placeBid}>Submit</button>
+        <form on:submit={placeBid}>
+          <Amount bind:this={amount} bind:value={transaction.amount} />
+          <button type="submit">Submit</button>
+        </form>
       {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
-        {#if $user.id === artwork.owner_id }
-      <button on:click={destroy} class="dangerous">Destroy</button>
-    {/if}
+      {#if $user.id === artwork.owner_id}
+        <button on:click={destroy} class="dangerous">Destroy</button>
+      {/if}
     </div>
     <Card {artwork} link={false} />
     <Sidebar bind:artwork />

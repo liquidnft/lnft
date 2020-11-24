@@ -20,24 +20,26 @@
 </script>
 
 <div class="w-full md:w-1/4">
+    <a href={`/user/${artwork.artist_id}`}>
   <div class="flex mb-6">
     <Avatar src={artwork.artist.avatar_url} />
     <div class="ml-2 my-auto">
       <div>
-        <a href={`/user/${artwork.artist_id}`}>@{artwork.artist.username}</a>
+        @{artwork.artist.username}
       </div>
       <div class="text-xs text-gray-600">Artist</div>
     </div>
   </div>
-  <div class="flex mb-6">
-    <Avatar src={artwork.owner.avatar_url} />
-    <div class="ml-2 my-auto">
-      <div>
-        <a href={`/user/${artwork.owner_id}`}>@{artwork.owner.username}</a>
+</a>
+  <a href={`/user/${artwork.owner_id}`}>
+    <div class="flex mb-6">
+      <Avatar src={artwork.owner.avatar_url} />
+      <div class="ml-2 my-auto">
+        <div>@{artwork.owner.username}</div>
+        <div class="text-xs text-gray-600">Owner</div>
       </div>
-      <div class="text-xs text-gray-600">Owner</div>
     </div>
-  </div>
+  </a>
 
   <hr class="mb-4" />
   <div class="flex mb-4">

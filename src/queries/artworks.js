@@ -1,6 +1,5 @@
 import { get } from "svelte/store";
 import { operationStore, query } from "@urql/svelte";
-import { gql } from "$lib/api";
 
 const fields = `
   id,
@@ -35,8 +34,7 @@ export const create = {
     }`,
 };
 
-export const destroyArtwork = (token, artwork) =>
-  gql.auth(`Bearer ${token}`).post({
+export const destroyArtwork = (artwork) => ({
     query: `mutation {
       delete_artworks_by_pk(id: "${artwork.id}") {
         id
@@ -44,8 +42,7 @@ export const destroyArtwork = (token, artwork) =>
     }`,
   });
 
-export const getArtwork = (id) =>
-  operationStore(`query {
+export const getArtwork = (id) => `subscription {
     artworks_by_pk(id: "${id}") {
       ${fields}
       bid {
@@ -72,4 +69,4 @@ export const getArtwork = (id) =>
         }
       }
     }
-  }`);
+  }`;

@@ -14,7 +14,7 @@
   import Avatar from "$components/Avatar";
   import { getArtworks } from "$queries/artworks";
   import { get } from "$queries/users";
-  import { toggleFollow } from "$queries/follows";
+  import { createFollow, deleteFollow } from "$queries/follows";
   import Card from "$components/Card";
   import Offers from "$components/Offers";
   import Menu from "./_menu";
@@ -52,20 +52,26 @@
     favorites = artworks.filter((a) => a.favorited);
   };
 
-  let follow;
+  let follow, toggleFollow$;
   $: if (subject && $user) {
-    let toggleFollow$ = mutation({
-      query: `mutation insert_follows_one {
-          insert_follows_one(object: { user_id: "${subject.id}" }) {
-            user_id
-            follower_id 
-          } 
-        }`,
-    });
+    if (subject.followed) {
+      toggleFollow$ = mutation(deleteFollow($user, subject));
 
-    follow = () => {
-      toggleFollow$().then(console.log);
-    };
+      follow = () => {
+        toggleFollow$();
+        subject.followed = false;
+        subject.num_followers--;
+      };
+    } else {
+      toggleFollow$ = mutation(createFollow(subject));
+
+      follow = () => {
+        toggleFollow$();
+        subject.followed = true;
+        subject.num_followers++;
+      };
+    }
+
   }
 
   let tab = "creations";
@@ -165,7 +171,7 @@
     </div>
   </div>
 {:else}
-  <div class="w-1/2 mx-auto">
+  <div class="absolute top-0 w-full left-0">
     <ProgressLinear />
   </div>
 {/if}
