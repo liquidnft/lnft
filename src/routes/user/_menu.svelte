@@ -5,6 +5,7 @@
   let logout = () => {
     window.sessionStorage.removeItem("token");
     $token = null;
+    $user = null;
     goto("/login");
   };
 </script>

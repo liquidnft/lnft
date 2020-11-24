@@ -1,28 +1,28 @@
 <script>
-  import { snack, user, token } from "$lib/store";
-  import { onMount, beforeUpdate, afterUpdate } from "svelte";
-  import { routeHasChanged, trackLocation } from "$lib/location";
+  import decode from "jwt-decode";
+  import ProgressLinear from "$components/ProgressLinear";
+  import { show, snack, user, token } from "$lib/store";
+  import { onMount, afterUpdate } from "svelte";
   import goto from "$lib/goto";
-  import { getUser } from "$queries/users";
+  import { get } from "$queries/users";
   import Avatar from "$components/Avatar";
   import { api } from "$lib/api";
-  import urql from "$lib/urql";
+  import setupUrql from "$lib/urql";
+  import { subscription, operationStore } from "@urql/svelte";
+  import { fade } from "svelte/transition";
+  import Transition from "$components/Transition";
 
-  let show;
+  export let segment;
 
   let clearSnack = () => setTimeout(() => ($snack = null), 5000);
   $: clearSnack($snack);
 
-  trackLocation();
-  afterUpdate(() => {
-    if (
-      $routeHasChanged &&
-      !$token &&
-      !window.location.pathname.startsWith("/login")
-    )
-      return goto("/login");
-
-    show = true;
+  afterUpdate(() => { if (
+    (!$token || decode($token).exp * 1000 < Date.now()) &&
+    segment !== "login"
+  )
+    goto("/login");
+  else $show = true;
   });
 
   onMount(() => {
@@ -34,7 +34,6 @@
   let tokenUpdated = async (t) => {
     if (t) timeout = setTimeout(() => refreshToken(t), 600000);
     else clearTimeout(timeout);
-    $user = await getUser(t);
   };
 
   let refreshToken = (t) => {
@@ -48,8 +47,18 @@
       });
   };
 
-  $: tokenUpdated($token);
-  $: urql($token);
+  let user$, id;
+  $: {
+    tokenUpdated($token);
+    setupUrql($token);
+    if ($token) {
+      id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
+      user$ = operationStore(get(id));
+      subscription(user$);
+    }
+  }
+
+  $: $user = $token && $user$ && $user$.data ? $user$.data.users_by_pk : null;
 </script>
 
 <style>
@@ -94,8 +103,10 @@
 <main class="p-4">
   <section class="py-12">
     <div class="container mx-auto">
-      {#if show}
-        <slot />
+      {#if $show}
+        <Transition refresh={segment}>
+          <slot />
+        </Transition>
       {/if}
     </div>
   </section>

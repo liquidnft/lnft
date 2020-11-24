@@ -7,17 +7,19 @@
 </script>
 
 <script>
+  import ProgressLinear from "$components/ProgressLinear";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import goto from "$lib/goto";
   import Avatar from "$components/Avatar";
   import { getArtworks } from "$queries/artworks";
-  import { getUser2 } from "$queries/users";
+  import { get } from "$queries/users";
   import { toggleFollow } from "$queries/follows";
   import Card from "$components/Card";
   import Offers from "$components/Offers";
   import Menu from "./_menu";
   import { subscription, operationStore } from "@urql/svelte";
+  import { fade } from 'svelte/transition';
 
   export let id;
 
@@ -29,7 +31,7 @@
   const artworks = operationStore(getArtworks);
   subscription(artworks);
 
-  let subject$ = getUser2(id);
+  let subject$ = operationStore(get(id));
   subscription(subject$);
 
   $: updateSubject($subject$.data);
@@ -68,8 +70,9 @@
   }
 </style>
 
+
 {#if $user && subject}
-  <div class="flex flex-wrap mb-4 w-full">
+  <div class="flex flex-wrap mb-4 w-full" in:fade>
     <div class="md:w-1/6">
       <Avatar size="large" src={subject.avatar_url} />
 
@@ -148,4 +151,8 @@
       {/if}
     </div>
   </div>
+{:else}
+  <div class="w-1/2 mx-auto">
+  <ProgressLinear />
+</div>
 {/if}

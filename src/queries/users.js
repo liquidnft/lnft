@@ -5,33 +5,12 @@ import { operationStore, query } from "@urql/svelte";
 let fields =
   "id, username, location, bio, email, full_name, website, avatar_url, followed, num_follows, num_followers";
 
-export const getUser2 = (id) =>
-  operationStore(
-    `query {
+export const get = (id) =>
+  `subscription {
       users_by_pk(id: "${id}") { ${fields} }
-    }`
-  );
+    }`;
 
-export const getUser = (token, id) => {
-  if (!token) return;
-  if (!id)
-    id = decode(token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-
-  let params = {
-    query: `query {
-      users_by_pk(id: "${id}") { ${fields} }
-    }`,
-  };
-
-  return new Promise((resolve) =>
-    gql
-      .auth(`Bearer ${token}`)
-      .post(params)
-      .json(({ data }) => resolve(data.users_by_pk))
-  );
-};
-
-export const updateUser = (token, userArg) => {
+export const update = (token, userArg) => {
   if (!token) return;
   let user = { ...userArg };
   delete user.num_follows;

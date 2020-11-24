@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import Card from "$components/Card";
-  import { token } from "$lib/store";
+  import { show, token } from "$lib/store";
   import ToggleSwitch from "$components/ToggleSwitch";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
@@ -35,8 +35,12 @@
     : [];
 </script>
 
+
 <div>
-  <h1 class="text-2xl font-black text-gray-900 pb-6 px-6 md:px-12">Market</h1>
+  <h1 class="text-2xl font-black text-gray-900 pb-6 px-6 md:px-12">
+    Market
+    {JSON.stringify($show)}
+  </h1>
 </div>
 
 <div class="ml-12 mb-6 flex">
@@ -80,3 +84,4 @@
     <Card {artwork} />
   {/each}
 </div>
+

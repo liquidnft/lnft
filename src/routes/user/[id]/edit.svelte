@@ -3,9 +3,10 @@
   import { user, token } from "$lib/store";
   import goto from "$lib/goto";
   import Avatar from "$components/Avatar";
-  import { getUser, updateUser } from "$queries/users";
   import Success from "$components/Success";
   import upload from "$lib/upload";
+  import { update } from "$queries/users";
+  import { mutation, subscription } from "@urql/svelte";
 
   let success;
   let fileInput;
@@ -44,15 +45,21 @@
       form.avatar_url = "/api/storage/o/public/" + file.name;
     }
 
-    $user = await updateUser($token, form);
-    success = true;
+    updateUser(form);
+  };
+
+  let updateUser$ = mutation(update);
+  let updateUser = async (user) => {
+    updateUser$({ user }).then(() => {
+      success = true;
+    });
   };
 
   let form;
-
-  onMount(async () => {
-    form = await getUser($token);
-  });
+  let initialize = (user) => {
+    if (!(form && form.id) && user) form = { ...user };
+  };
+  $: initialize($user);
 </script>
 
 {#if form}
