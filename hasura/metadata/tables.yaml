@@ -148,6 +148,8 @@
       function:
         schema: public
         name: artwork_favorites
+      session_argument: hasura_session
+      table_argument: artwork_row
     comment: ""
   - name: bid
     definition:

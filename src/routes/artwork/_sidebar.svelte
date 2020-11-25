@@ -3,34 +3,41 @@
   import Avatar from "$components/Avatar";
   import Eye from "$components/Eye";
   import Heart from "$components/Heart";
-  import { toggleFavorite } from "$queries/favorites";
+  import { createFavorite, deleteFavorite } from "$queries/favorites";
+  import { mutation } from "@urql/svelte";
+
   export let artwork;
 
+  let createFavorite$ = mutation (createFavorite);
+  let deleteFavorite$ = mutation (deleteFavorite);
+
   let favorite = () => {
-    toggleFavorite($token, artwork, $user.id);
+    console.log(artwork);
+    let { id: artwork_id } = artwork;
+    let { id: user_id } = $user;
 
     if (artwork.favorited) {
-      artwork.favorites--;
+      deleteFavorite$({ artwork_id, user_id });
+      artwork.num_favorites--;
       artwork.favorited = false;
     } else {
-      artwork.favorites++;
+      createFavorite$({ artwork_id });
+      artwork.num_favorites++;
       artwork.favorited = true;
     }
   };
 </script>
 
 <div class="w-full md:w-1/4">
-    <a href={`/user/${artwork.artist_id}`}>
-  <div class="flex mb-6">
-    <Avatar src={artwork.artist.avatar_url} />
-    <div class="ml-2 my-auto">
-      <div>
-        @{artwork.artist.username}
+  <a href={`/user/${artwork.artist_id}`}>
+    <div class="flex mb-6">
+      <Avatar src={artwork.artist.avatar_url} />
+      <div class="ml-2 my-auto">
+        <div>@{artwork.artist.username}</div>
+        <div class="text-xs text-gray-600">Artist</div>
       </div>
-      <div class="text-xs text-gray-600">Artist</div>
     </div>
-  </div>
-</a>
+  </a>
   <a href={`/user/${artwork.owner_id}`}>
     <div class="flex mb-6">
       <Avatar src={artwork.owner.avatar_url} />
@@ -47,7 +54,7 @@
       <Heart on:click={favorite} favorited={artwork.favorited} />
     </div>
     <div class="w-2/3">
-      <div>{artwork.favorites}</div>
+      <div>{artwork.num_favorites}</div>
       <div class="text-xs text-gray-600">Favorites</div>
     </div>
   </div>

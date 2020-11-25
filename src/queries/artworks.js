@@ -35,12 +35,12 @@ export const create = {
 };
 
 export const destroyArtwork = (artwork) => ({
-    query: `mutation {
+  query: `mutation {
       delete_artworks_by_pk(id: "${artwork.id}") {
         id
       }
     }`,
-  });
+});
 
 export const getArtwork = (id) => `subscription {
     artworks_by_pk(id: "${id}") {
@@ -63,6 +63,7 @@ export const getArtwork = (id) => `subscription {
       tags {
         tag
       },
+      num_favorites,
       favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
         aggregate {
           count

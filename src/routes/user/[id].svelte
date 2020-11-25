@@ -71,7 +71,6 @@
         subject.num_followers++;
       };
     }
-
   }
 
   let tab = "creations";
