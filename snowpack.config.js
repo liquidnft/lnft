@@ -15,7 +15,6 @@ module.exports = {
   mount: {
     'src/lib': '/_app/lib',
     'src/queries': '/_app/queries',
-    'src/components/index.js': '/_app/comp',
   },
   alias: {
     '$lib': './src/lib',

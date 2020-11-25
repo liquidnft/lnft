@@ -7,7 +7,7 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
 
   let offers = [];
-  subscription(operationStore(getOffers), (a, b) => ({ offers } = b));
+  subscription(operationStore(getOffers), (a, b) => (offers = b.offers));
 
   let accept;
   let acceptOffer$ = mutation(acceptOffer);
