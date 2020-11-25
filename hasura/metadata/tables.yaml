@@ -409,10 +409,11 @@
     permission:
       columns:
       - amount
-      - hash
-      - type
       - artwork_id
+      - created_at
+      - hash
       - id
+      - type
       - user_id
       filter: {}
 - table:

@@ -7,6 +7,31 @@ export const createTransaction = {
   }`,
 };
 
+export const getTransactions = `subscription {
+  transactions(order_by: {created_at: desc}) {
+    amount 
+    type
+    created_at
+    user {
+      id
+      username
+      avatar_url
+    } 
+    artwork {
+      id
+      title
+      filename
+      bid {
+        amount
+        user {
+          id
+          username
+        } 
+      } 
+    } 
+  }
+}`;
+
 export const getOffers = `subscription {
   offers {
     amount 
