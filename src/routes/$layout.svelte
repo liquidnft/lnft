@@ -4,13 +4,9 @@
   import { show, snack, user, token } from "$lib/store";
   import { onMount, afterUpdate } from "svelte";
   import goto from "$lib/goto";
-  import { get } from "$queries/users";
   import Avatar from "$components/Avatar";
-  import { api } from "$lib/api";
-  import setupUrql from "$lib/urql";
-  import { subscription, operationStore } from "@urql/svelte";
   import { fade } from "svelte/transition";
-  import Transition from "$components/Transition";
+  import App from "$components/App";
 
   export let segment;
 
@@ -29,37 +25,6 @@
   onMount(() => {
     if (!$token) $token = window.sessionStorage.getItem("token");
   });
-
-  let timeout;
-
-  let tokenUpdated = async (t) => {
-    if (t) timeout = setTimeout(() => refreshToken(t), 600000);
-    else clearTimeout(timeout);
-  };
-
-  let refreshToken = (t) => {
-    api
-      .url("/auth/token/refresh")
-      .auth(`Bearer ${t}`)
-      .get()
-      .json((r) => {
-        $token = r.jwt_token;
-        window.sessionStorage.setItem("token", $token);
-      });
-  };
-
-  let user$, id;
-  $: {
-    tokenUpdated($token);
-    setupUrql($token);
-    if ($token) {
-      id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-      user$ = operationStore(get(id));
-      subscription(user$);
-    }
-  }
-
-  $: $user = $token && $user$ && $user$.data ? $user$.data.users_by_pk : null;
 </script>
 
 <style>
@@ -105,9 +70,9 @@
   <section class="py-12">
     <div class="container mx-auto">
       {#if $show}
-        <Transition refresh={segment}>
+        <App segment={segment}>
           <slot />
-        </Transition>
+        </App>
       {/if}
     </div>
   </section>

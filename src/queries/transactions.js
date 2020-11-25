@@ -25,8 +25,8 @@ export const getOffers = `subscription {
   }
 }`;
 
-export const acceptOffer = () => ({
-  query: `mutation update_artwork($id: Int!, $owner_id: Int!) {
+export const acceptOffer = ({
+  query: `mutation update_artwork($id: uuid!, $owner_id: uuid!) {
     update_artworks_by_pk(
       pk_columns: { id: $id }, 
       _set: { 

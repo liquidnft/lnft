@@ -9,15 +9,13 @@
   let offers = [];
   subscription(operationStore(getOffers), (a, b) => ({ offers } = b));
 
-  let acceptOffer$ = mutation(acceptOffer);
   let accept;
+  let acceptOffer$ = mutation(acceptOffer);
   $: if (offers.length) {
     accept = ({ artwork }) => {
-      console.log("hey!", artwork);
       let variables = { id: artwork.id, owner_id: artwork.bid[0].user.id };
-      console.log("vars", variables);
       acceptOffer$(variables);
-      //offers = offers.filter((o) => o.artwork_id !== artwork.id);
+      offers = offers.filter((o) => o.artwork_id !== artwork.id);
     };
   }
 </script>

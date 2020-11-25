@@ -38,6 +38,7 @@
   };
 
   let submit = async () => {
+    console.log("ohmm");
     if (file) {
       upload(file, $token, progress);
       await new Promise(checkProgress);
@@ -49,8 +50,11 @@
   };
 
   let updateUser$ = mutation(update);
-  let updateUser = async (user) => {
-    updateUser$({ user }).then(() => {
+  let updateUser = (user) => {
+    delete user.num_followers;
+    delete user.num_follows;
+    delete user.followed;
+    updateUser$({ user, id: user.id }).then((r) => {
       success = true;
     });
   };
@@ -96,7 +100,7 @@
       </div>
     </form>
     <div class="text-center" on:click={() => fileInput.click()}>
-      <Avatar size="xl" src={preview || `${$user.avatar_url}`} />
+      <Avatar size="xl" src={preview || $user.avatar_url} />
       <button
         class="mt-4 rounded-full border-radius-100 bg-gray-800 text-white p-4">Change
         Avatar</button>
