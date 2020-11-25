@@ -7,17 +7,21 @@
 </script>
 
 <script>
-  import { Amount, Avatar, Card } from "$components/index.js";
+  import { Activity, Amount, Avatar, Card } from "$comp";
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
   import { snack, user, token } from "$lib/store";
   import { getArtwork, destroyArtwork } from "$queries/artworks";
-  import { createTransaction } from "$queries/transactions";
+  import { createTransaction, getArtworkTransactions } from "$queries/transactions";
   import goto from "$lib/goto";
   import { gql } from "$lib/api";
   import { mutation, subscription, operationStore } from "@urql/svelte";
 
+
   export let id;
+
+  let transactions = [];
+  subscription(operationStore(getArtworkTransactions(id)), (a, b) => (transactions = b.transactions));
 
   let result = subscription(operationStore(getArtwork(id)));
   $: artwork = $result.data ? $result.data.artworks_by_pk : null;
@@ -105,4 +109,8 @@
     <Card {artwork} link={false} />
     <Sidebar bind:artwork />
   </div>
+
+  {#each transactions as transaction}
+    <Activity transaction={transaction} />
+  {/each}
 {/if}
