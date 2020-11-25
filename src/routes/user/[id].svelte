@@ -7,16 +7,13 @@
 </script>
 
 <script>
-  import ProgressLinear from "$components/ProgressLinear";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import goto from "$lib/goto";
-  import Avatar from "$components/Avatar";
+  import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { get } from "$queries/users";
   import { createFollow, deleteFollow } from "$queries/follows";
-  import Card from "$components/Card";
-  import Offers from "$components/Offers";
   import Menu from "./_menu";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { fade } from "svelte/transition";

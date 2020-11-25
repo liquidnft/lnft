@@ -52,7 +52,6 @@
       id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
       user$ = operationStore(get(id));
       subscription(user$, (a, b) => {
-        console.log("user", b);
         $user = b.users_by_pk;
       });
     }

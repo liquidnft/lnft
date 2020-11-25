@@ -1,14 +1,12 @@
 <script>
   import { onMount } from "svelte";
-  import { user, token } from "$lib/store";
+  import { snack, user, token } from "$lib/store";
   import goto from "$lib/goto";
-  import Avatar from "$components/Avatar";
-  import Success from "$components/Success";
+  import { Avatar } from "$components/index";
   import upload from "$lib/upload";
   import { update } from "$queries/users";
   import { mutation, subscription } from "@urql/svelte";
 
-  let success;
   let fileInput;
   let filename;
   let preview;
@@ -38,7 +36,6 @@
   };
 
   let submit = async () => {
-    console.log("ohmm");
     if (file) {
       upload(file, $token, progress);
       await new Promise(checkProgress);
@@ -55,7 +52,7 @@
     delete user.num_follows;
     delete user.followed;
     updateUser$({ user, id: user.id }).then((r) => {
-      success = true;
+      $snack = 'Profile updated';
     });
   };
 
@@ -72,9 +69,6 @@
       class="mb-6 flex-grow mr-8"
       on:submit|preventDefault={submit}
       autocomplete="off">
-      {#if success}
-        <Success message="Profile updated" />
-      {/if}
       <div class="flex flex-col mb-4">
         <input placeholder="Full Name" bind:value={form.full_name} />
       </div>

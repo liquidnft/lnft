@@ -1,12 +1,10 @@
 <script>
   import decode from "jwt-decode";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { App, Avatar, ProgressLinear } from "$comp";
   import { show, snack, user, token } from "$lib/store";
   import { onMount, afterUpdate } from "svelte";
   import goto from "$lib/goto";
-  import Avatar from "$components/Avatar";
   import { fade } from "svelte/transition";
-  import App from "$components/App";
 
   export let segment;
 
