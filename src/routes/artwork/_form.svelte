@@ -1,33 +1,12 @@
 <script>
-  import goto from "$lib/goto";
-  import { create } from "$queries/artworks";
-  import { mutation } from "@urql/svelte";
-
-  export let filename;
-
-  let artwork = {
-    title: "",
-    description: "",
-    filename,
-    tags: {},
-  };
-
-  const createArtwork = mutation(create);
-  let issue = async (e) => {
-    createArtwork({ artwork }).then(() => {
-      goto("/");
-    });
-  };
+  export let artwork;
+  export let tags = [];
 
   const allTags = ["digital", "glitch", "3d", "abstract"];
-  let tags = [];
   $: artwork.tags = { data: tags.map((tag) => ({ tag })) };
 </script>
 
-<form
-  class="w-full md:w-1/2 mb-6"
-  on:submit|preventDefault={issue}
-  autocomplete="off">
+<form class="w-full md:w-1/2 mb-6" on:submit autocomplete="off">
   <div class="flex flex-col mb-4">
     <input placeholder="Title" bind:value={artwork.title} />
   </div>
@@ -64,7 +43,7 @@
     </div>
     <div class="flex">
       <button
-        on:click|preventDefault={issue}
+        type="submit"
         class="block bg-green-400 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
     </div>
   </div>

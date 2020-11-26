@@ -12,16 +12,20 @@
   import { onMount, tick } from "svelte";
   import { snack, user, token } from "$lib/store";
   import { getArtwork, destroyArtwork } from "$queries/artworks";
-  import { createTransaction, getArtworkTransactions } from "$queries/transactions";
+  import {
+    createTransaction,
+    getArtworkTransactions,
+  } from "$queries/transactions";
   import goto from "$lib/goto";
-  import { gql } from "$lib/api";
   import { mutation, subscription, operationStore } from "@urql/svelte";
-
 
   export let id;
 
   let transactions = [];
-  subscription(operationStore(getArtworkTransactions(id)), (a, b) => (transactions = b.transactions));
+  subscription(
+    operationStore(getArtworkTransactions(id)),
+    (a, b) => (transactions = b.transactions)
+  );
 
   let result = subscription(operationStore(getArtwork(id)));
   $: artwork = $result.data ? $result.data.artworks_by_pk : null;
@@ -103,6 +107,7 @@
         </form>
       {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
       {#if $user.id === artwork.owner_id}
+        <button on:click={() => goto(`/artwork/${id}/edit`)} class="dangerous">Edit</button>
         <button on:click={destroy} class="dangerous">Destroy</button>
       {/if}
     </div>
@@ -111,6 +116,6 @@
   </div>
 
   {#each transactions as transaction}
-    <Activity transaction={transaction} />
+    <Activity {transaction} />
   {/each}
 {/if}

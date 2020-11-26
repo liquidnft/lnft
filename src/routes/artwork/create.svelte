@@ -4,6 +4,9 @@
   import Dropzone from "$components/Dropzone";
   import upload from "$lib/upload";
   import Form from "./_form";
+  import { create } from "$queries/artworks";
+  import { mutation } from "@urql/svelte";
+  import goto from "$lib/goto";
 
   let preview;
   let filename;
@@ -42,6 +45,22 @@
     previewFile(file);
     upload(file, $token, progress);
   }
+
+  $: artwork = {
+    title: "",
+    description: "",
+    filename,
+    tags: {},
+  };
+
+  const createArtwork = mutation(create);
+  let issue = async (e) => {
+    e.preventDefault();
+    createArtwork({ artwork }).then(() => {
+      goto("/");
+    });
+  };
+
 </script>
 
 <style>
@@ -56,7 +75,7 @@
 
 {#if preview}
   <div class="flex flex-wrap">
-    <Form {filename} />
+    <Form {artwork} on:submit={issue} />
     <div class="ml-2 text-center flex-1 flex">
       <div class="mx-auto">
         {#if type.includes('image')}<img src={preview} />{/if}
