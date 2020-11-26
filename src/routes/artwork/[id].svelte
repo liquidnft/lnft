@@ -45,18 +45,27 @@
   };
 
   let createTransaction$, placeBid;
-  $: if (transaction) {
+  $: if (artwork) {
     createTransaction$ = mutation(createTransaction);
 
     placeBid = (e) => {
-      e.preventDefault();
+      if (e) e.preventDefault();
       transaction.artwork_id = artwork.id;
+      if (transaction.amount >= artwork.list_price) {
+        transaction.type = "purchase";
+      } 
       createTransaction$({ transaction }).then(() => {
         $snack = "Bid placed!";
         bidding = false;
       });
     };
   }
+
+  let buyNow = () => {
+    transaction.amount = artwork.list_price;
+    transaction.type = "purchase";
+    placeBid();
+  };
 
   let destroyArtwork$, destroy;
   $: if (artwork) {
@@ -83,7 +92,7 @@
   }
 </style>
 
-{#if artwork}
+{#if $user && artwork}
   <div class="flex flex-wrap">
     <div class="text-center md:text-left w-full md:w-1/4">
       <h1 class="text-3xl font-black text-gray-900">
@@ -99,17 +108,18 @@
         {/each}
       </div>
 
-      {#if artwork.list_price}<button>Buy Now</button>{/if}
-      {#if bidding}
+      {#if artwork.list_price}<button on:click={buyNow}>Buy Now</button>{/if}
+      {#if $user.id === artwork.owner_id}
+        <button
+          on:click={() => goto(`/artwork/${id}/edit`)}
+          class="dangerous">Edit</button>
+        <button on:click={destroy} class="dangerous">Destroy</button>
+      {:else if bidding}
         <form on:submit={placeBid}>
           <Amount bind:this={amount} bind:value={transaction.amount} />
           <button type="submit">Submit</button>
         </form>
       {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
-      {#if $user.id === artwork.owner_id}
-        <button on:click={() => goto(`/artwork/${id}/edit`)} class="dangerous">Edit</button>
-        <button on:click={destroy} class="dangerous">Destroy</button>
-      {/if}
     </div>
     <Card {artwork} link={false} />
     <Sidebar bind:artwork />

@@ -13,7 +13,7 @@
   let acceptOffer$ = mutation(acceptOffer);
   $: if (offers.length) {
     accept = ({ artwork }) => {
-      let variables = { id: artwork.id, owner_id: artwork.bid[0].user.id };
+      let variables = { id: artwork.id, owner_id: artwork.bid[0].user.id, amount: artwork.bid[0].amount };
       acceptOffer$(variables);
       offers = offers.filter((o) => o.artwork_id !== artwork.id);
     };

@@ -11,20 +11,26 @@ const fields = `
   favorited,
   list_price,
   last_active,
-  created_at
+  created_at,
+  bid {
+    user {
+      id
+      username
+    } 
+    amount 
+  } 
 `;
 
 export const getArtworks = `subscription {
  artworks {
-   ${fields},
-   bid {
-     user {
-       id
-       username
-     } 
-     amount 
-   } 
- }
+    ${fields},
+  }
+}`;
+
+export const getArtworksByTag = (tag) => `subscription {
+  artworks(where: {tags: {tag: {_eq: "${tag}"}}}) {
+    ${fields}
+  }
 }`;
 
 export const create = {
@@ -65,13 +71,6 @@ export const destroyArtwork = (artwork) => ({
 export const getArtwork = (id) => `subscription {
     artworks_by_pk(id: "${id}") {
       ${fields}
-      bid {
-        user {
-          id
-          username
-        } 
-        amount 
-      } 
       artist {
         username
         avatar_url

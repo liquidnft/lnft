@@ -17,9 +17,13 @@
     <div>
       <a href={`/user/${transaction.user.id}`}>@{transaction.user.username}</a>
       {#if transaction.type === 'bid'}
-        place a bid for {transaction.amount} BTC on
-      {:else}
+        placed a bid for {transaction.amount} BTC on
+      {:else if transaction.type === 'created'}
         created
+      {:else if transaction.type === 'purchase'}
+        paid {transaction.amount} BTC for
+      {:else if transaction.type === 'accept'}
+        accepted a bid of {transaction.amount} BTC for
       {/if}
       <a
         href={`/artwork/${transaction.artwork.id}`}>{transaction.artwork.title}</a>

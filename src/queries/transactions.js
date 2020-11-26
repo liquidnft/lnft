@@ -61,7 +61,7 @@ export const getOffers = `subscription {
 }`;
 
 export const acceptOffer = {
-  query: `mutation update_artwork($id: uuid!, $owner_id: uuid!) {
+  query: `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!) {
     update_artworks_by_pk(
       pk_columns: { id: $id }, 
       _set: { 
@@ -71,5 +71,14 @@ export const acceptOffer = {
     ) {
       id
     }
+    insert_transactions_one(object: {
+      artwork_id: $id,
+      type: "accept",
+      amount: $amount,
+      hash: ""
+    }) {
+      id,
+      artwork_id
+    } 
   }`,
 };
