@@ -236,6 +236,26 @@
           _eq: X-Hasura-User-Id
 - table:
     schema: public
+    name: collectors
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - num_artworks
+      - avatar_url
+      - bio
+      - display_name
+      - email
+      - full_name
+      - location
+      - username
+      - website
+      - created_at
+      - updated_at
+      - id
+      filter: {}
+- table:
+    schema: public
     name: favorites
   object_relationships:
   - name: artwork

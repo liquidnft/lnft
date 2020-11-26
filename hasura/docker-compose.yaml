@@ -10,7 +10,7 @@ services:
     ports:
       - '5432:5432'
   graphql-engine:
-    image: hasura/graphql-engine:v1.3.2
+    image: hasura/graphql-engine:v1.3.3
     ports:
       - '8080:8080'
     depends_on:

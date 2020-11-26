@@ -34,6 +34,10 @@
     @apply border p-4 bg-white;
     overflow-y: auto;
   }
+
+  :global(.title) {
+    @apply text-2xl font-black text-gray-900 pb-6;
+  }
 </style>
 
 <div class="flex p-4">
@@ -63,14 +67,12 @@
   </div>
 {/if}
 
-<main class="p-4">
-  <section class="py-12">
-    <div class="container mx-auto">
-      {#if $show}
-        <App segment={segment}>
-          <slot />
-        </App>
-      {/if}
-    </div>
-  </section>
+<main>
+  <div class="container mx-auto">
+    {#if $show}
+      <App {segment}>
+        <slot />
+      </App>
+    {/if}
+  </div>
 </main>

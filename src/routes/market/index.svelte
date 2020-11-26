@@ -36,16 +36,14 @@
     : [];
 </script>
 
-<div>
-  <h1 class="text-2xl font-black text-gray-900 pb-6 px-6 md:px-12">Market</h1>
-</div>
+<h1 class="title">Market</h1>
 
 <div class="flex w-full">
   <button on:click={() => goto('/artwork/create')}
     class="my-auto p-4 w-1/2 text-center mx-auto border-green-400 border rounded">Submit a New Artwork</button>
 </div>
 
-<div class="ml-12 mb-6 flex">
+<div class="mb-6 flex">
   <div class="mt-auto">
     <div>Filter by:</div>
     <div>
@@ -81,7 +79,7 @@
 
 <hr class="mb-6" />
 
-<div class="flex flex-wrap px-6">
+<div class="flex flex-wrap">
   {#each filtered as artwork (artwork.id)}
     <Card {artwork} />
   {/each}
