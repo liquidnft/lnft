@@ -57,10 +57,9 @@
   let issue = async (e) => {
     e.preventDefault();
     createArtwork({ artwork }).then(() => {
-      goto("/");
+      goto("/market");
     });
   };
-
 </script>
 
 <style>

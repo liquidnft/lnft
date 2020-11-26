@@ -44,7 +44,6 @@
   <div class="flex flex-grow-1">
     <a href="/market" class="my-auto"><button>Market</button></a>
     <a href="/activity" class="my-auto"><button>Activity</button></a>
-    <a href="/artwork/create" class="my-auto"><button class="my-auto">Issue</button></a>
     {#if $user}
       <a href={`/user/${$user.id}`}>
         <button class="flex">
