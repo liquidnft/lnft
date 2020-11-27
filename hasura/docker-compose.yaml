@@ -54,3 +54,100 @@ services:
       MINIO_SECRET_KEY: '${S3_SECRET_ACCESS_KEY:-liquidart}' ## min 8 character
     entrypoint: sh
     command: "-c 'mkdir -p /export/$${S3_BUCKET:-hasura-backend-plus} && /usr/bin/minio server /export'"
+  bitcoin:
+    image: vulpemventures/bitcoin:latest
+    container_name: bitcoin
+    networks:
+      local:
+        ipv4_address: 10.10.0.10
+    ports:
+      - ${BITCOIN_PEER_PORT}:19000
+      - ${BITCOIN_NODE_PORT}:19001
+    volumes:
+      - ./liquidregtest/config/:/config
+    restart: unless-stopped
+  liquid:
+    image: vulpemventures/liquid:latest
+    container_name: liquid
+    networks:
+      local:
+        ipv4_address: 10.10.0.11
+    ports:
+      - ${LIQUID_NODE_PORT}:18884
+      - ${LIQUID_PEER_PORT}:18886
+    volumes:
+      - ./liquidregtest/liquid-config/:/config
+    restart: unless-stopped
+  # Block explorer REST servers
+  electrs:
+    image: vulpemventures/electrs:latest
+    container_name: electrs
+    entrypoint:
+      - /build/electrs
+    command:
+      - -vvvv
+      - --network
+      - regtest
+      - --daemon-dir
+      - /config
+      - --daemon-rpc-addr
+      - 10.10.0.10:19001
+      - --cookie
+      - admin1:123
+      - --http-addr
+      - 0.0.0.0:3002
+      - --electrum-rpc-addr
+      - 0.0.0.0:60401
+      - --cors
+      - "*"
+    networks:
+      local:
+        ipv4_address: 10.10.0.12
+    depends_on:
+      - bitcoin
+    ports:
+      - ${BITCOIN_ELECTRS_RPC_PORT}:60401
+      - ${BITCOIN_ELECTRS_PORT}:3002
+    volumes:
+      - ./liquidregtest/config/:/config
+    restart: unless-stopped
+  electrs-liquid:
+    image: vulpemventures/electrs-liquid:latest
+    container_name: electrs-liquid
+    entrypoint:
+      - /build/electrs
+    command:
+      - -vvvv
+      - --parent-network
+      - regtest
+      - --network
+      - liquidregtest
+      - --daemon-dir
+      - /config
+      - --daemon-rpc-addr
+      - 10.10.0.11:18884
+      - --cookie
+      - admin1:123
+      - --http-addr
+      - 0.0.0.0:3002
+      - --electrum-rpc-addr
+      - 0.0.0.0:60401
+      - --cors
+      - "*"
+    networks:
+      local:
+        ipv4_address: 10.10.0.13
+    depends_on:
+      - liquid
+    ports:
+      - ${LIQUID_ELECTRS_RPC_PORT}:60401
+      - ${LIQUID_ELECTRS_PORT}:3002
+    volumes:
+      - ./liquidregtest/liquid-config/:/config
+    restart: unless-stopped
+networks:
+  local:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
