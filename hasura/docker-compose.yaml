@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgrespassword
     volumes:
-      - '${DATA_DIR:-~/db_data}:/var/lib/postgresql/data'
+      - ${DATA_DIR}:/var/lib/postgresql/data
     ports:
       - '5432:5432'
   graphql-engine:
@@ -45,9 +45,9 @@ services:
     image: minio/minio
     restart: always
     volumes:
-      - '${STORAGE_DIR:-~/minio_data}:/data'
+      - ${STORAGE_DIR}:/data
     ports:
-      - '9000:9000'
+      - 9000:9000
     environment:
       S3_BUCKET: '${S3_BUCKET:-hasura-backend-plus}'
       MINIO_ACCESS_KEY: '${S3_ACCESS_KEY_ID:-minio_access_key}' ## min 8 character
@@ -144,6 +144,61 @@ services:
       - ${LIQUID_ELECTRS_PORT}:3002
     volumes:
       - ./liquidregtest/liquid-config/:/config
+    restart: unless-stopped
+  la-server:
+    build:
+      context: ../server
+      dockerfile: Dockerfile
+    container_name: la-server
+    ports:
+      - 3939:3939
+    volumes:
+      - ../server:/app
+  chopsticks:
+    image: vulpemventures/nigiri-chopsticks:latest
+    container_name: chopsticks
+    command:
+      - --use-faucet
+      - --use-mining
+      - --use-logger
+      - --rpc-addr
+      - 10.10.0.10:19001
+      - --electrs-addr
+      - 10.10.0.12:3002
+      - --addr
+      - 0.0.0.0:3000
+    depends_on:
+      - bitcoin
+      - electrs
+    ports:
+      - ${BITCOIN_CHOPSTICKS_PORT}:3000
+    networks:
+      local:
+        ipv4_address: 10.10.0.16
+    restart: unless-stopped
+  chopsticks-liquid:
+    image: vulpemventures/nigiri-chopsticks:latest
+    container_name: chopsticks-liquid
+    command:
+      - --use-faucet
+      - --use-mining
+      - --use-logger
+      - --rpc-addr
+      - 10.10.0.11:18884
+      - --electrs-addr
+      - 10.10.0.13:3002
+      - --addr
+      - 0.0.0.0:3000
+      - --chain
+      - liquid
+    depends_on:
+      - liquid
+      - electrs-liquid
+    ports:
+      - ${LIQUID_CHOPSTICKS_PORT}:3000
+    networks:
+      local:
+        ipv4_address: 10.10.0.17
     restart: unless-stopped
 networks:
   local:

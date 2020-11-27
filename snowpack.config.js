@@ -11,6 +11,14 @@ module.exports = {
         },
       },
     },
+    "/liquid": {
+      target: "http://localhost:3012",
+      on: {
+        proxyReq: (p, req, res) => {
+          p.path = req.url.replace("/liquid", "");
+        },
+      },
+    },
   },
   mount: {
     'src/lib': '/_app/lib',
