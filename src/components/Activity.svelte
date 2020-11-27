@@ -1,8 +1,9 @@
 <script>
-  import { Avatar } from "$comp";
+  import { Avatar, Card } from "$comp";
   import { user } from "$lib/store";
   import { formatDistanceStrict } from "date-fns";
   export let transaction;
+  export let showImage = false;
 </script>
 
 <style>
@@ -17,20 +18,35 @@
     <div>
       <a href={`/user/${transaction.user.id}`}>@{transaction.user.username}</a>
       {#if transaction.type === 'bid'}
-        placed a bid for {transaction.amount} BTC on
+        placed a bid for
+        {transaction.amount}
+        BTC on
       {:else if transaction.type === 'created'}
         created
       {:else if transaction.type === 'purchase'}
-        paid {transaction.amount} BTC for
+        paid
+        {transaction.amount}
+        BTC for
       {:else if transaction.type === 'accept'}
-        accepted a bid of {transaction.amount} BTC for
+        accepted a bid of
+        {transaction.amount}
+        BTC for
       {/if}
       <a
         href={`/artwork/${transaction.artwork.id}`}>{transaction.artwork.title}</a>
     </div>
-    <div class="uppercase font-medium text-gray-600 text-sm">
-      {formatDistanceStrict(new Date(transaction.created_at), new Date())}
-      ago
+    <div>
+      <span class="uppercase font-medium text-gray-600 text-xs">
+        {formatDistanceStrict(new Date(transaction.created_at), new Date())}
+        ago
+      </span>
+      <a href="https://blockstream.info/" class="text-xs text-green-400">
+        [view tx]
+      </a>
     </div>
   </div>
 </div>
+
+{#if showImage}
+  <Card artwork={transaction.artwork} columns={2} showDetails={false} />
+{/if}

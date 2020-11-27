@@ -69,24 +69,33 @@ export const destroyArtwork = (artwork) => ({
 });
 
 export const getArtwork = (id) => `subscription {
-    artworks_by_pk(id: "${id}") {
-      ${fields}
-      artist {
-        username
-        avatar_url
-      },
-      owner {
-        username
-        avatar_url
-      },
-      tags {
-        tag
-      },
-      num_favorites,
-      favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
-        aggregate {
-          count
-        }
+  artworks_by_pk(id: "${id}") {
+    ${fields}
+    artist {
+      username
+      avatar_url
+    },
+    owner {
+      username
+      avatar_url
+    },
+    tags {
+      tag
+    },
+    num_favorites,
+    favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
+      aggregate {
+        count
       }
     }
-  }`;
+  }
+}`;
+
+export const getTags = `subscription {
+  tags {
+    tag
+    artwork {
+      ${fields}
+    } 
+  } 
+}`;

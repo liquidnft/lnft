@@ -4,6 +4,7 @@
   export let artwork;
   export let columns = 3;
   export let link = true;
+  export let showDetails = true;
 
   let click = () => {
     if (!link) return;
@@ -40,6 +41,7 @@
           class="w-full object-cover absolute h-full" />
       {/if}
     </div>
+    {#if showDetails}
     <div class="px-4 py-4 md:px-10">
       <h1 class="font-bold text-lg">{artwork.title}</h1>
       <div class="flex pt-8">
@@ -59,5 +61,6 @@
         {/if}
       </div>
     </div>
+  {/if}
   </div>
 </div>

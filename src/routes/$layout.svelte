@@ -38,6 +38,10 @@
   :global(.title) {
     @apply text-2xl font-black text-gray-900 pb-6;
   }
+
+  img {
+    max-width: 25px;
+  } 
 </style>
 
 <div class="flex p-4">
@@ -46,6 +50,7 @@
       A<span class="text-black">rt</span></a>
   </h1>
   <div class="flex flex-grow-1">
+    <a href="/discover" class="my-auto"><img src="/search.svg" /></a>
     <a href="/market" class="my-auto"><button>Market</button></a>
     <a href="/activity" class="my-auto"><button>Activity</button></a>
     {#if $user}
@@ -68,7 +73,7 @@
 {/if}
 
 <main>
-  <div class="container mx-auto">
+  <div class="container mx-auto px-12">
     {#if $show}
       <App {segment}>
         <slot />
