@@ -11,30 +11,26 @@
 		"@sveltejs/adapter-static": "^0.0.14",
 		"@sveltejs/kit": "0.0.25",
 		"@sveltejs/snowpack-config": "0.0.5",
-		"autoprefixer": "^10.0.1",
-		"backo2": "^1.0.2",
+		"autoprefixer": "^10.0.3",
 		"cross-env": "^7.0.2",
-		"event-emitter3": "^1.0.4",
 		"postcss": "^8.1.6",
 		"postcss-cli": "^8.2.0",
 		"postcss-preset-env": "^6.7.0",
 		"prettier": "^2.1.2",
 		"prettier-plugin-svelte": "^1.4.1",
 		"rollup": "^2.33.1",
+		"snowpack": "2.17.0",
 		"svelte": "^3.29.0",
-		"symbol-observable": "^3.0.0",
 		"tailwindcss": "^2.0.1",
-		"wretch": "^1.7.4"
-	},
-	"dependencies": {
+		"wretch": "^1.7.4",
 		"@snowpack/plugin-dotenv": "^2.0.4",
 		"@urql/svelte": "^1.1.3",
 		"date-fns": "^2.16.1",
-		"drag-drop": "^6.1.0",
 		"graphql": "^15.4.0",
 		"jwt-decode": "^3.1.1",
-		"subscriptions-transport-ws": "^0.9.18",
-		"svelte-dropzone": "^1.0.6",
-		"svelte-file-dropzone": "^0.0.12"
+		"subscriptions-transport-ws": "^0.9.18"
+	},
+	"resolutions": {
+		"snowpack": "2.17.0"
 	}
 }

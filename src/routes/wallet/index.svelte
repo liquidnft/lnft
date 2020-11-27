@@ -1,1 +1,1 @@
-Wallet
+<div>Wallet</div>

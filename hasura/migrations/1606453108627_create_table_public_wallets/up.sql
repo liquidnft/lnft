@@ -1,0 +1,1 @@
+CREATE TABLE "public"."wallets"("id" UUID NOT NULL, "user_id" uuid NOT NULL, "seed" text, "privkey" text NOT NULL, "pubkey" text NOT NULL, "balance" integer NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE restrict ON DELETE restrict);

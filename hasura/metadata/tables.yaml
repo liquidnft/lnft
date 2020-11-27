@@ -559,3 +559,6 @@
         id:
           _eq: X-Hasura-User-Id
       check: null
+- table:
+    schema: public
+    name: wallets
