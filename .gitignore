@@ -6,5 +6,5 @@ node_modules
 deploy.sh
 hasura/liquidregtest/config/regtest/
 hasura/liquidregtest/liquid-config/liquidregtest/
-hasura/db/*
-hasura/storage/*
+hasura/db
+hasura/storage
