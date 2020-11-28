@@ -1,7 +1,7 @@
 <script>
   import { user, token } from "$lib/store";
   import goto from "$lib/goto";
-  import { api, gql } from "$lib/api";
+  import { api } from "$lib/api";
   import decode from "jwt-decode";
 
   let error;
