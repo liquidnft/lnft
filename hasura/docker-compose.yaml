@@ -67,7 +67,7 @@ services:
       - ./liquidregtest/config/:/config
     restart: unless-stopped
   liquid:
-    image: vulpemventures/liquid:latest
+    image: asoltys/liquid:latest
     container_name: liquid
     networks:
       local:
@@ -75,6 +75,8 @@ services:
     ports:
       - ${LIQUID_NODE_PORT}:18884
       - ${LIQUID_PEER_PORT}:18886
+      - ${LIQUID_BLOCK_PORT}:18602
+      - ${LIQUID_TX_PORT}:18603
     volumes:
       - ./liquidregtest/liquid-config/:/config
     restart: unless-stopped
@@ -147,13 +149,16 @@ services:
     restart: unless-stopped
   la-server:
     build:
-      context: ../server
+      context: ./server
       dockerfile: Dockerfile
     container_name: la-server
     ports:
       - 3939:3939
     volumes:
-      - ../server:/app
+      - ./server:/app
+    networks:
+      local:
+        ipv4_address: 10.10.0.14
   chopsticks:
     image: vulpemventures/nigiri-chopsticks:latest
     container_name: chopsticks

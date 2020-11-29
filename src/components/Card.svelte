@@ -26,7 +26,7 @@
   }
 </style>
 
-<div class={`w-full md:w-${width} px-6 mb-6`}>
+<div class={`w-full md:w-${width} px-12 mb-6`}>
   <div class="bg-white" class:link on:click={click}>
     <div class="relative" style="padding-bottom: 100%">
       {#if artwork.filename.includes('mp4')}
@@ -38,7 +38,7 @@
         <img
           src={`/api/storage/o/public/${artwork.filename}`}
           alt=""
-          class="w-full object-cover absolute h-full" />
+          class="w-full object-cover absolute h-full shadow-2xl" />
       {/if}
     </div>
     {#if showDetails}

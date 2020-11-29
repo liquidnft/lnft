@@ -5,7 +5,7 @@
 		"start": "svelte dev",
 		"build": "svelte build",
 		"build:tailwind": "cross-env NODE_ENV=production postcss static/tailwind.css -o static/styles.css",
-    "postinstall": "mkdirp hasura/db; mkdirp hasura/storage"
+		"postinstall": "mkdirp hasura/db; mkdirp hasura/storage"
 	},
 	"devDependencies": {
 		"@snowpack/plugin-dotenv": "^2.0.4",
@@ -34,5 +34,8 @@
 	},
 	"resolutions": {
 		"snowpack": "2.17.0"
+	},
+	"dependencies": {
+		"svelte-qrcode": "^0.0.2"
 	}
 }

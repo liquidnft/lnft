@@ -21,7 +21,7 @@
         placed a bid for
         {transaction.amount}
         BTC on
-      {:else if transaction.type === 'created'}
+      {:else if transaction.type === 'creation'}
         created
       {:else if transaction.type === 'purchase'}
         paid

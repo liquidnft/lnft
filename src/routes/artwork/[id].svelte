@@ -53,7 +53,7 @@
       transaction.artwork_id = artwork.id;
       if (transaction.amount >= artwork.list_price) {
         transaction.type = "purchase";
-      } 
+      }
       createTransaction$({ transaction }).then(() => {
         $snack = "Bid placed!";
         bidding = false;
@@ -120,8 +120,28 @@
           <button type="submit">Submit</button>
         </form>
       {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
+      <div>
+        {#if artwork.list_price}
+          <div class="1/2 flex-1">
+            <div class="w-1/2 text-sm font-medium">
+              List Price
+              {artwork.list_price}
+              BTC
+            </div>
+          </div>
+        {/if}
+        {#if artwork.bid[0].amount}
+          <div class="text-sm font-medium">
+            Current bid
+            {artwork.bid[0].amount}
+            BTC
+          </div>
+        {/if}
+      </div>
     </div>
-    <Card {artwork} link={false} />
+    <div class="w-1/2 px-12">
+      <Card {artwork} link={false} columns={1} showDetails={false} />
+    </div>
     <Sidebar bind:artwork />
   </div>
 
