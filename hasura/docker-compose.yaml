@@ -45,7 +45,7 @@ services:
     image: minio/minio
     restart: always
     volumes:
-      - ${STORAGE_DIR}:/data
+      - ${STORAGE_DIR}:/export
     ports:
       - 9000:9000
     environment:
