@@ -7,8 +7,6 @@ services:
       POSTGRES_PASSWORD: postgrespassword
     volumes:
       - ${DATA_DIR}:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3
     ports:
