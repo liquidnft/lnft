@@ -11,6 +11,14 @@ module.exports = {
         },
       },
     },
+    "/electrs": {
+      target: "http://localhost:3012",
+      on: {
+        proxyReq: (p, req, res) => {
+          p.path = req.url.replace("/electrs", "");
+        },
+      },
+    },
     "/liquid": {
       target: "http://localhost:3939",
       on: {

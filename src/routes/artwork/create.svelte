@@ -1,4 +1,6 @@
 <script>
+  import { v4 } from "uuid";
+  import { liquid } from "$lib/api";
   import { tick, onMount } from "svelte";
   import { token } from "$lib/store";
   import Dropzone from "$components/Dropzone";
@@ -56,7 +58,13 @@
   const createArtwork = mutation(create);
   let issue = async (e) => {
     e.preventDefault();
-    createArtwork({ artwork }).then(() => {
+    let { txid, asset } = await liquid
+      .url("/asset")
+      .get()
+      .json();
+    artwork.asset = asset;
+    artwork.id = v4();
+    createArtwork({ artwork, hash: txid, id: artwork.id }).then(() => {
       goto("/market");
     });
   };

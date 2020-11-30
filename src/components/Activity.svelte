@@ -40,7 +40,7 @@
         {formatDistanceStrict(new Date(transaction.created_at), new Date())}
         ago
       </span>
-      <a href="https://blockstream.info/" class="text-xs text-green-400">
+      <a href={`/tx/${transaction.hash}`} class="text-xs text-green-400">
         [view tx]
       </a>
     </div>

@@ -9,6 +9,7 @@ export const createTransaction = {
 
 const fields = `
   amount 
+  hash
   type
   created_at
   user {

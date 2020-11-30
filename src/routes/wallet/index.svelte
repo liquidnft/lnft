@@ -1,33 +1,34 @@
 <script>
   import { onMount } from "svelte";
   import { liquid } from "$lib/api";
-  import QrCode from "svelte-qrcode"
+  import QrCode from "svelte-qrcode";
   import { user, token } from "$lib/store";
   import { mutation, subscription, operationStore } from "@urql/svelte";
 
-  let createAddress = 
-{
-  query: `mutation create_address($address: address_insert_input!) {
+  let createAddress = {
+    query: `mutation create_address($address: address_insert_input!) {
     insert_addresses_one(object: $address) {
       id,
       user_id
     } 
   }`,
-}
+  };
 
   let address;
   onMount(async () => {
-    address = await liquid.url("/address").auth(`Bearer ${$token}`).get().text();
-  }) 
+    address = await liquid
+      .url("/address")
+      .auth(`Bearer ${$token}`)
+      .get()
+      .text();
+  });
 </script>
 
 {#if $user}
-<h1 class="title">Wallet</h1>
+  <h1 class="title">Wallet</h1>
 
-<QrCode value={address} />
-{address}
+  <QrCode value={address} />
+  {address}
 
-<div>
-Balance: {$user.balance}
-</div>
+  <div>Balance: {$user.balance}</div>
 {/if}

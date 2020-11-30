@@ -198,6 +198,7 @@
         owner_id: x-hasura-User-Id
       columns:
       - artist_id
+      - asset
       - description
       - filename
       - id
@@ -224,6 +225,7 @@
     permission:
       columns:
       - artist_id
+      - asset
       - created_at
       - description
       - filename
