@@ -55,9 +55,6 @@ services:
   bitcoin:
     image: vulpemventures/bitcoin:latest
     container_name: bitcoin
-    networks:
-      local:
-        ipv4_address: 10.10.0.10
     ports:
       - ${BITCOIN_PEER_PORT}:19000
       - ${BITCOIN_NODE_PORT}:19001
@@ -67,9 +64,6 @@ services:
   liquid:
     image: asoltys/liquid:latest
     container_name: liquid
-    networks:
-      local:
-        ipv4_address: 10.10.0.11
     ports:
       - ${LIQUID_NODE_PORT}:18884
       - ${LIQUID_PEER_PORT}:18886
@@ -91,7 +85,7 @@ services:
       - --daemon-dir
       - /config
       - --daemon-rpc-addr
-      - 10.10.0.10:19001
+      - bitcoin:19001
       - --cookie
       - admin1:123
       - --http-addr
@@ -100,9 +94,6 @@ services:
       - 0.0.0.0:60401
       - --cors
       - "*"
-    networks:
-      local:
-        ipv4_address: 10.10.0.12
     depends_on:
       - bitcoin
     ports:
@@ -125,7 +116,7 @@ services:
       - --daemon-dir
       - /config
       - --daemon-rpc-addr
-      - 10.10.0.11:18884
+      - liquid:18884
       - --cookie
       - admin1:123
       - --http-addr
@@ -134,9 +125,6 @@ services:
       - 0.0.0.0:60401
       - --cors
       - "*"
-    networks:
-      local:
-        ipv4_address: 10.10.0.13
     depends_on:
       - liquid
     ports:
@@ -154,9 +142,6 @@ services:
       - 3939:3939
     volumes:
       - ./server:/app
-    networks:
-      local:
-        ipv4_address: 10.10.0.14
   chopsticks:
     image: vulpemventures/nigiri-chopsticks:latest
     container_name: chopsticks
@@ -165,9 +150,9 @@ services:
       - --use-mining
       - --use-logger
       - --rpc-addr
-      - 10.10.0.10:19001
+      - bitcoin:19001
       - --electrs-addr
-      - 10.10.0.12:3002
+      - electrs:3002
       - --addr
       - 0.0.0.0:3000
     depends_on:
@@ -175,9 +160,6 @@ services:
       - electrs
     ports:
       - ${BITCOIN_CHOPSTICKS_PORT}:3000
-    networks:
-      local:
-        ipv4_address: 10.10.0.16
     restart: unless-stopped
   chopsticks-liquid:
     image: vulpemventures/nigiri-chopsticks:latest
@@ -187,9 +169,9 @@ services:
       - --use-mining
       - --use-logger
       - --rpc-addr
-      - 10.10.0.11:18884
+      - liquid:18884
       - --electrs-addr
-      - 10.10.0.13:3002
+      - electrs-liquid:3002
       - --addr
       - 0.0.0.0:3000
       - --chain
@@ -199,13 +181,4 @@ services:
       - electrs-liquid
     ports:
       - ${LIQUID_CHOPSTICKS_PORT}:3000
-    networks:
-      local:
-        ipv4_address: 10.10.0.17
     restart: unless-stopped
-networks:
-  local:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.10.0.0/24

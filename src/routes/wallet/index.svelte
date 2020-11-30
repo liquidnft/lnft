@@ -15,14 +15,9 @@
   }`,
 }
 
-  let wallet = {
-    balance: 0,
-  } 
-
   let address;
   onMount(async () => {
-    address = await liquid.url("/address").get().text();
-
+    address = await liquid.url("/address").auth(`Bearer ${$token}`).get().text();
   }) 
 </script>
 
@@ -32,5 +27,5 @@
 {address}
 
 <div>
-Balance: {wallet.balance}
+Balance: {$user.balance}
 </div>
