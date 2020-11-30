@@ -53,7 +53,7 @@ services:
     entrypoint: sh
     command: "-c 'mkdir -p /export/$${S3_BUCKET:-hasura-backend-plus} && /usr/bin/minio server /export'"
   bitcoin:
-    image: vulpemventures/bitcoin:latest
+    image: asoltys/bitcoin:latest
     container_name: bitcoin
     ports:
       - ${BITCOIN_PEER_PORT}:19000
@@ -142,43 +142,3 @@ services:
       - 3939:3939
     volumes:
       - ./server:/app
-  chopsticks:
-    image: vulpemventures/nigiri-chopsticks:latest
-    container_name: chopsticks
-    command:
-      - --use-faucet
-      - --use-mining
-      - --use-logger
-      - --rpc-addr
-      - bitcoin:19001
-      - --electrs-addr
-      - electrs:3002
-      - --addr
-      - 0.0.0.0:3000
-    depends_on:
-      - bitcoin
-      - electrs
-    ports:
-      - ${BITCOIN_CHOPSTICKS_PORT}:3000
-    restart: unless-stopped
-  chopsticks-liquid:
-    image: vulpemventures/nigiri-chopsticks:latest
-    container_name: chopsticks-liquid
-    command:
-      - --use-faucet
-      - --use-mining
-      - --use-logger
-      - --rpc-addr
-      - liquid:18884
-      - --electrs-addr
-      - electrs-liquid:3002
-      - --addr
-      - 0.0.0.0:3000
-      - --chain
-      - liquid
-    depends_on:
-      - liquid
-      - electrs-liquid
-    ports:
-      - ${LIQUID_CHOPSTICKS_PORT}:3000
-    restart: unless-stopped

@@ -21,6 +21,7 @@
   }) 
 </script>
 
+{#if $user}
 <h1 class="title">Wallet</h1>
 
 <QrCode value={address} />
@@ -29,3 +30,4 @@
 <div>
 Balance: {$user.balance}
 </div>
+{/if}
