@@ -1,6 +1,11 @@
 <script context="module">
   export async function preload({ params }) {
-    let res = await this.fetch(`http://localhost:3012/tx/${params.hash}`);
+    let prefix = "http://localhost:3012";
+    if (typeof window !== "undefined") {
+      prefix = "/electrs";
+    }
+
+    let res = await this.fetch(`${prefix}/tx/${params.hash}`);
     let tx = await res.json();
     return { tx };
   }
