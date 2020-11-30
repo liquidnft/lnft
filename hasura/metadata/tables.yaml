@@ -105,6 +105,30 @@
           name: accounts
 - table:
     schema: public
+    name: addresses
+  insert_permissions:
+  - role: user
+    permission:
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-User-Id
+      columns:
+      - address
+      - unconfidential
+      - user_id
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - address
+      - user_id
+      - unconfidential
+      filter: {}
+- table:
+    schema: public
     name: artworks
   object_relationships:
   - name: artist
@@ -525,14 +549,13 @@
     permission:
       columns:
       - avatar_url
+      - balance
       - bio
-      - created_at
       - display_name
       - email
       - full_name
       - id
       - location
-      - updated_at
       - username
       - website
       computed_fields:
