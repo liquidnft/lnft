@@ -1,8 +1,6 @@
 <script context="module">
   export async function preload({ params }) {
-    let { id } = params;
-
-    return { id };
+    return params;
   }
 </script>
 
@@ -94,11 +92,12 @@
 
 {#if $user && artwork}
   <div class="flex flex-wrap">
-    <div class="text-center md:text-left w-full md:w-1/4">
+    <div class="text-center lg:text-left w-full lg:w-1/4">
       <h1 class="text-3xl font-black text-gray-900">
         {artwork.title || 'Untitled'}
       </h1>
       <div class="font-black mb-6">Edition 1 of 1</div>
+      <div class="text-sm text-gray-600 break-all">Asset Id: {artwork.asset}</div>
       <div class="text-sm text-gray-600">{artwork.description}</div>
       <div class="mb-6">
         {#each artwork.tags.map((t) => t.tag) as tag (tag)}
@@ -139,7 +138,7 @@
         {/if}
       </div>
     </div>
-    <div class="w-1/2 px-12">
+    <div class="w-full lg:w-1/2 lg:px-12">
       <Card {artwork} link={false} columns={1} showDetails={false} />
     </div>
     <Sidebar bind:artwork />

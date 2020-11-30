@@ -3,15 +3,16 @@ import { operationStore, query } from "@urql/svelte";
 
 const fields = `
   id,
-  title,
-  description,
-  artist_id,
-  owner_id,
-  filename,
-  favorited,
-  list_price,
-  last_active,
-  created_at,
+  asset
+  title
+  description
+  artist_id
+  owner_id
+  filename
+  favorited
+  list_price
+  last_active
+  created_at
   bid {
     user {
       id

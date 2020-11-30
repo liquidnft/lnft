@@ -26,7 +26,7 @@
   }
 </style>
 
-<div class={`w-full md:w-${width} px-12 mb-6`}>
+<div class={`w-full lg:w-${width} lg:px-12 mb-6`}>
   <div class="bg-white" class:link on:click={click}>
     <div class="relative" style="padding-bottom: 100%">
       {#if artwork.filename.includes('mp4')}
