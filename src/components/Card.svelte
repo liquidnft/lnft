@@ -30,7 +30,7 @@
   <div class="bg-white" class:link on:click={click}>
     <div class="relative" style="padding-bottom: 100%">
       {#if artwork.filename.includes('mp4')}
-        <video controls class="object-cover absolute h-full w-full" autoplay muted loop>
+        <video controls class="object-cover absolute h-full w-full" class:shadow-2xl={!showDetails} autoplay muted loop>
           <source src={`/api/storage/o/public/${artwork.filename}`} />
           Your browser does not support HTML5 video.
         </video>
@@ -38,7 +38,7 @@
         <img
           src={`/api/storage/o/public/${artwork.filename}`}
           alt=""
-          class="w-full object-cover absolute h-full shadow-2xl" />
+          class="w-full object-cover absolute h-full" class:shadow-2xl={!showDetails} />
       {/if}
     </div>
     {#if showDetails}
