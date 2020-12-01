@@ -571,13 +571,10 @@
       columns:
       - avatar_url
       - bio
-      - created_at
       - display_name
       - email
       - full_name
-      - id
       - location
-      - updated_at
       - username
       - website
       filter:

@@ -45,14 +45,15 @@
 
     updateUser(form);
   };
-
+  let pick = (obj, ...keys) =>
+    Object.fromEntries(
+      Object.entries(obj).filter(([key]) => keys.includes(key))
+    );
   let updateUser$ = mutation(update);
-  let updateUser = (user) => {
-    delete user.num_followers;
-    delete user.num_follows;
-    delete user.followed;
-    updateUser$({ user, id: user.id }).then((r) => {
-      $snack = 'Profile updated';
+  let updateUser = (form) => {
+    let {num_followers, num_follows, followed, id, balance, ...user} = form;
+    updateUser$({ user, id }).then((r) => {
+      $snack = "Profile updated";
     });
   };
 
