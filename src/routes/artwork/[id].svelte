@@ -49,7 +49,7 @@
     placeBid = (e) => {
       if (e) e.preventDefault();
       transaction.artwork_id = artwork.id;
-      if (transaction.amount >= artwork.list_price) {
+      if (artwork.list_price && transaction.amount >= artwork.list_price) {
         transaction.type = "purchase";
       }
       createTransaction$({ transaction }).then(() => {
