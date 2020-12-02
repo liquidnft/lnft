@@ -134,9 +134,10 @@ services:
       - ./liquidregtest/liquid-config/:/config
     restart: unless-stopped
   la-server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
+    #  build:
+    #  context: ./server
+    #  dockerfile: Dockerfile
+    image: asoltys/la-server:latest
     container_name: la-server
     ports:
       - 3939:3939
