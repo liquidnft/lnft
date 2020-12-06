@@ -9,6 +9,7 @@
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
   import { snack, user, token } from "$lib/store";
+  import countdown from "$lib/countdown";
   import { getArtwork, destroyArtwork } from "$queries/artworks";
   import {
     createTransaction,
@@ -26,7 +27,17 @@
   );
 
   let result = subscription(operationStore(getArtwork(id)));
-  $: artwork = $result.data ? $result.data.artworks_by_pk : null;
+  let artwork;
+  let counter;
+  $: {
+    artwork = $result.data ? $result.data.artworks_by_pk : null;
+
+    let count = () => {
+      if (artwork) counter = countdown(new Date(artwork.auction_end));
+      setTimeout(count, 1000);
+    };
+    count();
+  }
 
   let bidding, amount;
   let startBidding = async () => {
@@ -97,7 +108,10 @@
         {artwork.title || 'Untitled'}
       </h1>
       <div class="font-black mb-6">Edition 1 of 1</div>
-      <div class="text-sm text-gray-600 break-all">Asset Id: {artwork.asset}</div>
+      <div class="text-sm text-gray-600 break-all">
+        Asset Id:
+        {artwork.asset}
+      </div>
       <div class="text-sm text-gray-600">{artwork.description}</div>
       <div class="mb-6">
         {#each artwork.tags.map((t) => t.tag) as tag (tag)}
@@ -119,6 +133,7 @@
           <button type="submit">Submit</button>
         </form>
       {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
+        <div class="my-2 font-bold"><span class="font-thin text-sm">Auction closes in</span> <span class="text-2xl">{counter}</span></div>
       <div>
         {#if artwork.list_price}
           <div class="1/2 flex-1">

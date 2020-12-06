@@ -199,6 +199,7 @@
       columns:
       - artist_id
       - asset
+      - auction_end
       - description
       - filename
       - id
