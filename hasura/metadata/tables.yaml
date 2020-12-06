@@ -226,6 +226,7 @@
       columns:
       - artist_id
       - asset
+      - auction_end
       - created_at
       - description
       - filename
@@ -244,6 +245,7 @@
   - role: user
     permission:
       columns:
+      - auction_end
       - description
       - filename
       - id

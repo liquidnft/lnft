@@ -29,12 +29,15 @@ module.exports = {
     },
   },
   mount: {
-    'src/lib': '/_app/lib',
-    'src/queries': '/_app/queries',
+    "src/lib": "/_app/lib",
+    "src/queries": "/_app/queries",
   },
   alias: {
-    '$lib': './src/lib',
-    '$queries': './src/queries',
-    '$comp': './src/components/index.js',
+    $lib: "./src/lib",
+    $queries: "./src/queries",
+    $comp: "./src/components/index.js",
+  },
+  experiments: {
+    source: "skypack",
   },
 };

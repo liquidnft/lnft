@@ -13,6 +13,7 @@ const fields = `
   list_price
   last_active
   created_at
+  auction_end
   bid {
     user {
       id

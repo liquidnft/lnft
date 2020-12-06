@@ -1,6 +1,7 @@
 <script>
   export let artwork;
   export let tags = [];
+  let selected;
 
   const allTags = ["digital", "glitch", "3d", "abstract"];
   $: artwork.tags = { data: tags.map((tag) => ({ tag })) };
@@ -9,6 +10,9 @@
 <form class="w-full md:w-1/2 mb-6" on:submit autocomplete="off">
   <div class="flex flex-col mb-4">
     <input placeholder="Title" bind:value={artwork.title} />
+  </div>
+  <div class="flex flex-col mb-4">
+    <textarea placeholder="Description" bind:value={artwork.description} />
   </div>
   <div class="flex flex-col mb-4">
     <div>
@@ -29,22 +33,20 @@
       </div>
     </div>
   </div>
-  <div>
-    <div class="flex flex-col mb-4">
-      <textarea placeholder="Description" bind:value={artwork.description} />
-    </div>
-    <div class="flex flex-col mb-4">
-      <select multiple bind:value={tags}>
-        <option disabled>Tags</option>
-        {#each allTags as tag}
-          <option value={tag}>{tag}</option>
-        {/each}
-      </select>
-    </div>
-    <div class="flex">
-      <button
-        type="submit"
-        class="block bg-green-400 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
-    </div>
+  <div class="flex flex-col mb-4">
+    <input placeholder="Auction End Time" bind:value={artwork.auction_end} />
+  </div>
+  <div class="flex flex-col mb-4">
+    <select multiple bind:value={tags}>
+      <option disabled>Tags</option>
+      {#each allTags as tag}
+        <option value={tag}>{tag}</option>
+      {/each}
+    </select>
+  </div>
+  <div class="flex">
+    <button
+      type="submit"
+      class="block bg-green-400 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
   </div>
 </form>
