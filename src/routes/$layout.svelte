@@ -26,6 +26,15 @@
 </script>
 
 <style>
+  :global(button) {
+    @apply p-4;
+  }
+
+  :global(input, textarea, select) {
+    @apply border p-4 bg-white;
+    overflow-y: auto;
+  }
+
   :global(.title) {
     @apply text-2xl font-black text-gray-900 pb-6;
   }

@@ -1,10 +1,13 @@
 <script>
+  import { formatISO } from 'date-fns';
   export let artwork;
   export let tags = [];
   let selected;
 
   const allTags = ["digital", "glitch", "3d", "abstract"];
   $: artwork.tags = { data: tags.map((tag) => ({ tag })) };
+
+  $: artwork.auction_end = formatISO(new Date());
 </script>
 
 <form class="w-full md:w-1/2 mb-6" on:submit autocomplete="off">
