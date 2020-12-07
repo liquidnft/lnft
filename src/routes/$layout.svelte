@@ -26,8 +26,15 @@
 </script>
 
 <style>
+  :global(.brand-color){
+    background-color: #05B298;
+  }
+  
   :global(button) {
     @apply p-4;
+    border-radius: 30px !important;
+    width: 100%;
+    max-width: 300px;
   }
 
   :global(input, textarea, select) {
@@ -36,7 +43,19 @@
   }
 
   :global(.title) {
-    @apply text-2xl font-black text-gray-900 pb-6;
+    @apply font-black pb-14;
+    text-align: center !important;
+    font-size: 2.3rem;
+  }
+
+  :global(.sub-title) {
+    font-weight:bold;
+    font-size:20px; 
+    color: #05B298;
+  }
+
+  :global(a:hover){
+    color: #05B298;
   }
 
   img {
@@ -73,7 +92,7 @@
 {/if}
 
 <main>
-  <div class="container mx-auto px-12">
+  <div class="container mx-auto px-6">
     {#if $show}
       <App {segment}>
         <slot />

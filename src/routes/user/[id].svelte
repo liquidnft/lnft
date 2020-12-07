@@ -84,6 +84,16 @@
       @apply hover;
     }
   }
+
+  .card-container{
+    width: 44% !important;
+    margin: 3%;
+  }
+
+  .follow{
+    width: 150px;
+  }
+
 </style>
 
 {#if $user && subject}
@@ -99,7 +109,7 @@
       {#if $user.id === id}
         <Menu />
       {:else}
-        <button class="bg-black text-white p-2 rounded" on:click={follow}>
+        <button class="bg-black text-white p-2 rounded brand-color follow" on:click={follow}>
           {subject.followed ? 'Unfollow' : 'Follow'}</button>
       {/if}
     </div>
@@ -135,9 +145,9 @@
         <div class="w-full flex justify-center">
           <div class="w-full flex flex-wrap">
             {#each creations as artwork (artwork.id)}
-              <Card {artwork} columns="2" />
+              <div class="card-container"><Card {artwork} /></div>
             {:else}
-              <div>No creations yet</div>
+              <div class="mx-auto">No creations yet</div>
             {/each}
           </div>
         </div>
@@ -145,9 +155,9 @@
         <div class="w-full flex justify-center">
           <div class="w-full flex flex-wrap">
             {#each collection as artwork (artwork.id)}
-              <Card {artwork} columns="2" />
+              <div class="card-container"><Card {artwork} /></div>
             {:else}
-              <div>Nothing collected yet</div>
+              <div class="mx-auto">Nothing collected yet</div>
             {/each}
           </div>
         </div>
@@ -157,9 +167,9 @@
         <div class="w-full flex justify-center">
           <div class="w-full flex flex-wrap">
             {#each favorites as artwork (artwork.id)}
-              <Card {artwork} columns="2" />
+              <div class="card-container"><Card {artwork} /></div>
             {:else}
-              <div>No favorites yet</div>
+              <div class="mx-auto">No favorites yet</div>
             {/each}
           </div>
         </div>

@@ -99,6 +99,17 @@
       }
     }
   }
+
+  .card-container{
+    padding: 0 100px;
+  }
+
+  @media only screen and (max-width: 1023px){
+     .card-container{
+       padding: 0;
+       margin: 40px 0 ;
+     }
+  }
 </style>
 
 {#if $user && artwork}
@@ -153,7 +164,7 @@
         {/if}
       </div>
     </div>
-    <div class="w-full lg:w-1/2 lg:px-12">
+    <div class="w-full lg:w-1/2 lg:px-12 card-container">
       <Card {artwork} link={false} columns={1} showDetails={false} />
     </div>
     <Sidebar bind:artwork />

@@ -24,10 +24,19 @@
       @apply shadow-xl;
     }
   }
+
+  .card{
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px 1px #cbcbcb;
+  }
+
+  .card img, .card video{
+    border-radius: 10px 10px 0 0;
+  }
 </style>
 
-<div class={`w-full lg:w-${width} lg:px-12 mb-6`}>
-  <div class="bg-white" class:link on:click={click}>
+
+  <div class="bg-white card" class:link on:click={click}>
     <div class="relative" style="padding-bottom: 100%">
       {#if artwork.filename.includes('mp4')}
         <video controls class="object-cover absolute h-full w-full" class:shadow-2xl={!showDetails} autoplay muted loop>
@@ -63,4 +72,4 @@
     </div>
   {/if}
   </div>
-</div>
+

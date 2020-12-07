@@ -10,6 +10,11 @@
   a {
     @apply text-green-400;
   }
+
+  .divider{
+    border:1px solid #e4e4e4;
+    margin: 50px 0;
+  }
 </style>
 
 <div class="flex flex-wrap mb-4">
@@ -49,4 +54,5 @@
 
 {#if showImage}
   <Card artwork={transaction.artwork} columns={2} showDetails={false} />
+  <hr class="mb-6 divider">
 {/if}

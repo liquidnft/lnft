@@ -16,36 +16,63 @@
   );
 </script>
 
+<style>
+  .activity{
+    justify-content: center;
+  }
+  .cards-container{
+    width: 40%;
+    min-width: 500px;
+  }
+  .profile-container{
+    width:30%;
+    margin-left: 10%;
+  }
+  .top-collectors{
+    margin-bottom: 60px;
+  }
+
+  @media only screen and (max-width: 770px){
+     .cards-container{
+       min-width:97%; 
+     }
+
+     .profile-container{
+       display: none;
+     }
+  }
+</style>
+
 <div>
-  <h1 class="text-2xl font-black text-gray-900 pb-6 px-6 md:px-12">Activity</h1>
+  <h1 class="title">Activity</h1>
 </div>
 
-<div class="flex">
-  <div class="flex-grow">
+<div class="flex activity">
+  <div class="cards-container">
     {#each transactions as transaction}
       <Activity {transaction} showImage={true} />
     {/each}
   </div>
 
-  <div class="flex-grow">
-    <h1 class="text-xl mb-2">Top Collectors</h1>
-    <div class="mb-4">
+  <div class="profile-container">
+    <h3 class="sub-title">Top Collectors</h3>
+    <div class="mb-4 top-collectors">
       {#each collectors as collector}
         <div class="flex my-4">
           <Avatar src={collector.avatar_url} />
-          <div class="ml-2 my-auto">
+          <div class="ml-2 my-auto font-bold">
             <a href={`/user/${collector.id}`}>@{collector.username}</a>
           </div>
         </div>
       {/each}
     </div>
 
-    <h1 class="text-xl mb-2">Trending Artists</h1>
+    <h3 class="sub-title">Trending Artists</h3>
     <div class="mb-4">
       {#each collectors as collector}
         <div class="flex my-4">
           <Avatar src={collector.avatar_url} />
-          <div class="ml-2 my-auto">
+          <div class="ml-2 my-auto font-bold">
             <a href={`/user/${collector.id}`}>@{collector.username}</a>
           </div>
         </div>

@@ -65,7 +65,8 @@
 </script>
 
 {#if form}
-  <div class="flex mb-4 w-3/4 shadow p-6">
+  <h1 class="title">Edit Profile</h1>
+  <div class="flex mb-4 w-2/4 shadow p-6 m-auto">
     <form
       class="mb-6 flex-grow mr-8"
       on:submit|preventDefault={submit}
@@ -91,13 +92,13 @@
       <div class="flex">
         <button
           on:click|preventDefault={submit}
-          class="block bg-gray-800 rounded text-white px-4 py-2 rounded">Save</button>
+          class="block bg-gray-800 rounded text-white px-4 py-2 rounded brand-color">Save</button>
       </div>
     </form>
     <div class="text-center" on:click={() => fileInput.click()}>
       <Avatar size="xl" src={preview || $user.avatar_url} />
       <button
-        class="mt-4 rounded-full border-radius-100 bg-gray-800 text-white p-4">Change
+        class="mt-4 rounded-full border-radius-100 bg-gray-800 text-white p-4 brand-color">Change
         Avatar</button>
 
       <input

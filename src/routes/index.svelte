@@ -10,7 +10,7 @@
   $: items = collectors.map(u => ({ user: u, value: u.num_artworks })).splice(0, 3)
 </script>
 
-<div class="flex flex-wrap md:flex-nowrap">
+<div class="flex flex-wrap">
   <Summary title="Top Collectors" stat="Recently Collected" {items} link="/top-collectors" />
   <Summary title="Top Artists" stat="Recent Sales" {items}  link="/top-artists" />
   <Summary title="Largest Collections" stat="Artworks Owned" {items} link="/largest-collections" />

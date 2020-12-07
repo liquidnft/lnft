@@ -28,7 +28,25 @@
   };
 </script>
 
-<div class="w-full md:w-1/4">
+<style>
+  .sidebar{
+    width: 25%;
+    padding:0 5%;
+  }
+
+  hr{
+    margin: 50px 0;
+  }
+
+  @media only screen and (max-width: 1023px){
+    .sidebar{
+      width: 100%;
+      padding: 0;
+    }
+  }
+</style>
+
+<div class="w-full sidebar">
   <a href={`/user/${artwork.artist_id}`}>
     <div class="flex mb-6">
       <Avatar src={artwork.artist.avatar_url} />
