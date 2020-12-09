@@ -94,11 +94,54 @@
     width: 150px;
   }
 
+  .profile-container .col1{
+    width: 10%;
+    min-width:150px ;
+  }
+
+  .profile-container .col2{
+    width: 20%;
+    min-width: 150px;
+    margin-right:20%;
+  }
+
+  .profile-container .col3{
+    width: 50%;
+  }
+
+  @media only screen and (max-width: 1280px){
+    .profile-container .col2{
+      margin-right: 5%;
+    }
+
+    .profile-container .col3{
+     width: 65%;
+    }
+  }
+
+  @media only screen and (max-width: 1023px){
+    .card-container{
+      width: 100% !important;
+    }
+  }
+
+  @media only screen and (max-width: 800px){
+    .profile-container{
+      flex-wrap: wrap;
+    }
+
+    .profile-container .col3{
+     width: 100%;
+     margin-top: 40px;
+    }
+  }
+    
+
 </style>
 
 {#if $user && subject}
-  <div class="flex flex-wrap mb-4 w-full" in:fade>
-    <div class="md:w-1/6">
+  <div class="flex profile-container" in:fade>
+    <div class="col1">
       <Avatar size="large" src={subject.avatar_url} />
 
       <div class="my-4">
@@ -113,11 +156,11 @@
           {subject.followed ? 'Unfollow' : 'Follow'}</button>
       {/if}
     </div>
-    <div class="mb-2 md:w-1/3">
+    <div class="col2">
       <div class="text-3xl">{subject.full_name}</div>
       <div class="text-gray-600">@{subject.username}</div>
     </div>
-    <div class="md:w-1/2">
+    <div class="col3">
       <div
         class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
         <div
