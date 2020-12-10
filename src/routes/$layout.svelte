@@ -1,6 +1,6 @@
 <script>
   import decode from "jwt-decode";
-  import { App, Avatar, ProgressLinear } from "$comp";
+  import { App, Avatar, ProgressLinear, Sidebar, Navbar } from "$comp";
   import { show, snack, user, token } from "$lib/store";
   import { onMount, afterUpdate } from "svelte";
   import { goto }  from "$app/navigation";
@@ -24,6 +24,8 @@
   onMount(() => {
     if (!$token) $token = window.sessionStorage.getItem("token");
   });
+
+  let open = false
 </script>
 
 <style>
@@ -64,7 +66,7 @@
   } 
 </style>
 
-<div class="flex p-4">
+<div class="container flex mx-auto px-6 pt-4 mb-20">
   <h1 class="flex-auto my-auto text-green-400 text-3xl">
     <a href="/">L<span class="text-black">iquid</span>
       A<span class="text-black">rt</span></a>
@@ -91,6 +93,9 @@
     </div>
   </div>
 {/if}
+
+<Sidebar bind:open/>
+<Navbar bind:sidebar={open}/>
 
 <main>
   <div class="container mx-auto px-6">

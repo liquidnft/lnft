@@ -20,10 +20,20 @@
   th {
     @apply text-xs text-gray-600 uppercase font-thin text-left;
   }
+
+  @media only screen and (max-width: 800px){
+    .table-container{
+      overflow-x: scroll;
+    }
+    .table-auto{
+      min-width: 800px;
+      overflow-x: scroll;
+    }
+  }
 </style>
 
 <h1 class="title">Top Collectors</h1>
-
+<div class="table-container">
 <table class="w-full table-auto">
   <tr class="border-gray-200 border-b">
     <th>COLLECTOR</th>
@@ -57,3 +67,4 @@
     </tr>
   {/each}
 </table>
+</div>
