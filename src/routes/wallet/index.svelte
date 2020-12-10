@@ -1,7 +1,8 @@
 <script>
-  import { onMount } from "svelte";
+  import bitcoin from '$lib/liquidjs-lib';
   import { liquid } from "$lib/api";
-  import QrCode from "svelte-qrcode";
+  // import QrCode from "svelte-qrcode";
+  import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { mutation, subscription, operationStore } from "@urql/svelte";
 
@@ -14,13 +15,19 @@
   }`,
   };
 
-  let address;
+  let address, btcaddress;
   onMount(async () => {
+
     address = await liquid
       .url("/address")
       .auth(`Bearer ${$token}`)
       .get()
       .text();
+
+      btcaddress = bitcoin.payments.p2wpkh({
+        pubkey: bitcoin.ECPair.makeRandom().publicKey,
+        network: bitcoin.networks['liquid']
+      }).address;
   });
 
   let addresses;
@@ -43,8 +50,8 @@
 {#if $user}
   <h1 class="title">Wallet</h1>
 
-  <QrCode value={address} />
-  {address}
+  <!--<QrCode value={address} />-->
+  {btcaddress}
 
   <div>Balance: {$user.balance}</div>
 

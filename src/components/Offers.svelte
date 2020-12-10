@@ -1,5 +1,5 @@
 <script>
-  import goto from "$lib/goto";
+  import { goto }  from "$app/navigation";
   import { onMount } from "svelte";
   import Card from "$components/Card";
   import { token } from "$lib/store";

@@ -1,5 +1,4 @@
 const sveltePreprocess = require("svelte-preprocess");
-const replace = require("@rollup/plugin-replace");
 
 const preprocess = sveltePreprocess({
   postcss: {
@@ -17,6 +16,11 @@ const preprocess = sveltePreprocess({
 });
 
 module.exports = {
-  adapter: "@sveltejs/adapter-static",
+  kit: {
+    // By default, `npm run build` will create a standard Node app.
+    // You can create optimized builds for different platforms by
+    // specifying a different adapter
+    adapter: "@sveltejs/adapter-static",
+  },
   preprocess,
 };

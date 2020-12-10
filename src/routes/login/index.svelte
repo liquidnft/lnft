@@ -1,6 +1,6 @@
 <script>
   import { user, token } from "$lib/store";
-  import goto from "$lib/goto";
+  import { goto }  from "$app/navigation";
   import { api } from "$lib/api";
   import decode from "jwt-decode";
 

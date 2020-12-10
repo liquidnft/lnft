@@ -9,7 +9,7 @@
 <script>
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
-  import goto from "$lib/goto";
+  import { goto }  from "$app/navigation";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { get } from "$queries/users";

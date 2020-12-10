@@ -3,22 +3,23 @@
   import { App, Avatar, ProgressLinear } from "$comp";
   import { show, snack, user, token } from "$lib/store";
   import { onMount, afterUpdate } from "svelte";
-  import goto from "$lib/goto";
+  import { goto }  from "$app/navigation";
   import { fade } from "svelte/transition";
-
-  export let segment;
 
   let clearSnack = () => setTimeout(() => ($snack = null), 5000);
   $: clearSnack($snack);
 
   afterUpdate(() => {
+  /*
     if (
-      (!$token || decode($token).exp * 1000 < Date.now()) &&
-      segment !== "login"
+      (!$token || decode($token).exp * 1000 < Date.now())
     )
       goto("/login");
     else $show = true;
+   */
   });
+
+  $show = true;
 
   onMount(() => {
     if (!$token) $token = window.sessionStorage.getItem("token");
@@ -94,7 +95,7 @@
 <main>
   <div class="container mx-auto px-6">
     {#if $show}
-      <App {segment}>
+      <App>
         <slot />
       </App>
     {/if}

@@ -1,5 +1,5 @@
 <script>
-  import goto from "$lib/goto";
+  import { goto }  from "$app/navigation";
 
   export let artwork;
   export let columns = 3;
@@ -72,4 +72,3 @@
     </div>
   {/if}
   </div>
-

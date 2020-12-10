@@ -8,7 +8,7 @@
   import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import goto from "$lib/goto";
+  import { goto }  from "$app/navigation";
 
   let preview;
   let filename;

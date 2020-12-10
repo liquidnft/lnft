@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import decode from "jwt-decode";
   import { user, token } from "$lib/store";
   import { get } from "$queries/users";
@@ -12,38 +13,31 @@
     subscriptionExchange,
   } from "@urql/svelte";
 
-  export let segment = "";
+  let url = "http://localhost:8080/v1/graphql";
+  let wsUrl = "ws://localhost:8080/v1/graphql";
 
-  let url, wsUrl;
-  if (import.meta.env) {
-    url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
-    wsUrl = import.meta.env.SNOWPACK_PUBLIC_WS;
-  } else {
-    url = "https://la.coinos.io/hasura/v1/graphql";
-    wsUrl = "wss://la.coinos.io/hasura/v1/graphql";
-  }
-
-  initClient({
-    url,
-    exchanges: [
-      ...defaultExchanges,
-      subscriptionExchange({
-        forwardSubscription(operation) {
-          return new SubscriptionClient(wsUrl, {
-            reconnect: true,
-            connectionParams: {
-              headers: { authorization: `Bearer ${$token}` },
-            },
-          }).request(operation);
-        },
-      }),
-    ],
-    fetchOptions: () => {
-      return {
-        headers: { authorization: `Bearer ${$token}` },
-      };
-    },
-  });
+    initClient({
+      url,
+      exchanges: [
+        ...defaultExchanges,
+        subscriptionExchange({
+          forwardSubscription(operation) {
+            if (typeof WebSocket === "undefined") return;
+            return new SubscriptionClient(wsUrl, {
+              reconnect: true,
+              connectionParams: {
+                headers: { authorization: `Bearer ${$token}` },
+              },
+            }).request(operation);
+          },
+        }),
+      ],
+      fetchOptions: () => {
+        return {
+          headers: { authorization: `Bearer ${$token}` },
+        };
+      },
+    });
 
   let id, user$;
   $: {
@@ -75,8 +69,6 @@
   };
 </script>
 
-{#key segment}
-  <div in:fade>
-    <slot />
-  </div>
-{/key}
+<div in:fade>
+  <slot />
+</div>

@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { snack, user, token } from "$lib/store";
-  import goto from "$lib/goto";
+  import { goto }  from "$app/navigation";
   import { Avatar } from "$components/index";
   import upload from "$lib/upload";
   import { update } from "$queries/users";

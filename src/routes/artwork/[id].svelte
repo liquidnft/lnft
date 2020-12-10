@@ -15,7 +15,7 @@
     createTransaction,
     getArtworkTransactions,
   } from "$queries/transactions";
-  import goto from "$lib/goto";
+  import { goto }  from "$app/navigation";
   import { mutation, subscription, operationStore } from "@urql/svelte";
 
   export let id;

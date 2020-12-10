@@ -11,7 +11,7 @@
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork, updateTags } from "$queries/artworks";
-  import goto from "$lib/goto";
+  import { goto }  from "$app/navigation";
 
   export let id;
 

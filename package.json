@@ -1,27 +1,25 @@
 {
-	"name": "liquidart",
+	"name": "nexty7",
 	"version": "0.0.1",
 	"scripts": {
-		"start": "svelte dev",
-		"build": "svelte build",
-		"build:tailwind": "cross-env NODE_ENV=production postcss static/tailwind.css -o static/styles.css",
-		"postinstall": "mkdirp hasura/db; mkdirp hasura/storage"
+		"dev": "svelte-kit dev",
+		"build": "svelte-kit build",
+		"start": "svelte-kit dev"
 	},
 	"devDependencies": {
-		"@snowpack/plugin-dotenv": "^2.0.4",
-		"@sveltejs/adapter-node": "0.0.14",
-		"@sveltejs/adapter-static": "^0.0.14",
-		"@sveltejs/kit": "0.0.25",
-		"@sveltejs/snowpack-config": "0.0.5",
+		"@snowpack/plugin-dotenv": "^2.0.5",
+		"@sveltejs/adapter-node": "next",
+		"@sveltejs/kit": "next",
+		"@sveltejs/snowpack-config": "next",
 		"@urql/svelte": "^1.1.3",
-		"autoprefixer": "^10.0.3",
+		"autoprefixer": "^10.1.0",
 		"cross-env": "^7.0.2",
 		"date-fns": "^2.16.1",
 		"graphql": "^15.4.0",
 		"jwt-decode": "^3.1.1",
 		"mkdirp": "^1.0.4",
-		"postcss": "^8.1.6",
-		"postcss-cli": "^8.2.0",
+		"postcss": "^8.2.1",
+		"postcss-cli": "^8.3.0",
 		"postcss-preset-env": "^6.7.0",
 		"prettier": "^2.1.2",
 		"prettier-plugin-svelte": "^1.4.1",
@@ -29,14 +27,12 @@
 		"snowpack": "^3.0.0-rc.1",
 		"subscriptions-transport-ws": "^0.9.18",
 		"svelte": "^3.29.0",
-		"tailwindcss": "^2.0.1",
-		"wretch": "^1.7.4"
-	},
-	"resolutions": {
-		"snowpack": "2.17.0"
-	},
-	"dependencies": {
+		"svelte-preprocess": "^4.6.1",
 		"svelte-qrcode": "^0.0.2",
-		"uuid": "^8.3.1"
-	}
+		"tailwindcss": "^2.0.1",
+		"uuid": "^8.3.2",
+		"wretch": "^1.7.4",
+		"ws": "^7.4.1"
+	},
+	"dependencies": {}
 }

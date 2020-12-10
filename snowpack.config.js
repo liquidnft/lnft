@@ -1,7 +1,6 @@
 // Consult https://www.snowpack.dev to learn about these options
 module.exports = {
-  extends: "@sveltejs/snowpack-config",
-  plugins: ["@snowpack/plugin-dotenv"],
+	extends: '@sveltejs/snowpack-config',
   proxy: {
     "/api": {
       target: "http://localhost:3400",
@@ -28,16 +27,20 @@ module.exports = {
       },
     },
   },
-  mount: {
+	mount: {
+		'src/components': '/_components',
     "src/lib": "/_app/lib",
     "src/queries": "/_app/queries",
-  },
-  alias: {
+	},
+	alias: {
+		$components: './src/components',
     $lib: "./src/lib",
     $queries: "./src/queries",
     $comp: "./src/components/index.js",
-  },
-  experiments: {
-    source: "skypack",
-  },
+    "readable-stream": "stream",
+	},
+  installOptions: {
+		externalPackage: [],
+    polyfillNode: true,
+  } 
 };

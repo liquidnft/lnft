@@ -10,3 +10,4 @@ export { default as Offers } from "./Offers";
 export { default as ProgressLinear } from "./ProgressLinear";
 export { default as Summary } from "./Summary";
 export { default as Row } from "./Row";
+export { default as Urql } from "./Urql";
