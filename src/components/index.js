@@ -10,7 +10,7 @@ export { default as Offers } from "./Offers";
 export { default as ProgressLinear } from "./ProgressLinear";
 export { default as Summary } from "./Summary";
 export { default as Row } from "./Row";
-export { default as Urql } from "./Urql";
 export { default as Sidebar } from "./Sidebar";
 export { default as Navbar } from "./Navbar";
 export { default as Menu } from "./Menu";
+export { default as Urql } from "./Urql";
