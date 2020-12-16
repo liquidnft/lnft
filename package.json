@@ -34,5 +34,13 @@
 		"wretch": "^1.7.4",
 		"ws": "^7.4.1"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"@bitauth/libauth": "^1.17.3",
+		"bip32": "^2.0.6",
+		"bip39": "^3.0.3",
+		"buffer": "^6.0.3",
+		"buffer-reverse": "^1.0.1",
+		"long": "^4.0.0",
+		"slip77": "https://github.com/vulpemventures/slip77"
+	}
 }

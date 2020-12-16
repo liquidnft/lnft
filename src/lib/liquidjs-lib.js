@@ -1,4 +1,5 @@
 import { c as createCommonjsModule, b as browser, a as browser$1, m as minimalisticAssert, u as utils_1$1, d as bn, i as inherits_browser, h as hash_1, e as hmacDrbg, f as brorand, B as Buffer, t as typeforce_1, g as bs58check, w as wif, j as bip66, k as bech32, v as varuintBitcoin, l as browser$2, n as fastRoot, o as getDefaultExportFromCjs } from './common.js';
+import secp256k1zkp from './secp256k1.js';
 
 var crypto = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -6688,7 +6689,7 @@ function fromConfidentialLegacy(address, network) {
   // Prefixes are 1 byte long, thus blinding key always starts at 3rd byte
   const blindingKey = payload.slice(2, 35);
   const unconfidential = payload.slice(35, payload.length);
-  const versionBuf = new Uint8Array(1);
+  const versionBuf = Buffer.from(new Uint8Array(1));
   versionBuf[0] = prefix;
   const unconfidentialAddressBuffer = Buffer.concat([
     versionBuf,
@@ -6962,7 +6963,7 @@ exports.BufferReader = BufferReader;
 
 var confidential = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, '__esModule', { value: true });
-//const secp256k1 = require('secp256k1-zkp');
+const secp256k1 = secp256k1zkp;
 
 
 function nonceHash(pubkey, privkey) {
@@ -7446,21 +7447,6 @@ class Transaction {
     );
   }
   addOutput(scriptPubKey, value, asset, nonce, rangeProof, surjectionProof) {
-    typeforce_1(
-      types.tuple(
-        types.Buffer,
-        types.oneOf(
-          types.ConfidentialValue,
-          types.ConfidentialCommitment,
-          types.BufferOne,
-        ),
-        types.oneOf(types.ConfidentialCommitment, types.BufferOne),
-        types.oneOf(types.ConfidentialCommitment, types.BufferOne),
-        types.maybe(types.Buffer),
-        types.maybe(types.Buffer),
-      ),
-      arguments,
-    );
     // Add the output and return the output's index
     return (
       this.outs.push({
