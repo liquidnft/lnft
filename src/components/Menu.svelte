@@ -1,6 +1,8 @@
 <script>
     import { Avatar } from "$comp";
 	import { show, snack, user, token } from "$lib/store";	
+
+    export let open = false
 </script>
 
 <style>
@@ -26,12 +28,12 @@
 </style>
 
 <div class="flex flex-grow-1 menu">
-    <a href="/discover" class="my-auto"><img src="/search.svg" /></a>
-    <a href="/market" class="my-auto"><button>Market</button></a>
-    <a href="/activity" class="my-auto"><button>Activity</button></a>
+    <a href="/discover" class="my-auto"><img on:click={() => open = !open} src="/search.svg" /></a>
+    <a href="/market" class="my-auto"><button on:click={() => open = !open}>Market</button></a>
+    <a href="/activity" class="my-auto"><button on:click={() => open = !open}>Activity</button></a>
     {#if $user}
     <a href={`/user/${$user.id}`}>
-        <button class="flex">
+        <button on:click={() => open = !open} class="flex">
         <Avatar src={$user.avatar_url} />
         <div class="my-auto ml-2">{$user.full_name}</div>
         </button></a>

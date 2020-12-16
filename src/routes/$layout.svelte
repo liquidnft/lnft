@@ -66,7 +66,7 @@
   } 
 </style>
 
-<div class="container flex mx-auto px-6 pt-4 mb-20">
+<!-- <div class="container flex mx-auto px-6 pt-4 mb-20">
   <h1 class="flex-auto my-auto text-green-400 text-3xl">
     <a href="/">L<span class="text-black">iquid</span>
       A<span class="text-black">rt</span></a>
@@ -83,7 +83,7 @@
         </button></a>
     {:else}<a href="/login"><button>Sign In</button></a>{/if}
   </div>
-</div>
+</div> -->
 
 {#if $snack}
   <div class="fixed w-full flex z-10">

@@ -1,5 +1,4 @@
 <script>
-	//import { Menu } from "$comp";
 	import Menu from './Menu.svelte'
 
 	export let open = false
@@ -24,6 +23,6 @@
 </style>
 
 
-<aside class="absolute w-10/12 h-full bg-gray-200 border-r-2 shadow-lg" class:open>
-	<Menu />
+<aside class="absolute w-10/12 h-full bg-gray-200 border-r-2 shadow-lg sideBar" class:open>
+	<Menu bind:open={open}/>
 </aside>
