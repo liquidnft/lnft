@@ -11,7 +11,7 @@
     Psbt,
     confidential,
     Transaction,
-  } from "$lib/liquidjs-lib";
+  } from "@asoltys/liquidjs-lib";
   import { liquid } from "$lib/api";
   // import QrCode from "svelte-qrcode";
   import { onMount } from "svelte";
@@ -102,6 +102,7 @@
       .get()
       .json());
 
+    console
     tx = Transaction.fromHex(unblinded);
 
     vout = tx.outs.findIndex((o) => {

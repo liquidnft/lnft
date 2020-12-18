@@ -9,7 +9,7 @@
 	"devDependencies": {
 		"@snowpack/plugin-dotenv": "^2.0.5",
 		"@sveltejs/adapter-node": "next",
-		"@sveltejs/kit": "next",
+		"@sveltejs/kit": "1.0.0-next.7",
 		"@sveltejs/snowpack-config": "next",
 		"@urql/svelte": "^1.1.3",
 		"autoprefixer": "^10.1.0",
@@ -35,6 +35,7 @@
 		"ws": "^7.4.1"
 	},
 	"dependencies": {
+		"@asoltys/liquidjs-lib": "https://github.com/asoltys/liquidjs-lib",
 		"@bitauth/libauth": "^1.17.3",
 		"bip32": "^2.0.6",
 		"bip39": "^3.0.3",
