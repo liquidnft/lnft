@@ -35,7 +35,7 @@
 		"ws": "^7.4.1"
 	},
 	"dependencies": {
-		"@asoltys/liquidjs-lib": "https://github.com/asoltys/liquidjs-lib",
+		"@asoltys/liquidjs-lib": "^5.1.19",
 		"@bitauth/libauth": "^1.17.3",
 		"bip32": "^2.0.6",
 		"bip39": "^3.0.3",

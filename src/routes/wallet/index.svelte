@@ -1,5 +1,5 @@
 <script>
-  import buffer from "buffer";
+  import { Buffer } from "buffer";
   import { generateMnemonic, mnemonicToSeedSync } from "bip39";
   import { fromSeed } from "bip32";
   import { fromSeed as slip77FromSeed } from "slip77";
@@ -12,7 +12,7 @@
     confidential,
     Transaction,
   } from "@asoltys/liquidjs-lib";
-  import { liquid } from "$lib/api";
+  import { liquid, electrs } from "$lib/api";
   // import QrCode from "svelte-qrcode";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
@@ -26,11 +26,6 @@
     let u = new Uint8Array(nBytes);
     window.crypto.getRandomValues(u);
     return u;
-    /*
-    return Array.from(u)
-      .map((n) => n.toString(16))
-      .join("");
-     */
   }
 
   let createAddress = {
@@ -43,7 +38,8 @@
   };
 
   let address,
-  unblinded,
+    address2,
+    unblinded,
     asset,
     txid,
     hash,
@@ -51,6 +47,8 @@
     psbt,
     ria,
     tx,
+    key,
+    key2,
     root,
     network,
     seed,
@@ -58,8 +56,12 @@
     vout,
     address_receive,
     blindingKeyPair,
+    blindingKeyPair2,
     payment,
-    confidentialAddress;
+    payment2,
+    payment_out,
+    confidentialAddress,
+    confidentialAddress2;
   let addrIndex = 0;
   let keys = [];
 
@@ -82,7 +84,51 @@
       // blindkey: blindingKeyPair.publicKey,
     });
 
-    return { payment, blindingKeyPair };
+    return { key: hd, payment, blindingKeyPair };
+  };
+
+  let issuance;
+  let issue = () => {
+    issuance = new Psbt()
+      .addInput({
+        hash: utxos[0].txid,
+        index: utxos[0].vout,
+        nonWitnessUtxo: Buffer.from(hex, "hex"),
+        sighashType: 1,
+        redeemScript: payment.redeem.output,
+      })
+      // fee
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1, 0),
+        script: Buffer.alloc(0),
+        value: 100000,
+      })
+      // op_return
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payments.embed({ data: [Buffer.alloc(1)] }).output,
+        value: 0,
+      })
+      //change
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payment.output,
+        value: 99900000,
+      })
+      .addIssuance({
+        assetAmount: 100,
+        assetAddress: address,
+        tokenAmount: 0,
+        precision: 8,
+        net: network,
+      })
+      .signInput(0, ECPair.fromPrivateKey(key.privateKey))
+      .finalizeAllInputs();
+
+    hex = issuance.extractTransaction().toHex();
   };
 
   onMount(async () => {
@@ -90,100 +136,51 @@
     seed = mnemonicToSeedSync(generateMnemonic());
     root = fromSeed(seed, network);
 
-    ({ payment, blindingKeyPair } = getAddress());
-    ({ address } = payment);
-    ({ asset, hex, unblinded, txid, decoded, ria } = await liquid
-      .url(
-        `/asset?address=${address}&privateKey=${blindingKeyPair.privateKey.toString(
-          "hex"
-        )}`
-      )
-      .auth(`Bearer ${$token}`)
-      .get()
-      .json());
+    ({ key, payment, blindingKeyPair } = getAddress());
+    ({ address, confidentialAddress } = payment);
 
-    console
-    tx = Transaction.fromHex(unblinded);
-
-    vout = tx.outs.findIndex((o) => {
-      return reverse(o.asset.slice(1)).toString("hex") === asset && parseInt(buffer.Buffer.from(o.value).slice(1).toString('hex')) === 1;
-    });
-
-    let asset_receive = btc;
-    let amount_receive = 1000;
-    let payment_out;
-    ({ payment: payment_out, blindingKeyPair } = getAddress());
-    ({ address: address_receive } = payment);
-
-    let json = await liquid
-      .url(
-        `/swap?address=${address_receive}&amount=${amount_receive}&asset=${btc}&txid=${txid}&vout=${vout}`
-      )
-      .auth(`Bearer ${$token}`)
-      .get()
-      .json();
-
-    let pair = new ECPair.fromPrivateKey(keys[0].privateKey, {
-      compressed: true,
-      network,
-    });
-    let ps = Psbt.fromBase64(json.psbt);
-    let utxo = decoded.vout[vout];
-    let script = buffer.Buffer.from(utxo.scriptPubKey.hex, "hex");
-    console.log("script", script, utxo.scriptPubKey);
-    console.log("payment", payment);
-    ps.updateInput(0, {
-      nonWitnessUtxo: buffer.Buffer.from(unblinded, "hex"),
-      redeemScript: payment.redeem.output,
-    });
-    console.log(ps);
-
-    const fromHexString = (hexString) =>
-      new Uint8Array(
-        hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16))
-      );
-
-    // fee
-    ps.addOutput({
-      asset: btc,
-      script: buffer.Buffer.alloc(0),
-      value: 5000,
-      nonce: buffer.Buffer.alloc(1, 0),
-    });
-
-    ps.signInput(0, pair, Transaction.ANYONECANPAY & Transaction.SIGHASH_SINGLE);
-    ps.finalizeAllInputs();
-    let finalTx = ps.extractTransaction();
-    console.log(finalTx.toHex());
-
-    /*
-
-    tx = connection.call(
-        "createrawtransaction",
-        [{"txid": txid, "vout": vout, "sequence": 0xffffffff}],
-        {address: amount_receive},
-        0,
-        False,
-        {address: asset_receive})
-
-    asset_blinder_bytes = os.urandom(32)
-    amount_blinder_bytes = os.urandom(32)
-    asset_commitment = wally.asset_generator_from_bytes(h2b_rev(asset_receive), asset_blinder_bytes)
-    amount_commitment = wally.asset_value_commitment(btc2sat(amount_receive), amount_blinder_bytes, asset_commitment)
-
-    tx_ = wally.tx_from_hex(tx, wally.WALLY_TX_FLAG_USE_WITNESS | wally.WALLY_TX_FLAG_USE_ELEMENTS)
-    wally.tx_set_output_asset(tx_, 0, asset_commitment)
-    wally.tx_set_output_value(tx_, 0, amount_commitment)
-    tx = wally.tx_to_hex(tx_, wally.WALLY_TX_FLAG_USE_WITNESS | wally.WALLY_TX_FLAG_USE_ELEMENTS)
-
-    ret = connection.call(
-        "signrawtransactionwithwallet",
-        tx,
-        None,
-        "SINGLE|ANYONECANPAY")
-     */
+    ({
+      key: key2,
+      payment: payment2,
+      blindingKeyPair: blindingKeyPair2,
+    } = getAddress());
+    ({
+      address: address2,
+      confidentialAddress: confidentialAddress2,
+    } = payment2);
   });
 
+  let debug = () => {
+    debugger;
+  };
+
+  let swap = async () => {
+    ({ payment: payment_out, blindingKeyPair } = getAddress());
+    ({ address: address_receive } = payment);
+    let tx = Transaction.fromHex(hex);
+    swapTx = new Psbt()
+      .addInput({
+        hash: tx.getId(),
+        index: 3,
+        witnessUtxo: tx.outs[3],
+        redeemScript: payment.redeem.output,
+      })
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payment_out.output,
+        value: 1234567,
+      })
+      .signInput(
+        0,
+        ECPair.fromPrivateKey(key.privateKey),
+        Transaction.ANYONECANPAY & Transaction.SIGHASH_SINGLE
+      )
+      .finalizeAllInputs();
+  };
+
+  let base64 = "cHNldP8BAHcCAAAAAAFPgQZUGQ1bypkTZ3LSUe1STcR179Toj/r7ja3igKqBUQMAAAAA/////wEBJbJRBw4pyhkEPPM8zXMk4t2rA+zErgted8T8Dlz2yVoBAAAAAAAS1ocAF6kUyZFvYuY8HNy5gknJw5OasWyRzECHAAAAAAABAUMB94zhTYE2ms7/5G3CS0cFt62doMNc1ZCQ9FTXjU6XdSIBAAAAAlQL5AAAF6kURMycN3TufYhlCWzQmHQYi37DQo2HAQcXFgAUaKMcnxILZB1ULH4AYo1XbhKRkZwBCGsCRzBEAiAUoIJ8GJo1/WUNUwTWidL04SYFO2UIcS8ts0flBoa8VQIgdvtDHNy5o83LmIl4ypCrTpnSgP8lYV7YXIrODf/dck8BIQICrGoLe2rYijYo6wNOT2zyGoO3//hpvGfIVF+r8pnOjAAA";
+  let swapTx = Psbt.fromBase64(base64);
   let addresses;
   let liquality = () => {
     window.bitcoin.enable().then(() => {
@@ -193,12 +190,41 @@
     });
   };
 
-  let generate = () => {
-    liquid
+  let broadcast = async () => {
+    txid = await liquid.url("/broadcast").post({ hex }).text();
+  };
+
+  let utxos = [];
+  let getUtxos = async (address) => {
+    utxos[address] = await electrs.url(`/address/${address}/utxo`).get().json();
+    return utxos;
+  };
+
+  let getHex = async (txid) => {
+    return electrs.url(`/tx/${txid}/hex`).get().text();
+  };
+
+  let generate = async (address) => {
+    txid = await liquid
       .url(`/generate?address=${address}`)
       .auth(`Bearer ${$token}`)
       .get()
-  } 
+      .text();
+
+    setInterval(() => getUtxos(address), 2000);
+  };
+
+  let add = async (utxo) => {
+    let hex = await getHex(utxo.txid);
+    let tx = Transaction.fromHex(hex);
+    swapTx.addInput({
+      hash: utxo.txid,
+      index: utxo.vout,
+      witnessUtxo: tx.outs[utxo.vout],
+      redeemScript: payment2.redeem.output,
+    });
+    base64 = swapTx.toBase64();
+  };
 </script>
 
 <style>
@@ -214,31 +240,47 @@
 {#if $user}
   <h1 class="title">Wallet</h1>
 
-  <button on:click={generate}>Show me the money!</button>
+  <button on:click={debug}>Debug</button>
+  <button on:click={() => generate(address)}>Show me the money!</button>
+  <button on:click={issue}>Issue asset</button>
+  <button on:click={broadcast}>Broadcast</button>
+  <button on:click={swap}>Swap</button>
 
   <!--<QrCode value={address} />-->
   <div class="break-all p-8 stuff">
     <div>Address {address} {confidentialAddress}</div>
+    {#if utxos && utxos[address]}
+      {#each utxos[address] as utxo}
+        <div class="flex">
+          <div>{utxo.txid}</div>
+          <div>{utxo.value}</div>
+          <div>{utxo.asset.slice(0, 6)}</div>
+        </div>
+      {/each}
+    {/if}
     <div>Txid {txid}</div>
+    <div>{hex}</div>
 
     <div>
       {#if psbt}{JSON.stringify(psbt.toBuffer())}{/if}
     </div>
-
-    <div>{ria}</div>
-    <div>{unblinded}</div>
-
-    {#if tx}
-      <div>{JSON.stringify(decoded)}</div>
-      <div>{JSON.stringify(decoded.vout[vout])}</div>
-      <div>
-        {JSON.stringify(tx.outs.map((o) => {
-            return { a: reverse(o.asset).toString('hex'), v: parseInt(o.value
-                  .slice(1)
-                  .toString('hex'), 16) };
-          }))}
-      </div>
+  </div>
+  <button on:click={() => generate(address2)}>Show me the money!</button>
+  <div class="break-all p-8 stuff">
+    <div>Address {address2} {confidentialAddress2}</div>
+    {#if utxos && utxos[address2]}
+      {#each utxos[address2] as utxo}
+        <div
+          class="flex w-full justify-center hover:bg-red cursor-pointer"
+          on:click={() => add(utxo)}>
+          <div class="flex-grow">Txid {utxo.txid}</div>
+          <div class="flex-grow">Value {utxo.value}</div>
+          <div class="flex-grow">Asset {utxo.asset.slice(0, 6)}</div>
+        </div>
+      {/each}
     {/if}
+
+    {base64}
   </div>
   <div class="break-all p-8">{asset}</div>
 
