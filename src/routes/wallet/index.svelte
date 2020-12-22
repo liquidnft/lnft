@@ -43,7 +43,6 @@
     asset,
     txid,
     hash,
-    hex,
     psbt,
     ria,
     tx,
@@ -88,12 +87,14 @@
   };
 
   let issuance;
-  let issue = () => {
+  let issue = async () => {
+    let prevout = utxos[address][0];
+    console.log("prevout", prevout);
     issuance = new Psbt()
       .addInput({
-        hash: utxos[0].txid,
-        index: utxos[0].vout,
-        nonWitnessUtxo: Buffer.from(hex, "hex"),
+        hash: prevout.txid,
+        index: prevout.vout,
+        nonWitnessUtxo: Buffer.from(await getHex(prevout.txid), "hex"),
         sighashType: 1,
         redeemScript: payment.redeem.output,
       })
@@ -119,10 +120,10 @@
         value: 99900000,
       })
       .addIssuance({
-        assetAmount: 100,
+        assetAmount: 1,
         assetAddress: address,
         tokenAmount: 0,
-        precision: 8,
+        precision: 0,
         net: network,
       })
       .signInput(0, ECPair.fromPrivateKey(key.privateKey))
@@ -158,12 +159,14 @@
     ({ payment: payment_out, blindingKeyPair } = getAddress());
     ({ address: address_receive } = payment);
     let tx = Transaction.fromHex(hex);
+    console.log("swaps", payment_out, tx.outs[3], hex);
     swapTx = new Psbt()
       .addInput({
         hash: tx.getId(),
         index: 3,
         witnessUtxo: tx.outs[3],
         redeemScript: payment.redeem.output,
+        sighashType: Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY,
       })
       .addOutput({
         asset: btc,
@@ -171,15 +174,16 @@
         script: payment_out.output,
         value: 1234567,
       })
-      .signInput(
-        0,
-        ECPair.fromPrivateKey(key.privateKey),
-        Transaction.ANYONECANPAY & Transaction.SIGHASH_SINGLE
-      )
-      .finalizeAllInputs();
+      .signInput(0, ECPair.fromPrivateKey(key.privateKey), [
+        Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY,
+      ])
+      .finalizeInput(0);
   };
 
-  let base64 = "cHNldP8BAHcCAAAAAAFPgQZUGQ1bypkTZ3LSUe1STcR179Toj/r7ja3igKqBUQMAAAAA/////wEBJbJRBw4pyhkEPPM8zXMk4t2rA+zErgted8T8Dlz2yVoBAAAAAAAS1ocAF6kUyZFvYuY8HNy5gknJw5OasWyRzECHAAAAAAABAUMB94zhTYE2ms7/5G3CS0cFt62doMNc1ZCQ9FTXjU6XdSIBAAAAAlQL5AAAF6kURMycN3TufYhlCWzQmHQYi37DQo2HAQcXFgAUaKMcnxILZB1ULH4AYo1XbhKRkZwBCGsCRzBEAiAUoIJ8GJo1/WUNUwTWidL04SYFO2UIcS8ts0flBoa8VQIgdvtDHNy5o83LmIl4ypCrTpnSgP8lYV7YXIrODf/dck8BIQICrGoLe2rYijYo6wNOT2zyGoO3//hpvGfIVF+r8pnOjAAA";
+  let hex =
+    "02000000010121986ad89c459415277ba4add13ea9dccfbf3f02bc9d64ca53c4490575e0b567000000801716001406af1f9918b03c666dd70e675ea821729ebaa850ffffffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000100040125b251070e29ca19043cf33ccd7324e2ddab03ecc4ae0b5e77c4fc0e5cf6c95a0100000000000186a000000125b251070e29ca19043cf33ccd7324e2ddab03ecc4ae0b5e77c4fc0e5cf6c95a01000000000000000000036a01000125b251070e29ca19043cf33ccd7324e2ddab03ecc4ae0b5e77c4fc0e5cf6c95a010000000005f45a600017a91425e227c244b13898e1432657a9999d766bc363778701ce3ae144ca48884623a6d38cb76d1d7b22dfe7f2e352ce3061d66b436cfecaee0100000000000000010017a91425e227c244b13898e1432657a9999d766bc363778700000000000002483045022100f8541a9f5071f27e9251c6d85033432c9088ccaa2b47784b50b64a5f27b281d00220145498ca23db7190d7cd3ddee93c37ea6a55005c621b14517f763f6658730f89012103129adaf5ea54579af1c6fa5d0fcec94969468d1c105300d47334363aa2fe28c7000000000000000000";
+  let base64 =
+    "cHNldP8BAHcCAAAAAAFPgQZUGQ1bypkTZ3LSUe1STcR179Toj/r7ja3igKqBUQMAAAAA/////wEBJbJRBw4pyhkEPPM8zXMk4t2rA+zErgted8T8Dlz2yVoBAAAAAAAS1ocAF6kUyZFvYuY8HNy5gknJw5OasWyRzECHAAAAAAABAUMB94zhTYE2ms7/5G3CS0cFt62doMNc1ZCQ9FTXjU6XdSIBAAAAAlQL5AAAF6kURMycN3TufYhlCWzQmHQYi37DQo2HAQcXFgAUaKMcnxILZB1ULH4AYo1XbhKRkZwBCGsCRzBEAiAUoIJ8GJo1/WUNUwTWidL04SYFO2UIcS8ts0flBoa8VQIgdvtDHNy5o83LmIl4ypCrTpnSgP8lYV7YXIrODf/dck8BIQICrGoLe2rYijYo6wNOT2zyGoO3//hpvGfIVF+r8pnOjAAA";
   let swapTx = Psbt.fromBase64(base64);
   let addresses;
   let liquality = () => {
@@ -214,16 +218,56 @@
     setInterval(() => getUtxos(address), 2000);
   };
 
+  $: inputs = swapTx.data.inputs;
+  $: outputs = swapTx.__CACHE.__TX.outs;
   let add = async (utxo) => {
-    let hex = await getHex(utxo.txid);
-    let tx = Transaction.fromHex(hex);
-    swapTx.addInput({
-      hash: utxo.txid,
-      index: utxo.vout,
-      witnessUtxo: tx.outs[utxo.vout],
-      redeemScript: payment2.redeem.output,
-    });
+    let tx = Transaction.fromHex(await getHex(utxo.txid));
+
+    let fee = 100000;
+    let change =
+      utxo.value -
+      swapTx.__CACHE.__TX.outs.reduce(
+        (a, b) => a + parseInt(b.value.slice(1).toString("hex"), 16),
+        0
+      ) -
+      fee;
+
+    swapTx
+      .addInput({
+        hash: utxo.txid,
+        index: utxo.vout,
+        witnessUtxo: tx.outs[utxo.vout],
+        redeemScript: payment2.redeem.output,
+      })
+      // asset
+      .addOutput({
+        asset: inputs[0].witnessUtxo.asset,
+        nonce: Buffer.alloc(1),
+        script: payment2.output,
+        value: 1,
+      })
+      // fee
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1, 0),
+        script: Buffer.alloc(0),
+        value: fee,
+      })
+      //change
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payment2.output,
+        value: change,
+      })
+      .signAllInputs(ECPair.fromPrivateKey(key2.privateKey))
+      .finalizeInput(1);
+
     base64 = swapTx.toBase64();
+    swapTx = swapTx;
+
+    hex = swapTx.extractTransaction().toHex();
+    console.log("hex", hex);
   };
 </script>
 
@@ -251,15 +295,33 @@
     <div>Address {address} {confidentialAddress}</div>
     {#if utxos && utxos[address]}
       {#each utxos[address] as utxo}
-        <div class="flex">
-          <div>{utxo.txid}</div>
-          <div>{utxo.value}</div>
-          <div>{utxo.asset.slice(0, 6)}</div>
+        <div class="flex w-full justify-center hover:bg-red cursor-pointer">
+          <div class="flex-grow">Txid {utxo.txid}</div>
+          <div class="flex-grow">Value {utxo.value}</div>
+          <div class="flex-grow">Asset {utxo.asset.slice(0, 6)}</div>
         </div>
       {/each}
     {/if}
     <div>Txid {txid}</div>
     <div>{hex}</div>
+
+    <h2>Inputs</h2>
+    {#each inputs as input}
+      <div>
+        {reverse(input.witnessUtxo.asset).toString('hex')}
+        -
+        {parseInt(input.witnessUtxo.value.slice(1).toString('hex'), 16)}
+      </div>
+    {/each}
+
+    <h2>Outputs</h2>
+    {#each outputs as output}
+      <div>
+        {reverse(output.asset).toString('hex')}
+        -
+        {parseInt(output.value.slice(1).toString('hex'), 16)}
+      </div>
+    {/each}
 
     <div>
       {#if psbt}{JSON.stringify(psbt.toBuffer())}{/if}
@@ -282,7 +344,6 @@
 
     {base64}
   </div>
-  <div class="break-all p-8">{asset}</div>
 
   <div>Balance: {$user.balance}</div>
 
