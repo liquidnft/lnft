@@ -18,6 +18,10 @@
 
   $: hidden = type && !type.includes('video');
 
+  onMount(() => {
+    // get utxos
+  }); 
+
   let previewFile = (file) => {
     filename = file.name;
     type = file.type;
@@ -67,6 +71,54 @@
     createArtwork({ artwork, hash: txid, id: artwork.id }).then(() => {
       goto("/market");
     });
+
+  let getHex = async (txid) => {
+    return electrs.url(`/tx/${txid}/hex`).get().text();
+  };
+
+    const prevout = utxos[address][0];
+    console.log("prevout", prevout);
+    issuance = new Psbt()
+      .addInput({
+        hash: prevout.txid,
+        index: prevout.vout,
+        nonWitnessUtxo: Buffer.from(await getHex(prevout.txid), "hex"),
+        sighashType: 1,
+        redeemScript: payment.redeem.output,
+      })
+      // fee
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1, 0),
+        script: Buffer.alloc(0),
+        value: 100000,
+      })
+      // op_return
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payments.embed({ data: [Buffer.alloc(1)] }).output,
+        value: 0,
+      })
+      //change
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payment.output,
+        value: 99900000,
+      })
+      .addIssuance({
+        assetAmount: 1,
+        assetAddress: address,
+        tokenAmount: 0,
+        precision: 0,
+        net: network,
+      })
+      .signInput(0, ECPair.fromPrivateKey(key.privateKey))
+      .finalizeAllInputs();
+
+    txid = await liquid.url("/broadcast").post({ hex }).text();
+    hex = issuance.extractTransaction().toHex();
   };
 </script>
 

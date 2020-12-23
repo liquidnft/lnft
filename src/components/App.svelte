@@ -5,39 +5,42 @@
   import { get } from "$queries/users";
   import { api } from "$lib/api";
   import { fade } from "svelte/transition";
-  import { subscription, operationStore } from "@urql/svelte";
-  import { SubscriptionClient } from "subscriptions-transport-ws";
   import {
     initClient,
     defaultExchanges,
     subscriptionExchange,
+    mutation,
+    subscription,
+    operationStore,
   } from "@urql/svelte";
+  import { SubscriptionClient } from "subscriptions-transport-ws";
+  import { update } from "$queries/users";
 
   let url = "http://localhost:8080/v1/graphql";
   let wsUrl = "ws://localhost:8080/v1/graphql";
 
-    initClient({
-      url,
-      exchanges: [
-        ...defaultExchanges,
-        subscriptionExchange({
-          forwardSubscription(operation) {
-            if (typeof WebSocket === "undefined") return;
-            return new SubscriptionClient(wsUrl, {
-              reconnect: true,
-              connectionParams: {
-                headers: { authorization: `Bearer ${$token}` },
-              },
-            }).request(operation);
-          },
-        }),
-      ],
-      fetchOptions: () => {
-        return {
-          headers: { authorization: `Bearer ${$token}` },
-        };
-      },
-    });
+  initClient({
+    url,
+    exchanges: [
+      ...defaultExchanges,
+      subscriptionExchange({
+        forwardSubscription(operation) {
+          if (typeof WebSocket === "undefined") return;
+          return new SubscriptionClient(wsUrl, {
+            reconnect: true,
+            connectionParams: {
+              headers: { authorization: `Bearer ${$token}` },
+            },
+          }).request(operation);
+        },
+      }),
+    ],
+    fetchOptions: () => {
+      return {
+        headers: { authorization: `Bearer ${$token}` },
+      };
+    },
+  });
 
   let id, user$;
   $: {

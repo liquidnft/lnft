@@ -30,7 +30,7 @@ services:
     environment:
       HASURA_ENDPOINT: http://graphql-engine:8080/v1/graphql
       HASURA_GRAPHQL_ADMIN_SECRET: liquidart
-      REGISTRATION_CUSTOM_FIELDS: username,full_name
+      REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic
       JWT_ALGORITHM: RS256
       AUTO_MIGRATE: "true"
       STORAGE_ENABLE: "true"

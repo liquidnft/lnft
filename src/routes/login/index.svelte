@@ -1,12 +1,30 @@
 <script>
   import { user, token } from "$lib/store";
-  import { goto }  from "$app/navigation";
+  import { goto } from "$app/navigation";
   import { api } from "$lib/api";
   import decode from "jwt-decode";
+  import cryptojs from "crypto-js";
+  import { fromSeed } from "bip32";
+  import { networks } from "@asoltys/liquidjs-lib";
+  import { generateMnemonic, mnemonicToSeedSync } from "bip39";
 
   let error;
   let username = "anon";
   let password = "liquidart";
+
+  let setupWallet = (password) => {
+    let { AES: aes } = cryptojs;
+    let mnemonic = generateMnemonic();
+    let seed = mnemonicToSeedSync(mnemonic);
+
+    return {
+      pubkey: fromSeed(seed, networks.regtest)
+        .derivePath("m/84'/0'/0'/0")
+        .neutered()
+        .toBase58(),
+      mnemonic: aes.encrypt(mnemonic, password).toString(),
+    };
+  };
 
   let login = () => {
     api
@@ -33,9 +51,10 @@
       .post({
         email: `${username}@liquidart.com`,
         password,
-        user_data: { 
+        user_data: {
           username,
           full_name: username,
+          ...setupWallet(password),
         },
       })
       .badRequest((err) => {
@@ -46,16 +65,16 @@
 </script>
 
 <style>
-  .form-container{
-    width:100%;
+  .form-container {
+    width: 100%;
     height: 80vh;
-    display:flex;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
   }
 
-  .form-container form{
+  .form-container form {
     width: 100%;
     max-width: 500px;
     background-color: white;

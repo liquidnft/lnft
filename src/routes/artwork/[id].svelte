@@ -15,7 +15,7 @@
     createTransaction,
     getArtworkTransactions,
   } from "$queries/transactions";
-  import { goto }  from "$app/navigation";
+  import { goto } from "$app/navigation";
   import { mutation, subscription, operationStore } from "@urql/svelte";
 
   export let id;
@@ -70,10 +70,63 @@
     };
   }
 
+  let getHex = async (txid) => {
+    return electrs.url(`/tx/${txid}/hex`).get().text();
+  };
+
   let buyNow = () => {
     transaction.amount = artwork.list_price;
     transaction.type = "purchase";
     placeBid();
+
+    let tx = Transaction.fromHex(await getHex(utxo.txid));
+
+
+    let fee = 100000;
+    let change =
+      utxo.value -
+      swapTx.__CACHE.__TX.outs.reduce(
+        (a, b) => a + parseInt(b.value.slice(1).toString("hex"), 16),
+        0
+      ) -
+      fee;
+
+    swapTx
+      .addInput({
+        hash: utxo.txid,
+        index: utxo.vout,
+        witnessUtxo: tx.outs[utxo.vout],
+        redeemScript: payment2.redeem.output,
+      })
+      // asset
+      .addOutput({
+        asset: inputs[0].witnessUtxo.asset,
+        nonce: Buffer.alloc(1),
+        script: payment2.output,
+        value: 1,
+      })
+      // fee
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1, 0),
+        script: Buffer.alloc(0),
+        value: fee,
+      })
+      //change
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payment2.output,
+        value: change,
+      })
+      .signAllInputs(ECPair.fromPrivateKey(key2.privateKey))
+      .finalizeInput(1);
+
+    base64 = swapTx.toBase64();
+    swapTx = swapTx;
+
+    hex = swapTx.extractTransaction().toHex();
+    console.log("hex", hex);
   };
 
   let destroyArtwork$, destroy;
@@ -100,15 +153,15 @@
     }
   }
 
-  .card-container{
+  .card-container {
     padding: 0 100px;
   }
 
-  @media only screen and (max-width: 1023px){
-     .card-container{
-       padding: 0;
-       margin: 40px 0 ;
-     }
+  @media only screen and (max-width: 1023px) {
+    .card-container {
+      padding: 0;
+      margin: 40px 0;
+    }
   }
 </style>
 
@@ -144,7 +197,10 @@
           <button type="submit">Submit</button>
         </form>
       {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
-        <div class="my-2 font-bold"><span class="font-thin text-sm">Auction closes in</span> <span class="text-2xl">{counter}</span></div>
+      <div class="my-2 font-bold">
+        <span class="font-thin text-sm">Auction closes in</span>
+        <span class="text-2xl">{counter}</span>
+      </div>
       <div>
         {#if artwork.list_price}
           <div class="1/2 flex-1">

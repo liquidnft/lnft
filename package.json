@@ -41,6 +41,7 @@
 		"bip39": "^3.0.3",
 		"buffer": "^6.0.3",
 		"buffer-reverse": "^1.0.1",
+		"crypto-js": "^4.0.0",
 		"long": "^4.0.0",
 		"slip77": "https://github.com/vulpemventures/slip77"
 	}
