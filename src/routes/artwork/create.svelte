@@ -11,7 +11,13 @@
   import { mutation } from "@urql/svelte";
   import { goto } from "$app/navigation";
   import getAddress from "$lib/getAddress";
-  import { ECPair, Psbt, payments, networks } from "@asoltys/liquidjs-lib";
+  import {
+    ECPair,
+    Psbt,
+    payments,
+    networks,
+    Transaction,
+  } from "@asoltys/liquidjs-lib";
   import reverse from "buffer-reverse";
 
   const network = networks.regtest;
@@ -132,36 +138,44 @@
   };
 
   const createArtwork = mutation(create);
+
+  let sighashType =
+    Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
+
   let createSwap = () => {
-    swapTx = new Psbt()
+    let swap = new Psbt()
       .addInput({
-        hash: txid,
+        hash: issuanceTx.getId(),
         index: 3,
-        witnessUtxo: tx.outs[3],
-        redeemScript: payment.redeem.output,
-        sighashType:
-          Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY,
+        witnessUtxo: issuanceTx.outs[3],
+        redeemScript: addr.redeem.output,
+        sighashType,
       })
       .addOutput({
         asset: btc,
         nonce: Buffer.alloc(1),
-        script: payment_out.output,
+        script: addr.output,
         value: artwork.list_price,
       })
-      .signInput(0, ECPair.fromPrivateKey(key.privateKey), [
-        Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY,
-      ])
+      .signInput(0, ECPair.fromPrivateKey(addr.privateKey), [sighashType])
       .finalizeInput(0);
+
+    artwork.list_price_tx = swap.toBase64();
   };
 
+  let signed = false;
   let issuance, issuanceTx, base64;
   let issue = async (e) => {
     e.preventDefault();
 
+    if (!signed) {
+      $snack = "Must sign the issuance transaction";
+      return;
+    }
+
     await liquid.url("/broadcast").post({ hex: issuanceTx.toHex() }).text();
 
-    ({ payment: payment_out, blindingKeyPair } = getAddress());
-    ({ address: address_receive } = payment);
+    createSwap();
 
     artwork.id = v4();
     createArtwork({ artwork, hash: issuanceTx.getId(), id: artwork.id }).then(
@@ -180,6 +194,7 @@
 
     issuanceTx = issuance.extractTransaction();
     asset = reverse(issuanceTx.outs[3].asset).toString("hex");
+    signed = true;
   };
 </script>
 
