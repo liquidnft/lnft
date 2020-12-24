@@ -81,7 +81,6 @@
 
     let tx = Transaction.fromHex(await getHex(utxo.txid));
 
-
     let fee = 100000;
     let change =
       utxo.value -
