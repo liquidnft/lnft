@@ -1,26 +1,35 @@
 <script>
+  import { Buffer } from "buffer";
   import { v4 } from "uuid";
-  import { liquid } from "$lib/api";
+  import { electrs, liquid } from "$lib/api";
   import { tick, onMount } from "svelte";
-  import { token } from "$lib/store";
+  import { user, snack, token } from "$lib/store";
   import Dropzone from "$components/Dropzone";
   import upload from "$lib/upload";
   import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import { goto }  from "$app/navigation";
+  import { goto } from "$app/navigation";
+  import getAddress from "$lib/getAddress";
+  import { ECPair, Psbt, payments, networks } from "@asoltys/liquidjs-lib";
+  import reverse from "buffer-reverse";
+
+  const network = networks.regtest;
+  const btc =
+    "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 
   let preview;
   let filename;
   let type;
   let video;
   let hidden;
+  let password = "liquidart";
 
-  $: hidden = type && !type.includes('video');
+  $: hidden = type && !type.includes("video");
 
   onMount(() => {
     // get utxos
-  }); 
+  });
 
   let previewFile = (file) => {
     filename = file.name;
@@ -50,7 +59,7 @@
     if (!file) return;
     previewFile(file);
     upload(file, $token, progress);
-  }
+  };
 
   $: artwork = {
     title: "",
@@ -59,32 +68,30 @@
     tags: {},
   };
 
-  const createArtwork = mutation(create);
-  let issue = async (e) => {
-    e.preventDefault();
-    let { txid, asset } = await liquid
-      .url("/asset")
-      .get()
-      .json();
-    artwork.asset = asset;
-    artwork.id = v4();
-    createArtwork({ artwork, hash: txid, id: artwork.id }).then(() => {
-      goto("/market");
-    });
-
   let getHex = async (txid) => {
     return electrs.url(`/tx/${txid}/hex`).get().text();
   };
 
-    const prevout = utxos[address][0];
-    console.log("prevout", prevout);
-    issuance = new Psbt()
+  const createArtwork = mutation(create);
+  let issue = async (e) => {
+    e.preventDefault();
+
+    let { address, output, redeem, privateKey } = getAddress($user.mnemonic, password);
+    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+    let prevout = utxos[0];
+
+    if (!prevout) {
+      $snack = "Not enough funds";
+      return;
+    }
+
+    let issuance = new Psbt()
       .addInput({
         hash: prevout.txid,
         index: prevout.vout,
         nonWitnessUtxo: Buffer.from(await getHex(prevout.txid), "hex"),
         sighashType: 1,
-        redeemScript: payment.redeem.output,
+        redeemScript: redeem.output,
       })
       // fee
       .addOutput({
@@ -104,7 +111,7 @@
       .addOutput({
         asset: btc,
         nonce: Buffer.alloc(1),
-        script: payment.output,
+        script: output,
         value: 99900000,
       })
       .addIssuance({
@@ -114,11 +121,21 @@
         precision: 0,
         net: network,
       })
-      .signInput(0, ECPair.fromPrivateKey(key.privateKey))
+      .signInput(0, ECPair.fromPrivateKey(privateKey))
       .finalizeAllInputs();
 
-    txid = await liquid.url("/broadcast").post({ hex }).text();
-    hex = issuance.extractTransaction().toHex();
+    let tx = issuance.extractTransaction();
+    let hex = tx.toHex();
+    console.log(tx);
+    let asset = reverse(tx.outs[3].asset).toString('hex');
+    await liquid.url("/broadcast").post({ hex }).text();
+    let txid = tx.getId();
+
+    artwork.asset = asset;
+    artwork.id = v4();
+    createArtwork({ artwork, hash: txid, id: artwork.id }).then(() => {
+      goto("/market");
+    });
   };
 </script>
 
@@ -138,7 +155,7 @@
     <div class="ml-2 text-center flex-1 flex">
       <div class="mx-auto">
         {#if type.includes('image')}<img src={preview} />{/if}
-          <video controls class:hidden muted autoplay loop>
+        <video controls class:hidden muted autoplay loop>
           <source bind:this={video} />
           Your browser does not support HTML5 video.
         </video>
