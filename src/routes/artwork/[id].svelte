@@ -74,7 +74,7 @@
     return electrs.url(`/tx/${txid}/hex`).get().text();
   };
 
-  let buyNow = () => {
+  let buyNow = async () => {
     transaction.amount = artwork.list_price;
     transaction.type = "purchase";
     placeBid();

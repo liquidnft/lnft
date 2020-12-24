@@ -23,13 +23,70 @@
   let type;
   let video;
   let hidden;
+  let asset;
+  let addr;
   let password = "liquidart";
 
   $: hidden = type && !type.includes("video");
 
-  onMount(() => {
-    // get utxos
-  });
+  $: if ($user) {
+    createIssuance();
+  }
+
+  let createIssuance = async () => {
+    let fee = 100000;
+
+    addr = getAddress($user.mnemonic, password);
+
+    let { address, output, redeem } = addr;
+
+    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+    let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value > fee);
+
+    if (!prevout) {
+      $snack = "Not enough funds";
+      return;
+    }
+
+    issuance = new Psbt()
+      .addInput({
+        hash: prevout.txid,
+        index: prevout.vout,
+        nonWitnessUtxo: Buffer.from(await getHex(prevout.txid), "hex"),
+        sighashType: 1,
+        redeemScript: redeem.output,
+      })
+      // fee
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1, 0),
+        script: Buffer.alloc(0),
+        value: fee,
+      })
+      // op_return
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payments.embed({ data: [Buffer.alloc(1)] }).output,
+        value: 0,
+      })
+      //change
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: output,
+        value: prevout.value - fee,
+      })
+      .addIssuance({
+        assetAmount: 1,
+        assetAddress: address,
+        tokenAmount: 0,
+        precision: 0,
+        net: network,
+      });
+
+    base64 = issuance.toBase64();
+  };
 
   let previewFile = (file) => {
     filename = file.name;
@@ -65,7 +122,9 @@
     title: "",
     description: "",
     filename,
+    list_price: 10000,
     tags: {},
+    asset,
   };
 
   let getHex = async (txid) => {
@@ -73,87 +132,70 @@
   };
 
   const createArtwork = mutation(create);
+  let createSwap = () => {
+    swapTx = new Psbt()
+      .addInput({
+        hash: txid,
+        index: 3,
+        witnessUtxo: tx.outs[3],
+        redeemScript: payment.redeem.output,
+        sighashType:
+          Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY,
+      })
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payment_out.output,
+        value: artwork.list_price,
+      })
+      .signInput(0, ECPair.fromPrivateKey(key.privateKey), [
+        Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY,
+      ])
+      .finalizeInput(0);
+  };
+
+  let issuance, issuanceTx, base64;
   let issue = async (e) => {
     e.preventDefault();
 
-    let { address, output, redeem, privateKey } = getAddress($user.mnemonic, password);
-    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-    let prevout = utxos[0];
+    await liquid.url("/broadcast").post({ hex: issuanceTx.toHex() }).text();
 
-    if (!prevout) {
-      $snack = "Not enough funds";
-      return;
-    }
+    ({ payment: payment_out, blindingKeyPair } = getAddress());
+    ({ address: address_receive } = payment);
 
-    let issuance = new Psbt()
-      .addInput({
-        hash: prevout.txid,
-        index: prevout.vout,
-        nonWitnessUtxo: Buffer.from(await getHex(prevout.txid), "hex"),
-        sighashType: 1,
-        redeemScript: redeem.output,
-      })
-      // fee
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1, 0),
-        script: Buffer.alloc(0),
-        value: 100000,
-      })
-      // op_return
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1),
-        script: payments.embed({ data: [Buffer.alloc(1)] }).output,
-        value: 0,
-      })
-      //change
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1),
-        script: output,
-        value: 99900000,
-      })
-      .addIssuance({
-        assetAmount: 1,
-        assetAddress: address,
-        tokenAmount: 0,
-        precision: 0,
-        net: network,
-      })
-      .signInput(0, ECPair.fromPrivateKey(privateKey))
+    artwork.id = v4();
+    createArtwork({ artwork, hash: issuanceTx.getId(), id: artwork.id }).then(
+      () => {
+        goto("/market");
+      }
+    );
+  };
+
+  let sign = () => {
+    issuance
+      .signInput(0, ECPair.fromPrivateKey(addr.privateKey))
       .finalizeAllInputs();
 
-    let tx = issuance.extractTransaction();
-    let hex = tx.toHex();
-    console.log(tx);
-    let asset = reverse(tx.outs[3].asset).toString('hex');
-    await liquid.url("/broadcast").post({ hex }).text();
-    let txid = tx.getId();
+    base64 = issuance.toBase64();
 
-    artwork.asset = asset;
-    artwork.id = v4();
-    createArtwork({ artwork, hash: txid, id: artwork.id }).then(() => {
-      goto("/market");
-    });
+    issuanceTx = issuance.extractTransaction();
+    asset = reverse(issuanceTx.outs[3].asset).toString("hex");
   };
 </script>
 
 <style>
-  img {
-    max-width: 300px;
+  button {
+    @apply block bg-green-400 hover:bg-green-600 text-white uppercase text-lg mx-auto p-4 rounded flex-1;
   }
 </style>
 
 <div>
   <h1 class="text-2xl font-black text-gray-900 pb-6">Submit Artwork</h1>
-</div>
-
-{#if preview}
+</div>{#if preview}
   <div class="flex flex-wrap">
     <Form {artwork} on:submit={issue} />
-    <div class="ml-2 text-center flex-1 flex">
-      <div class="mx-auto">
+    <div class="ml-2 flex-1 flex">
+      <div class="mx-auto w-1/2">
         {#if type.includes('image')}<img src={preview} />{/if}
         <video controls class:hidden muted autoplay loop>
           <source bind:this={video} />
@@ -165,6 +207,26 @@
             style={width}>
             {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
           </div>
+        </div>
+        <div class="break-all">
+          <div class="mb-2">
+            PSBT
+            <div
+              style="max-height: 150px; overflow-y: scroll; overflow-x: hidden;"
+              class="text-xs font-mono">
+              {base64}
+            </div>
+          </div>
+          {#if artwork.asset}
+            <div>
+              Asset ID
+              <div class="text-xs font-mono">{artwork.asset}</div>
+            </div>
+          {:else}
+            <label>Password</label>
+            <input bind:value={password} placeholder="Password" class="mb-2" />
+            <button on:click={sign}>Sign Transaction</button>
+          {/if}
         </div>
       </div>
     </div>
