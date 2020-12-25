@@ -3,7 +3,6 @@ import { networks, payments } from "@asoltys/liquidjs-lib";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed as slip77FromSeed } from "slip77";
 import cryptojs from "crypto-js";
-
 const network = networks["regtest"];
 
 export default (mnemonic, password) => {
@@ -13,6 +12,9 @@ export default (mnemonic, password) => {
     } = cryptojs;
 
   mnemonic = aes.decrypt(mnemonic, password).toString(Utf8);
+
+  if (!mnemonic) return;
+
   let seed = mnemonicToSeedSync(mnemonic);
   let root = fromSeed(seed, network);
   let hd = root.derive(0);

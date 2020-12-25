@@ -95,7 +95,7 @@
   };
 
   let previewFile = (file) => {
-    filename = file.name;
+    artwork.filename = file.name;
     type = file.type;
     var reader = new FileReader();
 
@@ -124,13 +124,13 @@
     upload(file, $token, progress);
   };
 
-  $: artwork = {
+  let artwork = {
     title: "",
     description: "",
-    filename,
+    filename: "",
     list_price: 10000,
     tags: {},
-    asset,
+    asset: "",
   };
 
   let getHex = async (txid) => {
@@ -193,7 +193,7 @@
     base64 = issuance.toBase64();
 
     issuanceTx = issuance.extractTransaction();
-    asset = reverse(issuanceTx.outs[3].asset).toString("hex");
+    artwork.asset = reverse(issuanceTx.outs[3].asset).toString("hex");
     signed = true;
   };
 </script>

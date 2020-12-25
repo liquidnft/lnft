@@ -2,7 +2,7 @@
   import { liquid, electrs } from "$lib/api";
   // import QrCode from "svelte-qrcode";
   import { onMount } from "svelte";
-  import { user, token } from "$lib/store";
+  import { snack, user, token } from "$lib/store";
   import getAddress from "$lib/getAddress";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
@@ -12,7 +12,11 @@
   let address;
   let password = "liquidart";
   let unlock = async () => {
-    ({ address } = getAddress($user.mnemonic, password));
+    try {
+      ({ address } = getAddress($user.mnemonic, password));
+    } catch (e) {
+      $snack = "Failed to decrypt wallet";
+    }
 
     await getUtxos(address);
     loading = false;
@@ -64,7 +68,6 @@
   {:else}
     <div>Address: {address}</div>
     <div>
-      Balance:
       {#if loading}
         Loading...
       {:else}
