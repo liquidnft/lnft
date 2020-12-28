@@ -5,99 +5,95 @@
   import ToggleSwitch from "$components/ToggleSwitch";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
-  import { goto }  from "$app/navigation";
+  import { goto } from "$app/navigation";
 
-  const artworks = operationStore(getArtworks);
-  subscription(artworks);
+  let filtered = [];
+  subscription(operationStore(getArtworks), (a, b) => {
+    filtered = b.artworks
+      .filter(
+        (a) =>
+          (!listPrice || a.list_price) &&
+          (!openBid || a.bid[0].amount) &&
+          (!ownedByCreator || a.artist_id === a.owner_id) &&
+          (!hasSold || a.artist_id !== a.owner_id)
+      )
+      .sort(
+        (a, b) =>
+          ({
+            active:
+              new Date(b.last_active) - new Date(a.last_active) ||
+              new Date(b.created_at) - new Date(a.created_at),
+            lowest: a.list_price - b.list_price,
+            highest: b.list_price - a.list_price,
+            newest: new Date(b.created_at) - new Date(a.created_at),
+            oldest: new Date(a.created_at) - new Date(b.created_at),
+          }[sort])
+      );
+  });
 
   let listPrice, openBid, ownedByCreator, hasSold, sort;
-
-  $: filtered = $artworks.data
-    ? $artworks.data.artworks
-        .filter(
-          (a) =>
-            (!listPrice || a.list_price) &&
-            (!openBid || a.bid[0].amount) &&
-            (!ownedByCreator || a.artist_id === a.owner_id) &&
-            (!hasSold || a.artist_id !== a.owner_id)
-        )
-        .sort(
-          (a, b) =>
-            ({
-              active:
-                new Date(b.last_active) - new Date(a.last_active) ||
-                new Date(b.created_at) - new Date(a.created_at),
-              lowest: a.list_price - b.list_price,
-              highest: b.list_price - a.list_price,
-              newest: new Date(b.created_at) - new Date(a.created_at),
-              oldest: new Date(a.created_at) - new Date(b.created_at),
-            }[sort])
-        )
-    : [];
 </script>
 
 <style>
-  .switch-container{
+  .switch-container {
     display: flex;
     justify-content: space-around;
     margin-top: 20px;
   }
-  .filter-container{
+  .filter-container {
     margin-top: 50px;
     border-bottom: 1px solid lightgray;
     padding-bottom: 30px;
     margin: 1.6%;
   }
-  .switch-container div{
-    margin: 0px 20px 20px 0; 
+  .switch-container div {
+    margin: 0px 20px 20px 0;
   }
 
-  .sort-container select{
-      margin-top:20px;
+  .sort-container select {
+    margin-top: 20px;
   }
 
-  .card-container{
-    width: 30%;   
+  .card-container {
+    width: 30%;
     margin: 1.6%;
   }
 
-
-  @media only screen and (max-width: 1023px){
-    .switch-container{
+  @media only screen and (max-width: 1023px) {
+    .switch-container {
       flex-direction: column;
     }
 
-    .card-container{
+    .card-container {
       width: 46%;
     }
   }
 
-  @media only screen and (max-width: 700px){
-    .card-container{
+  @media only screen and (max-width: 700px) {
+    .card-container {
       width: 100%;
       margin-bottom: 40px;
     }
   }
 
-  @media only screen and (max-width: 500px){
-    .filter-container{
+  @media only screen and (max-width: 500px) {
+    .filter-container {
       flex-direction: column-reverse;
     }
-    .sort-container{
+    .sort-container {
       margin: 0;
       margin-bottom: 20px;
     }
   }
-
- 
-
 </style>
 
 <h1 class="title">Market</h1>
 
 <div class="flex w-full">
-  <button on:click={() => goto('/artwork/create')}
-    class="my-auto p-4 text-white text-center mx-auto brand-color">Submit a New Artwork</button>
+  <button
+    on:click={() => goto('/artwork/create')}
+    class="my-auto p-4 text-white text-center mx-auto brand-color">Submit a New
+    Artwork</button>
 </div>
 
 <div class="mb-6 flex filter-container">
@@ -144,6 +140,8 @@
 
 <div class="flex flex-wrap">
   {#each filtered as artwork (artwork.id)}
-    <div class="card-container"><Card {artwork} /></div>
+    <div class="card-container">
+      <Card {artwork} />
+    </div>
   {/each}
 </div>

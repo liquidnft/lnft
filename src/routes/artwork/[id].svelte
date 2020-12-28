@@ -5,6 +5,7 @@
 </script>
 
 <script>
+  import { Buffer } from "buffer";
   import { Activity, Amount, Avatar, Card } from "$comp";
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
@@ -17,8 +18,15 @@
   } from "$queries/transactions";
   import { goto } from "$app/navigation";
   import { mutation, subscription, operationStore } from "@urql/svelte";
+  import { ECPair, Transaction, Psbt } from "@asoltys/liquidjs-lib";
+  import { electrs, liquid } from "$lib/api";
+  import getAddress from "$lib/getAddress";
+  import reverse from "buffer-reverse";
 
   export let id;
+
+  const btc =
+    "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 
   let transactions = [];
   subscription(
@@ -26,18 +34,17 @@
     (a, b) => (transactions = b.transactions)
   );
 
-  let result = subscription(operationStore(getArtwork(id)));
   let artwork;
   let counter;
-  $: {
-    artwork = $result.data ? $result.data.artworks_by_pk : null;
+  subscription(operationStore(getArtwork(id)), (a, b) => {
+    artwork = b.artworks_by_pk;
 
     let count = () => {
-      if (artwork) counter = countdown(new Date(artwork.auction_end));
+      counter = countdown(new Date(artwork.auction_end));
       setTimeout(count, 1000);
     };
     count();
-  }
+  });
 
   let bidding, amount;
   let startBidding = async () => {
@@ -77,31 +84,41 @@
   let buyNow = async () => {
     transaction.amount = artwork.list_price;
     transaction.type = "purchase";
-    placeBid();
 
-    let tx = Transaction.fromHex(await getHex(utxo.txid));
+    let password = "tom";
+    let addr = getAddress($user.mnemonic, password);
+    let { address, output, redeem, privateKey } = addr;
+    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
 
     let fee = 100000;
+
+    // todo more sophisticated coin selection
+    let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value > fee);
+    let swap = Psbt.fromBase64(artwork.list_price_tx);
+    let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
+
     let change =
-      utxo.value -
-      swapTx.__CACHE.__TX.outs.reduce(
+      prevout.value -
+      swap.__CACHE.__TX.outs.reduce(
         (a, b) => a + parseInt(b.value.slice(1).toString("hex"), 16),
         0
       ) -
       fee;
 
-    swapTx
+    let asset = swap.data.inputs[0].witnessUtxo.asset;
+
+    swap
       .addInput({
-        hash: utxo.txid,
-        index: utxo.vout,
-        witnessUtxo: tx.outs[utxo.vout],
-        redeemScript: payment2.redeem.output,
+        hash: prevout.txid,
+        index: prevout.vout,
+        witnessUtxo: prevoutTx.outs[prevout.vout],
+        redeemScript: redeem.output,
       })
       // asset
       .addOutput({
-        asset: inputs[0].witnessUtxo.asset,
+        asset,
         nonce: Buffer.alloc(1),
-        script: payment2.output,
+        script: output,
         value: 1,
       })
       // fee
@@ -115,17 +132,18 @@
       .addOutput({
         asset: btc,
         nonce: Buffer.alloc(1),
-        script: payment2.output,
+        script: output,
         value: change,
       })
-      .signAllInputs(ECPair.fromPrivateKey(key2.privateKey))
+      .signAllInputs(ECPair.fromPrivateKey(privateKey))
       .finalizeInput(1);
 
-    base64 = swapTx.toBase64();
-    swapTx = swapTx;
+    let tx = swap.extractTransaction();
+    let hex = tx.toHex();
 
-    hex = swapTx.extractTransaction().toHex();
-    console.log("hex", hex);
+    await liquid.url("/broadcast").post({ hex }).text();
+    transaction.hash = tx.getId();
+    placeBid();
   };
 
   let destroyArtwork$, destroy;
@@ -164,7 +182,7 @@
   }
 </style>
 
-{#if $user && artwork}
+{#if artwork}
   <div class="flex flex-wrap">
     <div class="text-center lg:text-left w-full lg:w-1/4">
       <h1 class="text-3xl font-black text-gray-900">
@@ -184,18 +202,20 @@
         {/each}
       </div>
 
-      {#if artwork.list_price}<button on:click={buyNow}>Buy Now</button>{/if}
-      {#if $user.id === artwork.owner_id}
+      {#if $user && $user.id === artwork.owner_id}
         <button
           on:click={() => goto(`/artwork/${id}/edit`)}
           class="dangerous">Edit</button>
         <button on:click={destroy} class="dangerous">Destroy</button>
-      {:else if bidding}
-        <form on:submit={placeBid}>
-          <Amount bind:this={amount} bind:value={transaction.amount} />
-          <button type="submit">Submit</button>
-        </form>
-      {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
+      {:else}
+        {#if artwork.list_price}<button on:click={buyNow}>Buy Now</button>{/if}
+        {#if bidding}
+          <form on:submit={placeBid}>
+            <Amount bind:this={amount} bind:value={transaction.amount} />
+            <button type="submit">Submit</button>
+          </form>
+        {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
+      {/if}
       <div class="my-2 font-bold">
         <span class="font-thin text-sm">Auction closes in</span>
         <span class="text-2xl">{counter}</span>

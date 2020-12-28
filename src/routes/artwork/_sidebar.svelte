@@ -5,6 +5,7 @@
   import Heart from "$components/Heart";
   import { createFavorite, deleteFavorite } from "$queries/favorites";
   import { mutation } from "@urql/svelte";
+  import { goto }  from "$app/navigation";
 
   export let artwork;
 
@@ -12,7 +13,7 @@
   let deleteFavorite$ = mutation (deleteFavorite);
 
   let favorite = () => {
-    console.log(artwork);
+    if (!$user) return goto('/login');
     let { id: artwork_id } = artwork;
     let { id: user_id } = $user;
 

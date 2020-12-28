@@ -12,13 +12,16 @@
   import { goto }  from "$app/navigation";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
-  import { get } from "$queries/users";
+  import { getUser } from "$queries/users";
   import { createFollow, deleteFollow } from "$queries/follows";
   import Menu from "./_menu";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { fade } from "svelte/transition";
+  import { requireLogin } from "$lib/utils";
 
   export let id;
+
+  requireLogin($token);
 
   let collection = [];
   let creations = [];
@@ -28,7 +31,7 @@
   let artworks$ = operationStore(getArtworks);
   subscription(artworks$);
 
-  let subject$ = operationStore(get(id));
+  let subject$ = operationStore(getUser(id));
   subscription(subject$);
 
   $: updateSubject($subject$.data);

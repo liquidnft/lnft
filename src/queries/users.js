@@ -6,7 +6,7 @@ let fields =
 
 let computed = "followed, num_follows, num_followers";
 
-export const get = (id) => `subscription {
+export const getUser = (id) => `subscription {
   users_by_pk(id: "${id}") { 
     ${fields} 
     mnemonic

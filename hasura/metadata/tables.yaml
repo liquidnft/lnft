@@ -189,14 +189,20 @@
     permission:
       columns:
       - artist_id
+      - asset
+      - auction_end
       - created_at
       - description
       - filename
       - id
       - list_price
+      - list_price_tx
       - owner_id
       - title
+      - transferred_at
       computed_fields:
+      - favorited
+      - last_active
       - num_favorites
       filter: {}
   - role: user
@@ -240,12 +246,28 @@
   - role: user
     permission:
       filter:
-        artist_id:
+        owner_id:
           _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: collectors
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - username
+      - avatar_url
+      - display_name
+      - location
+      - bio
+      - website
+      - email
+      - full_name
+      - num_artworks
+      filter: {}
   - role: user
     permission:
       columns:
@@ -285,6 +307,13 @@
       - user_id
       backend_only: false
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - user_id
+      - artwork_id
+      filter: {}
+      allow_aggregations: true
   - role: user
     permission:
       columns:
@@ -321,6 +350,12 @@
       - user_id
       backend_only: false
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - follower_id
+      - user_id
+      filter: {}
   - role: user
     permission:
       columns:
@@ -346,6 +381,12 @@
         column_mapping:
           artwork_id: id
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - artwork_id
+      - amount
+      filter: {}
   - role: user
     permission:
       columns:
@@ -433,6 +474,17 @@
       - type
       backend_only: false
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - hash
+      - artwork_id
+      - type
+      - amount
+      - user_id
+      - created_at
+      filter: {}
   - role: user
     permission:
       columns:
@@ -528,6 +580,10 @@
       - website
       - email
       - full_name
+      computed_fields:
+      - followed
+      - num_followers
+      - num_follows
       filter: {}
   - role: user
     permission:
@@ -582,6 +638,12 @@
       - user_id
       backend_only: false
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - utxo
+      - user_id
+      filter: {}
   - role: user
     permission:
       columns:

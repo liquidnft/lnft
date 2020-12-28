@@ -19,6 +19,9 @@
     Transaction,
   } from "@asoltys/liquidjs-lib";
   import reverse from "buffer-reverse";
+  import { requireLogin } from "$lib/utils";
+
+  requireLogin();
 
   const network = networks.regtest;
   const btc =
@@ -43,6 +46,11 @@
     let fee = 100000;
 
     addr = getAddress($user.mnemonic, password);
+
+    if (!addr) {
+      $snack = "Failed to decrypt wallet";
+      return;
+    } 
 
     let { address, output, redeem } = addr;
 
@@ -81,7 +89,7 @@
         asset: btc,
         nonce: Buffer.alloc(1),
         script: output,
-        value: prevout.value - fee,
+        value: Math.round(prevout.value - fee),
       })
       .addIssuance({
         assetAmount: 1,
@@ -155,7 +163,7 @@
         asset: btc,
         nonce: Buffer.alloc(1),
         script: addr.output,
-        value: artwork.list_price,
+        value: Math.round(artwork.list_price),
       })
       .signInput(0, ECPair.fromPrivateKey(addr.privateKey), [sighashType])
       .finalizeInput(0);
@@ -193,7 +201,7 @@
     base64 = issuance.toBase64();
 
     issuanceTx = issuance.extractTransaction();
-    artwork.asset = reverse(issuanceTx.outs[3].asset).toString("hex");
+    artwork.asset = reverse(issuanceTx.outs[3].asset.slice(1)).toString("hex");
     signed = true;
   };
 </script>

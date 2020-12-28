@@ -71,7 +71,7 @@
       {#if loading}
         Loading...
       {:else}
-        {#each Object.keys(balances) as asset}
+        {#each Object.keys(balances).sort() as asset}
           <div>{asset}: {balances[asset]}</div>
         {/each}
       {/if}

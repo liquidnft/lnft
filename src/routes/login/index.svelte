@@ -7,6 +7,7 @@
   import { fromSeed } from "bip32";
   import { networks } from "@asoltys/liquidjs-lib";
   import { generateMnemonic, mnemonicToSeedSync } from "bip39";
+  import { onMount, tick } from "svelte";
 
   let error;
   let username = "anon";
@@ -25,6 +26,12 @@
       mnemonic: aes.encrypt(mnemonic, password).toString(),
     };
   };
+
+  let usernameInput;
+  onMount(async () => {
+    await tick();
+    usernameInput.select();
+  });
 
   let login = () => {
     api
@@ -108,7 +115,7 @@
       <label
         class="mb-2 uppercase font-medium text-gray-600"
         for="first_name">Username</label>
-      <input placeholder="username" bind:value={username} />
+      <input placeholder="username" bind:value={username} autofocus bind:this={usernameInput} />
     </div>
     <div class="flex flex-col mb-4">
       <label

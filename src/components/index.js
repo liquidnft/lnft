@@ -13,4 +13,4 @@ export { default as Row } from "./Row";
 export { default as Sidebar } from "./Sidebar";
 export { default as Navbar } from "./Navbar";
 export { default as Menu } from "./Menu";
-export { default as Urql } from "./Urql";
+export { default as PasswordPrompt } from "./PasswordPrompt";

@@ -14,6 +14,7 @@ const fields = `
   last_active
   created_at
   auction_end
+  list_price_tx
   bid {
     user {
       id

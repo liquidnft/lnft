@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import decode from "jwt-decode";
   import { user, token } from "$lib/store";
-  import { get } from "$queries/users";
+  import { getUser } from "$queries/users";
   import { api } from "$lib/api";
   import { fade } from "svelte/transition";
   import {
@@ -29,7 +29,7 @@
           return new SubscriptionClient(wsUrl, {
             reconnect: true,
             connectionParams: {
-              headers: { authorization: `Bearer ${$token}` },
+              headers: $token ? { authorization: `Bearer ${$token}` } : undefined,
             },
           }).request(operation);
         },
@@ -37,18 +37,18 @@
     ],
     fetchOptions: () => {
       return {
-        headers: { authorization: `Bearer ${$token}` },
+        headers: $token ? { authorization: `Bearer ${$token}` } : undefined,
       };
     },
   });
 
-  let id, user$;
+  let id, getUser$;
   $: {
     tokenUpdated($token);
     if ($token) {
       id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-      user$ = operationStore(get(id));
-      subscription(user$, (a, b) => {
+      getUser$ = operationStore(getUser(id));
+      subscription(getUser$, (a, b) => {
         $user = b.users_by_pk;
       });
     }
