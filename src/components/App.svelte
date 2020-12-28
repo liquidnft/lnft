@@ -7,7 +7,8 @@
   import { fade } from "svelte/transition";
   import {
     initClient,
-    defaultExchanges,
+    dedupExchange,
+    fetchExchange,
     subscriptionExchange,
     mutation,
     subscription,
@@ -15,6 +16,19 @@
   } from "@urql/svelte";
   import { SubscriptionClient } from "subscriptions-transport-ws";
   import { update } from "$queries/users";
+  import { offlineExchange } from "@urql/exchange-graphcache";
+  import { makeDefaultStorage } from "@urql/exchange-graphcache/default-storage";
+  import schema from "$lib/schema";
+
+  const storage = makeDefaultStorage({
+    idbName: "graphcache-v3",
+    maxAge: 7,
+  });
+
+  const cacheExchange = offlineExchange({
+    schema,
+    storage,
+  });
 
   let url = "http://localhost:8080/v1/graphql";
   let wsUrl = "ws://localhost:8080/v1/graphql";
@@ -22,14 +36,18 @@
   initClient({
     url,
     exchanges: [
-      ...defaultExchanges,
+      dedupExchange,
+      fetchExchange,
+      cacheExchange,
       subscriptionExchange({
         forwardSubscription(operation) {
           if (typeof WebSocket === "undefined") return;
           return new SubscriptionClient(wsUrl, {
             reconnect: true,
             connectionParams: {
-              headers: $token ? { authorization: `Bearer ${$token}` } : undefined,
+              headers: $token
+                ? { authorization: `Bearer ${$token}` }
+                : undefined,
             },
           }).request(operation);
         },

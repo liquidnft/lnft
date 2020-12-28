@@ -369,13 +369,26 @@
   dependencies:
     "@types/node" "*"
 
-"@urql/core@^1.16.0":
+"@urql/core@>=1.16.1", "@urql/core@^1.16.0":
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/@urql/core/-/core-1.16.1.tgz#a41487dd4436cbdc92fce714c6c1fc04315761d3"
   integrity sha512-lcEMCS/rB+ug7jKSRDVZIsqNhZxRooTNa1kHfvSjJT2k4SXDyPmjNSfXBUJF2pDJmvv9EIKl9Tk0AF1CvG3Q/g==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.0"
     wonka "^4.0.14"
+
+"@urql/exchange-graphcache@^3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@urql/exchange-graphcache/-/exchange-graphcache-3.3.3.tgz#bfd94899f52c8046d1b2e52caf4a3ccee623bb87"
+  integrity sha512-xkKvSN18bLsl6ldf64A7r2ibdoUwBlNJxog3cCyffktAgG3E1yuKbKs/qZELPsIQIEFPvTpC/gqCpBbJ7+0YRA==
+  dependencies:
+    "@urql/core" ">=1.16.1"
+    wonka "^4.0.14"
+
+"@urql/introspection@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@urql/introspection/-/introspection-0.1.2.tgz#3d6fd5a79f9df6e379aaf2922fb753cc06f228fc"
+  integrity sha512-neUWngizFD2ajCrHJLT/KmkhB6dcJTvMn7cE3c2KB2Hk0y+bSXK/1KBQffaekAacHUwxgoLvYEL9Z68HkCuFvQ==
 
 "@urql/svelte@^1.1.3":
   version "1.1.4"
@@ -2108,6 +2121,11 @@ node-emoji@^1.8.1:
   integrity sha512-Yt3384If5H6BYGVHiHwTL+99OzJKHhgp82S8/dktEK73T26BazdgZ4JZh92xSVtGNJvz9UbXdNAc5hcrXV42vw==
   dependencies:
     lodash.toarray "^4.4.0"
+
+node-fetch@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
+  integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
 node-releases@^1.1.67:
   version "1.1.67"
