@@ -1,3 +1,4 @@
+import decode from "jwt-decode";
 import {
   initClient,
   dedupExchange,
@@ -10,6 +11,7 @@ const url = "http://localhost:8080/v1/graphql";
 const wsUrl = "ws://localhost:8080/v1/graphql";
 
 export const setupUrql = (token) => {
+  if (token && decode(token).exp * 1000 < Date.now()) token = undefined;
   initClient({
     url,
     exchanges: [
