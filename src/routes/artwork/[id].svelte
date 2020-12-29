@@ -9,7 +9,7 @@
   import { Activity, Amount, Avatar, Card } from "$comp";
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
-  import { snack, user, token } from "$lib/store";
+  import { password, snack, user, token } from "$lib/store";
   import countdown from "$lib/countdown";
   import { getArtwork, destroyArtwork } from "$queries/artworks";
   import {
@@ -22,6 +22,7 @@
   import { electrs, liquid } from "$lib/api";
   import getAddress from "$lib/getAddress";
   import reverse from "buffer-reverse";
+  import { requireLogin, requirePassword } from "$lib/utils";
 
   export let id;
 
@@ -82,11 +83,12 @@
   };
 
   let buyNow = async () => {
+    await requirePassword();
+
     transaction.amount = artwork.list_price;
     transaction.type = "purchase";
 
-    let password = "tom";
-    let addr = getAddress($user.mnemonic, password);
+    let addr = getAddress($user.mnemonic, $password);
     let { address, output, redeem, privateKey } = addr;
     let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
 
@@ -227,6 +229,10 @@
               List Price
               {artwork.list_price}
               BTC
+
+            </div>
+              <div class="break-all">
+              {artwork.list_price_tx}
             </div>
           </div>
         {/if}

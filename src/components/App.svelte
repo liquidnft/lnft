@@ -5,77 +5,29 @@
   import { getUser } from "$queries/users";
   import { api } from "$lib/api";
   import { fade } from "svelte/transition";
-  import {
-    initClient,
-    dedupExchange,
-    fetchExchange,
-    subscriptionExchange,
-    mutation,
-    subscription,
-    operationStore,
-  } from "@urql/svelte";
-  import { SubscriptionClient } from "subscriptions-transport-ws";
   import { update } from "$queries/users";
-  import { offlineExchange } from "@urql/exchange-graphcache";
-  import { makeDefaultStorage } from "@urql/exchange-graphcache/default-storage";
-  import schema from "$lib/schema";
+  import { setupUrql } from "$lib/urql";
+  import { operationStore, subscription } from "@urql/svelte";
 
-  const storage = makeDefaultStorage({
-    idbName: "graphcache-v3",
-    maxAge: 7,
+  onMount(() => {
+    if (!$token) $token = window.sessionStorage.getItem("token");
   });
 
-  const cacheExchange = offlineExchange({
-    schema,
-    storage,
-  });
-
-  let url = "http://localhost:8080/v1/graphql";
-  let wsUrl = "ws://localhost:8080/v1/graphql";
-
-  initClient({
-    url,
-    exchanges: [
-      dedupExchange,
-      fetchExchange,
-      cacheExchange,
-      subscriptionExchange({
-        forwardSubscription(operation) {
-          if (typeof WebSocket === "undefined") return;
-          return new SubscriptionClient(wsUrl, {
-            reconnect: true,
-            connectionParams: {
-              headers: $token
-                ? { authorization: `Bearer ${$token}` }
-                : undefined,
-            },
-          }).request(operation);
-        },
-      }),
-    ],
-    fetchOptions: () => {
-      return {
-        headers: $token ? { authorization: `Bearer ${$token}` } : undefined,
-      };
-    },
-  });
-
-  let id, getUser$;
-  $: {
-    tokenUpdated($token);
-    if ($token) {
-      id = decode($token)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-      getUser$ = operationStore(getUser(id));
-      subscription(getUser$, (a, b) => {
-        $user = b.users_by_pk;
-      });
-    }
-  }
+  let id;
+  setupUrql();
+  $: tokenUpdated($token);
 
   let timeout;
   let tokenUpdated = async (t) => {
-    if (t) timeout = setTimeout(() => refreshToken(t), 600000);
-    else clearTimeout(timeout);
+    if (t) {
+      id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
+      setupUrql(t);
+      subscription(operationStore(getUser(id)), (_, data) => {
+        $user = data.users_by_pk;
+      });
+
+      timeout = setTimeout(() => refreshToken(t), 600000);
+    } else clearTimeout(timeout);
   };
 
   let refreshToken = (t) => {

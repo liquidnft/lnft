@@ -8,11 +8,10 @@
 
 <script>
   import { Buffer } from "buffer";
-  import { PasswordPrompt } from "$comp";
   import Form from "../_form";
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
-  import { updateArtwork, updateTags } from "$queries/artworks";
+  import { updateArtwork } from "$queries/artworks";
   import { goto } from "$app/navigation";
   import { electrs, liquid } from "$lib/api";
   import getAddress from "$lib/getAddress";
@@ -24,7 +23,7 @@
     Transaction,
   } from "@asoltys/liquidjs-lib";
   import { password, user, token } from "$lib/store";
-  import { requireLogin } from "$lib/utils";
+  import { requireLogin, requirePassword } from "$lib/utils";
 
   const btc =
     "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
@@ -32,37 +31,32 @@
 
   requireLogin($token);
 
-  let result = subscription(operationStore(getArtwork(id)));
-  $: artwork = $result.data
-    ? { ...$result.data.artworks_by_pk, list_price: 500 }
-    : null;
+  let artwork;
+  subscription(operationStore(getArtwork(id)), (a, b) => {
+    artwork = { ...b.artworks_by_pk, list_price: 500 };
+  });
 
   const updateArtwork$ = mutation(updateArtwork);
-  const updateTags$ = mutation(updateTags);
+  
   let update = async (e) => {
     e.preventDefault();
+
+    await createSwap();
 
     let {
       id: artwork_id,
       description,
       filename,
       list_price,
+      list_price_tx,
       title,
-      tags,
     } = artwork;
 
-    updateTags$({
-      tags: tags.data.map(({ tag }) => ({ tag, artwork_id })),
-      artwork_id,
-    }).then(async () => {
-      await createSwap();
-
-      updateArtwork$({
-        artwork: { description, filename, list_price, title },
-        id,
-      }).then(() => {
-        goto(`/artwork/${artwork.id}`);
-      });
+    updateArtwork$({
+      artwork: { description, filename, list_price, list_price_tx, title },
+      id,
+    }).then(() => {
+      goto(`/artwork/${artwork.id}`);
     });
   };
 
@@ -71,6 +65,8 @@
   };
 
   let createSwap = async () => {
+    await requirePassword();
+
     let { address, output, redeem, privateKey } = getAddress(
       $user.mnemonic,
       $password
@@ -104,6 +100,5 @@
 </script>
 
 {#if artwork}
-  <PasswordPrompt />
-  <Form {artwork} tags={artwork.tags.map((t) => t.tag)} on:submit={update} />
+  <Form {artwork} on:submit={update} />
 {/if}

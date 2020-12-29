@@ -3,7 +3,7 @@
   import { v4 } from "uuid";
   import { electrs, liquid } from "$lib/api";
   import { tick, onMount } from "svelte";
-  import { user, snack, token } from "$lib/store";
+  import { password, user, snack, token } from "$lib/store";
   import Dropzone from "$components/Dropzone";
   import upload from "$lib/upload";
   import Form from "./_form";
@@ -19,7 +19,7 @@
     Transaction,
   } from "@asoltys/liquidjs-lib";
   import reverse from "buffer-reverse";
-  import { requireLogin } from "$lib/utils";
+  import { requireLogin, requirePassword } from "$lib/utils";
 
   requireLogin();
 
@@ -34,7 +34,6 @@
   let hidden;
   let asset;
   let addr;
-  let password = "liquidart";
 
   $: hidden = type && !type.includes("video");
 
@@ -45,7 +44,8 @@
   let createIssuance = async () => {
     let fee = 100000;
 
-    addr = getAddress($user.mnemonic, password);
+    await requirePassword();
+    addr = getAddress($user.mnemonic, $password);
 
     if (!addr) {
       $snack = "Failed to decrypt wallet";
@@ -137,7 +137,6 @@
     description: "",
     filename: "",
     list_price: 10000,
-    tags: {},
     asset: "",
   };
 
@@ -246,8 +245,6 @@
               <div class="text-xs font-mono">{artwork.asset}</div>
             </div>
           {:else}
-            <label>Password</label>
-            <input bind:value={password} placeholder="Password" class="mb-2" />
             <button on:click={sign}>Sign Transaction</button>
           {/if}
         </div>

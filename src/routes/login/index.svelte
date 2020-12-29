@@ -1,5 +1,5 @@
 <script>
-  import { user, token } from "$lib/store";
+  import { password, user, token } from "$lib/store";
   import { goto } from "$app/navigation";
   import { api } from "$lib/api";
   import decode from "jwt-decode";
@@ -11,9 +11,9 @@
 
   let error;
   let username = "anon";
-  let password = "liquidart";
+  let attempt = "liquidart";
 
-  let setupWallet = (password) => {
+  let setupWallet = (attempt) => {
     let { AES: aes } = cryptojs;
     let mnemonic = generateMnemonic();
     let seed = mnemonicToSeedSync(mnemonic);
@@ -23,7 +23,7 @@
         .derivePath("m/84'/0'/0'/0")
         .neutered()
         .toBase58(),
-      mnemonic: aes.encrypt(mnemonic, password).toString(),
+      mnemonic: aes.encrypt(mnemonic, attempt).toString(),
     };
   };
 
@@ -38,7 +38,7 @@
       .url("/auth/login")
       .post({
         email: `${username}@liquidart.com`,
-        password,
+        password: attempt,
       })
       .badRequest((err) => {
         error = JSON.parse(err.message).message;
@@ -47,6 +47,7 @@
       .json((r) => {
         $token = r.jwt_token;
         window.sessionStorage.setItem("token", $token);
+        $password = attempt;
 
         goto("/market");
       });
@@ -57,11 +58,11 @@
       .url("/auth/register")
       .post({
         email: `${username}@liquidart.com`,
-        password,
+        password: attempt,
         user_data: {
           username,
           full_name: username,
-          ...setupWallet(password),
+          ...setupWallet(attempt),
         },
       })
       .badRequest((err) => {
@@ -121,7 +122,7 @@
       <label
         class="mb-2 uppercase font-medium text-gray-600"
         for="last_name">Password</label>
-      <input placeholder="Password" type="password" bind:value={password} />
+      <input placeholder="Password" type="password" bind:value={attempt} />
     </div>
     <div class="flex">
       <button

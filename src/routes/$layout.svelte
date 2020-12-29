@@ -1,6 +1,6 @@
 <script>
   import decode from "jwt-decode";
-  import { App, Avatar, ProgressLinear, Sidebar, Navbar } from "$comp";
+  import { App, Avatar, ProgressLinear, Sidebar, Navbar, PasswordPrompt } from "$comp";
   import { show, snack, user, token } from "$lib/store";
   import { onMount, afterUpdate } from "svelte";
   import { fade } from "svelte/transition";
@@ -8,14 +8,14 @@
   let clearSnack = () => setTimeout(() => ($snack = null), 5000);
   $: clearSnack($snack);
 
-  let open = false
+  let open = false;
 </script>
 
 <style>
-  :global(.brand-color){
-    background-color: #05B298;
+  :global(.brand-color) {
+    background-color: #05b298;
   }
-  
+
   :global(button) {
     @apply p-4;
     border-radius: 30px !important;
@@ -35,18 +35,18 @@
   }
 
   :global(.sub-title) {
-    font-weight:bold;
-    font-size:20px; 
-    color: #05B298;
+    font-weight: bold;
+    font-size: 20px;
+    color: #05b298;
   }
 
-  :global(a:hover){
-    color: #05B298;
+  :global(a:hover) {
+    color: #05b298;
   }
 
   img {
     max-width: 25px;
-  } 
+  }
 </style>
 
 {#if $snack}
@@ -58,13 +58,14 @@
   </div>
 {/if}
 
-<Sidebar bind:open/>
-<Navbar bind:sidebar={open}/>
+<Sidebar bind:open />
+<Navbar bind:sidebar={open} />
+<PasswordPrompt />
 
 <main>
   <div class="container mx-auto px-6">
-      <App>
-        <slot />
-      </App>
+    <App>
+      <slot />
+    </App>
   </div>
 </main>

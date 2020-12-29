@@ -1,11 +1,9 @@
 <script>
   import { formatISO, addDays } from 'date-fns';
   export let artwork;
-  export let tags = [];
   let selected;
 
-  const allTags = ["digital", "glitch", "3d", "abstract"];
-  $: artwork.tags = { data: tags.map((tag) => ({ tag })) };
+  // const allTags = ["digital", "glitch", "3d", "abstract"];
   $: artwork.auction_end = formatISO(addDays(new Date(), 3));
 </script>
 
@@ -39,14 +37,6 @@
   <div class="flex flex-col mb-4">
     <label>Auction End Time</label>
     <input placeholder="Auction End Time" bind:value={artwork.auction_end} />
-  </div>
-  <div class="flex flex-col mb-4">
-    <label>Tags</label>
-    <select multiple bind:value={tags}>
-      {#each allTags as tag}
-        <option value={tag}>{tag}</option>
-      {/each}
-    </select>
   </div>
   <div class="flex">
     <button
