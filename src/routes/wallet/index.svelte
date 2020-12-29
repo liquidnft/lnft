@@ -1,5 +1,5 @@
 <script>
-  import { liquid, electrs } from "$lib/api";
+  import { electrs } from "$lib/api";
   // import QrCode from "svelte-qrcode";
   import { onMount } from "svelte";
   import { snack, password, user, token } from "$lib/store";

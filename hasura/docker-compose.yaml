@@ -133,16 +133,6 @@ services:
     volumes:
       - ./liquidregtest/liquid-config/:/config
     restart: unless-stopped
-  la-server:
-    build:
-     context: ./server
-     dockerfile: Dockerfile
-    # image: asoltys/la-server:latest
-    container_name: la-server
-    ports:
-      - 3939:3939
-    volumes:
-      - ./server:/app
   esplora-liquid:
     image: vulpemventures/esplora:latest
     container_name: esplora-liquid

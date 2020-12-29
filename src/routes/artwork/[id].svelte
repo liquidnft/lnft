@@ -19,7 +19,7 @@
   import { goto } from "$app/navigation";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { ECPair, Transaction, Psbt } from "@asoltys/liquidjs-lib";
-  import { electrs, liquid } from "$lib/api";
+  import { electrs } from "$lib/api";
   import getAddress from "$lib/getAddress";
   import reverse from "buffer-reverse";
   import { requireLogin, requirePassword } from "$lib/utils";
@@ -143,7 +143,7 @@
     let tx = swap.extractTransaction();
     let hex = tx.toHex();
 
-    await liquid.url("/broadcast").post({ hex }).text();
+    await electrs.url("/tx").body(hex).post().text();
     transaction.hash = tx.getId();
     placeBid();
   };

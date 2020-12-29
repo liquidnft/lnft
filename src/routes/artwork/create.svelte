@@ -1,7 +1,7 @@
 <script>
   import { Buffer } from "buffer";
   import { v4 } from "uuid";
-  import { electrs, liquid } from "$lib/api";
+  import { electrs } from "$lib/api";
   import { tick, onMount } from "svelte";
   import { password, user, snack, token } from "$lib/store";
   import Dropzone from "$components/Dropzone";
@@ -180,7 +180,7 @@
       return;
     }
 
-    await liquid.url("/broadcast").post({ hex: issuanceTx.toHex() }).text();
+    await electrs.url("/tx").body(issuanceTx.toHex()).post().text();
 
     createSwap();
 

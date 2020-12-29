@@ -13,7 +13,7 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
   import { goto } from "$app/navigation";
-  import { electrs, liquid } from "$lib/api";
+  import { electrs } from "$lib/api";
   import getAddress from "$lib/getAddress";
   import {
     ECPair,

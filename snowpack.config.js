@@ -18,14 +18,6 @@ module.exports = {
         },
       },
     },
-    "/liquid": {
-      target: "http://localhost:3939",
-      on: {
-        proxyReq: (p, req, res) => {
-          p.path = req.url.replace("/liquid", "");
-        },
-      },
-    },
     "/esplora": {
       target: "http://localhost:5005",
       on: {
