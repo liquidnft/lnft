@@ -28,8 +28,8 @@
 
 <header class="flex container mx-auto justify-between p-2 items-center text-gray-600 mb-20">
 	<h1 class="flex-auto my-auto text-green-400 text-3xl">
-    <a href="/">L<span class="text-black">iquid</span>
-      A<span class="text-black">rt</span></a>
+    <a href="/">
+      R<span class="text-black">aretoshi</span></a>
   </h1>
 	<nav class="flex hambuger">
 		<Hamburger bind:open={sidebar}/>
