@@ -2,18 +2,21 @@
   import { liquid, electrs } from "$lib/api";
   // import QrCode from "svelte-qrcode";
   import { onMount } from "svelte";
-  import { snack, user, token } from "$lib/store";
+  import { snack, password, user, token } from "$lib/store";
   import getAddress from "$lib/getAddress";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
+  import { requireLogin, requirePassword } from "$lib/utils";
 
   let loading = true;
-  let locked = true;
   let address;
-  let password = "liquidart";
-  let unlock = async () => {
+  requireLogin();
+
+  let init = async () => {
+    await requirePassword();
+
     try {
-      ({ address } = getAddress($user.mnemonic, password));
+      ({ address } = getAddress($user.mnemonic, $password));
     } catch (e) {
       $snack = "Failed to decrypt wallet";
     }
@@ -22,8 +25,9 @@
     loading = false;
 
     setInterval(() => getUtxos(address), 2000);
-    locked = false;
   };
+
+  $: if ($user && loading) init();
 
   let utxos = [];
   let getUtxos = async (address) => {
@@ -60,22 +64,15 @@
   }
 </style>
 
-{#if $user}
-  <h1 class="title">Wallet</h1>
-  {#if locked}
-    <input bind:value={password} placeholder="Password" />
-    <button on:click={unlock}>Unlock</button>
-  {:else}
-    <div>Address: {address}</div>
-    <div>
-      {#if loading}
-        Loading...
-      {:else}
-        {#each Object.keys(balances).sort() as asset}
-          <div>{asset}: {balances[asset]}</div>
-        {/each}
-      {/if}
-    </div>
-    <button on:click={generate}>Faucet</button>
-  {/if}
+{#if loading}
+  Loading...
+{:else}
+  <div class="font-bold mb-2">Address: {address}</div>
+  <div>
+    <h2>Assets</h2>
+    {#each Object.keys(balances).sort() as asset}
+      <div>{asset}: {balances[asset]}</div>
+    {/each}
+  </div>
+  <button on:click={generate}>Faucet</button>
 {/if}

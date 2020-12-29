@@ -1,5 +1,5 @@
 <script>
-  import { password, user, token } from "$lib/store";
+  import { prompt, password, user, token } from "$lib/store";
   import { goto } from "$app/navigation";
   import { api } from "$lib/api";
   import decode from "jwt-decode";
@@ -48,6 +48,7 @@
         $token = r.jwt_token;
         window.sessionStorage.setItem("token", $token);
         $password = attempt;
+        $prompt = false;
 
         goto("/market");
       });

@@ -219,8 +219,13 @@
         {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
       {/if}
       <div class="my-2 font-bold">
+        {#if artwork.auction_end > new Date()}
         <span class="font-thin text-sm">Auction closes in</span>
         <span class="text-2xl">{counter}</span>
+      {:else}
+        <span class="text-2xl">Auction ended</span>
+      {/if}
+
       </div>
       <div>
         {#if artwork.list_price}

@@ -11,14 +11,10 @@ export const requireLogin = () =>
     });
   });
 
-export const requirePassword = () => {
-  token.subscribe(($token) => {
-    if (!$token || decode($token).exp * 1000 < Date.now()) goto("/login");
-  });
-
-  return new Promise((resolve) =>
-    password.subscribe(($password) => {
-      if ($password) resolve();
+export const requirePassword = async () => {
+  return new Promise((resolve, reject) =>
+    password.subscribe(async ($password) => {
+      if ($password) resolve(true);
       else prompt.set(true);
     })
   );

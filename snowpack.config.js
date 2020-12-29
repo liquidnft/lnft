@@ -26,6 +26,14 @@ module.exports = {
         },
       },
     },
+    "/esplora": {
+      target: "http://localhost:5005",
+      on: {
+        proxyReq: (p, req, res) => {
+          p.path = req.url.replace("/esplora", "");
+        },
+      },
+    },
   },
 	mount: {
 		'src/components': '/_components',

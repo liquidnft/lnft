@@ -26,7 +26,7 @@
   };
 </script>
 
-{#if $prompt}
+{#if $user && $prompt}
   <form on:submit={login}>
   <div class="fixed z-10 inset-0 overflow-y-auto">
     <div
