@@ -9,10 +9,6 @@
   import { setupUrql } from "$lib/urql";
   import { operationStore, subscription } from "@urql/svelte";
 
-  onMount(() => {
-    if (!$token) $token = window.sessionStorage.getItem("token");
-  });
-
   let id;
   setupUrql();
   $: tokenUpdated($token);

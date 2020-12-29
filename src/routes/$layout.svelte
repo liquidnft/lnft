@@ -1,14 +1,27 @@
 <script>
   import decode from "jwt-decode";
-  import { App, Avatar, ProgressLinear, Sidebar, Navbar, PasswordPrompt } from "$comp";
+  import {
+    App,
+    Avatar,
+    ProgressLinear,
+    Sidebar,
+    Navbar,
+    PasswordPrompt,
+  } from "$comp";
   import { show, snack, user, token } from "$lib/store";
-  import { onMount, afterUpdate } from "svelte";
+  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 
   let clearSnack = () => setTimeout(() => ($snack = null), 5000);
   $: clearSnack($snack);
 
   let open = false;
+  let mounted = false;
+
+  onMount(async () => {
+    if (!$token) $token = window.sessionStorage.getItem("token");
+    mounted = true;
+  });
 </script>
 
 <style>
@@ -58,14 +71,20 @@
   </div>
 {/if}
 
-<Sidebar bind:open />
-<Navbar bind:sidebar={open} />
-<PasswordPrompt />
+{#if mounted}
+  <Sidebar bind:open />
+  <Navbar bind:sidebar={open} />
+  <PasswordPrompt />
 
-<main>
-  <div class="container mx-auto px-6">
-    <App>
-      <slot />
-    </App>
+  <main>
+    <div class="container mx-auto px-6">
+      <App>
+        <slot />
+      </App>
+    </div>
+  </main>
+{:else}
+  <div class="absolute top-0 w-full left-0">
+    <ProgressLinear />
   </div>
-</main>
+{/if}

@@ -569,17 +569,19 @@
   - role: anonymous
     permission:
       columns:
-      - id
-      - created_at
-      - updated_at
-      - username
       - avatar_url
-      - display_name
-      - location
       - bio
-      - website
+      - created_at
+      - display_name
       - email
       - full_name
+      - id
+      - location
+      - mnemonic
+      - pubkey
+      - updated_at
+      - username
+      - website
       computed_fields:
       - followed
       - num_followers

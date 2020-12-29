@@ -26,27 +26,26 @@
   let collection = [];
   let creations = [];
   let favorites = [];
+
+  let artworks;
+  subscription(operationStore(getArtworks), (_, data) => {
+    artworks = data.artworks;
+  }
+);
+
   let subject;
+  subscription(operationStore(getUser(id)), (_, data) => {
+    subject = data.users_by_pk;
+  });
 
-  let artworks$ = operationStore(getArtworks);
-  subscription(artworks$);
-
-  let subject$ = operationStore(getUser(id));
-  subscription(subject$);
-
-  $: updateSubject($subject$.data);
-  $: applyFilters($artworks$, subject);
+  $: applyFilters(artworks, subject);
 
   let updateSubject = async (data) => {
     if (!data) return;
-    subject = data.users_by_pk;
   };
 
-  let applyFilters = (artworks$, subject) => {
-    if (!(subject && artworks$ && artworks$.data)) return;
-    let {
-      data: { artworks },
-    } = artworks$;
+  let applyFilters = (artworks, subject) => {
+    if (!(artworks && subject)) return;
     creations = artworks.filter((a) => a.artist_id === subject.id);
     collection = artworks.filter((a) => a.owner_id === subject.id);
     favorites = artworks.filter((a) => a.favorited);
@@ -88,58 +87,56 @@
     }
   }
 
-  .card-container{
+  .card-container {
     width: 44% !important;
     margin: 3%;
   }
 
-  .follow{
+  .follow {
     width: 150px;
   }
 
-  .profile-container .col1{
+  .profile-container .col1 {
     width: 10%;
-    min-width:150px ;
+    min-width: 150px;
   }
 
-  .profile-container .col2{
+  .profile-container .col2 {
     width: 20%;
     min-width: 150px;
-    margin-right:20%;
+    margin-right: 20%;
   }
 
-  .profile-container .col3{
+  .profile-container .col3 {
     width: 50%;
   }
 
-  @media only screen and (max-width: 1280px){
-    .profile-container .col2{
+  @media only screen and (max-width: 1280px) {
+    .profile-container .col2 {
       margin-right: 5%;
     }
 
-    .profile-container .col3{
-     width: 65%;
+    .profile-container .col3 {
+      width: 65%;
     }
   }
 
-  @media only screen and (max-width: 1023px){
-    .card-container{
+  @media only screen and (max-width: 1023px) {
+    .card-container {
       width: 100% !important;
     }
   }
 
-  @media only screen and (max-width: 800px){
-    .profile-container{
+  @media only screen and (max-width: 800px) {
+    .profile-container {
       flex-wrap: wrap;
     }
 
-    .profile-container .col3{
-     width: 100%;
-     margin-top: 40px;
+    .profile-container .col3 {
+      width: 100%;
+      margin-top: 40px;
     }
   }
-    
-
 </style>
 
 {#if $user && subject}
@@ -155,7 +152,9 @@
       {#if $user.id === id}
         <Menu />
       {:else}
-        <button class="bg-black text-white p-2 rounded brand-color follow" on:click={follow}>
+        <button
+          class="bg-black text-white p-2 rounded brand-color follow"
+          on:click={follow}>
           {subject.followed ? 'Unfollow' : 'Follow'}</button>
       {/if}
     </div>
@@ -191,7 +190,9 @@
         <div class="w-full flex justify-center">
           <div class="w-full flex flex-wrap">
             {#each creations as artwork (artwork.id)}
-              <div class="card-container"><Card {artwork} /></div>
+              <div class="card-container">
+                <Card {artwork} />
+              </div>
             {:else}
               <div class="mx-auto">No creations yet</div>
             {/each}
@@ -201,7 +202,9 @@
         <div class="w-full flex justify-center">
           <div class="w-full flex flex-wrap">
             {#each collection as artwork (artwork.id)}
-              <div class="card-container"><Card {artwork} /></div>
+              <div class="card-container">
+                <Card {artwork} />
+              </div>
             {:else}
               <div class="mx-auto">Nothing collected yet</div>
             {/each}
@@ -213,7 +216,9 @@
         <div class="w-full flex justify-center">
           <div class="w-full flex flex-wrap">
             {#each favorites as artwork (artwork.id)}
-              <div class="card-container"><Card {artwork} /></div>
+              <div class="card-container">
+                <Card {artwork} />
+              </div>
             {:else}
               <div class="mx-auto">No favorites yet</div>
             {/each}
