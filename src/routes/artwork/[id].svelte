@@ -1,10 +1,5 @@
-<script context="module">
-  export async function preload({ params }) {
-    return params;
-  }
-</script>
-
 <script>
+  import { page } from "$app/stores";
   import { Buffer } from "buffer";
   import { Activity, Amount, Avatar, Card } from "$comp";
   import Sidebar from "./_sidebar";
@@ -24,10 +19,10 @@
   import reverse from "buffer-reverse";
   import { requireLogin, requirePassword } from "$lib/utils";
 
-  export let id;
-
   const btc =
     "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+
+  let { id } = $page.params;
 
   let transactions = [];
   subscription(

@@ -1,12 +1,5 @@
-<script context="module">
-  export async function preload({ params }) {
-    let { id } = params;
-
-    return { id };
-  }
-</script>
-
 <script>
+  import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { goto }  from "$app/navigation";
@@ -19,10 +12,9 @@
   import { fade } from "svelte/transition";
   import { requireLogin } from "$lib/utils";
 
-  export let id;
+  requireLogin();
 
-  requireLogin($token);
-
+  let { id } = $page.params;
   let collection = [];
   let creations = [];
   let favorites = [];
@@ -35,6 +27,7 @@
 
   let subject;
   subscription(operationStore(getUser(id)), (_, data) => {
+    console.log("get ussser");
     subject = data.users_by_pk;
   });
 

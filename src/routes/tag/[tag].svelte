@@ -1,16 +1,10 @@
-<script context="module">
-	export async function preload({ params }) {
-    let { tag } = params;
-		return { tag };
-	}
-</script>
-
 <script>
-  export let tag;
+  import { page } from "$app/stores";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworksByTag } from "$queries/artworks";
   import { Card } from "$comp";
 
+  let { tag } = $page.params;
   let artworks = [];
   let getArtworksByTag$ = operationStore(getArtworksByTag(tag));
   subscription(getArtworksByTag$, (a, b) => (artworks = b.artworks));

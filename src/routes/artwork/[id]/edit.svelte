@@ -1,12 +1,5 @@
-<script context="module">
-  export async function preload({ params }) {
-    let { id } = params;
-
-    return { id };
-  }
-</script>
-
 <script>
+  import { page } from "$app/stores";
   import { Buffer } from "buffer";
   import Form from "../_form";
   import { getArtwork } from "$queries/artworks";
@@ -27,7 +20,8 @@
 
   const btc =
     "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
-  export let id;
+
+  let { id } = $page.params;
 
   requireLogin($token);
 
