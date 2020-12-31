@@ -4,6 +4,8 @@
   import { formatDistanceStrict } from "date-fns";
   export let transaction;
   export let showImage = false;
+
+  const { SNOWPACK_PUBLIC_EXPLORER: explorerUrl } = import.meta.env;
 </script>
 
 <style>
@@ -45,7 +47,7 @@
         {formatDistanceStrict(new Date(transaction.created_at), new Date())}
         ago
       </span>
-      <a href={`http://localhost:5005/tx/${transaction.hash}`} class="text-xs text-green-400">
+      <a href={`${explorerUrl}/tx/${transaction.hash}`} class="text-xs text-green-400">
         [view tx]
       </a>
     </div>

@@ -7,8 +7,10 @@ import {
 } from "@urql/svelte";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
-const url = "http://localhost:8080/v1/graphql";
-const wsUrl = "ws://localhost:8080/v1/graphql";
+const {
+  SNOWPACK_PUBLIC_HTTP: url,
+  SNOWPACK_PUBLIC_WS: wsUrl,
+} = import.meta.env;
 
 export const setupUrql = (token) => {
   if (token && decode(token).exp * 1000 < Date.now()) token = undefined;
@@ -23,9 +25,7 @@ export const setupUrql = (token) => {
           return new SubscriptionClient(wsUrl, {
             reconnect: true,
             connectionParams: {
-              headers: token
-                ? { authorization: `Bearer ${token}` }
-                : undefined,
+              headers: token ? { authorization: `Bearer ${token}` } : undefined,
             },
           }).request(operation);
         },
