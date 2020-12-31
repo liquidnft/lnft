@@ -5,7 +5,13 @@
   export let transaction;
   export let showImage = false;
 
-  const { SNOWPACK_PUBLIC_EXPLORER: explorerUrl } = import.meta.env;
+  let explorerUrl;
+  if (import.meta && import.meta.env) {
+    explorerUrl = import.meta.env.SNOWPACK_PUBLIC_EXPLORER;
+  }
+    else {
+      explorerUrl = "https://la.coinos.io/explorer";
+    }
 </script>
 
 <style>
@@ -13,8 +19,8 @@
     @apply text-green-400;
   }
 
-  .divider{
-    border:1px solid #e4e4e4;
+  .divider {
+    border: 1px solid #e4e4e4;
     margin: 50px 0;
   }
 </style>
@@ -47,7 +53,9 @@
         {formatDistanceStrict(new Date(transaction.created_at), new Date())}
         ago
       </span>
-      <a href={`${explorerUrl}/tx/${transaction.hash}`} class="text-xs text-green-400">
+      <a
+        href={`${explorerUrl}/tx/${transaction.hash}`}
+        class="text-xs text-green-400">
         [view tx]
       </a>
     </div>
@@ -56,5 +64,5 @@
 
 {#if showImage}
   <Card artwork={transaction.artwork} columns={2} showDetails={false} />
-  <hr class="mb-6 divider">
+  <hr class="mb-6 divider" />
 {/if}

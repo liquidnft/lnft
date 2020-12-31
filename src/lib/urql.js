@@ -7,10 +7,14 @@ import {
 } from "@urql/svelte";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
-const {
-  SNOWPACK_PUBLIC_HTTP: url,
-  SNOWPACK_PUBLIC_WS: wsUrl,
-} = import.meta.env;
+let url, wsUrl;
+if (import.meta && import.meta.env) {
+  url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
+  wsUrl = import.meta.env.SNOWPACK_PUBLIC_WS;
+} else {
+  url = "https://la.coinos.io/v1/graphql";
+  wsUrl = "wss://la.coinos.io/v1/graphql";
+} 
 
 export const setupUrql = (token) => {
   if (token && decode(token).exp * 1000 < Date.now()) token = undefined;

@@ -27,7 +27,6 @@
 
   let subject;
   subscription(operationStore(getUser(id)), (_, data) => {
-    console.log("get ussser");
     subject = data.users_by_pk;
   });
 

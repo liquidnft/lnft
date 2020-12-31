@@ -3,6 +3,7 @@ end time on auctions
 bids as timelocked atomic swaps
 explore 2-step non-interactive atomic swaps
 artist set royalty rate
+use amp for enforcing royalties
 file hash (dat hash?) in asset contract
 non custodial lq wallet
 dat mirrors
