@@ -4,7 +4,6 @@ node_modules
 /build
 /functions
 deploy.sh
-mine.sh
 hasura/liquidregtest/config/regtest/
 hasura/liquidregtest/liquid-config/liquidregtest/
 hasura/db
