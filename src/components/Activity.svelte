@@ -8,10 +8,9 @@
   let explorerUrl;
   if (import.meta && import.meta.env) {
     explorerUrl = import.meta.env.SNOWPACK_PUBLIC_EXPLORER;
+  } else {
+    explorerUrl = "https://la.coinos.io/explorer";
   }
-    else {
-      explorerUrl = "https://la.coinos.io/explorer";
-    }
 </script>
 
 <style>
