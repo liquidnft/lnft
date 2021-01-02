@@ -16,6 +16,7 @@
     <label>Description</label>
     <textarea placeholder="Description" bind:value={artwork.description} />
   </div>
+  <!--
   <div class="flex flex-col mb-4">
     <div>
       <div class="mt-1 relative rounded-md shadow-sm">
@@ -38,6 +39,7 @@
     <label>Auction End Time</label>
     <input placeholder="Auction End Time" bind:value={artwork.auction_end} />
   </div>
+  -->
   <div class="flex">
     <button
       type="submit"

@@ -143,3 +143,63 @@ export const executeSwap = async (psbt) => {
       })
   );
 };
+
+export const createIssuance = async () => {
+  let fee = 100000;
+  let addr = getAddress($user.mnemonic, $password);
+
+  if (!addr) {
+    $snack = "Failed to decrypt wallet";
+    return;
+  }
+
+  let { address, output, redeem } = addr;
+
+  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+  let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value > fee);
+
+  if (!prevout) {
+    $snack = "Not enough funds";
+    return;
+  }
+  return (
+    new Psbt()
+      .addInput({
+        hash: prevout.txid,
+        index: prevout.vout,
+        nonWitnessUtxo: Buffer.from(await getHex(prevout.txid), "hex"),
+        sighashType: 1,
+        redeemScript: redeem.output,
+      })
+      // fee
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1, 0),
+        script: Buffer.alloc(0),
+        value: fee,
+      })
+      // op_return
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: payments.embed({ data: [Buffer.alloc(1)] }).output,
+        value: 0,
+      })
+      //change
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: output,
+        value: Math.round(prevout.value - fee),
+      })
+      .addIssuance({
+        assetAmount: 1,
+        assetAddress: address,
+        tokenAmount: 0,
+        precision: 0,
+        net: network,
+      })
+  );
+
+  base64 = issuance.toBase64();
+};

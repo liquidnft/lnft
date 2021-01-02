@@ -1,7 +1,7 @@
 <svelte:options accessors={true} />
 
 <script>
-  import { prompt, password, user, token } from "$lib/store";
+  import { prompt, password, user, snack, token } from "$lib/store";
   import { api } from "$lib/api";
 
   let attempt = "liquidart";
@@ -16,9 +16,9 @@
         password: attempt,
       })
       .badRequest((err) => {
-        error = JSON.parse(err.message).message;
+        $snack = JSON.parse(err.message).message;
       })
-      .unauthorized((err) => (error = "Login failed"))
+      .unauthorized((err) => ($snack = "Wrong password"))
       .json((r) => {
         $token = r.jwt_token;
         window.sessionStorage.setItem("token", $token);

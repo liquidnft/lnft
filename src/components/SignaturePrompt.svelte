@@ -1,5 +1,5 @@
 <script>
-  import { psbt, prompt, password, user, token } from "$lib/store";
+  import { psbt, prompt, password, user, snack, token } from "$lib/store";
   import { api } from "$lib/api";
   import Lock from "$icons/lock";
   import { sign, broadcast } from "$lib/wallet";
@@ -16,6 +16,22 @@
 
   export let test = "123";
 
+  function copy(v) {
+    let textArea = document.createElement("textarea");
+    textArea.style.position = "fixed";
+    textArea.value = v;
+
+    document.body.appendChild(textArea);
+
+    textArea.focus();
+    textArea.select();
+
+    document.execCommand("copy");
+    document.body.removeChild(textArea);
+
+    $snack = "Copied!";
+  }
+
   let outs = [];
   $: outs = $psbt.__CACHE.__TX.outs
     .map((out) => {
@@ -23,7 +39,8 @@
       try {
         address = Address.fromOutputScript(out.script);
       } catch (e) {
-        if (!out.script.fee) address = "Fee";
+        if (!out.script.length) address = "Fee";
+        else return;
       }
       return {
         value: parseInt(out.value.slice(1).toString("hex"), 16),
@@ -54,7 +71,5 @@
 {/each}
 
 <div class="flex">
-  <button class="mx-auto my-4 border border-black">Copy to Clipboard</button>
+  <button class="mx-auto my-4 border border-black" on:click={() => copy($psbt.toBase64())}>Copy to Clipboard</button>
 </div>
-
-

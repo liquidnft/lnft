@@ -1,106 +1,30 @@
 <script>
-  import { Buffer } from "buffer";
   import { v4 } from "uuid";
   import { electrs } from "$lib/api";
   import { tick, onMount } from "svelte";
-  import { password, user, snack, token } from "$lib/store";
-  import Dropzone from "$components/Dropzone";
+  import { psbt, password, prompt, user, snack, token } from "$lib/store";
+  import { Dropzone, SignaturePrompt } from "$comp";
   import upload from "$lib/upload";
   import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
   import { goto } from "$lib/utils";
-  import getAddress from "$lib/getAddress";
-  import {
-    ECPair,
-    Psbt,
-    payments,
-    networks,
-    Transaction,
-  } from "@asoltys/liquidjs-lib";
-  import reverse from "buffer-reverse";
-  import { requireLogin, requirePassword } from "$lib/utils";
+  import { requirePassword } from "$lib/utils";
+  import { createIssuance } from "$lib/wallet";
+import reverse from "buffer-reverse";
 
-  onMount(requireLogin);
-
-  const network = networks.regtest;
-  const btc =
-    "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+  onMount(async () => {
+    await requirePassword();
+    $psbt = await createIssuance();
+  });
 
   let preview;
   let filename;
   let type;
   let video;
   let hidden;
-  let asset;
-  let addr;
 
   $: hidden = type && !type.includes("video");
-
-  $: if ($user) {
-    createIssuance();
-  }
-
-  let createIssuance = async () => {
-    let fee = 100000;
-
-    await requirePassword();
-    addr = getAddress($user.mnemonic, $password);
-
-    if (!addr) {
-      $snack = "Failed to decrypt wallet";
-      return;
-    } 
-
-    let { address, output, redeem } = addr;
-
-    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-    let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value > fee);
-
-    if (!prevout) {
-      $snack = "Not enough funds";
-      return;
-    }
-
-    issuance = new Psbt()
-      .addInput({
-        hash: prevout.txid,
-        index: prevout.vout,
-        nonWitnessUtxo: Buffer.from(await getHex(prevout.txid), "hex"),
-        sighashType: 1,
-        redeemScript: redeem.output,
-      })
-      // fee
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1, 0),
-        script: Buffer.alloc(0),
-        value: fee,
-      })
-      // op_return
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1),
-        script: payments.embed({ data: [Buffer.alloc(1)] }).output,
-        value: 0,
-      })
-      //change
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1),
-        script: output,
-        value: Math.round(prevout.value - fee),
-      })
-      .addIssuance({
-        assetAmount: 1,
-        assetAddress: address,
-        tokenAmount: 0,
-        precision: 0,
-        net: network,
-      });
-
-    base64 = issuance.toBase64();
-  };
 
   let previewFile = (file) => {
     artwork.filename = file.name;
@@ -136,56 +60,21 @@
     title: "",
     description: "",
     filename: "",
-    list_price: 10000,
     asset: "",
-  };
-
-  let getHex = async (txid) => {
-    return electrs.url(`/tx/${txid}/hex`).get().text();
   };
 
   const createArtwork = mutation(create);
 
-  let sighashType =
-    Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
-
-  let createSwap = () => {
-    let swap = new Psbt()
-      .addInput({
-        hash: issuanceTx.getId(),
-        index: 3,
-        witnessUtxo: issuanceTx.outs[3],
-        redeemScript: addr.redeem.output,
-        sighashType,
-      })
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1),
-        script: addr.output,
-        value: Math.round(artwork.list_price),
-      })
-      .signInput(0, ECPair.fromPrivateKey(addr.privateKey), [sighashType])
-      .finalizeInput(0);
-
-    artwork.list_price_tx = swap.toBase64();
-  };
-
-  let signed = false;
-  let issuance, issuanceTx, base64;
-  let issue = async (e) => {
+  let submit = async (e) => {
     e.preventDefault();
 
-    if (!signed) {
-      $snack = "Must sign the issuance transaction";
-      return;
-    }
+    $prompt = SignaturePrompt;
+    await new Promise((resolve) => prompt.subscribe(value => value || resolve()));
 
-    await electrs.url("/tx").body(issuanceTx.toHex()).post().text();
-
-    createSwap();
-
+    let tx = $psbt.extractTransaction();
+    artwork.asset = reverse(tx.outs[3].asset.slice(1)).toString("hex");
     artwork.id = v4();
-    createArtwork({ artwork, hash: issuanceTx.getId(), id: artwork.id }).then(
+    createArtwork({ artwork, hash: tx.getId(), id: artwork.id }).then(
       () => {
         goto("/market");
       }
@@ -193,14 +82,7 @@
   };
 
   let sign = () => {
-    issuance
-      .signInput(0, ECPair.fromPrivateKey(addr.privateKey))
-      .finalizeAllInputs();
-
-    base64 = issuance.toBase64();
-
-    issuanceTx = issuance.extractTransaction();
-    artwork.asset = reverse(issuanceTx.outs[3].asset.slice(1)).toString("hex");
+    sign($psbt);
     signed = true;
   };
 </script>
@@ -213,13 +95,15 @@
 
 <div>
   <h1 class="text-2xl font-black text-gray-900 pb-6">Submit Artwork</h1>
-</div>{#if preview}
+</div>
+
+{#if preview}
   <div class="flex flex-wrap">
-    <Form {artwork} on:submit={issue} />
+    <Form {artwork} on:submit={submit} />
     <div class="ml-2 flex-1 flex">
       <div class="mx-auto w-1/2">
-        {#if type.includes('image')}<img src={preview} />{/if}
-        <video controls class:hidden muted autoplay loop>
+        {#if type.includes('image')}<img src={preview} class="w-full" />{/if}
+        <video controls class:hidden muted autoplay loop class="w-full">
           <source bind:this={video} />
           Your browser does not support HTML5 video.
         </video>
@@ -229,24 +113,6 @@
             style={width}>
             {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
           </div>
-        </div>
-        <div class="break-all">
-          <div class="mb-2">
-            PSBT
-            <div
-              style="max-height: 150px; overflow-y: scroll; overflow-x: hidden;"
-              class="text-xs font-mono">
-              {base64}
-            </div>
-          </div>
-          {#if artwork.asset}
-            <div>
-              Asset ID
-              <div class="text-xs font-mono">{artwork.asset}</div>
-            </div>
-          {:else}
-            <button on:click={sign}>Sign Transaction</button>
-          {/if}
         </div>
       </div>
     </div>

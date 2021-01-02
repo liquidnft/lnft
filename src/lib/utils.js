@@ -19,6 +19,7 @@ export const requireLogin = async () => {
 };
 
 export const requirePassword = async () =>
+  await requireLogin();
   new Promise((resolve, reject) =>
     password.subscribe(async ($password) => {
       if ($password) resolve(true);

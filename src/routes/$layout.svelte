@@ -63,7 +63,7 @@
 </style>
 
 {#if $snack}
-  <div class="fixed w-full flex z-10">
+  <div class="fixed w-full flex z-20 mt-6">
     <div
       class="border-2 border-green-400 px-4 py-3 rounded relative mb-4 mx-auto w-1/6 text-center font-bold bg-white">
       {$snack}
