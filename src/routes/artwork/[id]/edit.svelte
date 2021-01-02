@@ -1,11 +1,12 @@
 <script>
+  import { onMount } from "svelte";
   import { page } from "$app/stores";
   import { Buffer } from "buffer";
   import Form from "../_form";
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
-  import { goto } from "$app/navigation";
+  import { goto } from "$lib/utils";
   import { electrs } from "$lib/api";
   import getAddress from "$lib/getAddress";
   import {
@@ -23,7 +24,7 @@
 
   let { id } = $page.params;
 
-  requireLogin($token);
+  onMount(requireLogin);
 
   let artwork;
   subscription(operationStore(getArtwork(id)), (a, b) => {

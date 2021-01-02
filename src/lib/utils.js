@@ -1,21 +1,32 @@
 import decode from "jwt-decode";
 import { onMount, tick } from "svelte";
 import { prompt, password, token } from "$lib/store";
-import { goto } from "$app/navigation";
+import { goto as go } from "$app/navigation";
+import { PasswordPrompt } from "$comp";
 
-export const requireLogin = () =>
-  onMount(async () => {
-    await tick();
-    token.subscribe(($token) => {
-      if (!$token || decode($token).exp * 1000 < Date.now()) goto("/login");
-    });
-  });
-
-export const requirePassword = async () => {
+export const requireLogin = async () => {
+  await tick();
   return new Promise((resolve, reject) =>
-    password.subscribe(async ($password) => {
-      if ($password) resolve(true);
-      else prompt.set(true);
+    token.subscribe(($token) => {
+      if (!$token || decode($token).exp * 1000 < Date.now()) {
+        go("/login");
+        reject();
+      }
+
+      resolve(true);
     })
   );
+};
+
+export const requirePassword = async () =>
+  new Promise((resolve, reject) =>
+    password.subscribe(async ($password) => {
+      if ($password) resolve(true);
+      else prompt.set(PasswordPrompt);
+    })
+  );
+
+export const goto = (path) => {
+  go(path);
+  if (window) window.history.pushState(null, null, path);
 };

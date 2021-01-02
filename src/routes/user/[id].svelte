@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
-  import { goto }  from "$app/navigation";
+  import { goto }  from "$lib/utils";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { getUser } from "$queries/users";
@@ -12,7 +12,7 @@
   import { fade } from "svelte/transition";
   import { requireLogin } from "$lib/utils";
 
-  requireLogin();
+  onMount(requireLogin);
 
   let { id } = $page.params;
   let collection = [];

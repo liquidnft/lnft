@@ -6,7 +6,7 @@
     ProgressLinear,
     Sidebar,
     Navbar,
-    PasswordPrompt,
+    Dialog,
   } from "$comp";
   import { show, snack, user, token } from "$lib/store";
   import { onMount } from "svelte";
@@ -74,7 +74,7 @@
 {#if mounted}
   <Sidebar bind:open />
   <Navbar bind:sidebar={open} />
-  <PasswordPrompt />
+  <Dialog />
 
   <main>
     <div class="container mx-auto px-6">

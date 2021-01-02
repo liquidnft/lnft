@@ -1,5 +1,5 @@
 <script>
-  import { goto }  from "$app/navigation";
+  import { goto }  from "$lib/utils";
 
   export let artwork;
   export let columns = 3;

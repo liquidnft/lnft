@@ -1,6 +1,6 @@
 <script>
   import { user, token } from "$lib/store";
-  import { goto }  from "$app/navigation";
+  import { goto }  from "$lib/utils";
 
   let logout = () => {
     window.sessionStorage.removeItem("token");

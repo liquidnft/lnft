@@ -5,7 +5,7 @@
   import ToggleSwitch from "$components/ToggleSwitch";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
-  import { goto } from "$app/navigation";
+  import { goto } from "$lib/utils";
 
   let filtered = [];
   subscription(operationStore(getArtworks), (a, b) => {

@@ -17,7 +17,7 @@
   let amount = 123;
   let fee = 100000;
   let to = "XShxPnuCJJvPQghYjPSzsg45dLnrpSTPuT";
-  requireLogin();
+  onMount(requireLogin);
 
   let init = async () => {
     await requirePassword();

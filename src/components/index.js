@@ -14,3 +14,5 @@ export { default as Sidebar } from "./Sidebar";
 export { default as Navbar } from "./Navbar";
 export { default as Menu } from "./Menu";
 export { default as PasswordPrompt } from "./PasswordPrompt";
+export { default as Dialog } from "./Dialog";
+export { default as SignaturePrompt } from "./SignaturePrompt";

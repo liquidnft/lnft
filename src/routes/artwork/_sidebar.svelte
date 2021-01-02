@@ -5,7 +5,7 @@
   import Heart from "$components/Heart";
   import { createFavorite, deleteFavorite } from "$queries/favorites";
   import { mutation } from "@urql/svelte";
-  import { goto }  from "$app/navigation";
+  import { goto }  from "$lib/utils";
 
   export let artwork;
 

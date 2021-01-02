@@ -1,6 +1,6 @@
 <script>
   import { prompt, password, user, token } from "$lib/store";
-  import { goto } from "$app/navigation";
+  import { goto } from "$lib/utils";
   import { api } from "$lib/api";
   import decode from "jwt-decode";
   import cryptojs from "crypto-js";

@@ -42,11 +42,13 @@ module.exports = {
   mount: {
     "src/components": "/_components",
     "src/lib": "/_app/lib",
+    "src/icons": "/_app/icons",
     "src/queries": "/_app/queries",
   },
   alias: {
     $components: "./src/components",
     $lib: "./src/lib",
+    $icons: "./src/icons",
     $queries: "./src/queries",
     $comp: "./src/components/index.js",
     "readable-stream": "stream",

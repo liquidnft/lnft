@@ -74,7 +74,14 @@ export const pay = async (to, amount, fee) => {
 export const sign = (psbt) => {
   let addr = getAddress($user.mnemonic, $password);
   let { privateKey } = addr;
-  return psbt.signAllInputs(ECPair.fromPrivateKey(privateKey)).finalizeAllInputs();
+  psbt.data.inputs.map((_, i) => {
+    try {
+      psbt = psbt
+        .signInput(i, ECPair.fromPrivateKey(privateKey))
+        .finalizeInput(i);
+    } catch (e) {}
+  });
+  return psbt;
 };
 
 export const broadcast = async (psbt) => {
@@ -82,4 +89,57 @@ export const broadcast = async (psbt) => {
   let hex = tx.toHex();
 
   return electrs.url("/tx").body(hex).post().text();
+};
+
+export const executeSwap = async (psbt) => {
+  let addr = getAddress($user.mnemonic, $password);
+  let { address, output, redeem, privateKey } = addr;
+  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+
+  let fee = 100000;
+
+  // todo more sophisticated coin selection
+  let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value > fee);
+  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
+
+  let change =
+    prevout.value -
+    psbt.__CACHE.__TX.outs.reduce(
+      (a, b) => a + parseInt(b.value.slice(1).toString("hex"), 16),
+      0
+    ) -
+    fee;
+
+  let asset = psbt.data.inputs[0].witnessUtxo.asset;
+
+  return (
+    psbt
+      .addInput({
+        hash: prevout.txid,
+        index: prevout.vout,
+        witnessUtxo: prevoutTx.outs[prevout.vout],
+        redeemScript: redeem.output,
+      })
+      // asset
+      .addOutput({
+        asset,
+        nonce: Buffer.alloc(1),
+        script: output,
+        value: 1,
+      })
+      // fee
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1, 0),
+        script: Buffer.alloc(0),
+        value: fee,
+      })
+      //change
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: output,
+        value: change,
+      })
+  );
 };

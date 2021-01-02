@@ -1,23 +1,24 @@
 <script>
   import { page } from "$app/stores";
   import { Buffer } from "buffer";
-  import { Activity, Amount, Avatar, Card } from "$comp";
+  import { Activity, Amount, Avatar, Card, SignaturePrompt } from "$comp";
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
-  import { password, snack, user, token } from "$lib/store";
+  import { prompt, password, snack, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
   import { getArtwork, destroyArtwork } from "$queries/artworks";
   import {
     createTransaction,
     getArtworkTransactions,
   } from "$queries/transactions";
-  import { goto } from "$app/navigation";
+  import { goto } from "$lib/utils";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { ECPair, Transaction, Psbt } from "@asoltys/liquidjs-lib";
   import { electrs } from "$lib/api";
   import getAddress from "$lib/getAddress";
   import reverse from "buffer-reverse";
   import { requireLogin, requirePassword } from "$lib/utils";
+  import { executeSwap } from "$lib/wallet";
 
   const btc =
     "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
@@ -78,71 +79,21 @@
   };
 
   let buyNow = async () => {
+    if (!(await requireLogin())) return false;
     await requirePassword();
 
     transaction.amount = artwork.list_price;
     transaction.type = "purchase";
+    $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx));
+    $prompt = SignaturePrompt;
 
-    let addr = getAddress($user.mnemonic, $password);
-    let { address, output, redeem, privateKey } = addr;
-    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-
-    let fee = 100000;
-
-    // todo more sophisticated coin selection
-    let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value > fee);
-    let swap = Psbt.fromBase64(artwork.list_price_tx);
-    let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
-
-    let change =
-      prevout.value -
-      swap.__CACHE.__TX.outs.reduce(
-        (a, b) => a + parseInt(b.value.slice(1).toString("hex"), 16),
-        0
-      ) -
-      fee;
-
-    let asset = swap.data.inputs[0].witnessUtxo.asset;
-
-    swap
-      .addInput({
-        hash: prevout.txid,
-        index: prevout.vout,
-        witnessUtxo: prevoutTx.outs[prevout.vout],
-        redeemScript: redeem.output,
-      })
-      // asset
-      .addOutput({
-        asset,
-        nonce: Buffer.alloc(1),
-        script: output,
-        value: 1,
-      })
-      // fee
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1, 0),
-        script: Buffer.alloc(0),
-        value: fee,
-      })
-      //change
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1),
-        script: output,
-        value: change,
-      })
-      .signAllInputs(ECPair.fromPrivateKey(privateKey))
-      .finalizeInput(1);
-
-    let tx = swap.extractTransaction();
-    let hex = tx.toHex();
-
-    await electrs.url("/tx").body(hex).post().text();
+    await new Promise((resolve) => prompt.subscribe(value => value || resolve()));
+    let tx = $psbt.extractTransaction();
     transaction.hash = tx.getId();
     placeBid();
   };
 
+  let target;
   let destroyArtwork$, destroy;
   $: if (artwork) {
     destroyArtwork$ = mutation(destroyArtwork(artwork));
@@ -180,7 +131,7 @@
 </style>
 
 {#if artwork}
-  <div class="flex flex-wrap">
+  <div class="flex flex-wrap" bind:this={target}>
     <div class="text-center lg:text-left w-full lg:w-1/4">
       <h1 class="text-3xl font-black text-gray-900">
         {artwork.title || 'Untitled'}
@@ -215,12 +166,9 @@
       {/if}
       <div class="my-2 font-bold">
         {#if artwork.auction_end > new Date()}
-        <span class="font-thin text-sm">Auction closes in</span>
-        <span class="text-2xl">{counter}</span>
-      {:else}
-        <span class="text-2xl">Auction ended</span>
-      {/if}
-
+          <span class="font-thin text-sm">Auction closes in</span>
+          <span class="text-2xl">{counter}</span>
+        {:else}<span class="text-2xl">Auction ended</span>{/if}
       </div>
       <div>
         {#if artwork.list_price}
@@ -229,10 +177,6 @@
               List Price
               {artwork.list_price}
               BTC
-
-            </div>
-              <div class="break-all">
-              {artwork.list_price_tx}
             </div>
           </div>
         {/if}

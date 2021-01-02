@@ -9,7 +9,7 @@
   import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import { goto } from "$app/navigation";
+  import { goto } from "$lib/utils";
   import getAddress from "$lib/getAddress";
   import {
     ECPair,
@@ -21,7 +21,7 @@
   import reverse from "buffer-reverse";
   import { requireLogin, requirePassword } from "$lib/utils";
 
-  requireLogin();
+  onMount(requireLogin);
 
   const network = networks.regtest;
   const btc =
