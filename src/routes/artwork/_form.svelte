@@ -16,30 +16,6 @@
     <label>Description</label>
     <textarea placeholder="Description" bind:value={artwork.description} />
   </div>
-  <!--
-  <div class="flex flex-col mb-4">
-    <div>
-      <div class="mt-1 relative rounded-md shadow-sm">
-        <label>List Price</label>
-        <input
-          class="form-input block w-full pl-7 pr-12"
-          placeholder="0"
-          bind:value={artwork.list_price} />
-        <div class="absolute inset-y-0 right-0 flex items-center mr-2">
-          <select
-            aria-label="Currency"
-            class="border-transparent bg-transparent text-gray-500 p-0">
-            <option>SAT</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="flex flex-col mb-4">
-    <label>Auction End Time</label>
-    <input placeholder="Auction End Time" bind:value={artwork.auction_end} />
-  </div>
-  -->
   <div class="flex">
     <button
       type="submit"

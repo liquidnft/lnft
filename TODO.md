@@ -1,3 +1,5 @@
+invalidate previous list price swap by double spending if currency or price is changed
+dutch auction timelocked decreasing amount increments
 set price in any liquid token
 end time on auctions
 bids as timelocked atomic swaps

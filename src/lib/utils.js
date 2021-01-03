@@ -6,7 +6,7 @@ import { PasswordPrompt } from "$comp";
 
 export const requireLogin = async () => {
   await tick();
-  return new Promise((resolve, reject) =>
+  return new Promise((resolve, reject) => {
     token.subscribe(($token) => {
       if (!$token || decode($token).exp * 1000 < Date.now()) {
         go("/login");
@@ -14,18 +14,19 @@ export const requireLogin = async () => {
       }
 
       resolve(true);
-    })
-  );
+    });
+  });
 };
 
-export const requirePassword = async () =>
+export const requirePassword = async () => {
   await requireLogin();
-  new Promise((resolve, reject) =>
+  return new Promise((resolve, reject) => {
     password.subscribe(async ($password) => {
       if ($password) resolve(true);
       else prompt.set(PasswordPrompt);
-    })
-  );
+    });
+  });
+};
 
 export const goto = (path) => {
   go(path);

@@ -86,7 +86,6 @@
     transaction.type = "purchase";
     $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx));
     $prompt = SignaturePrompt;
-
     await new Promise((resolve) => prompt.subscribe(value => value || resolve()));
     let tx = $psbt.extractTransaction();
     transaction.hash = tx.getId();
@@ -152,8 +151,9 @@
 
       {#if $user && $user.id === artwork.owner_id}
         <button
-          on:click={() => goto(`/artwork/${id}/edit`)}
-          class="dangerous">Edit</button>
+          on:click={() => goto(`/artwork/${id}/auction`)}>Auction</button>
+        <button
+          on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
         <button on:click={destroy} class="dangerous">Destroy</button>
       {:else}
         {#if artwork.list_price}<button on:click={buyNow}>Buy Now</button>{/if}
@@ -165,7 +165,7 @@
         {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
       {/if}
       <div class="my-2 font-bold">
-        {#if artwork.auction_end > new Date()}
+        {#if Date.parse(artwork.auction_end) > new Date()}
           <span class="font-thin text-sm">Auction closes in</span>
           <span class="text-2xl">{counter}</span>
         {:else}<span class="text-2xl">Auction ended</span>{/if}

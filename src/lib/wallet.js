@@ -203,3 +203,35 @@ export const createIssuance = async () => {
 
   base64 = issuance.toBase64();
 };
+
+
+export const createSwap = async (asset, price) => {
+    let { address, output, redeem, privateKey } = getAddress(
+      $user.mnemonic,
+      $password
+    );
+
+    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+    let prevout = utxos.find((utxo) => utxo.asset === asset);
+    let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
+    let sighashType =
+      Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
+
+    return new Psbt()
+      .addInput({
+        hash: prevoutTx.getId(),
+        index: prevout.vout,
+        witnessUtxo: prevoutTx.outs[prevout.vout],
+        redeemScript: redeem.output,
+        sighashType,
+      })
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: output,
+        value: Math.round(price),
+      })
+      .signInput(0, ECPair.fromPrivateKey(privateKey), [sighashType])
+      .finalizeInput(0);
+
+  };

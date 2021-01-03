@@ -19,5 +19,9 @@ export default (d) => {
   d = subMinutes(d, minutes);
   let seconds = differenceInSeconds(d, now);
 
+  hours = ('0'+hours).slice(-2);
+  minutes = ('0'+minutes).slice(-2);
+  seconds = ('0'+seconds).slice(-2);
+
   return `${days} days ${hours}:${minutes}:${seconds}`;
 };
