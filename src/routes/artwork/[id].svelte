@@ -1,6 +1,5 @@
 <script>
   import { page } from "$app/stores";
-  import { Buffer } from "buffer";
   import { Activity, Amount, Avatar, Card, SignaturePrompt } from "$comp";
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
@@ -13,15 +12,8 @@
   } from "$queries/transactions";
   import { goto } from "$lib/utils";
   import { mutation, subscription, operationStore } from "@urql/svelte";
-  import { ECPair, Transaction, Psbt } from "@asoltys/liquidjs-lib";
-  import { electrs } from "$lib/api";
-  import getAddress from "$lib/getAddress";
-  import reverse from "buffer-reverse";
   import { requireLogin, requirePassword } from "$lib/utils";
-  import { executeSwap } from "$lib/wallet";
-
-  const btc =
-    "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+  import { createOffer, executeSwap } from "$lib/wallet";
 
   let { id } = $page.params;
 
@@ -31,8 +23,22 @@
     (a, b) => (transactions = b.transactions)
   );
 
-  let artwork;
-  let counter;
+  let artwork, counter;
+  let createTransaction$ = mutation(createTransaction);
+
+  let makeOffer = async (e) => {
+    if (e) e.preventDefault();
+    await requirePassword();
+    console.log(artwork.owner.address);
+    $psbt = await createOffer(artwork, transaction.amount);
+    $prompt = SignaturePrompt;
+    await new Promise((resolve) =>
+      prompt.subscribe((value) => value || resolve())
+    );
+    console.log($psbt.toBase64());
+    save();
+  };
+
   subscription(operationStore(getArtwork(id)), (a, b) => {
     artwork = b.artworks_by_pk;
 
@@ -42,6 +48,17 @@
     };
     count();
   });
+
+  let save = (e) => {
+    transaction.artwork_id = artwork.id;
+    if (artwork.list_price && transaction.amount >= artwork.list_price) {
+      transaction.type = "purchase";
+    }
+    createTransaction$({ transaction }).then(() => {
+      $snack = "Bid placed!";
+      bidding = false;
+    });
+  };
 
   let bidding, amount;
   let startBidding = async () => {
@@ -57,27 +74,6 @@
     type: "bid",
   };
 
-  let createTransaction$, placeBid;
-  $: if (artwork) {
-    createTransaction$ = mutation(createTransaction);
-
-    placeBid = (e) => {
-      if (e) e.preventDefault();
-      transaction.artwork_id = artwork.id;
-      if (artwork.list_price && transaction.amount >= artwork.list_price) {
-        transaction.type = "purchase";
-      }
-      createTransaction$({ transaction }).then(() => {
-        $snack = "Bid placed!";
-        bidding = false;
-      });
-    };
-  }
-
-  let getHex = async (txid) => {
-    return electrs.url(`/tx/${txid}/hex`).get().text();
-  };
-
   let buyNow = async () => {
     if (!(await requireLogin())) return false;
     await requirePassword();
@@ -86,10 +82,12 @@
     transaction.type = "purchase";
     $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx));
     $prompt = SignaturePrompt;
-    await new Promise((resolve) => prompt.subscribe(value => value || resolve()));
+    await new Promise((resolve) =>
+      prompt.subscribe((value) => value || resolve())
+    );
     let tx = $psbt.extractTransaction();
     transaction.hash = tx.getId();
-    placeBid();
+    save();
   };
 
   let target;
@@ -150,19 +148,18 @@
       </div>
 
       {#if $user && $user.id === artwork.owner_id}
-        <button
-          on:click={() => goto(`/artwork/${id}/auction`)}>Auction</button>
-        <button
-          on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
+        <button on:click={() => goto(`/artwork/${id}/auction`)}>Auction</button>
+        <button on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
         <button on:click={destroy} class="dangerous">Destroy</button>
       {:else}
         {#if artwork.list_price}<button on:click={buyNow}>Buy Now</button>{/if}
         {#if bidding}
-          <form on:submit={placeBid}>
+          <form on:submit={makeOffer}>
             <Amount bind:this={amount} bind:value={transaction.amount} />
             <button type="submit">Submit</button>
           </form>
-        {:else}<button on:click={startBidding}>Place a Bid</button>{/if}
+        {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
+          {artwork.owner.address}
       {/if}
       <div class="my-2 font-bold">
         {#if Date.parse(artwork.auction_end) > new Date()}

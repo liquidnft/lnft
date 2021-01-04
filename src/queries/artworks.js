@@ -15,6 +15,7 @@ const fields = `
   created_at
   auction_end
   list_price_tx
+  asking_asset
   bid {
     user {
       id
@@ -89,6 +90,8 @@ export const getArtwork = (id) => `subscription {
     owner {
       username
       avatar_url
+      address
+      pubkey
     },
     tags {
       tag

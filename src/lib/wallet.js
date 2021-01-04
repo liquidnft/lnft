@@ -1,5 +1,6 @@
 import { electrs } from "$lib/api";
 import getAddress from "$lib/getAddress";
+import { fromBase58 } from "bip32";
 import {
   address as Address,
   ECPair,
@@ -13,6 +14,8 @@ import reverse from "buffer-reverse";
 import { password, user } from "$lib/store";
 const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 const network = networks.regtest;
+const sighashType =
+  Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
 
 let $user, $password;
 password.subscribe((v) => ($password = v));
@@ -38,6 +41,8 @@ export const pay = async (to, amount, fee) => {
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
   let change = prevout.value - amount - fee;
+
+  console.log(redeem.output.toString("hex"));
 
   let swap = new Psbt()
     .addInput({
@@ -168,7 +173,6 @@ export const createIssuance = async () => {
         hash: prevout.txid,
         index: prevout.vout,
         nonWitnessUtxo: Buffer.from(await getHex(prevout.txid), "hex"),
-        sighashType: 1,
         redeemScript: redeem.output,
       })
       // fee
@@ -204,34 +208,107 @@ export const createIssuance = async () => {
   base64 = issuance.toBase64();
 };
 
-
 export const createSwap = async (asset, price) => {
-    let { address, output, redeem, privateKey } = getAddress(
-      $user.mnemonic,
-      $password
-    );
+  let { address, output, redeem, privateKey } = getAddress(
+    $user.mnemonic,
+    $password
+  );
 
-    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-    let prevout = utxos.find((utxo) => utxo.asset === asset);
-    let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
-    let sighashType =
-      Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
+  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+  let prevout = utxos.find((utxo) => utxo.asset === asset);
+  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
-    return new Psbt()
+  return new Psbt()
+    .addInput({
+      hash: prevoutTx.getId(),
+      index: prevout.vout,
+      witnessUtxo: prevoutTx.outs[prevout.vout],
+      redeemScript: redeem.output,
+      sighashType,
+    })
+    .addOutput({
+      asset: btc,
+      nonce: Buffer.alloc(1),
+      script: output,
+      value: Math.round(price),
+    })
+    .signInput(0, ECPair.fromPrivateKey(privateKey), [sighashType])
+    .finalizeInput(0);
+};
+
+export const createOffer = async (artwork, price) => {
+  let { address, output, redeem, privateKey } = getAddress(
+    $user.mnemonic,
+    $password
+  );
+
+  let fee = 100000;
+  let total = price;
+  if (artwork.asking_asset === btc) total += fee;
+
+  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+  let prevout = utxos.find(
+    (utxo) => utxo.asset === artwork.asking_asset && utxo.value >= total
+  );
+  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
+  let change = prevout.value - total;
+
+  let ownerUtxos = await electrs
+    .url(`/address/${artwork.owner.address}/utxo`)
+    .get()
+    .json();
+  let artworkPrevout = ownerUtxos.find((utxo) => utxo.asset === artwork.asset);
+  let artworkPrevoutTx = Transaction.fromHex(await getHex(artworkPrevout.txid));
+
+  let hd = fromBase58(artwork.owner.pubkey, network).derive(0);
+  let { output: redeemScript } = payments.p2wpkh({
+    pubkey: hd.publicKey,
+    network,
+  });
+
+  return (
+    new Psbt()
+      // bid input
       .addInput({
         hash: prevoutTx.getId(),
         index: prevout.vout,
         witnessUtxo: prevoutTx.outs[prevout.vout],
         redeemScript: redeem.output,
-        sighashType,
       })
+      // artwork input
+      .addInput({
+        hash: artworkPrevoutTx.getId(),
+        index: artworkPrevout.vout,
+        witnessUtxo: artworkPrevoutTx.outs[artworkPrevout.vout],
+        redeemScript,
+      })
+      // bid
       .addOutput({
-        asset: btc,
+        asset: artwork.asking_asset,
         nonce: Buffer.alloc(1),
-        script: output,
+        script: Address.toOutputScript(artwork.owner.address, network),
         value: Math.round(price),
       })
-      .signInput(0, ECPair.fromPrivateKey(privateKey), [sighashType])
-      .finalizeInput(0);
-
-  };
+      // artwork
+      .addOutput({
+        asset: artwork.asset,
+        nonce: Buffer.alloc(1),
+        script: output,
+        value: 1,
+      })
+      // fee
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1, 0),
+        script: Buffer.alloc(0),
+        value: fee,
+      })
+      //change
+      .addOutput({
+        asset: artwork.asking_asset,
+        nonce: Buffer.alloc(1),
+        script: output,
+        value: change,
+      })
+  );
+};

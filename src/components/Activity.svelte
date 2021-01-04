@@ -30,9 +30,9 @@
     <div>
       <a href={`/user/${transaction.user.id}`}>@{transaction.user.username}</a>
       {#if transaction.type === 'bid'}
-        placed a bid for
+        offered
         {transaction.amount}
-        BTC on
+        BTC for
       {:else if transaction.type === 'creation'}
         created
       {:else if transaction.type === 'purchase'}
