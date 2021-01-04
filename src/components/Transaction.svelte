@@ -67,7 +67,5 @@
 
     <div class="font-bold text-xs">Hex</div>
     <div class="font-mono w-1/2 text-xs text-wrap break-all">{tx.toHex()}</div>
-
-    <button class="border my-4" on:click={() => window.history.back()}>Back</button>
   {/if}
 {/if}

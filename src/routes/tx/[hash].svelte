@@ -12,15 +12,19 @@
 
   let tx;
   subscription(operationStore(getTransaction(hash)), (a, b) => {
-    $psbt = Psbt.fromBase64(b.transactions_by_pk.psbt);
+    let { psbt: p } = b.transactions_by_pk;
+    if (p) $psbt = Psbt.fromBase64(p);
+    else $psbt = undefined;
   });
 
-  let explorerUrl;
-  if (import.meta && import.meta.env) {
-    explorerUrl = import.meta.env.SNOWPACK_PUBLIC_EXPLORER;
-  } else {
-    explorerUrl = "https://la.coinos.io/explorer";
-  }
 </script>
 
-<Transaction />
+{#if $psbt}
+  <Transaction />
+{:else}
+  Transaction not found
+{/if}
+
+<div>
+    <button class="border my-4" on:click={() => window.history.back()}>Back</button>
+  </div>

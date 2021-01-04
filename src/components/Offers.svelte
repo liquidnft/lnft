@@ -36,6 +36,11 @@
       <div class="mb-auto mx-2 whitespace-no-wrap text-center">
         {offer.amount}
         BTC from @{offer.artwork.bid[0].user.username}
+      <a
+        href={`/tx/${offer.id}`}
+        class="text-xs text-green-400">
+        [view tx]
+      </a>
         <button on:click={() => accept(offer)}>Accept</button>
       </div>
     </div>

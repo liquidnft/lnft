@@ -388,14 +388,18 @@
   - role: anonymous
     permission:
       columns:
-      - artwork_id
       - amount
+      - artwork_id
+      - id
+      - psbt
       filter: {}
   - role: user
     permission:
       columns:
       - amount
       - artwork_id
+      - id
+      - psbt
       filter:
         artwork:
           owner_id:

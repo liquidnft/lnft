@@ -55,6 +55,7 @@ export const getTransactions = `subscription {
 
 export const getOffers = `subscription {
   offers {
+    id
     amount 
     artwork {
       id
