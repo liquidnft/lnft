@@ -28,14 +28,14 @@
 
   let makeOffer = async (e) => {
     if (e) e.preventDefault();
-    await requirePassword();
+    await requirePassword($password, $token);
     console.log(artwork.owner.address);
     $psbt = await createOffer(artwork, transaction.amount);
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
       prompt.subscribe((value) => value || resolve())
     );
-    console.log($psbt.toBase64());
+    transaction.psbt = $psbt.toBase64();
     save();
   };
 
@@ -51,6 +51,7 @@
 
   let save = (e) => {
     transaction.artwork_id = artwork.id;
+    transaction.asset = artwork.asking_asset;
     if (artwork.list_price && transaction.amount >= artwork.list_price) {
       transaction.type = "purchase";
     }
@@ -70,8 +71,8 @@
   let transaction = {
     artwork_id: null,
     amount: null,
-    hash: "12345",
     type: "bid",
+    hash: "",
   };
 
   let buyNow = async () => {
@@ -87,6 +88,7 @@
     );
     let tx = $psbt.extractTransaction();
     transaction.hash = tx.getId();
+    transaction.psbt = $psbt.toBase64();
     save();
   };
 
@@ -159,7 +161,7 @@
             <button type="submit">Submit</button>
           </form>
         {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
-          {artwork.owner.address}
+        {artwork.owner.address}
       {/if}
       <div class="my-2 font-bold">
         {#if Date.parse(artwork.auction_end) > new Date()}

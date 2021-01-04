@@ -1,5 +1,5 @@
 <script>
-  import { Row } from "$comp";
+  import Row from "$components/Row";
 
   export let title;
   export let stat;

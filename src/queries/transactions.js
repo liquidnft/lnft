@@ -8,10 +8,13 @@ export const createTransaction = {
 };
 
 const fields = `
+  id
+  psbt
   amount 
   hash
   type
   created_at
+  asset
   user {
     id
     username
@@ -33,6 +36,13 @@ const fields = `
 
 export const getArtworkTransactions = (id) => `subscription {
   transactions(order_by: {created_at: desc}, where: {artwork_id: {_eq: "${id}"}}, limit: 3) {
+    ${fields}
+  }
+}`;
+
+
+export const getTransaction = (id) => `subscription {
+  transactions_by_pk(id: "${id}") {
     ${fields}
   }
 }`;

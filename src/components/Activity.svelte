@@ -1,16 +1,10 @@
 <script>
-  import { Avatar, Card } from "$comp";
+  import Avatar from "$components/Avatar";
+  import Card from "$components/Card";
   import { user } from "$lib/store";
   import { formatDistanceStrict } from "date-fns";
   export let transaction;
   export let showImage = false;
-
-  let explorerUrl;
-  if (import.meta && import.meta.env) {
-    explorerUrl = import.meta.env.SNOWPACK_PUBLIC_EXPLORER;
-  } else {
-    explorerUrl = "https://la.coinos.io/explorer";
-  }
 </script>
 
 <style>
@@ -32,17 +26,17 @@
       {#if transaction.type === 'bid'}
         offered
         {transaction.amount}
-        BTC for
+        {transaction.asset.substr(0, 6)} for
       {:else if transaction.type === 'creation'}
         created
       {:else if transaction.type === 'purchase'}
         paid
         {transaction.amount}
-        BTC for
+        {transaction.asset.substr(0, 6)} for
       {:else if transaction.type === 'accept'}
         accepted a bid of
         {transaction.amount}
-        BTC for
+        {transaction.asset.substr(0, 6)} for
       {/if}
       <a
         href={`/artwork/${transaction.artwork.id}`}>{transaction.artwork.title}</a>
@@ -53,7 +47,7 @@
         ago
       </span>
       <a
-        href={`${explorerUrl}/tx/${transaction.hash}`}
+        href={`/tx/${transaction.id}`}
         class="text-xs text-green-400">
         [view tx]
       </a>

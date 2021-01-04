@@ -1,5 +1,5 @@
 <script>
-  import { Avatar } from "$comp";
+  import Avatar from "$components/Avatar";
 
   export let item = {
     user: {

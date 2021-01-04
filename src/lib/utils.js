@@ -2,30 +2,23 @@ import decode from "jwt-decode";
 import { onMount, tick } from "svelte";
 import { prompt, password, token } from "$lib/store";
 import { goto as go } from "$app/navigation";
-import { PasswordPrompt } from "$comp";
+import PasswordPrompt from "$components/PasswordPrompt";
 
-export const requireLogin = async () => {
+export const requireLogin = async ($token) => {
   await tick();
-  return new Promise((resolve, reject) => {
-    token.subscribe(($token) => {
-      if (!$token || decode($token).exp * 1000 < Date.now()) {
-        go("/login");
-        reject();
-      }
-
-      resolve(true);
-    });
-  });
+  if (!$token || decode($token).exp * 1000 < Date.now()) {
+    go("/login");
+    throw new Error("Login required");
+  }
 };
 
 export const requirePassword = async () => {
-  await requireLogin();
-  return new Promise((resolve, reject) => {
-    password.subscribe(async ($password) => {
-      if ($password) resolve(true);
-      else prompt.set(PasswordPrompt);
-    });
-  });
+  let unsub;
+  await new Promise((resolve) => (unsub = password.subscribe(($password) =>
+    $password ? resolve() : prompt.set(PasswordPrompt)
+  ))
+  );
+  unsub();
 };
 
 export const goto = (path) => {
