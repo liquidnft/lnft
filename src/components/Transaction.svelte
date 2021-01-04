@@ -40,28 +40,34 @@
 </script>
 
 {#if tx}
-  {#if !summary}
   <div class="font-bold text-xs">Transaction ID</div>
-  <div class="mb-4">
+  <div class="mb-4 break-all text-wrap">
     <a href={`${explorerUrl}/tx/${tx.getId()}`} class="text-green-400">
       {tx.getId()}
     </a>
   </div>
-  <div class="font-bold text-xs">Size</div>
-  <div class="mb-4">{tx.virtualSize()}</div>
-  <div class="font-bold text-xs">Weight</div>
-  <div class="mb-4">{tx.weight()}</div>
-
-  <div class="font-bold text-xs">Hex</div>
-  <div class="font-mono w-1/2 px-12 text-wrap break-all">{tx.toHex()}</div>
-
   <div class="font-bold text-xs">Outputs</div>
-{/if}
+    <div class="flex break-all mb-2 text-sm" style="max-width: 500px">
+      <div class="w-1/6">Value</div>
+      <div class="mr-2">Asset</div>
+      <div class="text-right flex-grow">Recipient</div>
+    </div>
   {#each outs as out}
-    <div class="flex break-all mb-2 text-sm">
-      <div class="w-1/6 font-bold">{out.value}</div>
+    <div class="flex break-all mb-2 text-sm" style="max-width: 500px">
+      <div class="w-1/6">{out.value}</div>
       <div class="mr-2">{out.asset}</div>
       <div class="text-right flex-grow">{out.address}</div>
     </div>
   {/each}
+  {#if !summary}
+    <div class="font-bold text-xs">Size</div>
+    <div class="mb-4">{tx.virtualSize()}</div>
+    <div class="font-bold text-xs">Weight</div>
+    <div class="mb-4">{tx.weight()}</div>
+
+    <div class="font-bold text-xs">Hex</div>
+    <div class="font-mono w-1/2 text-xs text-wrap break-all">{tx.toHex()}</div>
+
+    <button class="border my-4" on:click={() => window.history.back()}>Back</button>
+  {/if}
 {/if}
