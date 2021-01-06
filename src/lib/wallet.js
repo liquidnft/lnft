@@ -11,7 +11,7 @@ import {
 } from "@asoltys/liquidjs-lib";
 import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
-import { password, user } from "$lib/store";
+import { password, snack, user } from "$lib/store";
 const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 const network = networks.regtest;
 const sighashType =
@@ -41,8 +41,6 @@ export const pay = async (to, amount, fee) => {
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
   let change = prevout.value - amount - fee;
-
-  console.log(redeem.output.toString("hex"));
 
   let swap = new Psbt()
     .addInput({
@@ -84,7 +82,9 @@ export const sign = (psbt) => {
       psbt = psbt
         .signInput(i, ECPair.fromPrivateKey(privateKey))
         .finalizeInput(i);
-    } catch (e) {}
+    } catch (e) {
+      console.log("error", e);
+    }
   });
   return psbt;
 };
@@ -154,7 +154,7 @@ export const createIssuance = async () => {
   let addr = getAddress($user.mnemonic, $password);
 
   if (!addr) {
-    $snack = "Failed to decrypt wallet";
+    snack.set("Failed to decrypt wallet");
     return;
   }
 
@@ -162,9 +162,10 @@ export const createIssuance = async () => {
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
   let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value > fee);
+  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
   if (!prevout) {
-    $snack = "Not enough funds";
+    snack.set("Not enough funds");
     return;
   }
   return (
@@ -172,7 +173,7 @@ export const createIssuance = async () => {
       .addInput({
         hash: prevout.txid,
         index: prevout.vout,
-        nonWitnessUtxo: Buffer.from(await getHex(prevout.txid), "hex"),
+        witnessUtxo: prevoutTx.outs[prevout.vout],
         redeemScript: redeem.output,
       })
       // fee
@@ -204,8 +205,6 @@ export const createIssuance = async () => {
         net: network,
       })
   );
-
-  base64 = issuance.toBase64();
 };
 
 export const createSwap = async (asset, price) => {
@@ -243,7 +242,7 @@ export const createOffer = async (artwork, price) => {
   );
 
   let fee = 100000;
-  let total = price;
+  let total = parseInt(price);
   if (artwork.asking_asset === btc) total += fee;
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
@@ -253,11 +252,11 @@ export const createOffer = async (artwork, price) => {
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
   let change = prevout.value - total;
 
-  let ownerUtxos = await electrs
+  let artworkUtxos = await electrs
     .url(`/address/${artwork.owner.address}/utxo`)
     .get()
     .json();
-  let artworkPrevout = ownerUtxos.find((utxo) => utxo.asset === artwork.asset);
+  let artworkPrevout = artworkUtxos.find((utxo) => utxo.asset === artwork.asset);
   let artworkPrevoutTx = Transaction.fromHex(await getHex(artworkPrevout.txid));
 
   let hd = fromBase58(artwork.owner.pubkey, network).derive(0);

@@ -29,3 +29,8 @@ export const goto = (path) => {
   go(path);
   if (window) window.history.pushState(null, null, path);
 };
+
+export const explorer =
+  import.meta && import.meta.env
+    ? import.meta.env.SNOWPACK_PUBLIC_EXPLORER
+    : "https://la.coinos.io/explorer";

@@ -16,7 +16,7 @@ export default (mnemonic, password) => {
   if (!mnemonic) return;
 
   let seed = mnemonicToSeedSync(mnemonic);
-  let root = fromSeed(seed, network);
+  let root = fromSeed(seed, network).derivePath("m/84'/0'/0'/0");
   let hd = root.derive(0);
 
   let p2wpkh = payments.p2wpkh({
@@ -28,9 +28,8 @@ export default (mnemonic, password) => {
   let blindingKeyPair = nodeBlinding.derive(p2wpkh.output);
 
   let { address, redeem, output } = payments.p2sh({
-    redeem: { output: p2wpkh.output },
+    redeem: p2wpkh,
     network,
-    pubkey: hd.publicKey,
     // blindkey: blindingKeyPair.publicKey,
   });
 

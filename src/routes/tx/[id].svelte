@@ -8,10 +8,10 @@
   import { psbt } from "$lib/store";
   import Transaction from "$components/Transaction";
 
-  const { hash } = $page.params;
+  const { id } = $page.params;
 
   let tx;
-  subscription(operationStore(getTransaction(hash)), (a, b) => {
+  subscription(operationStore(getTransaction(id)), (a, b) => {
     let { psbt: p } = b.transactions_by_pk;
     if (p) $psbt = Psbt.fromBase64(p);
     else $psbt = undefined;
@@ -19,6 +19,7 @@
 
 </script>
 
+{id}
 {#if $psbt}
   <Transaction />
 {:else}

@@ -104,4 +104,6 @@
       <button type="submit">Send</button>
     </form>
   {/if}
+
 {/if}
+{JSON.stringify(utxos.sort((a,b) => a.txid === b.txid ? a.vout - b.vout : a.txid.localeCompare(b.txid)))}

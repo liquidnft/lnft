@@ -5,7 +5,7 @@
   import decode from "jwt-decode";
   import cryptojs from "crypto-js";
   import { fromSeed } from "bip32";
-  import { networks } from "@asoltys/liquidjs-lib";
+  import { payments, networks } from "@asoltys/liquidjs-lib";
   import { generateMnemonic, mnemonicToSeedSync } from "bip39";
   import { onMount, tick } from "svelte";
 
@@ -17,12 +17,20 @@
     let { AES: aes } = cryptojs;
     let mnemonic = generateMnemonic();
     let seed = mnemonicToSeedSync(mnemonic);
+    let network = networks.regtest;
+    let hd = fromSeed(seed, network).derivePath("m/84'/0'/0'/0");
+
+    let { address } = payments.p2sh({
+      redeem: payments.p2wpkh({
+        pubkey: hd.derive(0).publicKey,
+        network,
+      }),
+      network,
+    });
 
     return {
-      pubkey: fromSeed(seed, networks.regtest)
-        .derivePath("m/84'/0'/0'/0")
-        .neutered()
-        .toBase58(),
+      address,
+      pubkey: hd.neutered().toBase58(),
       mnemonic: aes.encrypt(mnemonic, attempt).toString(),
     };
   };
@@ -117,7 +125,11 @@
       <label
         class="mb-2 uppercase font-medium text-gray-600"
         for="first_name">Username</label>
-      <input placeholder="username" bind:value={username} autofocus bind:this={usernameInput} />
+      <input
+        placeholder="username"
+        bind:value={username}
+        autofocus
+        bind:this={usernameInput} />
     </div>
     <div class="flex flex-col mb-4">
       <label

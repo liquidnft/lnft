@@ -12,8 +12,8 @@
   } from "$queries/transactions";
   import { goto } from "$lib/utils";
   import { mutation, subscription, operationStore } from "@urql/svelte";
-  import { requireLogin, requirePassword } from "$lib/utils";
-  import { createOffer, executeSwap } from "$lib/wallet";
+  import { explorer, requireLogin, requirePassword } from "$lib/utils";
+  import { createOffer, executeSwap, broadcast } from "$lib/wallet";
 
   let { id } = $page.params;
 
@@ -29,7 +29,6 @@
   let makeOffer = async (e) => {
     if (e) e.preventDefault();
     await requirePassword($password, $token);
-    console.log(artwork.owner.address);
     $psbt = await createOffer(artwork, transaction.amount);
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
@@ -86,6 +85,7 @@
     await new Promise((resolve) =>
       prompt.subscribe((value) => value || resolve())
     );
+    await broadcast($psbt);
     let tx = $psbt.extractTransaction();
     transaction.hash = tx.getId();
     transaction.psbt = $psbt.toBase64();
@@ -138,7 +138,7 @@
       <div class="font-black mb-6">Edition 1 of 1</div>
       <div class="text-sm text-gray-600 break-all">
         Asset Id:
-        {artwork.asset}
+        <a href={`${explorer}/asset/${artwork.asset}`} class="text-green-400">{artwork.asset}</a>
       </div>
       <div class="text-sm text-gray-600">{artwork.description}</div>
       <div class="mb-6">
@@ -149,44 +149,47 @@
         {/each}
       </div>
 
-      {#if $user && $user.id === artwork.owner_id}
-        <button on:click={() => goto(`/artwork/${id}/auction`)}>Auction</button>
-        <button on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
-        <button on:click={destroy} class="dangerous">Destroy</button>
-      {:else}
-        {#if artwork.list_price}<button on:click={buyNow}>Buy Now</button>{/if}
-        {#if bidding}
-          <form on:submit={makeOffer}>
-            <Amount bind:this={amount} bind:value={transaction.amount} />
-            <button type="submit">Submit</button>
-          </form>
-        {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
-        {artwork.owner.address}
-      {/if}
-      <div class="my-2 font-bold">
-        {#if Date.parse(artwork.auction_end) > new Date()}
-          <span class="font-thin text-sm">Auction closes in</span>
-          <span class="text-2xl">{counter}</span>
-        {:else}<span class="text-2xl">Auction ended</span>{/if}
-      </div>
-      <div>
-        {#if artwork.list_price}
-          <div class="1/2 flex-1">
-            <div class="w-1/2 text-sm font-medium">
-              List Price
-              {artwork.list_price}
+        {#if $user && $user.id === artwork.owner_id}
+          <button
+            on:click={() => goto(`/artwork/${id}/auction`)}>Auction</button>
+          <button on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
+          <button on:click={destroy} class="dangerous">Destroy</button>
+        {:else if artwork.asking_asset}
+          {#if artwork.list_price}
+            <button on:click={buyNow}>Buy Now</button>
+          {/if}
+          {#if bidding}
+            <form on:submit={makeOffer}>
+              <Amount bind:this={amount} bind:value={transaction.amount} />
+              <button type="submit">Submit</button>
+            </form>
+          {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
+          {artwork.owner.address}
+        {/if}
+        <div class="my-2 font-bold">
+          {#if Date.parse(artwork.auction_end) > new Date()}
+            <span class="font-thin text-sm">Auction closes in</span>
+            <span class="text-2xl">{counter}</span>
+          {:else}<span class="text-2xl">Auction ended</span>{/if}
+        </div>
+        <div class="my-4">
+          {#if artwork.list_price}
+            <div class="1/2 flex-1">
+              <div class="w-1/2 text-sm font-medium">
+                List Price
+                {artwork.list_price}
+                BTC
+              </div>
+            </div>
+          {/if}
+          {#if artwork.bid[0].amount}
+            <div class="text-sm font-medium">
+              Current bid
+              {artwork.bid[0].amount}
               BTC
             </div>
-          </div>
-        {/if}
-        {#if artwork.bid[0].amount}
-          <div class="text-sm font-medium">
-            Current bid
-            {artwork.bid[0].amount}
-            BTC
-          </div>
-        {/if}
-      </div>
+          {/if}
+        </div>
     </div>
     <div class="w-full lg:w-1/2 lg:px-12 card-container">
       <Card {artwork} link={false} columns={1} showDetails={false} />

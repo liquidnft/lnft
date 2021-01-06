@@ -38,7 +38,7 @@ export const getArtworksByTag = (tag) => `subscription {
 }`;
 
 export const create = {
-  query: `mutation insert_single_artwork($artwork: artworks_insert_input!, $id: uuid!, $hash: String!) {
+  query: `mutation insert_single_artwork($artwork: artworks_insert_input!, $id: uuid!, $hash: String!, $psbt: String!) {
       insert_artworks_one(object: $artwork) {
         id
       }
@@ -46,6 +46,7 @@ export const create = {
         artwork_id: $id,
         type: "creation",
         hash: $hash,
+        psbt: $psbt,
         amount: 0
       }) {
         id

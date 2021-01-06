@@ -9,13 +9,15 @@
   import { requireLogin, requirePassword } from "$lib/utils";
   import { createSwap } from "$lib/wallet";
 
+const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+
   let { id } = $page.params;
 
   onMount(requireLogin);
 
   let artwork;
   subscription(operationStore(getArtwork(id)), (a, b) => {
-    artwork = { ...b.artworks_by_pk, list_price: 500 };
+    artwork = { ...b.artworks_by_pk, list_price: 500, asking_asset: btc };
   });
 
   const updateArtwork$ = mutation(updateArtwork);
@@ -29,6 +31,7 @@
 
     let {
       id: artwork_id,
+      asking_asset,
       auction_end,
       description,
       filename,
@@ -40,7 +43,7 @@
     if (!auction_end) auction_end = null;
 
     updateArtwork$({
-      artwork: { list_price, list_price_tx, auction_end },
+      artwork: { list_price, list_price_tx, auction_end, asking_asset },
       id,
     }).then(() => {
       goto(`/artwork/${artwork.id}`);
@@ -52,13 +55,14 @@
 <p class="text-xl italic mb-4">All fields are optional</p>
 
 {#if artwork}
+  {artwork.asking_asset}
   <form class="w-full md:w-1/2 mb-6" on:submit={update} autocomplete="off">
     <div class="flex flex-col mb-4">
       <div>
         <div class="mt-1 relative rounded-md shadow-sm">
           <label>List Currency</label>
-          <select aria-label="Currency" class="form-input block w-full">
-            <option>BTC</option>
+          <select aria-label="Currency" class="form-input block w-full" bind:value={artwork.asking_asset}>
+            <option value={btc}>BTC</option>
             <option>CAD</option>
             <option>USD</option>
             <option>Other</option>

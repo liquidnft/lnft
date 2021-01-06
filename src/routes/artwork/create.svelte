@@ -10,8 +10,8 @@
   import { mutation } from "@urql/svelte";
   import { goto } from "$lib/utils";
   import { requirePassword } from "$lib/utils";
-  import { createIssuance } from "$lib/wallet";
-import reverse from "buffer-reverse";
+  import { createIssuance, broadcast } from "$lib/wallet";
+  import reverse from "buffer-reverse";
 
   onMount(async () => {
     await requirePassword();
@@ -69,21 +69,18 @@ import reverse from "buffer-reverse";
     e.preventDefault();
 
     $prompt = SignaturePrompt;
-    await new Promise((resolve) => prompt.subscribe(value => value || resolve()));
+    await new Promise((resolve) =>
+      prompt.subscribe((value) => value || resolve())
+    );
+
+    await broadcast($psbt);
 
     let tx = $psbt.extractTransaction();
     artwork.asset = reverse(tx.outs[3].asset.slice(1)).toString("hex");
     artwork.id = v4();
-    createArtwork({ artwork, hash: tx.getId(), id: artwork.id }).then(
-      () => {
-        goto("/market");
-      }
-    );
-  };
-
-  let sign = () => {
-    sign($psbt);
-    signed = true;
+    createArtwork({ artwork, hash: tx.getId(), id: artwork.id, psbt: $psbt.toBase64() }).then(() => {
+      goto("/market");
+    });
   };
 </script>
 
@@ -97,26 +94,28 @@ import reverse from "buffer-reverse";
   <h1 class="text-2xl font-black text-gray-900 pb-6">Submit Artwork</h1>
 </div>
 
-{#if preview}
-  <div class="flex flex-wrap">
-    <Form {artwork} on:submit={submit} />
-    <div class="ml-2 flex-1 flex">
-      <div class="mx-auto w-1/2">
-        {#if type.includes('image')}<img src={preview} class="w-full" />{/if}
-        <video controls class:hidden muted autoplay loop class="w-full">
-          <source bind:this={video} />
-          Your browser does not support HTML5 video.
-        </video>
-        <div class="shadow w-full bg-grey-light mt-2 mb-2">
-          <div
-            class="bg-gray-800 text-xs leading-none py-2 text-center text-white"
-            style={width}>
-            {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
+{#if $psbt}
+  {#if preview}
+    <div class="flex flex-wrap">
+      <Form {artwork} on:submit={submit} />
+      <div class="ml-2 flex-1 flex">
+        <div class="mx-auto w-1/2">
+          {#if type.includes('image')}<img src={preview} class="w-full" />{/if}
+          <video controls class:hidden muted autoplay loop class="w-full">
+            <source bind:this={video} />
+            Your browser does not support HTML5 video.
+          </video>
+          <div class="shadow w-full bg-grey-light mt-2 mb-2">
+            <div
+              class="bg-gray-800 text-xs leading-none py-2 text-center text-white"
+              style={width}>
+              {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-{:else}
-  <Dropzone on:file={uploadFile} />
-{/if}
+  {:else}
+    <Dropzone on:file={uploadFile} />
+  {/if}
+{:else}Issuance transaction not found. Do you have funds in your <a href="/wallet" class="text-green-400">wallet</a>?{/if}

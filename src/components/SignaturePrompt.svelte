@@ -6,6 +6,7 @@
   import { sign } from "$lib/wallet";
 
   export let submit = (e) => {
+    console.log("uhh", $psbt);
     sign($psbt);
     $prompt = undefined;
   };
