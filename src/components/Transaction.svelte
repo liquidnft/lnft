@@ -6,7 +6,7 @@
   export let summary = false;
 
   let explorerUrl;
-  if (import.meta && import.meta.env) {
+  if (import.meta && import.meta.env && import.meta.env !== "production") {
     explorerUrl = import.meta.env.SNOWPACK_PUBLIC_EXPLORER;
   } else {
     explorerUrl = "https://la.coinos.io/explorer";

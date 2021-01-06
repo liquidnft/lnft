@@ -8,7 +8,7 @@ import {
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
 let url, wsUrl;
-if (import.meta && import.meta.env) {
+if (import.meta && import.meta.env && import.meta.env !== "production") {
   url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
   wsUrl = import.meta.env.SNOWPACK_PUBLIC_WS;
 } else {

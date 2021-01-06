@@ -31,6 +31,6 @@ export const goto = (path) => {
 };
 
 export const explorer =
-  import.meta && import.meta.env
+  import.meta && import.meta.env && import.meta.env !== "production"
     ? import.meta.env.SNOWPACK_PUBLIC_EXPLORER
     : "https://la.coinos.io/explorer";
