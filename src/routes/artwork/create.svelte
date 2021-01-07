@@ -61,6 +61,7 @@
     description: "",
     filename: "",
     asset: "",
+    tags: [],
   };
 
   const createArtwork = mutation(create);
@@ -78,9 +79,17 @@
     let tx = $psbt.extractTransaction();
     artwork.asset = reverse(tx.outs[3].asset.slice(1)).toString("hex");
     artwork.id = v4();
-    createArtwork({ artwork, hash: tx.getId(), id: artwork.id, psbt: $psbt.toBase64() }).then(() => {
-      goto("/market");
-    });
+    let tags = artwork.tags.map(({ tag }) => ({ tag, artwork_id: artwork.id }));
+    let artworkSansTags = { ...artwork };
+    delete artworkSansTags.tags;
+
+    createArtwork({
+      artwork: artworkSansTags,
+      id: artwork.id,
+      hash: tx.getId(),
+      psbt: $psbt.toBase64(),
+      tags,
+    }).then(() => goto("/market"));
   };
 </script>
 
@@ -97,7 +106,7 @@
 {#if $psbt}
   {#if preview}
     <div class="flex flex-wrap">
-      <Form {artwork} on:submit={submit} />
+      <Form bind:artwork on:submit={submit} />
       <div class="ml-2 flex-1 flex">
         <div class="mx-auto w-1/2">
           {#if type.includes('image')}<img src={preview} class="w-full" />{/if}
@@ -118,4 +127,8 @@
   {:else}
     <Dropzone on:file={uploadFile} />
   {/if}
-{:else}Issuance transaction not found. Do you have funds in your <a href="/wallet" class="text-green-400">wallet</a>?{/if}
+{:else}
+  Unable to generate issuance transaction. Do you have funds in your
+  <a href="/wallet" class="text-green-400">wallet</a>? You'll need about 100000
+  for the fee.
+{/if}

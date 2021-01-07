@@ -7,3 +7,4 @@ export const show = writable();
 export const password = writable();
 export const prompt = writable();
 export const psbt = writable();
+export const poll = writable();

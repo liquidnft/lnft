@@ -1,8 +1,8 @@
 <script>
   import { electrs } from "$lib/api";
   // import QrCode from "svelte-qrcode";
-  import { onMount } from "svelte";
-  import { snack, password, user, token } from "$lib/store";
+  import { onMount, onDestroy } from "svelte";
+  import { poll, snack, password, user, token } from "$lib/store";
   import getAddress from "$lib/getAddress";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
@@ -17,7 +17,9 @@
   let amount = 123;
   let fee = 100000;
   let to = "XShxPnuCJJvPQghYjPSzsg45dLnrpSTPuT";
+
   onMount(requireLogin);
+  //onDestroy(() => clearInterval(poll));
 
   let init = async () => {
     await requirePassword();
@@ -31,7 +33,7 @@
     await getUtxos(address);
     loading = false;
 
-    setInterval(() => getUtxos(address), 2000);
+    $poll = setInterval(() => getUtxos(address), 2000);
   };
 
   $: if ($user && loading) init();

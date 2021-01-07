@@ -1,13 +1,17 @@
 <script>
   import { onMount } from "svelte";
   import decode from "jwt-decode";
-  import { user, token } from "$lib/store";
+  import { poll, user, token } from "$lib/store";
   import { getUser } from "$queries/users";
   import { api } from "$lib/api";
   import { fade } from "svelte/transition";
   import { update } from "$queries/users";
   import { setupUrql } from "$lib/urql";
   import { operationStore, subscription } from "@urql/svelte";
+  import { page } from "$app/stores";
+
+  let pageChange = (p) => clearInterval($poll);
+  $: pageChange($page);
 
   let id;
   setupUrql();
