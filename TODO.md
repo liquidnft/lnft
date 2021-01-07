@@ -1,3 +1,4 @@
+monitor bid utxos for spends/cancellations
 invalidate previous list price swap by double spending if currency or price is changed
 dutch auction timelocked decreasing amount increments
 set price in any liquid token

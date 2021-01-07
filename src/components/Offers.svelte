@@ -26,13 +26,15 @@
           prompt.subscribe((value) => value || resolve())
         );
         await tick();
-        await broadcast($psbt);
+        // await broadcast($psbt);
         let params = {
           id: artwork.id,
           owner_id: artwork.bid[0].user.id,
           amount: artwork.bid[0].amount,
           psbt: $psbt.toBase64(),
+          asset: artwork.asking_asset,
         };
+
         acceptOffer$(params);
         offers = offers.filter((o) => o.artwork_id !== artwork.id);
         $snack = "Offer accepted! Sold!";

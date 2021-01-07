@@ -26,17 +26,23 @@
       {#if transaction.type === 'bid'}
         offered
         {transaction.amount}
-        {transaction.asset.substr(0, 6)} for
+        {transaction.asset.substr(0, 6)}
+        for
       {:else if transaction.type === 'creation'}
         created
       {:else if transaction.type === 'purchase'}
         paid
         {transaction.amount}
-        {transaction.asset.substr(0, 6)} for
+        {transaction.asset.substr(0, 6)}
+        for
       {:else if transaction.type === 'accept'}
-        accepted a bid of
+        accepted 
         {transaction.amount}
-        {transaction.asset.substr(0, 6)} for
+        {transaction.asset.substr(0, 6)}
+        from
+        <a
+          href={`/user/${transaction.artwork.owner.id}`}>@{transaction.artwork.owner.username}</a>
+        for
       {/if}
       <a
         href={`/artwork/${transaction.artwork.id}`}>{transaction.artwork.title}</a>
@@ -46,9 +52,7 @@
         {formatDistanceStrict(new Date(transaction.created_at), new Date())}
         ago
       </span>
-      <a
-        href={`/tx/${transaction.id}`}
-        class="text-xs text-green-400">
+      <a href={`/tx/${transaction.id}`} class="text-xs text-green-400">
         [view tx]
       </a>
     </div>

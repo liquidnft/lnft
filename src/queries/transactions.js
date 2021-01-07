@@ -24,6 +24,10 @@ const fields = `
     id
     title
     filename
+    owner {
+      id
+      username
+    } 
     bid {
       amount
       user {
@@ -62,6 +66,8 @@ export const getOffers = `subscription {
       id
       title
       filename
+      asset
+      asking_asset
       bid {
         amount
         user {
@@ -74,7 +80,7 @@ export const getOffers = `subscription {
 }`;
 
 export const acceptOffer = {
-  query: `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!) {
+  query: `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!) {
     update_artworks_by_pk(
       pk_columns: { id: $id }, 
       _set: { 
@@ -86,6 +92,7 @@ export const acceptOffer = {
     }
     insert_transactions_one(object: {
       artwork_id: $id,
+      asset: $asset,
       type: "accept",
       amount: $amount,
       hash: "",

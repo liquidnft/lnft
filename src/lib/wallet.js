@@ -215,6 +215,8 @@ export const createSwap = async (asset, price) => {
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
   let prevout = utxos.find((utxo) => utxo.asset === asset);
+  
+  if (!prevout) throw new Error("Insufficient funds");
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
   return new Psbt()
