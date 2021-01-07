@@ -177,6 +177,7 @@
       - asking_asset
       - asset
       - auction_end
+      - auction_start
       - description
       - filename
       - id
@@ -193,6 +194,7 @@
       - asking_asset
       - asset
       - auction_end
+      - auction_start
       - created_at
       - description
       - filename
@@ -214,6 +216,7 @@
       - asking_asset
       - asset
       - auction_end
+      - auction_start
       - created_at
       - description
       - filename
@@ -235,6 +238,7 @@
       columns:
       - asking_asset
       - auction_end
+      - auction_start
       - description
       - filename
       - id

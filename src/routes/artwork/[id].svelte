@@ -23,7 +23,7 @@
     (a, b) => (transactions = b.transactions)
   );
 
-  let artwork, counter;
+  let artwork, start_counter, end_counter;
   let createTransaction$ = mutation(createTransaction);
 
   let makeOffer = async (e) => {
@@ -42,7 +42,8 @@
     artwork = b.artworks_by_pk;
 
     let count = () => {
-      counter = countdown(new Date(artwork.auction_end));
+      start_counter = countdown(new Date(artwork.auction_start));
+      end_counter = countdown(new Date(artwork.auction_end));
       setTimeout(count, 1000);
     };
     count();
@@ -167,10 +168,16 @@
           {artwork.owner.address}
         {/if}
         <div class="my-2 font-bold">
+          {#if Date.parse(artwork.auction_start) > new Date()}
+            <span class="font-thin text-sm">Auction starts in</span>
+            <span class="text-2xl">{start_counter}</span>
+          {/if}
+        </div>
+        <div class="my-2 font-bold">
           {#if Date.parse(artwork.auction_end) > new Date()}
             <span class="font-thin text-sm">Auction closes in</span>
-            <span class="text-2xl">{counter}</span>
-          {:else}<span class="text-2xl">Auction ended</span>{/if}
+            <span class="text-2xl">{end_counter}</span>
+          {:else if artwork.auction_end}<span class="text-2xl">Auction ended at {artwork.auction_end}</span>{/if}
         </div>
         <div class="my-4">
           {#if artwork.list_price}

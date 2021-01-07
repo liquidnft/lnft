@@ -1,10 +1,19 @@
 <script>
-  import { formatISO, addDays } from 'date-fns';
-  export let artwork;
-  let selected;
+  import Select from "svelte-select";
+  import { mutation, subscription, operationStore } from "@urql/svelte";
 
-  // const allTags = ["digital", "glitch", "3d", "abstract"];
-  $: artwork.auction_end = formatISO(addDays(new Date(), 3));
+  export let artwork;
+  let items;
+
+  $: selectedValue = artwork.tags.map(({ tag }) => ({ value: tag, label: tag }))
+
+  subscription(operationStore(`subscription { tags { tag } }`), (a, b) => {
+    items = [...new Set(b.tags.map(t => t.tag))].map((value) => ({ value, label: value }));
+  });
+
+  let handle = ({ detail }) => {
+    artwork.tags = detail.map(({ value: tag }) => ({ tag }))
+  };
 </script>
 
 <form class="w-full md:w-1/2 mb-6" on:submit autocomplete="off">
@@ -15,6 +24,16 @@
   <div class="flex flex-col mb-4">
     <label>Description</label>
     <textarea placeholder="Description" bind:value={artwork.description} />
+  </div>
+  <div class="flex flex-col mb-4">
+    <label>Tags</label>
+    <Select
+      {items}
+      isMulti={true}
+      placeholder="Tags"
+      on:select={handle}
+      {selectedValue}
+      isCreatable={true} />
   </div>
   <div class="flex">
     <button

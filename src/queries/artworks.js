@@ -13,6 +13,7 @@ const fields = `
   list_price
   last_active
   created_at
+  auction_start
   auction_end
   list_price_tx
   asking_asset
@@ -27,7 +28,10 @@ const fields = `
 
 export const getArtworks = `subscription {
  artworks {
-    ${fields},
+    ${fields}
+    tags {
+      tag
+    } 
   }
 }`;
 

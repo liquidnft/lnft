@@ -8,8 +8,10 @@
   import { password, psbt, user, token } from "$lib/store";
   import { requireLogin, requirePassword } from "$lib/utils";
   import { createSwap } from "$lib/wallet";
+  import { formatISO, addDays } from "date-fns";
 
-const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+  const btc =
+    "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 
   let { id } = $page.params;
 
@@ -17,7 +19,13 @@ const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 
   let artwork;
   subscription(operationStore(getArtwork(id)), (a, b) => {
-    artwork = { ...b.artworks_by_pk, list_price: 500, asking_asset: btc };
+    artwork = {
+      list_price: 500,
+      asking_asset: btc,
+      auction_start: formatISO(new Date()),
+      auction_end: formatISO(addDays(new Date(), 3)),
+      ...b.artworks_by_pk,
+    };
   });
 
   const updateArtwork$ = mutation(updateArtwork);
@@ -32,6 +40,7 @@ const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
     let {
       id: artwork_id,
       asking_asset,
+      auction_start,
       auction_end,
       description,
       filename,
@@ -40,10 +49,17 @@ const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
       title,
     } = artwork;
 
+    if (!auction_start) auction_start = null;
     if (!auction_end) auction_end = null;
 
     updateArtwork$({
-      artwork: { list_price, list_price_tx, auction_end, asking_asset },
+      artwork: {
+        list_price,
+        list_price_tx,
+        auction_start,
+        auction_end,
+        asking_asset,
+      },
       id,
     }).then(() => {
       goto(`/artwork/${artwork.id}`);
@@ -61,7 +77,10 @@ const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
       <div>
         <div class="mt-1 relative rounded-md shadow-sm">
           <label>List Currency</label>
-          <select aria-label="Currency" class="form-input block w-full" bind:value={artwork.asking_asset}>
+          <select
+            aria-label="Currency"
+            class="form-input block w-full"
+            bind:value={artwork.asking_asset}>
             <option value={btc}>BTC</option>
             <option>CAD</option>
             <option>USD</option>
@@ -80,6 +99,12 @@ const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
             bind:value={artwork.list_price} />
         </div>
       </div>
+    </div>
+    <div class="flex flex-col mb-4">
+      <label>Auction Start Time</label>
+      <input
+        placeholder="Auction Start Time"
+        bind:value={artwork.auction_start} />
     </div>
     <div class="flex flex-col mb-4">
       <label>Auction End Time</label>

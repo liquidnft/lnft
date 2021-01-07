@@ -26,7 +26,7 @@
           prompt.subscribe((value) => value || resolve())
         );
         await tick();
-        // await broadcast($psbt);
+        await broadcast($psbt);
         let params = {
           id: artwork.id,
           owner_id: artwork.bid[0].user.id,

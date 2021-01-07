@@ -23,5 +23,5 @@ export default (d) => {
   minutes = ('0'+minutes).slice(-2);
   seconds = ('0'+seconds).slice(-2);
 
-  return `${days} days ${hours}:${minutes}:${seconds}`;
+  return `${days ? days + (days === 1 ? ' day' : ' days') : ''} ${hours}:${minutes}:${seconds}`;
 };
