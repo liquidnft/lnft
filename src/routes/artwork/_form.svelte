@@ -25,10 +25,12 @@
     <label>Description</label>
     <textarea placeholder="Description" bind:value={artwork.description} />
   </div>
+  {#if !artwork.id}
   <div class="flex flex-col mb-4">
     <label>Editions</label>
     <input placeholder="Editions" bind:value={artwork.editions} />
   </div>
+{/if}
   <div class="flex flex-col mb-4">
     <label>Tags</label>
     <Select

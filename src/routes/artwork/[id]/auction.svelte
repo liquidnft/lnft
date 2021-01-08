@@ -9,23 +9,31 @@
   import { requireLogin, requirePassword } from "$lib/utils";
   import { createSwap } from "$lib/wallet";
   import { formatISO, addDays } from "date-fns";
+  import Select from "svelte-select";
 
-  const btc =
-    "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+  const btc = import.meta.env.SNOWPACK_PUBLIC_BTC;
+  const cad = import.meta.env.SNOWPACK_PUBLIC_CAD;
+  const usd = import.meta.env.SNOWPACK_PUBLIC_USD;
+
+  let currencies = [
+    { value: btc, label: "BTC" },
+    { value: cad, label: "CAD" },
+    { value: usd, label: "USD" },
+  ];
 
   let { id } = $page.params;
+  $: requireLogin($page)
 
-  onMount(requireLogin);
+  let selectedValue = btc;
 
   let artwork;
   subscription(operationStore(getArtwork(id)), (a, b) => {
     artwork = {
-      list_price: 500,
-      asking_asset: btc,
-      auction_start: formatISO(new Date()),
-      auction_end: formatISO(addDays(new Date(), 3)),
       ...b.artworks_by_pk,
     };
+
+      if (!artwork.auction_start) artwork.auction_start = formatISO(new Date());
+      if (!artwork.auction_end) artwork.auction_end = formatISO(addDays(new Date(), 3));      
   });
 
   const updateArtwork$ = mutation(updateArtwork);
@@ -71,28 +79,30 @@
 <p class="text-xl italic mb-4">All fields are optional</p>
 
 {#if artwork}
-  {artwork.asking_asset}
   <form class="w-full md:w-1/2 mb-6" on:submit={update} autocomplete="off">
     <div class="flex flex-col mb-4">
       <div>
         <div class="mt-1 relative rounded-md shadow-sm">
-          <label>List Currency</label>
-          <select
-            aria-label="Currency"
-            class="form-input block w-full"
-            bind:value={artwork.asking_asset}>
-            <option value={btc}>BTC</option>
-            <option>CAD</option>
-            <option>USD</option>
-            <option>Other</option>
-          </select>
+          <label>Asset</label>
+        <select
+          placeholder="Currency"
+          bind:value={artwork.asking_asset}
+          class="form-input block w-full pl-7 pr-12">
+          {#each currencies as currency}
+            <option value={currency.value}>{currency.label}</option>
+          {/each}
+        </select>
+          <input
+            class="form-input block w-full pl-7 pr-12"
+            placeholder="0"
+            bind:value={artwork.asking_asset} />
         </div>
       </div>
     </div>
     <div class="flex flex-col mb-4">
       <div>
         <div class="mt-1 relative rounded-md shadow-sm">
-          <label>List Price</label>
+          <label>Price</label>
           <input
             class="form-input block w-full pl-7 pr-12"
             placeholder="0"
@@ -117,7 +127,7 @@
           <input
             class="form-input block w-full pl-7 pr-12"
             placeholder="0"
-            bind:value={artwork.list_price} />
+            bind:value={artwork.reserve_price} />
         </div>
       </div>
     </div>

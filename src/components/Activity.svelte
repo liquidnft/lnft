@@ -5,8 +5,6 @@
   import { formatDistanceStrict } from "date-fns";
   export let transaction;
   export let showImage = false;
-
-  console.log(transaction);
 </script>
 
 <style>

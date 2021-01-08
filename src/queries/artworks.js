@@ -12,6 +12,7 @@ const fields = `
   filename
   favorited
   list_price
+  reserve_price
   last_active
   created_at
   auction_start

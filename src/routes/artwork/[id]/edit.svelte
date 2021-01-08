@@ -32,7 +32,6 @@
       tags,
     } = artwork;
 
-    console.log("tags", tags.map(({ tag }) => ({ tag, artwork_id })));
     updateTags$({
       tags: tags.map(({ tag }) => ({ tag, artwork_id })),
       artwork_id,

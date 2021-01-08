@@ -185,6 +185,7 @@
       - list_price
       - list_price_tx
       - owner_id
+      - reserve_price
       - title
       backend_only: false
   select_permissions:
@@ -204,6 +205,7 @@
       - list_price
       - list_price_tx
       - owner_id
+      - reserve_price
       - title
       - transferred_at
       computed_fields:
@@ -227,6 +229,7 @@
       - list_price
       - list_price_tx
       - owner_id
+      - reserve_price
       - title
       - transferred_at
       computed_fields:
@@ -249,6 +252,7 @@
       - list_price
       - list_price_tx
       - owner_id
+      - reserve_price
       - title
       filter:
         owner_id:
