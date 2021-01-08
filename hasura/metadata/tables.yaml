@@ -642,6 +642,7 @@
   - role: user
     permission:
       columns:
+      - address
       - address_index
       - avatar_url
       - bio
