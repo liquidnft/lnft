@@ -13,11 +13,6 @@
   import { createIssuance, broadcast } from "$lib/wallet";
   import reverse from "buffer-reverse";
 
-  onMount(async () => {
-    await requirePassword();
-    $psbt = await createIssuance();
-  });
-
   let preview;
   let filename;
   let type;
@@ -61,6 +56,7 @@
     description: "",
     filename: "",
     asset: "",
+    editions: 1,
     tags: [],
   };
 
@@ -68,15 +64,17 @@
 
   let submit = async (e) => {
     e.preventDefault();
+    await requirePassword();
+    $psbt = await createIssuance(artwork.editions, 100000);
 
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
       prompt.subscribe((value) => value || resolve())
     );
     await tick();
+    await broadcast($psbt);
 
     let tx = $psbt.extractTransaction();
-    console.log(await broadcast($psbt), tx.getId(), $psbt.toBase64());
     artwork.asset = reverse(tx.outs[3].asset.slice(1)).toString("hex");
     artwork.id = v4();
     let tags = artwork.tags.map(({ tag }) => ({ tag, artwork_id: artwork.id }));
@@ -103,7 +101,6 @@
   <h1 class="text-2xl font-black text-gray-900 pb-6">Submit Artwork</h1>
 </div>
 
-{#if $psbt}
   {#if preview}
     <div class="flex flex-wrap">
       <Form bind:artwork on:submit={submit} />
@@ -127,8 +124,3 @@
   {:else}
     <Dropzone on:file={uploadFile} />
   {/if}
-{:else}
-  Unable to generate issuance transaction. Do you have funds in your
-  <a href="/wallet" class="text-green-400">wallet</a>? You'll need about 100000
-  for the fee.
-{/if}

@@ -115,10 +115,6 @@ export const sign = (psbt) => {
     }
   });
 
-  console.log(
-    "umm",
-    Psbt.fromBase64(psbt.toBase64()).extractTransaction().getId()
-  );
   return psbt;
 };
 
@@ -182,8 +178,7 @@ export const executeSwap = async (psbt) => {
   );
 };
 
-export const createIssuance = async () => {
-  let fee = 100000;
+export const createIssuance = async (editions, fee) => {
   let addr = getAddress($user.mnemonic, $password);
 
   if (!addr) {
@@ -231,7 +226,7 @@ export const createIssuance = async () => {
         value: Math.round(prevout.value - fee),
       })
       .addIssuance({
-        assetAmount: 1,
+        assetAmount: editions,
         assetAddress: address,
         tokenAmount: 0,
         precision: 0,

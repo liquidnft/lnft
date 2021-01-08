@@ -28,7 +28,7 @@
 
   let makeOffer = async (e) => {
     if (e) e.preventDefault();
-    await requirePassword($password, $token);
+    await requirePassword();
     $psbt = await createOffer(artwork, transaction.amount);
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
@@ -136,7 +136,7 @@
       <h1 class="text-3xl font-black text-gray-900">
         {artwork.title || 'Untitled'}
       </h1>
-      <div class="font-black mb-6">Edition 1 of 1</div>
+      <div class="font-black mb-6">{artwork.editions} Editions</div>
       <div class="text-sm text-gray-600 break-all">
         Asset Id:
         <a href={`${explorer}/asset/${artwork.asset}`} class="text-green-400">{artwork.asset}</a>
@@ -152,7 +152,7 @@
 
         {#if $user && $user.id === artwork.owner_id}
           <button
-            on:click={() => goto(`/artwork/${id}/auction`)}>Auction</button>
+            on:click={() => goto(`/artwork/${id}/auction`)}>List</button>
           <button on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
           <button on:click={destroy} class="dangerous">Destroy</button>
         {:else if artwork.asking_asset}

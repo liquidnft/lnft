@@ -4,6 +4,7 @@ import { operationStore, query } from "@urql/svelte";
 const fields = `
   id,
   asset
+  editions
   title
   description
   artist_id

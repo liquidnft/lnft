@@ -4,8 +4,10 @@
   import { api } from "$lib/api";
   import Lock from "$icons/lock";
   import { sign } from "$lib/wallet";
+  import { requirePassword } from "$lib/utils";
 
-  export let submit = (e) => {
+  export let submit = async (e) => {
+    await requirePassword();
     $psbt = sign($psbt);
     console.log("after sign", $psbt.toBase64(), $psbt.extractTransaction().getId());
     $prompt = undefined;

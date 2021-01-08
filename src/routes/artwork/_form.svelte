@@ -26,6 +26,10 @@
     <textarea placeholder="Description" bind:value={artwork.description} />
   </div>
   <div class="flex flex-col mb-4">
+    <label>Editions</label>
+    <input placeholder="Editions" bind:value={artwork.editions} />
+  </div>
+  <div class="flex flex-col mb-4">
     <label>Tags</label>
     <Select
       {items}

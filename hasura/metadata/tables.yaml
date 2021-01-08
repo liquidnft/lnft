@@ -179,6 +179,7 @@
       - auction_end
       - auction_start
       - description
+      - editions
       - filename
       - id
       - list_price
@@ -197,6 +198,7 @@
       - auction_start
       - created_at
       - description
+      - editions
       - filename
       - id
       - list_price
@@ -219,6 +221,7 @@
       - auction_start
       - created_at
       - description
+      - editions
       - filename
       - id
       - list_price
@@ -240,6 +243,7 @@
       - auction_end
       - auction_start
       - description
+      - editions
       - filename
       - id
       - list_price

@@ -1,7 +1,9 @@
 <script>
   import { psbt } from "$lib/store";
+  import Check from "$icons/check";
   import reverse from "buffer-reverse";
   import { address as Address, script } from "@asoltys/liquidjs-lib";
+  import { electrs } from "$lib/api";
 
   export let summary = false;
 
@@ -12,14 +14,28 @@
     explorerUrl = "https://la.coinos.io/explorer";
   }
 
+  let ins = [];
   let outs = [];
   let tx;
 
-  $: if ($psbt) {
+  $: init($psbt);
+  let init = async (p) => {
+    if (!p) return;
+
     try {
-      tx = $psbt.extractTransaction();
+      tx = p.extractTransaction();
     } catch (e) {
-      tx = $psbt.__CACHE.__TX;
+      tx = p.__CACHE.__TX;
+    }
+
+    for (let i = 0; i < tx.ins.length; i++) {
+      let { hash, index } = tx.ins[i];
+      let txid = reverse(hash).toString("hex");
+      let input = (await electrs.url(`/tx/${txid}`).get().json()).vout[index];
+      input.asset = input.asset.substr(0, 6);
+      input.signed = !!p.data.inputs[i].finalScriptWitness;
+
+      ins = [...ins, input];
     }
 
     outs = tx.outs
@@ -42,7 +58,7 @@
         a.address === "Fee" ? -1 : a.asset.localeCompare(b.asset)
       )
       .reverse();
-  }
+  };
 </script>
 
 {#if tx}
@@ -52,6 +68,19 @@
       {tx.getId()}
     </a>
   </div>
+  <div class="font-bold text-xs">Inputs</div>
+  <div class="flex break-all mb-2 text-sm" style="max-width: 500px">
+    <div class="w-1/6">Value</div>
+    <div class="mr-2">Asset</div>
+    <div class="text-right flex-grow">Signed</div>
+  </div>
+  {#each ins as input}
+    <div class="flex break-all mb-2 text-sm" style="max-width: 500px">
+      <div class="w-1/6">{input.value}</div>
+      <div class="mr-2">{input.asset}</div>
+      <div class="text-right flex-grow">{#if input.signed}<div class="ml-auto" style="max-width: 20px"><Check /></div>{/if}</div>
+    </div>
+  {/each}
   <div class="font-bold text-xs">Outputs</div>
   <div class="flex break-all mb-2 text-sm" style="max-width: 500px">
     <div class="w-1/6">Value</div>
@@ -71,7 +100,10 @@
     <div class="font-bold text-xs">Weight</div>
     <div class="mb-4">{tx.weight()}</div>
 
-    <div class="font-bold text-xs">Hex</div>
-    <div class="font-mono w-1/2 text-xs text-wrap break-all">{tx.toHex()}</div>
+    <div class="font-bold text-xs">Tx Hex</div>
+    <div class="font-mono w-1/2 text-xs text-wrap break-all mb-4">{tx.toHex()}</div>
+
+    <div class="font-bold text-xs">PSBT Base64</div>
+    <div class="font-mono w-1/2 text-xs text-wrap break-all">{$psbt.toBase64()}</div>
   {/if}
 {/if}

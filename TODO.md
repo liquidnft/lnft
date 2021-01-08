@@ -1,3 +1,8 @@
+show inputs in tx viewer, highlight own inputs
+3rd party lightning/btc -> liquid api / taxi service
+pay bid/list price on demand
+pay issuance fee on demand
+private key import
 monitor bid utxos for spends/cancellations
 invalidate previous list price swap by double spending if currency or price is changed
 dutch auction timelocked decreasing amount increments
