@@ -14,7 +14,7 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { explorer, requireLogin, requirePassword } from "$lib/utils";
   import { createOffer, executeSwap, broadcast } from "$lib/wallet";
-  import { tickers } from "$lib/utils";
+  import { ticker } from "$lib/utils";
 
   let { id } = $page.params;
 
@@ -35,12 +35,11 @@
       $psbt = await createOffer(artwork, transaction.amount);
     } catch(e) {
       $snack = e.message;
-      throw e;
     } 
 
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
-      prompt.subscribe((value) => value || resolve())
+      prompt.subscribe((value) => value === "success" && resolve())
     );
     transaction.psbt = $psbt.toBase64();
     save();
@@ -169,7 +168,7 @@
           {/if}
           {#if bidding}
             <form on:submit={makeOffer}>
-              <Amount bind:this={amount} bind:value={transaction.amount} />
+              <Amount bind:this={amount} bind:value={transaction.amount} unit={ticker(artwork.asking_asset)} />
               <button type="submit">Submit</button>
             </form>
           {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
@@ -192,7 +191,7 @@
               <div class="w-1/2 text-sm font-medium">
                 List Price
                 {artwork.list_price}
-                {tickers[artwork.asking_asset]}
+                {ticker(artwork.asking_asset)}
               </div>
             </div>
           {/if}
@@ -200,7 +199,7 @@
             <div class="text-sm font-medium">
               Current bid
               {artwork.bid[0].amount}
-              BTC
+              {ticker(artwork.asking_asset)}
             </div>
           {/if}
         </div>

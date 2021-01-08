@@ -183,7 +183,7 @@
           <div class="w-full flex flex-wrap">
             {#each creations as artwork (artwork.id)}
               <div class="card-container">
-                <Card {artwork} />
+                <Card {artwork} summary={true} />
               </div>
             {:else}
               <div class="mx-auto">No creations yet</div>
@@ -209,7 +209,7 @@
           <div class="w-full flex flex-wrap">
             {#each favorites as artwork (artwork.id)}
               <div class="card-container">
-                <Card {artwork} />
+                <Card {artwork} showDetails={false} />
               </div>
             {:else}
               <div class="mx-auto">No favorites yet</div>

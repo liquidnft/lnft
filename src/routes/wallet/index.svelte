@@ -50,7 +50,7 @@
   let assets = [];
   let getUtxos = async (address) => {
     utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-    if (artworks.length && !assets.length) {
+    if (!assets.length) {
       assets = utxos
         .map(({ asset }) => ({ name: name(asset), asset }))
         .sort((a, b) => a.name.localeCompare(b.name))

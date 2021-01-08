@@ -10,12 +10,10 @@
   import { createSwap } from "$lib/wallet";
   import { formatISO, addDays } from "date-fns";
   import Select from "svelte-select";
-  import { tickers } from "$lib/utils";
+  import { btc, tickers } from "$lib/utils";
 
   let { id } = $page.params;
   $: requireLogin($page);
-
-  let selectedValue = btc;
 
   let artwork;
   subscription(operationStore(getArtwork(id)), (a, b) => {
@@ -23,6 +21,7 @@
       ...b.artworks_by_pk,
     };
 
+    if (!artwork.asking_asset) artwork.asking_asset = btc;
     if (!artwork.auction_start) artwork.auction_start = formatISO(new Date());
     if (!artwork.auction_end)
       artwork.auction_end = formatISO(addDays(new Date(), 3));

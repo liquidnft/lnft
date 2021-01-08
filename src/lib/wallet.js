@@ -110,9 +110,7 @@ export const sign = (psbt) => {
       psbt = psbt
         .signInput(i, ECPair.fromPrivateKey(privateKey))
         .finalizeInput(i);
-    } catch (e) {
-      console.log("error", e);
-    }
+    } catch (e) {} // silently fail when signing an input that's not ours
   });
 
   return psbt;
@@ -190,12 +188,10 @@ export const createIssuance = async (editions, fee) => {
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
   let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value >= fee);
+  if (!prevout) throw new Error("Insufficient funds");
+
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
-  if (!prevout) {
-    snack.set("Not enough funds");
-    return;
-  }
   return (
     new Psbt()
       .addInput({

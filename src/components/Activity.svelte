@@ -3,6 +3,8 @@
   import Card from "$components/Card";
   import { user } from "$lib/store";
   import { formatDistanceStrict } from "date-fns";
+  import { ticker } from "$lib/utils";
+
   export let transaction;
   export let showImage = false;
 </script>
@@ -26,6 +28,7 @@
       {#if transaction.type === 'bid'}
         offered
         {transaction.amount}
+        {ticker(transaction.artwork.asking_asset)}
         {transaction.asset.substr(0, 6)}
         for
       {:else if transaction.type === 'creation'}
@@ -33,11 +36,13 @@
       {:else if transaction.type === 'purchase'}
         paid
         {transaction.amount}
+        {ticker(transaction.artwork.asking_asset)}
         {transaction.asset.substr(0, 6)}
         for
       {:else if transaction.type === 'accept'}
         accepted 
         {transaction.amount}
+        {ticker(transaction.artwork.asking_asset)}
         {transaction.asset.substr(0, 6)}
         from
         <a

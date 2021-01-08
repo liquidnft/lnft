@@ -8,7 +8,7 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { broadcast } from "$lib/wallet";
   import SignaturePrompt from "$components/SignaturePrompt";
-  import { requirePassword } from "$lib/utils";
+  import { ticker, requirePassword } from "$lib/utils";
 
   let offers = [];
   let accept;
@@ -56,11 +56,12 @@
 
 <div class="flex flex-wrap px-6">
   {#each offers as offer}
-    <div class="p-4 w-full flex">
-      <Card artwork={offer.artwork} columns={1} />
-      <div class="mb-auto mx-2 whitespace-no-wrap text-center">
+    <div class="p-4 w-full">
+      <Card artwork={offer.artwork} columns={1} showDetails={false} />
+      <div class="mt-12 mx-2 whitespace-no-wrap text-center">
         {offer.amount}
-        BTC from @{offer.artwork.bid[0].user.username}
+        {ticker(offer.artwork.asking_asset)}
+        from @{offer.artwork.bid[0].user.username}
         <a href={`/tx/${offer.id}`} class="text-xs text-green-400">
           [view tx]
         </a>

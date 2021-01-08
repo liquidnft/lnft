@@ -1,6 +1,7 @@
 <script>
   export let value;
   let amount;
+  export let unit;
   export let focus = () => amount.focus();
 </script>
 
@@ -11,18 +12,15 @@
       <input
         id="price"
         class="form-input block w-full pl-7"
-        placeholder="0.00"
+        placeholder="0"
         bind:value
         bind:this={amount}
       />
-      <div class="absolute inset-y-0 right-0 flex items-center">
-        <select
-          class="border-transparent bg-transparent text-gray-500 p-0 h-full">
-          <option>BTC</option>
-          <option selected>mBTC</option>
-          <option>SATS</option>
-        </select>
+      {#if unit}
+      <div class="absolute inset-y-0 right-0 flex items-center mr-2">
+        {unit}
       </div>
+    {/if}
     </div>
   </div>
 </div>

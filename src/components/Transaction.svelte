@@ -73,7 +73,6 @@
   <div class="flex break-all mb-2 text-sm">
     <div class="w-1/6">Value</div>
     <div class="mr-2">Asset</div>
-    <div class="text-right flex-grow">Signed</div>
   </div>
   {#each ins as input}
     <div class="flex break-all mb-2 text-sm">

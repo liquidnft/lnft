@@ -24,6 +24,7 @@ const fields = `
     id
     title
     filename
+    asking_asset
     owner {
       id
       username

@@ -65,7 +65,12 @@
   let submit = async (e) => {
     e.preventDefault();
     await requirePassword();
-    $psbt = await createIssuance(artwork.editions, 100000);
+    try {
+      $psbt = await createIssuance(artwork.editions, 100000);
+    } catch(e) {
+      $snack = e.message;
+      return;
+    } 
 
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>

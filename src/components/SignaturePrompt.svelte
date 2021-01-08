@@ -9,7 +9,7 @@
   export let submit = async (e) => {
     await requirePassword();
     $psbt = sign($psbt);
-    console.log("after sign", $psbt.toBase64(), $psbt.extractTransaction().getId());
+    $prompt = "success";
     $prompt = undefined;
   };
 
