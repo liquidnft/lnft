@@ -44,6 +44,7 @@
       description,
       filename,
       list_price,
+      reserve_price,
       list_price_tx,
       title,
     } = artwork;
@@ -55,6 +56,7 @@
       artwork: {
         list_price,
         list_price_tx,
+        reserve_price,
         auction_start,
         auction_end,
         asking_asset,

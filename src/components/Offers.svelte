@@ -56,7 +56,7 @@
 
 <div class="flex flex-wrap px-6">
   {#each offers as offer}
-    <div class="p-4 w-full">
+    <div class="p-4">
       <Card artwork={offer.artwork} columns={1} showDetails={false} />
       <div class="mt-12 mx-2 whitespace-no-wrap text-center">
         {offer.amount}

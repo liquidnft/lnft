@@ -11,7 +11,7 @@ export const usd = import.meta.env.SNOWPACK_PUBLIC_USD;
 
 export const tickers = { [btc]: "BTC", [cad]: "CAD", [usd]: "USD" };
 export const ticker = (asset) =>
-  tickers[asset] + " sats" || (asset ? asset.substr(0, 4) + " sats" : "");
+  asset ? ((tickers[asset] || asset.substr(0, 4)) + " sats") : "";
 
 export const requireLogin = async () => {
   let $token = get(token);

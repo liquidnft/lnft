@@ -15,6 +15,7 @@
   import { explorer, requireLogin, requirePassword } from "$lib/utils";
   import { createOffer, executeSwap, broadcast } from "$lib/wallet";
   import { ticker } from "$lib/utils";
+  import { Psbt } from "@asoltys/liquidjs-lib";
 
   let { id } = $page.params;
 
@@ -33,9 +34,9 @@
 
     try {
       $psbt = await createOffer(artwork, transaction.amount);
-    } catch(e) {
+    } catch (e) {
       $snack = e.message;
-    } 
+    }
 
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
@@ -63,7 +64,8 @@
       transaction.type = "purchase";
     }
     createTransaction$({ transaction }).then(() => {
-      $snack = "Bid placed!";
+      if (transaction.type === "purchase") $snack = "Sold! Congratulations!";
+      if (transaction.type === "bid") $snack = "Bid placed!";
       bidding = false;
     });
   };
@@ -83,7 +85,6 @@
   };
 
   let buyNow = async () => {
-    if (!(await requireLogin())) return false;
     await requirePassword();
 
     transaction.amount = artwork.list_price;
@@ -146,7 +147,9 @@
       <div class="font-black mb-6">{artwork.editions} Editions</div>
       <div class="text-sm text-gray-600 break-all">
         Asset Id:
-        <a href={`${explorer}/asset/${artwork.asset}`} class="text-green-400">{artwork.asset}</a>
+        <a
+          href={`${explorer}/asset/${artwork.asset}`}
+          class="text-green-400">{artwork.asset}</a>
       </div>
       <div class="text-sm text-gray-600">{artwork.description}</div>
       <div class="mb-6">
@@ -157,52 +160,66 @@
         {/each}
       </div>
 
-        {#if $user && $user.id === artwork.owner_id}
-          <button
-            on:click={() => goto(`/artwork/${id}/auction`)}>List</button>
-          <button on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
-          <button on:click={destroy} class="dangerous">Destroy</button>
-        {:else if artwork.asking_asset}
-          {#if artwork.list_price}
-            <button on:click={buyNow}>Buy Now</button>
-          {/if}
-          {#if bidding}
-            <form on:submit={makeOffer}>
-              <Amount bind:this={amount} bind:value={transaction.amount} unit={ticker(artwork.asking_asset)} />
-              <button type="submit">Submit</button>
-            </form>
-          {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
+      {#if $user && $user.id === artwork.owner_id}
+        <button on:click={() => goto(`/artwork/${id}/auction`)}>List</button>
+        <button on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
+        <button on:click={destroy} class="dangerous">Destroy</button>
+      {:else if artwork.asking_asset}
+        {#if artwork.list_price}<button on:click={buyNow}>Buy Now</button>{/if}
+        {#if bidding}
+          <form on:submit={makeOffer}>
+            <Amount
+              bind:this={amount}
+              bind:value={transaction.amount}
+              unit={ticker(artwork.asking_asset)} />
+            <button type="submit">Submit</button>
+          </form>
+        {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
+      {/if}
+      <div class="flex my-2 font-bold">
+        {#if Date.parse(artwork.auction_start) > new Date()}
+          <div class="mt-auto font-thin text-sm">Auction starts in</div>
+          <div class="text-right flex-1 text-2xl">{start_counter}</div>
         {/if}
-        <div class="my-2 font-bold">
-          {#if Date.parse(artwork.auction_start) > new Date()}
-            <span class="font-thin text-sm">Auction starts in</span>
-            <span class="text-2xl">{start_counter}</span>
-          {/if}
-        </div>
-        <div class="my-2 font-bold">
-          {#if Date.parse(artwork.auction_end) > new Date()}
-            <span class="font-thin text-sm">Auction closes in</span>
-            <span class="text-2xl">{end_counter}</span>
-          {:else if artwork.auction_end}<span class="text-2xl">Auction ended at {artwork.auction_end}</span>{/if}
-        </div>
-        <div class="my-4">
-          {#if artwork.list_price}
-            <div class="1/2 flex-1">
-              <div class="w-1/2 text-sm font-medium">
-                List Price
-                {artwork.list_price}
-                {ticker(artwork.asking_asset)}
-              </div>
+      </div>
+      <div class="flex my-2 font-bold">
+        {#if Date.parse(artwork.auction_end) > new Date()}
+          <div class="mt-auto font-thin text-sm">Auction closes in</div>
+          <div class="text-right flex-1 text-2xl">{end_counter}</div>
+        {:else if artwork.auction_end}
+          <div class="mt-auto font-thin text-sm">Auction ended at</div>
+          <div class="text-right flex-1 text-2xl">{artwork.auction_end}</div>
+        {/if}
+      </div>
+      <div>
+        {#if artwork.list_price}
+          <div class="flex flex-1 font-bold my-2">
+            <div class="font-thin text-sm mt-auto">List Price</div>
+            <div class="text-right flex-1 text-2xl">
+              {artwork.list_price}
+              {ticker(artwork.asking_asset)}
             </div>
-          {/if}
-          {#if artwork.bid[0].amount}
-            <div class="text-sm font-medium">
-              Current bid
+          </div>
+        {/if}
+        {#if artwork.reserve_price}
+          <div class="flex flex-1 font-bold my-2">
+            <div class="font-thin text-sm mt-auto">Reserve Price</div>
+            <div class="text-right flex-1 text-2xl">
+              {artwork.reserve_price}
+              {ticker(artwork.asking_asset)}
+            </div>
+          </div>
+        {/if}
+        {#if artwork.bid[0].amount}
+          <div class="flex flex-1 font-bold my-2">
+            <div class="font-thin text-sm mt-auto">Current bid</div>
+            <div class="text-right flex-1 text-2xl">
               {artwork.bid[0].amount}
               {ticker(artwork.asking_asset)}
             </div>
-          {/if}
-        </div>
+          </div>
+        {/if}
+      </div>
     </div>
     <div class="w-full lg:w-1/2 lg:px-12 card-container">
       <Card {artwork} link={false} columns={1} showDetails={false} />

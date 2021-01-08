@@ -27,7 +27,6 @@
       id: artwork_id,
       description,
       filename,
-      list_price,
       title,
       tags,
     } = artwork;
