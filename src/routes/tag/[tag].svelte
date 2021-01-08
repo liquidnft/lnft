@@ -14,6 +14,8 @@
 
 <div class="flex flex-wrap">
   {#each artworks as artwork (artwork.id)}
-    <Card {artwork} />
+    <div class="w-full lg:w-1/3 pr-6 mb-2">
+      <Card {artwork} />
+    </div>
   {/each}
 </div>
