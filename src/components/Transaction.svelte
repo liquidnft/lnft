@@ -15,8 +15,13 @@
   let outs = [];
   let tx;
 
-  $: if ($psbt) tx = $psbt.__CACHE.__TX;
-  $: if ($psbt)
+  $: if ($psbt) {
+    try {
+      tx = $psbt.extractTransaction();
+    } catch (e) {
+      tx = $psbt.__CACHE.__TX;
+    }
+
     outs = tx.outs
       .map((out) => {
         let address;
@@ -37,6 +42,7 @@
         a.address === "Fee" ? -1 : a.asset.localeCompare(b.asset)
       )
       .reverse();
+  }
 </script>
 
 {#if tx}
@@ -47,11 +53,11 @@
     </a>
   </div>
   <div class="font-bold text-xs">Outputs</div>
-    <div class="flex break-all mb-2 text-sm" style="max-width: 500px">
-      <div class="w-1/6">Value</div>
-      <div class="mr-2">Asset</div>
-      <div class="text-right flex-grow">Recipient</div>
-    </div>
+  <div class="flex break-all mb-2 text-sm" style="max-width: 500px">
+    <div class="w-1/6">Value</div>
+    <div class="mr-2">Asset</div>
+    <div class="text-right flex-grow">Recipient</div>
+  </div>
   {#each outs as out}
     <div class="flex break-all mb-2 text-sm" style="max-width: 500px">
       <div class="w-1/6">{out.value}</div>

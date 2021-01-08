@@ -73,10 +73,10 @@
     await new Promise((resolve) =>
       prompt.subscribe((value) => value || resolve())
     );
-
-    await broadcast($psbt);
+    await tick();
 
     let tx = $psbt.extractTransaction();
+    console.log(await broadcast($psbt), tx.getId(), $psbt.toBase64());
     artwork.asset = reverse(tx.outs[3].asset.slice(1)).toString("hex");
     artwork.id = v4();
     let tags = artwork.tags.map(({ tag }) => ({ tag, artwork_id: artwork.id }));

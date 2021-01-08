@@ -16,16 +16,14 @@
     if (p) $psbt = Psbt.fromBase64(p);
     else $psbt = undefined;
   });
-
 </script>
 
-{id}
 {#if $psbt}
   <Transaction />
-{:else}
-  Transaction not found
-{/if}
+{:else}Transaction not found{/if}
 
 <div>
-    <button class="border my-4" on:click={() => window.history.back()}>Back</button>
-  </div>
+  <button
+    class="border my-4"
+    on:click={() => window.history.back()}>Back</button>
+</div>

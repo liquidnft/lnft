@@ -6,7 +6,8 @@
   import { sign } from "$lib/wallet";
 
   export let submit = (e) => {
-    sign($psbt);
+    $psbt = sign($psbt);
+    console.log("after sign", $psbt.toBase64(), $psbt.extractTransaction().getId());
     $prompt = undefined;
   };
 

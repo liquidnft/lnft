@@ -25,22 +25,32 @@ let getHex = async (txid) => {
   return electrs.url(`/tx/${txid}/hex`).get().text();
 };
 
-export const pay = async (to, amount, fee) => {
+export const pay = async (asset, to, amount, fee) => {
   amount = parseInt(amount);
   fee = parseInt(fee);
+  let total = amount;
+  if (asset === btc) total += fee;
 
   let addr = getAddress($user.mnemonic, $password);
   let { address, output, redeem, privateKey } = addr;
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
 
   let prevout = utxos.find(
-    (utxo) => utxo.asset === btc && utxo.value > amount + fee
+    (utxo) => utxo.asset === asset && utxo.value >= total
   );
 
   if (!prevout) throw new Error("Insufficient funds");
-  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
+  let change = prevout.value - total;
 
-  let change = prevout.value - amount - fee;
+  let feePrevout, feePrevoutTx, feeChange;
+  if (asset !== btc) {
+    feePrevout = utxos.find((utxo) => utxo.asset === btc && utxo.value >= fee);
+    if (!feePrevout) throw new Error("Insufficient funds");
+    feePrevoutTx = Transaction.fromHex(await getHex(feePrevout.txid));
+    feeChange = feePrevout.value - fee;
+  }
+
+  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
   let swap = new Psbt()
     .addInput({
@@ -51,7 +61,7 @@ export const pay = async (to, amount, fee) => {
     })
     // asset
     .addOutput({
-      asset: btc,
+      asset,
       nonce: Buffer.alloc(1),
       script: Address.toOutputScript(to, network),
       value: amount,
@@ -62,13 +72,31 @@ export const pay = async (to, amount, fee) => {
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
       value: fee,
-    })
-    //change
-    .addOutput({
-      asset: btc,
+    });
+
+  console.log(change, feePrevout, feeChange);
+  if (change)
+    swap.addOutput({
+      asset,
       nonce: Buffer.alloc(1),
       script: output,
       value: change,
+    });
+
+  if (feePrevout)
+    swap.addInput({
+      hash: feePrevout.txid,
+      index: feePrevout.vout,
+      witnessUtxo: feePrevoutTx.outs[feePrevout.vout],
+      redeemScript: redeem.output,
+    });
+
+  if (feeChange)
+    swap.addOutput({
+      asset: btc,
+      nonce: Buffer.alloc(1),
+      script: output,
+      value: feeChange,
     });
 
   return swap;
@@ -86,6 +114,11 @@ export const sign = (psbt) => {
       console.log("error", e);
     }
   });
+
+  console.log(
+    "umm",
+    Psbt.fromBase64(psbt.toBase64()).extractTransaction().getId()
+  );
   return psbt;
 };
 
@@ -104,7 +137,7 @@ export const executeSwap = async (psbt) => {
   let fee = 100000;
 
   // todo more sophisticated coin selection
-  let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value > fee);
+  let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value >= fee);
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
   let change =
@@ -161,7 +194,7 @@ export const createIssuance = async () => {
   let { address, output, redeem } = addr;
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-  let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value > fee);
+  let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value >= fee);
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
   if (!prevout) {
@@ -215,7 +248,7 @@ export const createSwap = async (asset, price) => {
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
   let prevout = utxos.find((utxo) => utxo.asset === asset);
-  
+
   if (!prevout) throw new Error("Insufficient funds");
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
@@ -258,7 +291,9 @@ export const createOffer = async (artwork, price) => {
     .url(`/address/${artwork.owner.address}/utxo`)
     .get()
     .json();
-  let artworkPrevout = artworkUtxos.find((utxo) => utxo.asset === artwork.asset);
+  let artworkPrevout = artworkUtxos.find(
+    (utxo) => utxo.asset === artwork.asset
+  );
   let artworkPrevoutTx = Transaction.fromHex(await getHex(artworkPrevout.txid));
 
   let hd = fromBase58(artwork.owner.pubkey, network).derive(0);

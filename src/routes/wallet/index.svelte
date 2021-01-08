@@ -1,9 +1,11 @@
 <script>
   import { electrs } from "$lib/api";
   // import QrCode from "svelte-qrcode";
-  import { onMount, onDestroy } from "svelte";
-  import { poll, snack, password, user, token } from "$lib/store";
+  import { onMount, tick } from "svelte";
+  import { poll, snack, password, user, token, prompt, psbt } from "$lib/store";
+  import { SignaturePrompt } from "$comp";
   import getAddress from "$lib/getAddress";
+  import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
   import { requireLogin, requirePassword } from "$lib/utils";
@@ -13,13 +15,14 @@
     "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 
   let loading = true;
-  let address;
-  let amount = 123;
-  let fee = 100000;
-  let to = "XShxPnuCJJvPQghYjPSzsg45dLnrpSTPuT";
+  let address, amount, fee, asset, to;
+
+  let artworks = [];
+  subscription(operationStore(getArtworks), (_, data) => {
+    artworks = data.artworks.filter((a) => a.owner_id === $user.id);
+  });
 
   onMount(requireLogin);
-  //onDestroy(() => clearInterval(poll));
 
   let init = async () => {
     await requirePassword();
@@ -58,17 +61,16 @@
     });
   }
 
-  let psbt;
   let send = async (e) => {
     e.preventDefault();
-    psbt = await pay(to, amount, fee);
+    $psbt = await pay(asset, to, amount, fee);
+    $prompt = SignaturePrompt;
+    await new Promise((resolve) =>
+      prompt.subscribe((value) => value || resolve())
+    );
+    await tick();
+    await broadcast($psbt);
   };
-
-  let signAndBroadcast = () => {
-    psbt = sign(psbt);
-    broadcast(psbt);
-    psbt = undefined;
-  } 
 </script>
 
 <style>
@@ -94,18 +96,19 @@
     {pending[btc] || 0}
   </div>
 
-  {#if psbt}
-    <div class="break-all">{psbt.toBase64()}</div>
-    <button on:click={signAndBroadcast}>Sign and Broadcast</button>
-  {:else}
-    <form on:submit={send}>
-      <h2 class="text-xl">Withdraw</h2>
-      <div><input placeholder="Amount" bind:value={amount} autofocus /></div>
-      <div><input placeholder="Fee" bind:value={fee} autofocus /></div>
-      <div><input placeholder="Address" bind:value={to} /></div>
-      <button type="submit">Send</button>
-    </form>
-  {/if}
-
+  <form on:submit={send}>
+    <h2 class="text-xl">Withdraw</h2>
+    <div>
+      <select bind:value={asset}>
+        <option value={btc}>BTC</option>
+        {#each artworks.filter(a => utxos.find(o => o.asset === a.asset)) as artwork}
+          <option value={artwork.asset}>{artwork.title}</option>
+        {/each}
+      </select>
+    </div>
+    <div><input placeholder="Amount" bind:value={amount} autofocus /></div>
+    <div><input placeholder="Fee" bind:value={fee} autofocus /></div>
+    <div><input placeholder="Address" bind:value={to} /></div>
+    <button type="submit">Send</button>
+  </form>
 {/if}
-{JSON.stringify(utxos.sort((a,b) => a.txid === b.txid ? a.vout - b.vout : a.txid.localeCompare(b.txid)))}

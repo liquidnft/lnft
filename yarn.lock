@@ -12,10 +12,10 @@
   resolved "https://registry.yarnpkg.com/@asoltys/blech32/-/blech32-1.0.1.tgz#0c427728e2861dbe03ec2bc3824b052a6e7d6abf"
   integrity sha512-5zYDrAbZZ8e7d9QKQ5ixeePCoBYJack4GUVnlqaiWIaArHYlgPP/wNzCMQlHzrCbyLt6av34LpIQ/MgI2bw1ew==
 
-"@asoltys/liquidjs-lib@^5.1.19":
-  version "5.1.20"
-  resolved "https://registry.yarnpkg.com/@asoltys/liquidjs-lib/-/liquidjs-lib-5.1.20.tgz#d6d3d8a67f6bf8f90b6162602e56800be7a1bb3b"
-  integrity sha512-JD3fo4OtGQZ99PPxNE7N563z5F149/Ogv+oFcketWCKBMbbnz06MotPW5qNk8ZdfeJpfiAkLpW280cMR5HVUEA==
+"@asoltys/liquidjs-lib@^5.1.21":
+  version "5.1.21"
+  resolved "https://registry.yarnpkg.com/@asoltys/liquidjs-lib/-/liquidjs-lib-5.1.21.tgz#17f2c936d565f0c0e6912ea9bb449ecbfc7b616d"
+  integrity sha512-OsL5zckb6nJ1uGMH8ym1iEzrmqYJ9lsUCB5eeWPfud06O4eESPld+fLpwoaAgBWqChZpfxzFafWWHbjEYsKJ6w==
   dependencies:
     "@asoltys/bitcoin-ops" "^2.0.10"
     "@asoltys/blech32" "^1.0.1"
