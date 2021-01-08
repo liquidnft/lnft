@@ -4,15 +4,9 @@
   import reverse from "buffer-reverse";
   import { address as Address, script } from "@asoltys/liquidjs-lib";
   import { electrs } from "$lib/api";
+  import { explorer } from "$lib/utils";
 
   export let summary = false;
-
-  let explorerUrl;
-  if (import.meta && import.meta.env && import.meta.env !== "production") {
-    explorerUrl = import.meta.env.SNOWPACK_PUBLIC_EXPLORER;
-  } else {
-    explorerUrl = "https://la.coinos.io/explorer";
-  }
 
   let ins = [];
   let outs = [];
@@ -65,7 +59,7 @@
   <div class="w-full mx-auto" style="max-width: 600px">
   <div class="font-bold text-xs">Transaction ID</div>
   <div class="mb-4 break-all text-wrap">
-    <a href={`${explorerUrl}/tx/${tx.getId()}`} class="text-green-400">
+    <a href={`${explorer}/tx/${tx.getId()}`} class="text-green-400">
       {tx.getId()}
     </a>
   </div>

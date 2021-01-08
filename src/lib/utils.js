@@ -5,13 +5,16 @@ import { prompt, password, token } from "$lib/store";
 import { goto as go } from "$app/navigation";
 import PasswordPrompt from "$components/PasswordPrompt";
 
-export const btc = import.meta.env.SNOWPACK_PUBLIC_BTC;
-export const cad = import.meta.env.SNOWPACK_PUBLIC_CAD;
-export const usd = import.meta.env.SNOWPACK_PUBLIC_USD;
+export const btc =
+  "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+export const cad =
+  "5f6e4fb59fe01c68e0f0321e2d5bb773b49ee170a990c0650acb5125542c3759";
+export const usd =
+  "db670de953fb71ef1e55090414a619496d17abe75ffef55dcc99f7b8c902b173";
 
 export const tickers = { [btc]: "BTC", [cad]: "CAD", [usd]: "USD" };
 export const ticker = (asset) =>
-  asset ? ((tickers[asset] || asset.substr(0, 4)) + " sats") : "";
+  asset ? (tickers[asset] || asset.substr(0, 4)) + " sats" : "";
 
 export const requireLogin = async () => {
   let $token = get(token);
@@ -41,4 +44,4 @@ export const goto = (path) => {
 export const explorer =
   import.meta && import.meta.env && import.meta.env !== "production"
     ? import.meta.env.SNOWPACK_PUBLIC_EXPLORER
-    : "https://la.coinos.io/explorer";
+    : "https://explorer.coinos.io";
