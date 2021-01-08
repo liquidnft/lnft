@@ -10,19 +10,10 @@
   import { createSwap } from "$lib/wallet";
   import { formatISO, addDays } from "date-fns";
   import Select from "svelte-select";
-
-  const btc = import.meta.env.SNOWPACK_PUBLIC_BTC;
-  const cad = import.meta.env.SNOWPACK_PUBLIC_CAD;
-  const usd = import.meta.env.SNOWPACK_PUBLIC_USD;
-
-  let currencies = [
-    { value: btc, label: "BTC" },
-    { value: cad, label: "CAD" },
-    { value: usd, label: "USD" },
-  ];
+  import { tickers } from "$lib/utils";
 
   let { id } = $page.params;
-  $: requireLogin($page)
+  $: requireLogin($page);
 
   let selectedValue = btc;
 
@@ -32,8 +23,9 @@
       ...b.artworks_by_pk,
     };
 
-      if (!artwork.auction_start) artwork.auction_start = formatISO(new Date());
-      if (!artwork.auction_end) artwork.auction_end = formatISO(addDays(new Date(), 3));      
+    if (!artwork.auction_start) artwork.auction_start = formatISO(new Date());
+    if (!artwork.auction_end)
+      artwork.auction_end = formatISO(addDays(new Date(), 3));
   });
 
   const updateArtwork$ = mutation(updateArtwork);
@@ -84,14 +76,14 @@
       <div>
         <div class="mt-1 relative rounded-md shadow-sm">
           <label>Asset</label>
-        <select
-          placeholder="Currency"
-          bind:value={artwork.asking_asset}
-          class="form-input block w-full pl-7 pr-12">
-          {#each currencies as currency}
-            <option value={currency.value}>{currency.label}</option>
-          {/each}
-        </select>
+          <select
+            placeholder="Currency"
+            bind:value={artwork.asking_asset}
+            class="form-input block w-full pl-7 pr-12">
+            {#each Object.keys(tickers) as asset}
+              <option value={asset}>{tickers[asset]}</option>
+            {/each}
+          </select>
           <input
             class="form-input block w-full pl-7 pr-12"
             placeholder="0"

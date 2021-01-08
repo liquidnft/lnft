@@ -279,6 +279,7 @@ export const createOffer = async (artwork, price) => {
   let prevout = utxos.find(
     (utxo) => utxo.asset === artwork.asking_asset && utxo.value >= total
   );
+  if (!prevout) throw new Error("Insufficient funds");
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
   let change = prevout.value - total;
 

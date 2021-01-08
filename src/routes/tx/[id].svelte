@@ -22,8 +22,8 @@
   <Transaction />
 {:else}Transaction not found{/if}
 
-<div>
+<div class="flex">
   <button
-    class="border my-4"
+    class="border my-4 mx-auto"
     on:click={() => window.history.back()}>Back</button>
 </div>

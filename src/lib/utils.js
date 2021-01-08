@@ -5,6 +5,12 @@ import { prompt, password, token } from "$lib/store";
 import { goto as go } from "$app/navigation";
 import PasswordPrompt from "$components/PasswordPrompt";
 
+const btc = import.meta.env.SNOWPACK_PUBLIC_BTC;
+const cad = import.meta.env.SNOWPACK_PUBLIC_CAD;
+const usd = import.meta.env.SNOWPACK_PUBLIC_USD;
+
+export const tickers = { [btc]: "BTC" , [cad]: "CAD",  [usd]: "USD" };
+
 export const requireLogin = async () => {
   let $token = get(token);
   await tick();

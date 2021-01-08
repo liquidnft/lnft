@@ -9,3 +9,4 @@ export const prompt = writable();
 export const psbt = writable();
 export const poll = writable();
 export const assets = writable();
+export const loading = writable();

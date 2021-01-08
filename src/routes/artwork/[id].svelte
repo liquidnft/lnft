@@ -14,6 +14,7 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { explorer, requireLogin, requirePassword } from "$lib/utils";
   import { createOffer, executeSwap, broadcast } from "$lib/wallet";
+  import { tickers } from "$lib/utils";
 
   let { id } = $page.params;
 
@@ -29,7 +30,14 @@
   let makeOffer = async (e) => {
     if (e) e.preventDefault();
     await requirePassword();
-    $psbt = await createOffer(artwork, transaction.amount);
+
+    try {
+      $psbt = await createOffer(artwork, transaction.amount);
+    } catch(e) {
+      $snack = e.message;
+      throw e;
+    } 
+
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
       prompt.subscribe((value) => value || resolve())
@@ -165,7 +173,6 @@
               <button type="submit">Submit</button>
             </form>
           {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
-          {artwork.owner.address}
         {/if}
         <div class="my-2 font-bold">
           {#if Date.parse(artwork.auction_start) > new Date()}
@@ -185,7 +192,7 @@
               <div class="w-1/2 text-sm font-medium">
                 List Price
                 {artwork.list_price}
-                BTC
+                {tickers[artwork.asking_asset]}
               </div>
             </div>
           {/if}

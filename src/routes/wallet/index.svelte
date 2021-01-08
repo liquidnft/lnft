@@ -3,23 +3,31 @@
   // import QrCode from "svelte-qrcode";
   import { onMount, tick } from "svelte";
   import { poll, snack, password, user, token, prompt, psbt } from "$lib/store";
-  import { SignaturePrompt } from "$comp";
+  import { ProgressLinear, SignaturePrompt } from "$comp";
   import getAddress from "$lib/getAddress";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
-  import { requireLogin, requirePassword } from "$lib/utils";
+  import { tickers, requireLogin, requirePassword } from "$lib/utils";
   import { broadcast, pay, sign } from "$lib/wallet";
 
   const btc =
     "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 
   let loading = true;
-  let address, amount, fee, asset, to;
+  let sending = false;
+  let address, amount, fee, to;
+  let asset = btc;
+  let name = (asset) => {
+    let artwork = artworks.find((a) => a.asset === asset);
+    if (artwork) return artwork.title;
+    return tickers[asset] ? tickers[asset] : asset.substr(0, 12);
+  };
 
   let artworks = [];
   subscription(operationStore(getArtworks), (_, data) => {
     artworks = data.artworks.filter((a) => a.owner_id === $user.id);
+    if (address) getUtxos(address);
   });
 
   onMount(requireLogin);
@@ -33,17 +41,23 @@
       $snack = "Failed to decrypt wallet";
     }
 
-    await getUtxos(address);
-    loading = false;
-
     $poll = setInterval(() => getUtxos(address), 2000);
   };
 
   $: if ($user && loading) init();
 
   let utxos = [];
+  let assets = [];
   let getUtxos = async (address) => {
     utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+    if (artworks.length && !assets.length) {
+      assets = utxos
+        .map(({ asset }) => ({ name: name(asset), asset }))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .sort((a, b) => (a.name.length === 12 ? 1 : -1))
+        .filter((item, pos, ary) => !pos || item.asset != ary[pos - 1].asset);
+      loading = false;
+    }
   };
 
   let balances, pending;
@@ -84,31 +98,42 @@
 </style>
 
 {#if loading}
-  Loading...
+  <div class="absolute top-0 w-full left-0">
+    <ProgressLinear />
+  </div>
 {:else}
-  <div class="mb-2"><span class="font-bold">Address:</span> {address}</div>
   <div class="mb-2">
-    <span class="font-bold">Balance:</span>
-    {balances[btc] || 0}
+    <div class="text-sm text-gray-600">Address</div>
+    {address}
   </div>
   <div class="mb-2">
-    <span class="font-bold">Pending:</span>
-    {pending[btc] || 0}
+    <div class="text-sm text-gray-600">Balance</div>
+    {balances[asset] || 0}
+  </div>
+  <div class="mb-2">
+    <div class="text-sm text-gray-600">Pending</div>
+    {pending[asset] || 0}
   </div>
 
-  <form on:submit={send}>
-    <h2 class="text-xl">Withdraw</h2>
-    <div>
-      <select bind:value={asset}>
-        <option value={btc}>BTC</option>
-        {#each artworks.filter(a => utxos.find(o => o.asset === a.asset)) as artwork}
-          <option value={artwork.asset}>{artwork.title}</option>
-        {/each}
-      </select>
-    </div>
-    <div><input placeholder="Amount" bind:value={amount} autofocus /></div>
-    <div><input placeholder="Fee" bind:value={fee} autofocus /></div>
-    <div><input placeholder="Address" bind:value={to} /></div>
-    <button type="submit">Send</button>
-  </form>
+  {#if sending}
+    <form class="w-full md:w-1/2 mb-6" on:submit={send} autocomplete="off">
+      <div class="flex flex-col mb-4">
+        <select bind:value={asset}>
+          {#each assets as asset}
+            <option value={asset.asset}>{asset.name}</option>
+          {/each}
+        </select>
+      </div>
+      <div class="flex flex-col mb-4">
+        <input placeholder="Amount" bind:value={amount} autofocus />
+      </div>
+      <div class="flex flex-col mb-4">
+        <input placeholder="Fee" bind:value={fee} />
+      </div>
+      <div class="flex flex-col mb-4">
+        <input placeholder="Address" bind:value={to} />
+      </div>
+      <button type="submit">Send</button>
+    </form>
+  {:else}<button on:click={() => (sending = true)}>Withdraw</button>{/if}
 {/if}
