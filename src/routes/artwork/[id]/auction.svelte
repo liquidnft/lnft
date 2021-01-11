@@ -10,24 +10,31 @@
   import { createSwap } from "$lib/wallet";
   import { formatISO, addDays } from "date-fns";
   import Select from "svelte-select";
-  import { btc, tickers } from "$lib/utils";
+  import { btc, ticker, tickers } from "$lib/utils";
 
   let { id } = $page.params;
   $: requireLogin($page);
 
   let artwork;
+  let decimals = 8;
+  let precision = 8;
   subscription(operationStore(getArtwork(id)), (a, b) => {
     artwork = {
       ...b.artworks_by_pk,
     };
 
+    list_price = Math.round(artwork.list_price / (10 ** precision));
     if (!artwork.asking_asset) artwork.asking_asset = btc;
     if (!artwork.auction_start) artwork.auction_start = formatISO(new Date());
     if (!artwork.auction_end)
       artwork.auction_end = formatISO(addDays(new Date(), 3));
   });
 
+  $: if (artwork && tickers[artwork.asking_asset]) 
+    ({ decimals, precision } = tickers[artwork.asking_asset]);
+
   const updateArtwork$ = mutation(updateArtwork);
+  let list_price;
 
   let update = async (e) => {
     e.preventDefault();
@@ -43,7 +50,6 @@
       auction_end,
       description,
       filename,
-      list_price,
       reserve_price,
       list_price_tx,
       title,
@@ -54,7 +60,7 @@
 
     updateArtwork$({
       artwork: {
-        list_price,
+        list_price: list_price * 10 ** precision,
         list_price_tx,
         reserve_price,
         auction_start,
@@ -82,7 +88,7 @@
             bind:value={artwork.asking_asset}
             class="form-input block w-full pl-7 pr-12">
             {#each Object.keys(tickers) as asset}
-              <option value={asset}>{tickers[asset]}</option>
+              <option value={asset}>{tickers[asset].ticker}</option>
             {/each}
           </select>
           <input
@@ -93,13 +99,17 @@
       </div>
     </div>
     <div class="flex flex-col mb-4">
-      <div>
-        <div class="mt-1 relative rounded-md shadow-sm">
-          <label>Price</label>
-          <input
-            class="form-input block w-full pl-7 pr-12"
-            placeholder="0"
-            bind:value={artwork.list_price} />
+      <div class="mt-1 relative rounded-md shadow-sm">
+        <label>Price</label>
+        <input
+          class="form-input block w-full pl-7 pr-12"
+          placeholder={parseInt(0).toFixed(decimals)}
+          bind:value={list_price} />
+        {list_price}
+        {artwork.list_price}
+
+        <div class="absolute inset-y-0 right-0 flex items-center mr-2">
+          {ticker(artwork.asking_asset)}
         </div>
       </div>
     </div>

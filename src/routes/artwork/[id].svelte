@@ -1,6 +1,6 @@
 <script>
   import { page } from "$app/stores";
-  import { Activity, Amount, Avatar, Card, SignaturePrompt } from "$comp";
+  import { Activity, Avatar, Card, SignaturePrompt } from "$comp";
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
   import { prompt, password, snack, user, token, psbt } from "$lib/store";
@@ -14,7 +14,7 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { explorer, requireLogin, requirePassword } from "$lib/utils";
   import { createOffer, executeSwap, broadcast } from "$lib/wallet";
-  import { ticker } from "$lib/utils";
+  import { conversions } from "$lib/utils";
   import { Psbt } from "@asoltys/liquidjs-lib";
 
   let { id } = $page.params;
@@ -28,6 +28,19 @@
   let artwork, start_counter, end_counter;
   let createTransaction$ = mutation(createTransaction);
 
+  let list_price;
+  let val, sats, ticker;
+  let amount;
+
+  $: [sats, val, ticker] = conversions(artwork && artwork.asking_asset);
+
+  $: if (artwork) {
+    list_price = artwork.list_price;
+    list_price = val(artwork.list_price);
+  }
+
+  $: transaction.amount = sats(amount);
+
   let makeOffer = async (e) => {
     if (e) e.preventDefault();
     await requirePassword();
@@ -36,6 +49,7 @@
       $psbt = await createOffer(artwork, transaction.amount);
     } catch (e) {
       $snack = e.message;
+      return;
     }
 
     $prompt = SignaturePrompt;
@@ -70,11 +84,11 @@
     });
   };
 
-  let bidding, amount;
+  let bidding, amountInput;
   let startBidding = async () => {
     bidding = true;
     await tick();
-    amount.focus();
+    amountInput.focus();
   };
 
   let transaction = {
@@ -168,10 +182,22 @@
         {#if artwork.list_price}<button on:click={buyNow}>Buy Now</button>{/if}
         {#if bidding}
           <form on:submit={makeOffer}>
-            <Amount
-              bind:this={amount}
-              bind:value={transaction.amount}
-              unit={ticker(artwork.asking_asset)} />
+            <div class="flex flex-col mb-4">
+              <div>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                  <input
+                    id="price"
+                    class="form-input block w-full pl-7"
+                    placeholder={val(0)}
+                    bind:value={amount}
+                    bind:this={amountInput} />
+                    <div
+                      class="absolute inset-y-0 right-0 flex items-center mr-2">
+                      {ticker}
+                    </div>
+                </div>
+              </div>
+            </div>
             <button type="submit">Submit</button>
           </form>
         {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
@@ -196,8 +222,8 @@
           <div class="flex flex-1 font-bold my-2">
             <div class="font-thin text-sm mt-auto">List Price</div>
             <div class="text-right flex-1 text-2xl">
-              {artwork.list_price}
-              {ticker(artwork.asking_asset)}
+              {list_price}
+              {ticker}
             </div>
           </div>
         {/if}
@@ -206,7 +232,7 @@
             <div class="font-thin text-sm mt-auto">Reserve Price</div>
             <div class="text-right flex-1 text-2xl">
               {artwork.reserve_price}
-              {ticker(artwork.asking_asset)}
+              {ticker}
             </div>
           </div>
         {/if}
@@ -214,8 +240,8 @@
           <div class="flex flex-1 font-bold my-2">
             <div class="font-thin text-sm mt-auto">Current bid</div>
             <div class="text-right flex-1 text-2xl">
-              {artwork.bid[0].amount}
-              {ticker(artwork.asking_asset)}
+              {val(artwork.bid[0].amount)}
+              {ticker}
             </div>
           </div>
         {/if}

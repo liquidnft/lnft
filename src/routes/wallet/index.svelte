@@ -21,11 +21,14 @@
   let name = (asset) => {
     let artwork = artworks.find((a) => a.asset === asset);
     if (artwork) return artwork.title;
-    return tickers[asset] ? tickers[asset] : asset.substr(0, 12);
+    return tickers[asset] ? tickers[asset].ticker : asset.substr(0, 12);
   };
 
   let artworks = [];
-  subscription(operationStore(getArtworks), (_, data) => {
+  subscription(operationStore(getArtworks), async (_, data) => {
+    await new Promise((resolve) =>
+      user.subscribe((value) => value && resolve())
+    );
     artworks = data.artworks.filter((a) => a.owner_id === $user.id);
     if (address) getUtxos(address);
   });
@@ -50,14 +53,12 @@
   let assets = [];
   let getUtxos = async (address) => {
     utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-    if (!assets.length) {
       assets = utxos
         .map(({ asset }) => ({ name: name(asset), asset }))
         .sort((a, b) => a.name.localeCompare(b.name))
         .sort((a, b) => (a.name.length === 12 ? 1 : -1))
         .filter((item, pos, ary) => !pos || item.asset != ary[pos - 1].asset);
       loading = false;
-    }
   };
 
   let balances, pending;
@@ -115,25 +116,29 @@
     {pending[asset] || 0}
   </div>
 
-  {#if sending}
-    <form class="w-full md:w-1/2 mb-6" on:submit={send} autocomplete="off">
+  <form class="w-full md:w-1/2 mb-6" on:submit={send} autocomplete="off">
+    <div class="flex flex-col mb-4">
+    <label>Asset</label>
+      <select bind:value={asset}>
+        {#each assets as asset}
+          <option value={asset.asset}>{asset.name}</option>
+        {/each}
+      </select>
+    </div>
+    {#if sending}
       <div class="flex flex-col mb-4">
-        <select bind:value={asset}>
-          {#each assets as asset}
-            <option value={asset.asset}>{asset.name}</option>
-          {/each}
-        </select>
-      </div>
-      <div class="flex flex-col mb-4">
+    <label>Amount</label>
         <input placeholder="Amount" bind:value={amount} autofocus />
       </div>
       <div class="flex flex-col mb-4">
+    <label>Fee</label>
         <input placeholder="Fee" bind:value={fee} />
       </div>
       <div class="flex flex-col mb-4">
+    <label>Recipient Address</label>
         <input placeholder="Address" bind:value={to} />
       </div>
       <button type="submit">Send</button>
-    </form>
-  {:else}<button on:click={() => (sending = true)}>Withdraw</button>{/if}
+    {:else}<button on:click={() => (sending = true)}>Withdraw</button>{/if}
+  </form>
 {/if}

@@ -3,7 +3,7 @@
   import Card from "$components/Card";
   import { user } from "$lib/store";
   import { formatDistanceStrict } from "date-fns";
-  import { ticker } from "$lib/utils";
+  import { ticker, val } from "$lib/utils";
 
   export let transaction;
   export let showImage = false;
@@ -27,23 +27,20 @@
       <a href={`/user/${transaction.user.id}`}>@{transaction.user.username}</a>
       {#if transaction.type === 'bid'}
         offered
-        {transaction.amount}
+        {val(transaction.artwork.asking_asset, transaction.amount)}
         {ticker(transaction.artwork.asking_asset)}
-        {transaction.asset.substr(0, 6)}
         for
       {:else if transaction.type === 'creation'}
         created
       {:else if transaction.type === 'purchase'}
         paid
-        {transaction.amount}
+        {val(transaction.artwork.asking_asset, transaction.amount)}
         {ticker(transaction.artwork.asking_asset)}
-        {transaction.asset.substr(0, 6)}
         for
       {:else if transaction.type === 'accept'}
         accepted 
-        {transaction.amount}
+        {val(transaction.artwork.asking_asset, transaction.amount)}
         {ticker(transaction.artwork.asking_asset)}
-        {transaction.asset.substr(0, 6)}
         from
         <a
           href={`/user/${transaction.artwork.owner.id}`}>@{transaction.artwork.owner.username}</a>
