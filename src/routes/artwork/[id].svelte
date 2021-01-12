@@ -105,9 +105,17 @@
     transaction.type = "purchase";
     $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx));
     $prompt = SignaturePrompt;
-    await new Promise((resolve) =>
-      prompt.subscribe((value) => value || resolve())
-    );
+
+    try {
+      await new Promise((resolve, reject) =>
+        prompt.subscribe((value) =>
+          value === "success" ? resolve() : reject()
+        )
+      );
+    } catch (e) {
+      return;
+    }
+
     await broadcast($psbt);
     let tx = $psbt.extractTransaction();
     transaction.hash = tx.getId();
@@ -191,10 +199,10 @@
                     placeholder={val(0)}
                     bind:value={amount}
                     bind:this={amountInput} />
-                    <div
-                      class="absolute inset-y-0 right-0 flex items-center mr-2">
-                      {ticker}
-                    </div>
+                  <div
+                    class="absolute inset-y-0 right-0 flex items-center mr-2">
+                    {ticker}
+                  </div>
                 </div>
               </div>
             </div>
@@ -221,10 +229,7 @@
         {#if artwork.list_price}
           <div class="flex flex-1 font-bold my-2">
             <div class="font-thin text-sm mt-auto">List Price</div>
-            <div class="text-right flex-1 text-2xl">
-              {list_price}
-              {ticker}
-            </div>
+            <div class="text-right flex-1 text-2xl">{list_price} {ticker}</div>
           </div>
         {/if}
         {#if artwork.reserve_price}

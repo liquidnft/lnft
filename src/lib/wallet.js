@@ -1,4 +1,6 @@
 import { electrs } from "$lib/api";
+import { mnemonicToSeedSync } from "bip39";
+import { fromSeed } from "bip32";
 import getAddress from "$lib/getAddress";
 import { fromBase58 } from "bip32";
 import {
@@ -16,57 +18,102 @@ const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 const network = networks.regtest;
 const sighashType =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
+import cryptojs from "crypto-js";
 
 let $user, $password;
 password.subscribe((v) => ($password = v));
 user.subscribe((v) => ($user = v));
 
-let getHex = async (txid) => {
+const getHex = async (txid) => {
   return electrs.url(`/tx/${txid}/hex`).get().text();
+};
+
+const keypair = (mnemonic, password) => {
+  mnemonic = cryptojs.AES.decrypt(mnemonic, password).toString(
+    cryptojs.enc.Utf8
+  );
+  if (!mnemonic) throw new Error("Unable to decrypt mnmemonic");
+  return fromSeed(mnemonicToSeedSync(mnemonic), network).derivePath(
+    "m/84'/0'/0'/0/0"
+  );
+};
+
+export const output = (pubkey) => {
+  return payments.p2sh({
+    redeem: payments.p2wpkh({
+      pubkey,
+      network,
+    }),
+    network,
+  });
+};
+
+function shuffle(array) {
+  var currentIndex = array.length,
+    temporaryValue,
+    randomIndex;
+
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+const fund = async (psbt, out, asset, amount) => {
+  let { address, redeem, output } = out;
+  let utxos = shuffle(
+    (await electrs.url(`/address/${address}/utxo`).get().json()).filter(
+      (o) => o.asset === asset
+    )
+  );
+
+  let i = 0;
+  let total = 0;
+
+  while (total < amount) {
+    if (i >= utxos.length) throw new Error("Insufficient funds", total, amount);
+    total += utxos[i].value;
+    i++;
+  }
+
+  for (var j = 0; j < i; j++) {
+    let prevout = utxos[j];
+    let tx = Transaction.fromHex(await getHex(prevout.txid));
+    psbt.addInput({
+      hash: prevout.txid,
+      index: prevout.vout,
+      witnessUtxo: tx.outs[prevout.vout],
+      redeemScript: redeem.output,
+    });
+  }
+
+  if (total > amount) {
+    psbt.addOutput({
+      asset,
+      nonce: Buffer.alloc(1),
+      script: output,
+      value: total - amount,
+    });
+  }
 };
 
 export const pay = async (asset, to, amount, fee) => {
   amount = parseInt(amount);
   fee = parseInt(fee);
-  let total = amount;
-  if (asset === btc) total += fee;
-
-  let addr = getAddress($user.mnemonic, $password);
-  let { address, output, redeem, privateKey } = addr;
-  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-
-  let prevout = utxos.find(
-    (utxo) => utxo.asset === asset && utxo.value >= total
-  );
-
-  if (!prevout) throw new Error("Insufficient funds");
-  let change = prevout.value - total;
-
-  let feePrevout, feePrevoutTx, feeChange;
-  if (asset !== btc) {
-    feePrevout = utxos.find((utxo) => utxo.asset === btc && utxo.value >= fee);
-    if (!feePrevout) throw new Error("Insufficient funds");
-    feePrevoutTx = Transaction.fromHex(await getHex(feePrevout.txid));
-    feeChange = feePrevout.value - fee;
-  }
-
-  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
 
   let swap = new Psbt()
-    .addInput({
-      hash: prevout.txid,
-      index: prevout.vout,
-      witnessUtxo: prevoutTx.outs[prevout.vout],
-      redeemScript: redeem.output,
-    })
-    // asset
     .addOutput({
       asset,
       nonce: Buffer.alloc(1),
       script: Address.toOutputScript(to, network),
       value: amount,
     })
-    // fee
     .addOutput({
       asset: btc,
       nonce: Buffer.alloc(1, 0),
@@ -74,29 +121,13 @@ export const pay = async (asset, to, amount, fee) => {
       value: fee,
     });
 
-  if (change)
-    swap.addOutput({
-      asset,
-      nonce: Buffer.alloc(1),
-      script: output,
-      value: change,
-    });
-
-  if (feePrevout)
-    swap.addInput({
-      hash: feePrevout.txid,
-      index: feePrevout.vout,
-      witnessUtxo: feePrevoutTx.outs[feePrevout.vout],
-      redeemScript: redeem.output,
-    });
-
-  if (feeChange)
-    swap.addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1),
-      script: output,
-      value: feeChange,
-    });
+  let out = output(keypair($user.mnemonic, $password).publicKey);
+  if (asset === btc) {
+    await fund(swap, out, asset, amount + fee);
+  } else {
+    await fund(swap, out, asset, amount);
+    await fund(swap, out, btc, fee);
+  }
 
   return swap;
 };

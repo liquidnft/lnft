@@ -8,17 +8,23 @@
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
-  import { sats, tickers, requireLogin, requirePassword } from "$lib/utils";
-  import { broadcast, pay, sign } from "$lib/wallet";
-
-  const btc =
-    "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+  import {
+    btc,
+    sats,
+    tickers,
+    requireLogin,
+    requirePassword,
+  } from "$lib/utils";
+  import { broadcast, pay } from "$lib/wallet";
 
   $: requireLogin($page);
 
   let loading = true;
-  let sending = false;
-  let address, amount, fee, to;
+  // let address, amount, fee, to;
+  let address;
+  let amount = 0.0001;
+  let fee = 0.00001;
+  let to = "XXUnXi5z8AJnPQznxeQcbmZi83aBaiHaxY";
   let asset = btc;
   let name = (asset) => {
     let artwork = artworks.find((a) => a.asset === asset);
@@ -58,7 +64,10 @@
       .map(({ asset }) => ({ name: name(asset), asset }))
       .sort((a, b) => a.name.localeCompare(b.name))
       .sort((a, b) => (a.name.length === 12 ? 1 : -1))
-      .filter((item, pos, ary) => item.asset !== btc && !pos || item.asset != ary[pos - 1].asset);
+      .filter(
+        (item, pos, ary) =>
+          (item.asset !== btc && !pos) || item.asset != ary[pos - 1].asset
+      );
     loading = false;
   };
 
@@ -77,20 +86,32 @@
     });
   }
 
+  let sign = async () => {
+    $prompt = SignaturePrompt;
+    try {
+      await new Promise((resolve, reject) =>
+        prompt.subscribe((value) => {
+          !value && reject();
+          value === "success" && resolve();
+        })
+      );
+      await tick();
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
   let send = async (e) => {
     e.preventDefault();
     try {
-      $psbt = await pay(asset, to, sats(asset, amount), fee);
-    } catch(e) {
+      $psbt = await pay(asset, to, sats(asset, amount), sats(btc, fee));
+    } catch (e) {
       $snack = e.message;
       return;
-    } 
-
-    $prompt = SignaturePrompt;
-    await new Promise((resolve) =>
-      prompt.subscribe((value) => value || resolve())
-    );
-    await tick();
+    }
+    if (!(await sign())) return;
     await broadcast($psbt);
   };
 </script>
@@ -133,20 +154,18 @@
         {/each}
       </select>
     </div>
-    {#if sending}
-      <div class="flex flex-col mb-4">
-        <label>Amount</label>
-        <input placeholder="Amount" bind:value={amount} autofocus />
-      </div>
-      <div class="flex flex-col mb-4">
-        <label>Fee</label>
-        <input placeholder="Fee" bind:value={fee} />
-      </div>
-      <div class="flex flex-col mb-4">
-        <label>Recipient Address</label>
-        <input placeholder="Address" bind:value={to} />
-      </div>
-      <button type="submit">Send</button>
-    {:else}<button on:click={() => (sending = true)}>Withdraw</button>{/if}
+    <div class="flex flex-col mb-4">
+      <label>Amount</label>
+      <input placeholder="Amount" bind:value={amount} autofocus />
+    </div>
+    <div class="flex flex-col mb-4">
+      <label>Fee</label>
+      <input placeholder="Fee" bind:value={fee} />
+    </div>
+    <div class="flex flex-col mb-4">
+      <label>Recipient Address</label>
+      <input placeholder="Address" bind:value={to} />
+    </div>
+    <button type="submit">Send</button>
   </form>
 {/if}

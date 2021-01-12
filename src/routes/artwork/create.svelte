@@ -74,7 +74,7 @@
 
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
-      prompt.subscribe((value) => value || resolve())
+      prompt.subscribe((value) => value === "success" && resolve())
     );
     await tick();
     await broadcast($psbt);
