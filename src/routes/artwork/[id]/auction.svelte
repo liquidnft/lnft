@@ -23,14 +23,14 @@
       ...b.artworks_by_pk,
     };
 
-    list_price = Math.round(artwork.list_price / (10 ** precision));
+    list_price = Math.round(artwork.list_price / 10 ** precision);
     if (!artwork.asking_asset) artwork.asking_asset = btc;
     if (!artwork.auction_start) artwork.auction_start = formatISO(new Date());
     if (!artwork.auction_end)
       artwork.auction_end = formatISO(addDays(new Date(), 3));
   });
 
-  $: if (artwork && tickers[artwork.asking_asset]) 
+  $: if (artwork && tickers[artwork.asking_asset])
     ({ decimals, precision } = tickers[artwork.asking_asset]);
 
   const updateArtwork$ = mutation(updateArtwork);
@@ -105,8 +105,6 @@
           class="form-input block w-full pl-7 pr-12"
           placeholder={parseInt(0).toFixed(decimals)}
           bind:value={list_price} />
-        {list_price}
-        {artwork.list_price}
 
         <div class="absolute inset-y-0 right-0 flex items-center mr-2">
           {ticker(artwork.asking_asset)}

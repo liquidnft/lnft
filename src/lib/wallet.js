@@ -74,7 +74,6 @@ export const pay = async (asset, to, amount, fee) => {
       value: fee,
     });
 
-  console.log(change, feePrevout, feeChange);
   if (change)
     swap.addOutput({
       asset,
@@ -279,6 +278,14 @@ export const createOffer = async (artwork, price) => {
   let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
   let change = prevout.value - total;
 
+  let feePrevout, feePrevoutTx, feeChange;
+  if (artwork.asking_asset !== btc) {
+    feePrevout = utxos.find((utxo) => utxo.asset === btc && utxo.value >= fee);
+    if (!feePrevout) throw new Error("Insufficient funds");
+    feePrevoutTx = Transaction.fromHex(await getHex(feePrevout.txid));
+    feeChange = feePrevout.value - fee;
+  }
+
   let artworkUtxos = await electrs
     .url(`/address/${artwork.owner.address}/utxo`)
     .get()
@@ -294,49 +301,66 @@ export const createOffer = async (artwork, price) => {
     network,
   });
 
-  return (
-    new Psbt()
-      // bid input
-      .addInput({
-        hash: prevoutTx.getId(),
-        index: prevout.vout,
-        witnessUtxo: prevoutTx.outs[prevout.vout],
-        redeemScript: redeem.output,
-      })
-      // artwork input
-      .addInput({
-        hash: artworkPrevoutTx.getId(),
-        index: artworkPrevout.vout,
-        witnessUtxo: artworkPrevoutTx.outs[artworkPrevout.vout],
-        redeemScript,
-      })
-      // bid
-      .addOutput({
-        asset: artwork.asking_asset,
-        nonce: Buffer.alloc(1),
-        script: Address.toOutputScript(artwork.owner.address, network),
-        value: Math.round(price),
-      })
-      // artwork
-      .addOutput({
-        asset: artwork.asset,
-        nonce: Buffer.alloc(1),
-        script: output,
-        value: 1,
-      })
-      // fee
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1, 0),
-        script: Buffer.alloc(0),
-        value: fee,
-      })
-      //change
-      .addOutput({
-        asset: artwork.asking_asset,
-        nonce: Buffer.alloc(1),
-        script: output,
-        value: change,
-      })
-  );
+  let swap = new Psbt()
+    // bid input
+    .addInput({
+      hash: prevoutTx.getId(),
+      index: prevout.vout,
+      witnessUtxo: prevoutTx.outs[prevout.vout],
+      redeemScript: redeem.output,
+    })
+    // artwork input
+    .addInput({
+      hash: artworkPrevoutTx.getId(),
+      index: artworkPrevout.vout,
+      witnessUtxo: artworkPrevoutTx.outs[artworkPrevout.vout],
+      redeemScript,
+    })
+    // bid
+    .addOutput({
+      asset: artwork.asking_asset,
+      nonce: Buffer.alloc(1),
+      script: Address.toOutputScript(artwork.owner.address, network),
+      value: Math.round(price),
+    })
+    // artwork
+    .addOutput({
+      asset: artwork.asset,
+      nonce: Buffer.alloc(1),
+      script: output,
+      value: 1,
+    })
+    // fee
+    .addOutput({
+      asset: btc,
+      nonce: Buffer.alloc(1, 0),
+      script: Buffer.alloc(0),
+      value: fee,
+    });
+
+  if (change)
+    swap.addOutput({
+      asset: artwork.asking_asset,
+      nonce: Buffer.alloc(1),
+      script: output,
+      value: change,
+    });
+
+  if (feePrevout)
+    swap.addInput({
+      hash: feePrevout.txid,
+      index: feePrevout.vout,
+      witnessUtxo: feePrevoutTx.outs[feePrevout.vout],
+      redeemScript: redeem.output,
+    });
+
+  if (feeChange)
+    swap.addOutput({
+      asset: btc,
+      nonce: Buffer.alloc(1),
+      script: output,
+      value: feeChange,
+    });
+
+  return swap;
 };

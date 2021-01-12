@@ -1,6 +1,6 @@
 <script>
+  import { page } from "$app/stores";
   import { electrs } from "$lib/api";
-  // import QrCode from "svelte-qrcode";
   import { onMount, tick } from "svelte";
   import { poll, snack, password, user, token, prompt, psbt } from "$lib/store";
   import { ProgressLinear, SignaturePrompt } from "$comp";
@@ -8,11 +8,13 @@
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
-  import { tickers, requireLogin, requirePassword } from "$lib/utils";
+  import { sats, tickers, requireLogin, requirePassword } from "$lib/utils";
   import { broadcast, pay, sign } from "$lib/wallet";
 
   const btc =
     "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+
+  $: requireLogin($page);
 
   let loading = true;
   let sending = false;
@@ -33,8 +35,6 @@
     if (address) getUtxos(address);
   });
 
-  onMount(requireLogin);
-
   let init = async () => {
     await requirePassword();
 
@@ -42,6 +42,7 @@
       ({ address } = getAddress($user.mnemonic, $password));
     } catch (e) {
       $snack = "Failed to decrypt wallet";
+      return;
     }
 
     $poll = setInterval(() => getUtxos(address), 2000);
@@ -53,12 +54,12 @@
   let assets = [];
   let getUtxos = async (address) => {
     utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-      assets = utxos
-        .map(({ asset }) => ({ name: name(asset), asset }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .sort((a, b) => (a.name.length === 12 ? 1 : -1))
-        .filter((item, pos, ary) => !pos || item.asset != ary[pos - 1].asset);
-      loading = false;
+    assets = utxos
+      .map(({ asset }) => ({ name: name(asset), asset }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => (a.name.length === 12 ? 1 : -1))
+      .filter((item, pos, ary) => item.asset !== btc && !pos || item.asset != ary[pos - 1].asset);
+    loading = false;
   };
 
   let balances, pending;
@@ -78,7 +79,13 @@
 
   let send = async (e) => {
     e.preventDefault();
-    $psbt = await pay(asset, to, amount, fee);
+    try {
+      $psbt = await pay(asset, to, sats(asset, amount), fee);
+    } catch(e) {
+      $snack = e.message;
+      return;
+    } 
+
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
       prompt.subscribe((value) => value || resolve())
@@ -118,8 +125,9 @@
 
   <form class="w-full md:w-1/2 mb-6" on:submit={send} autocomplete="off">
     <div class="flex flex-col mb-4">
-    <label>Asset</label>
+      <label>Asset</label>
       <select bind:value={asset}>
+        <option value={btc}>BTC</option>
         {#each assets as asset}
           <option value={asset.asset}>{asset.name}</option>
         {/each}
@@ -127,15 +135,15 @@
     </div>
     {#if sending}
       <div class="flex flex-col mb-4">
-    <label>Amount</label>
+        <label>Amount</label>
         <input placeholder="Amount" bind:value={amount} autofocus />
       </div>
       <div class="flex flex-col mb-4">
-    <label>Fee</label>
+        <label>Fee</label>
         <input placeholder="Fee" bind:value={fee} />
       </div>
       <div class="flex flex-col mb-4">
-    <label>Recipient Address</label>
+        <label>Recipient Address</label>
         <input placeholder="Address" bind:value={to} />
       </div>
       <button type="submit">Send</button>

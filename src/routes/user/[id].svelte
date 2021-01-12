@@ -12,7 +12,7 @@
   import { fade } from "svelte/transition";
   import { requireLogin } from "$lib/utils";
 
-  onMount(requireLogin);
+  $: requireLogin($page);
 
   let { id } = $page.params;
   let collection = [];
