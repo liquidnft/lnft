@@ -14,7 +14,7 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { explorer, requireLogin, requirePassword } from "$lib/utils";
   import { createOffer, executeSwap, broadcast } from "$lib/wallet";
-  import { conversions } from "$lib/utils";
+  import { units } from "$lib/utils";
   import { Psbt } from "@asoltys/liquidjs-lib";
 
   let { id } = $page.params;
@@ -32,7 +32,7 @@
   let val, sats, ticker;
   let amount;
 
-  $: [sats, val, ticker] = conversions(artwork && artwork.asking_asset);
+  $: [sats, val, ticker] = units(artwork && artwork.asking_asset);
 
   $: if (artwork) {
     list_price = artwork.list_price;

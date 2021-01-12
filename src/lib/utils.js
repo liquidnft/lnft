@@ -27,23 +27,19 @@ export const tickers = {
 export const ticker = (asset) =>
   asset ? (tickers[asset] ? tickers[asset].ticker : asset.substr(0, 4)) : "";
 
-export const conversions = (asset) => {
+export const units = (asset) => {
   let decimals = 8;
   let precision = 8;
   if (tickers[asset]) ({ decimals, precision } = tickers[asset]);
-  console.log("d,p", asset, decimals, precision);
   return [
     (val) => Math.round(val * 10 ** precision),
     (sats) => (sats / 10 ** precision).toFixed(decimals),
-    ticker(asset)
+    ticker(asset),
   ];
 };
 
-export const sats = (asset, val) => conversions(asset)[0](val);
-export const val = (asset, sats) => {
-  let fn = conversions(asset)[1];
-  return fn(sats);
-};
+export const sats = (asset, val) => units(asset)[0](val);
+export const val = (asset, sats) => units(asset)[1](sats);
 
 export const requireLogin = async () => {
   let $token = get(token);

@@ -1,11 +1,13 @@
 <script>
-  import { goto } from "$lib/utils";
-  import { ticker } from "$lib/utils";
+  import { goto, units } from "$lib/utils";
 
   export let artwork;
   export let columns = 3;
   export let link = true;
   export let showDetails = true;
+  export let shadow = !showDetails;
+
+  $: [sats, val, ticker] = units(artwork.asking_asset);
 
   let click = () => {
     if (!link) return;
@@ -21,9 +23,6 @@
 <style>
   .link {
     cursor: pointer;
-    &:hover {
-      @apply shadow-xl;
-    }
   }
 
   .card {
@@ -43,7 +42,7 @@
       <video
         controls
         class="w-full"
-        class:shadow-2xl={!showDetails}
+        class:shadow-2xl={shadow}
         autoplay
         muted
         loop>
@@ -55,7 +54,7 @@
         src={`/api/storage/o/public/${artwork.filename}`}
         alt=""
         class="w-full"
-        class:shadow-2xl={!showDetails} />
+        class:shadow-2xl={shadow} />
     {/if}
   </div>
   {#if showDetails}
@@ -63,12 +62,15 @@
       <h1 class="font-bold text-lg">{artwork.title}</h1>
       <div class="flex pt-8">
         <div class="1/2 flex-1">
-          <div>{artwork.list_price ? artwork.list_price : '---'} {ticker(artwork.asking_asset)}</div>
+          <div>
+            {artwork.list_price ? val(artwork.list_price) : '---'}
+            {ticker}
+          </div>
           <div class="w-1/2 text-sm font-medium">List Price</div>
         </div>
         {#if artwork.bid[0].user}
           <div class="1/2 flex-1">
-            <div>{artwork.bid[0].amount} {ticker(artwork.asking_asset)}</div>
+            <div>{val(artwork.bid[0].amount)} {ticker}</div>
             <div class="text-sm font-medium">
               Current bid by
               <a
