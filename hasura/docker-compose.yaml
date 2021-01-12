@@ -17,12 +17,15 @@ services:
     volumes:
       - ${DATA_DIR}:/var/lib/postgresql/data
   graphql-engine:
-    image: hasura/graphql-engine:v1.3.3
+    image: hasura/graphql-engine:v1.3.3.cli-migrations-v2
     ports:
       - '8080:8080'
     depends_on:
       - 'postgres'
     restart: always
+    volumes:
+      - ./migrations:/hasura-migrations
+      - ./metadata:/hasura-metadata
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
       HASURA_GRAPHQL_ADMIN_SECRET: liquidart
