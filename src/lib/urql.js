@@ -12,8 +12,8 @@ if (import.meta && import.meta.env && import.meta.env !== "production") {
   url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
   wsUrl = import.meta.env.SNOWPACK_PUBLIC_WS;
 } else {
-  url = "https://la.coinos.io/v1/graphql";
-  wsUrl = "wss://la.coinos.io/v1/graphql";
+  url = "https://raretoshi.coinos.io/v1/graphql";
+  wsUrl = "wss://raretoshi.coinos.io/v1/graphql";
 } 
 
 export const setupUrql = (token) => {

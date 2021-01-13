@@ -13,8 +13,8 @@ if (import.meta) {
   usd = "61c35eb3198e4713a28b77a56a281ad6a1ad04484385b69ab5ce1c1016aa622a";
 } else {
   btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
-  cad = "5f6e4fb59fe01c68e0f0321e2d5bb773b49ee170a990c0650acb5125542c3759";
-  usd = "db670de953fb71ef1e55090414a619496d17abe75ffef55dcc99f7b8c902b173";
+  cad = "c3e0755bf62ebcdd51884b861f062dd159c3bc7ee667d7fe819450d1fa498e55";
+  usd = "9f852208cd04ab21b07872ad5abdb08ac2aea29dacaa416f1c9a87234f449301";
 }
 
 export { btc, cad, usd };
