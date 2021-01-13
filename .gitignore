@@ -10,3 +10,6 @@ hasura/db
 hasura/storage
 hasura/server
 hasura/.env
+hasura/data/certbot
+hasura/data/raretoshi
+hasura/data/nginx/.lapasswd

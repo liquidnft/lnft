@@ -7,6 +7,7 @@ services:
       - ./data/nginx:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
+      - ./data/raretoshi:/var/www/raretoshi
     ports:
       - "80:80"
       - "443:443"
@@ -94,13 +95,6 @@ services:
       - ./liquidregtest/liquid-config/:/config
     restart: unless-stopped
   # Block explorer REST servers
-  app:
-    image: asoltys/raretoshi
-    container_name: raretoshi
-    ports:
-      - 3010:3010
-    volumes:
-      - ../:/app
   electrs:
     image: vulpemventures/electrs:latest
     container_name: electrs
