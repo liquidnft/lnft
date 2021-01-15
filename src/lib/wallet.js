@@ -38,7 +38,7 @@ const keypair = (mnemonic, password) => {
   );
 };
 
-export const output = (pubkey) => {
+export const payment = (pubkey) => {
   return payments.p2sh({
     redeem: payments.p2wpkh({
       pubkey,
@@ -121,7 +121,7 @@ export const pay = async (asset, to, amount, fee) => {
       value: fee,
     });
 
-  let out = output(keypair($user.mnemonic, $password).publicKey);
+  let out = payment(keypair($user.mnemonic, $password).publicKey);
   if (asset === btc) {
     await fund(swap, out, asset, amount + fee);
   } else {
@@ -261,34 +261,19 @@ export const createIssuance = async (editions, fee) => {
   );
 };
 
-export const createSwap = async (asset, price) => {
-  let { address, output, redeem, privateKey } = getAddress(
-    $user.mnemonic,
-    $password
-  );
+export const createSwap = async (asset, asking_asset, amount) => {
+  let out = payment(keypair($user.mnemonic, $password).publicKey);
 
-  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-  let prevout = utxos.find((utxo) => utxo.asset === asset);
+  let swap = new Psbt().addOutput({
+    asset: asking_asset,
+    nonce: Buffer.alloc(1),
+    script: out.output,
+    value: amount,
+  });
 
-  if (!prevout) throw new Error("Insufficient funds");
-  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
+  await fund(swap, out, asset, 1);
 
-  return new Psbt()
-    .addInput({
-      hash: prevoutTx.getId(),
-      index: prevout.vout,
-      witnessUtxo: prevoutTx.outs[prevout.vout],
-      redeemScript: redeem.output,
-      sighashType,
-    })
-    .addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1),
-      script: output,
-      value: Math.round(price),
-    })
-    .signInput(0, ECPair.fromPrivateKey(privateKey), [sighashType])
-    .finalizeInput(0);
+  return swap;
 };
 
 export const createOffer = async (artwork, price) => {

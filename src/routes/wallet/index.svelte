@@ -66,7 +66,7 @@
       .sort((a, b) => (a.name.length === 12 ? 1 : -1))
       .filter(
         (item, pos, ary) =>
-          item.asset !== btc && (!pos || item.asset != ary[pos - 1].asset)
+          ((item && item.asset !== btc) && (!pos || item.asset != ary[pos - 1].asset))
       );
     loading = false;
   };

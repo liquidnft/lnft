@@ -1,5 +1,5 @@
 <script>
-  import { psbt, prompt, password, user, snack, token } from "$lib/store";
+  import { psbt, prompt, password, user, sighash, snack, token } from "$lib/store";
   import Transaction from "$components/Transaction";
   import { api } from "$lib/api";
   import Lock from "$icons/lock";
@@ -8,9 +8,10 @@
 
   export let submit = async (e) => {
     await requirePassword();
-    $psbt = sign($psbt);
+    $psbt = sign($psbt, $sighash || 1);
     $prompt = "success";
     $prompt = undefined;
+    $sighash = undefined;
   };
 
   let base64 = false;

@@ -75,6 +75,7 @@
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
     if (artwork.list_price && transaction.amount >= artwork.list_price) {
+      console.log(artwork.list_price, transaction.amount);
       transaction.type = "purchase";
     }
     createTransaction$({ transaction }).then(() => {

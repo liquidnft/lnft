@@ -1,46 +1,56 @@
 <script>
-  import { onMount } from "svelte";
+  import { tick } from "svelte";
   import { page } from "$app/stores";
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
   import { goto } from "$lib/utils";
-  import { password, psbt, user, token } from "$lib/store";
+  import { password, sighash, prompt, snack, psbt, user, token } from "$lib/store";
   import { requireLogin, requirePassword } from "$lib/utils";
   import { createSwap } from "$lib/wallet";
   import { formatISO, addDays } from "date-fns";
   import Select from "svelte-select";
-  import { btc, ticker, tickers } from "$lib/utils";
+  import { btc, units, tickers } from "$lib/utils";
+  import SignaturePrompt from "$components/SignaturePrompt";
 
   let { id } = $page.params;
   $: requireLogin($page);
 
-  let artwork;
-  let decimals = 8;
-  let precision = 8;
+  let artwork, list_price, sats, val, ticker;
   subscription(operationStore(getArtwork(id)), (a, b) => {
     artwork = {
       ...b.artworks_by_pk,
     };
 
-    list_price = Math.round(artwork.list_price / 10 ** precision);
     if (!artwork.asking_asset) artwork.asking_asset = btc;
     if (!artwork.auction_start) artwork.auction_start = formatISO(new Date());
     if (!artwork.auction_end)
       artwork.auction_end = formatISO(addDays(new Date(), 3));
-  });
 
-  $: if (artwork && tickers[artwork.asking_asset])
-    ({ decimals, precision } = tickers[artwork.asking_asset]);
+    ([sats, val, ticker] = units(artwork.asking_asset));
+    list_price = val(artwork.list_price);
+  });
+  $: if (artwork) ([sats, val, ticker] = units(artwork.asking_asset));
 
   const updateArtwork$ = mutation(updateArtwork);
-  let list_price;
 
   let update = async (e) => {
     e.preventDefault();
     await requirePassword();
 
-    $psbt = await createSwap(artwork.asset, artwork.list_price);
+    try {
+    $psbt = await createSwap(artwork.asset, artwork.asking_asset, sats(list_price));
+    } catch (e) {
+      $snack = e.message;
+      return;
+    } 
+
+    $sighash = 0x83;
+    $prompt = SignaturePrompt;
+    await new Promise((resolve) =>
+      prompt.subscribe((value) => value === "success" && resolve())
+    );
+    await tick();
     artwork.list_price_tx = $psbt.toBase64();
 
     let {
@@ -60,7 +70,7 @@
 
     updateArtwork$({
       artwork: {
-        list_price: list_price * 10 ** precision,
+        list_price: sats(list_price),
         list_price_tx,
         reserve_price,
         auction_start,
@@ -103,11 +113,11 @@
         <label>Price</label>
         <input
           class="form-input block w-full pl-7 pr-12"
-          placeholder={parseInt(0).toFixed(decimals)}
+          placeholder={val(0)}
           bind:value={list_price} />
 
         <div class="absolute inset-y-0 right-0 flex items-center mr-2">
-          {ticker(artwork.asking_asset)}
+          {ticker}
         </div>
       </div>
     </div>
