@@ -27,20 +27,20 @@
       <a href={`/user/${transaction.user.id}`}>@{transaction.user.username}</a>
       {#if transaction.type === 'bid'}
         offered
-        {val(transaction.artwork.asking_asset, transaction.amount)}
-        {ticker(transaction.artwork.asking_asset)}
+        {val(transaction.asset, transaction.amount)}
+        {ticker(transaction.asset)}
         for
       {:else if transaction.type === 'creation'}
         created
       {:else if transaction.type === 'purchase'}
         paid
-        {val(transaction.artwork.asking_asset, transaction.amount)}
-        {ticker(transaction.artwork.asking_asset)}
+        {val(transaction.asset, transaction.amount)}
+        {ticker(transaction.asset)}
         for
       {:else if transaction.type === 'accept'}
         accepted 
-        {val(transaction.artwork.asking_asset, transaction.amount)}
-        {ticker(transaction.artwork.asking_asset)}
+        {val(transaction.asset, transaction.amount)}
+        {ticker(transaction.asset)}
         from
         <a
           href={`/user/${transaction.artwork.owner.id}`}>@{transaction.artwork.owner.username}</a>

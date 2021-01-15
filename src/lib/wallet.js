@@ -14,15 +14,19 @@ import {
 import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
 import { password, snack, user } from "$lib/store";
+import cryptojs from "crypto-js";
+
 const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 const network = networks.regtest;
 const sighashType =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
-import cryptojs from "crypto-js";
 
 let $user, $password;
 password.subscribe((v) => ($password = v));
 user.subscribe((v) => ($user = v));
+
+const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
+const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 const getHex = async (txid) => {
   return electrs.url(`/tx/${txid}/hex`).get().text();
@@ -65,7 +69,7 @@ function shuffle(array) {
   return array;
 }
 
-const fund = async (psbt, out, asset, amount) => {
+const fund = async (psbt, out, asset, amount, sighashType = 1) => {
   let { address, redeem, output } = out;
   let utxos = shuffle(
     (await electrs.url(`/address/${address}/utxo`).get().json()).filter(
@@ -90,6 +94,7 @@ const fund = async (psbt, out, asset, amount) => {
       index: prevout.vout,
       witnessUtxo: tx.outs[prevout.vout],
       redeemScript: redeem.output,
+      sighashType,
     });
   }
 
@@ -135,18 +140,19 @@ export const pay = async (asset, to, amount, fee) => {
 export const cancelSwap = async (asset, fee) => {
   let out = payment(keypair($user.mnemonic, $password).publicKey);
 
-  let swap = new Psbt().addOutput({
-    asset,
-    nonce: Buffer.alloc(1),
-    script: out.output,
-    value: 1,
-  })
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1, 0),
-        script: Buffer.alloc(0),
-        value: fee,
-      })
+  let swap = new Psbt()
+    .addOutput({
+      asset,
+      nonce: Buffer.alloc(1),
+      script: out.output,
+      value: 1,
+    })
+    .addOutput({
+      asset: btc,
+      nonce: Buffer.alloc(1, 0),
+      script: Buffer.alloc(0),
+      value: fee,
+    });
 
   await fund(swap, out, asset, 1);
   await fund(swap, out, btc, fee);
@@ -154,15 +160,17 @@ export const cancelSwap = async (asset, fee) => {
   return swap;
 };
 
-export const sign = (psbt) => {
+export const sign = (psbt, sighash) => {
   let addr = getAddress($user.mnemonic, $password);
   let { privateKey } = addr;
   psbt.data.inputs.map((_, i) => {
     try {
       psbt = psbt
-        .signInput(i, ECPair.fromPrivateKey(privateKey))
+        .signInput(i, ECPair.fromPrivateKey(privateKey), [sighash])
         .finalizeInput(i);
-    } catch (e) {} // silently fail when signing an input that's not ours
+    } catch (e) {
+      console.log(e.message);
+    } // silently fail when signing an input that's not ours
   });
 
   return psbt;
@@ -175,57 +183,29 @@ export const broadcast = async (psbt) => {
   return electrs.url("/tx").body(hex).post().text();
 };
 
-export const executeSwap = async (psbt) => {
-  let addr = getAddress($user.mnemonic, $password);
-  let { address, output, redeem, privateKey } = addr;
-  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+export const executeSwap = async (swap, fee) => {
+  let asset = swap.data.inputs[0].witnessUtxo.asset;
+  let out = payment(keypair($user.mnemonic, $password).publicKey);
+  let ask = swap.__CACHE.__TX.outs[0];
 
-  let fee = 100000;
+  await fund(swap, out, parseAsset(ask.asset), parseVal(ask.value));
 
-  // todo more sophisticated coin selection
-  let prevout = utxos.find((utxo) => utxo.asset === btc && utxo.value >= fee);
-  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
+  swap
+    .addOutput({
+      asset,
+      nonce: Buffer.alloc(1),
+      script: out.output,
+      value: 1,
+    })
+    .addOutput({
+      asset: btc,
+      nonce: Buffer.alloc(1, 0),
+      script: Buffer.alloc(0),
+      value: fee,
+    });
 
-  let change =
-    prevout.value -
-    psbt.__CACHE.__TX.outs.reduce(
-      (a, b) => a + parseInt(b.value.slice(1).toString("hex"), 16),
-      0
-    ) -
-    fee;
-
-  let asset = psbt.data.inputs[0].witnessUtxo.asset;
-
-  return (
-    psbt
-      .addInput({
-        hash: prevout.txid,
-        index: prevout.vout,
-        witnessUtxo: prevoutTx.outs[prevout.vout],
-        redeemScript: redeem.output,
-      })
-      // asset
-      .addOutput({
-        asset,
-        nonce: Buffer.alloc(1),
-        script: output,
-        value: 1,
-      })
-      // fee
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1, 0),
-        script: Buffer.alloc(0),
-        value: fee,
-      })
-      //change
-      .addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1),
-        script: output,
-        value: change,
-      })
-  );
+  await fund(swap, out, btc, fee);
+  return swap;
 };
 
 export const createIssuance = async (editions, fee) => {
@@ -293,82 +273,31 @@ export const createSwap = async (asset, asking_asset, amount) => {
     value: amount,
   });
 
-  await fund(swap, out, asset, 1);
+  await fund(swap, out, asset, 1, sighashType);
 
   return swap;
 };
 
-export const createOffer = async (artwork, price) => {
-  let { address, output, redeem, privateKey } = getAddress(
-    $user.mnemonic,
-    $password
-  );
+export const createOffer = async (artwork, amount, fee) => {
+  amount = parseInt(amount);
+  fee = parseInt(fee);
 
-  let fee = 100000;
-  let total = parseInt(price);
-  if (artwork.asking_asset === btc) total += fee;
-
-  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-  let prevout = utxos.find(
-    (utxo) => utxo.asset === artwork.asking_asset && utxo.value >= total
-  );
-  if (!prevout) throw new Error("Insufficient funds");
-  let prevoutTx = Transaction.fromHex(await getHex(prevout.txid));
-  let change = prevout.value - total;
-
-  let feePrevout, feePrevoutTx, feeChange;
-  if (artwork.asking_asset !== btc) {
-    feePrevout = utxos.find((utxo) => utxo.asset === btc && utxo.value >= fee);
-    if (!feePrevout) throw new Error("Insufficient funds");
-    feePrevoutTx = Transaction.fromHex(await getHex(feePrevout.txid));
-    feeChange = feePrevout.value - fee;
-  }
-
-  let artworkUtxos = await electrs
-    .url(`/address/${artwork.owner.address}/utxo`)
-    .get()
-    .json();
-  let artworkPrevout = artworkUtxos.find(
-    (utxo) => utxo.asset === artwork.asset
-  );
-  let artworkPrevoutTx = Transaction.fromHex(await getHex(artworkPrevout.txid));
-
-  let hd = fromBase58(artwork.owner.pubkey, network).derive(0);
-  let { output: redeemScript } = payments.p2wpkh({
-    pubkey: hd.publicKey,
-    network,
-  });
+  let { asking_asset: asset } = artwork;
+  let out = payment(keypair($user.mnemonic, $password).publicKey);
 
   let swap = new Psbt()
-    // bid input
-    .addInput({
-      hash: prevoutTx.getId(),
-      index: prevout.vout,
-      witnessUtxo: prevoutTx.outs[prevout.vout],
-      redeemScript: redeem.output,
-    })
-    // artwork input
-    .addInput({
-      hash: artworkPrevoutTx.getId(),
-      index: artworkPrevout.vout,
-      witnessUtxo: artworkPrevoutTx.outs[artworkPrevout.vout],
-      redeemScript,
-    })
-    // bid
     .addOutput({
-      asset: artwork.asking_asset,
+      asset,
       nonce: Buffer.alloc(1),
       script: Address.toOutputScript(artwork.owner.address, network),
-      value: Math.round(price),
+      value: amount,
     })
-    // artwork
     .addOutput({
       asset: artwork.asset,
       nonce: Buffer.alloc(1),
-      script: output,
+      script: out.output,
       value: 1,
     })
-    // fee
     .addOutput({
       asset: btc,
       nonce: Buffer.alloc(1, 0),
@@ -376,29 +305,16 @@ export const createOffer = async (artwork, price) => {
       value: fee,
     });
 
-  if (change)
-    swap.addOutput({
-      asset: artwork.asking_asset,
-      nonce: Buffer.alloc(1),
-      script: output,
-      value: change,
-    });
+  let key = fromBase58(artwork.owner.pubkey, network).derive(0);
+  let ownerOut = payment(key.publicKey);
+  await fund(swap, ownerOut, artwork.asset, 1);
 
-  if (feePrevout)
-    swap.addInput({
-      hash: feePrevout.txid,
-      index: feePrevout.vout,
-      witnessUtxo: feePrevoutTx.outs[feePrevout.vout],
-      redeemScript: redeem.output,
-    });
-
-  if (feeChange)
-    swap.addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1),
-      script: output,
-      value: feeChange,
-    });
+  if (asset === btc) {
+    await fund(swap, out, asset, amount + fee);
+  } else {
+    await fund(swap, out, asset, amount);
+    await fund(swap, out, btc, fee);
+  }
 
   return swap;
 };

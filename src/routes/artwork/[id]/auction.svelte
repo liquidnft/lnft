@@ -47,9 +47,7 @@
     e.preventDefault();
     await requirePassword();
 
-    console.log(artwork.list_price_tx);
     if (artwork.list_price_tx) {
-      console.log("huhh");
       try {
         $psbt = await cancelSwap(artwork.asset, 10000);
       } catch (e) {
@@ -69,7 +67,6 @@
         prompt.subscribe((value) => value === "success" && resolve())
       );
       await tick();
-      console.log("confirmed!");
     }
 
     try {

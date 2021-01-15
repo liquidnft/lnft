@@ -46,7 +46,7 @@
     await requirePassword();
 
     try {
-      $psbt = await createOffer(artwork, transaction.amount);
+      $psbt = await createOffer(artwork, transaction.amount, 10000);
     } catch (e) {
       $snack = e.message;
       return;
@@ -74,10 +74,6 @@
   let save = (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-    if (artwork.list_price && transaction.amount >= artwork.list_price) {
-      console.log(artwork.list_price, transaction.amount);
-      transaction.type = "purchase";
-    }
     createTransaction$({ transaction }).then(() => {
       if (transaction.type === "purchase") $snack = "Sold! Congratulations!";
       if (transaction.type === "bid") $snack = "Bid placed!";
@@ -104,23 +100,20 @@
 
     transaction.amount = artwork.list_price;
     transaction.type = "purchase";
-    $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx));
+    $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx), 10000);
     $prompt = SignaturePrompt;
 
-    try {
-      await new Promise((resolve, reject) =>
-        prompt.subscribe((value) =>
-          value === "success" ? resolve() : reject()
-        )
-      );
-    } catch (e) {
-      return;
-    }
+    $prompt = SignaturePrompt;
+    await new Promise((resolve) =>
+      prompt.subscribe((value) => value === "success" && resolve())
+    );
+    await tick();
 
     await broadcast($psbt);
     let tx = $psbt.extractTransaction();
     transaction.hash = tx.getId();
     transaction.psbt = $psbt.toBase64();
+
     save();
   };
 
