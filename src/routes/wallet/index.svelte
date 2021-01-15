@@ -11,6 +11,7 @@
   import {
     btc,
     sats,
+    units,
     tickers,
     requireLogin,
     requirePassword,
@@ -41,6 +42,8 @@
     if (address) getUtxos(address);
   });
 
+  $: [_, val, _] = units(asset);
+
   let init = async () => {
     await requirePassword();
 
@@ -66,7 +69,9 @@
       .sort((a, b) => (a.name.length === 12 ? 1 : -1))
       .filter(
         (item, pos, ary) =>
-          ((item && item.asset !== btc) && (!pos || item.asset != ary[pos - 1].asset))
+          item &&
+          item.asset !== btc &&
+          (!pos || item.asset != ary[pos - 1].asset)
       );
     loading = false;
   };
@@ -137,11 +142,11 @@
   </div>
   <div class="mb-2">
     <div class="text-sm text-gray-600">Balance</div>
-    {balances[asset] || 0}
+    {val(balances[asset] || 0)}
   </div>
   <div class="mb-2">
     <div class="text-sm text-gray-600">Pending</div>
-    {pending[asset] || 0}
+    {val(pending[asset] || 0)}
   </div>
 
   <form class="w-full md:w-1/2 mb-6" on:submit={send} autocomplete="off">
@@ -156,7 +161,7 @@
     </div>
     <div class="flex flex-col mb-4">
       <label>Amount</label>
-      <input placeholder="Amount" bind:value={amount} autofocus />
+      <input placeholder={val(0)} bind:value={amount} autofocus />
     </div>
     <div class="flex flex-col mb-4">
       <label>Fee</label>

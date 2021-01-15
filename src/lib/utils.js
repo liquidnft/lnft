@@ -35,8 +35,8 @@ export const ticker = (asset) =>
   asset ? (tickers[asset] ? tickers[asset].ticker : asset.substr(0, 4)) : "";
 
 export const units = (asset) => {
-  let decimals = 8;
-  let precision = 8;
+  let decimals = 0;
+  let precision = 0;
   if (tickers[asset]) ({ decimals, precision } = tickers[asset]);
   return [
     (val) => Math.round(val * 10 ** precision),
