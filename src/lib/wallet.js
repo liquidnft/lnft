@@ -132,6 +132,28 @@ export const pay = async (asset, to, amount, fee) => {
   return swap;
 };
 
+export const cancelSwap = async (asset, fee) => {
+  let out = payment(keypair($user.mnemonic, $password).publicKey);
+
+  let swap = new Psbt().addOutput({
+    asset,
+    nonce: Buffer.alloc(1),
+    script: out.output,
+    value: 1,
+  })
+      .addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1, 0),
+        script: Buffer.alloc(0),
+        value: fee,
+      })
+
+  await fund(swap, out, asset, 1);
+  await fund(swap, out, btc, fee);
+
+  return swap;
+};
+
 export const sign = (psbt) => {
   let addr = getAddress($user.mnemonic, $password);
   let { privateKey } = addr;

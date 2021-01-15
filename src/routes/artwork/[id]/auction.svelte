@@ -5,13 +5,22 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
   import { goto } from "$lib/utils";
-  import { password, sighash, prompt, snack, psbt, user, token } from "$lib/store";
+  import {
+    password,
+    sighash,
+    prompt,
+    snack,
+    psbt,
+    user,
+    token,
+  } from "$lib/store";
   import { requireLogin, requirePassword } from "$lib/utils";
-  import { createSwap } from "$lib/wallet";
+  import { createSwap, cancelSwap, broadcast } from "$lib/wallet";
   import { formatISO, addDays } from "date-fns";
   import Select from "svelte-select";
   import { btc, units, tickers } from "$lib/utils";
   import SignaturePrompt from "$components/SignaturePrompt";
+  import Waiting from "$components/Waiting";
 
   let { id } = $page.params;
   $: requireLogin($page);
@@ -27,10 +36,10 @@
     if (!artwork.auction_end)
       artwork.auction_end = formatISO(addDays(new Date(), 3));
 
-    ([sats, val, ticker] = units(artwork.asking_asset));
+    [sats, val, ticker] = units(artwork.asking_asset);
     list_price = val(artwork.list_price);
   });
-  $: if (artwork) ([sats, val, ticker] = units(artwork.asking_asset));
+  $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
 
   const updateArtwork$ = mutation(updateArtwork);
 
@@ -38,12 +47,41 @@
     e.preventDefault();
     await requirePassword();
 
+    console.log(artwork.list_price_tx);
+    if (artwork.list_price_tx) {
+      console.log("huhh");
+      try {
+        $psbt = await cancelSwap(artwork.asset, 10000);
+      } catch (e) {
+        $snack = e.message;
+        return;
+      }
+      $prompt = SignaturePrompt;
+      await new Promise((resolve) =>
+        prompt.subscribe((value) => value === "success" && resolve())
+      );
+      await tick();
+
+      await broadcast($psbt);
+
+      $prompt = Waiting;
+      await new Promise((resolve) =>
+        prompt.subscribe((value) => value === "success" && resolve())
+      );
+      await tick();
+      console.log("confirmed!");
+    }
+
     try {
-    $psbt = await createSwap(artwork.asset, artwork.asking_asset, sats(list_price));
+      $psbt = await createSwap(
+        artwork.asset,
+        artwork.asking_asset,
+        sats(list_price)
+      );
     } catch (e) {
       $snack = e.message;
       return;
-    } 
+    }
 
     $sighash = 0x83;
     $prompt = SignaturePrompt;
