@@ -13,3 +13,4 @@ hasura/.env
 hasura/data/certbot
 hasura/data/raretoshi
 hasura/data/nginx/.lapasswd
+hasura/.env
