@@ -100,7 +100,12 @@
 
     transaction.amount = artwork.list_price;
     transaction.type = "purchase";
-    $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx), 10000);
+    try {
+      $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx), 10000);
+    } catch (e) {
+      $snack = e.message;
+      return;
+    }
     $prompt = SignaturePrompt;
 
     $prompt = SignaturePrompt;
