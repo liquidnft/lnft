@@ -7,6 +7,7 @@ services:
       - ./data/nginx:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
+      - ./data/raretoshi:/var/www/raretoshi
     ports:
       - "80:80"
       - "443:443"
