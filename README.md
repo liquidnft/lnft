@@ -11,6 +11,7 @@ Hasura CLI: https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cl
     yarn
     yarn dev
     cd hasura
+    cp .env.sample .env
     docker-compose up -d
     hasura migrate apply
     hasura metadata apply
