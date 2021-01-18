@@ -4,7 +4,6 @@
   import { onMount, tick } from "svelte";
   import { poll, snack, password, user, token, prompt, psbt } from "$lib/store";
   import { ProgressLinear, SignaturePrompt } from "$comp";
-  import getAddress from "$lib/getAddress";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
@@ -16,12 +15,11 @@
     requireLogin,
     requirePassword,
   } from "$lib/utils";
-  import { broadcast, pay } from "$lib/wallet";
+  import { getAddress, broadcast, pay } from "$lib/wallet";
 
   $: requireLogin($page);
 
   let loading = true;
-  // let address, amount, fee, to;
   let address;
   let amount = 0.0001;
   let fee = 0.00001;
@@ -48,7 +46,7 @@
     await requirePassword();
 
     try {
-      ({ address } = getAddress($user.mnemonic, $password));
+      address = getAddress();
     } catch (e) {
       $snack = "Failed to decrypt wallet";
       return;

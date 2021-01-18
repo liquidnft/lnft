@@ -1,7 +1,7 @@
+import { get } from "svelte/store";
 import { electrs } from "$lib/api";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
-import getAddress from "$lib/getAddress";
 import { fromBase58 } from "bip32";
 import {
   address as Address,
@@ -21,10 +21,6 @@ const network = networks.regtest;
 const sighashType =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
 
-let $user, $password;
-password.subscribe((v) => ($password = v));
-user.subscribe((v) => ($user = v));
-
 const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
@@ -32,8 +28,11 @@ const getHex = async (txid) => {
   return electrs.url(`/tx/${txid}/hex`).get().text();
 };
 
-const keypair = (mnemonic, password) => {
-  mnemonic = cryptojs.AES.decrypt(mnemonic, password).toString(
+export const keypair = (mnemonic, pass) => {
+  if (!mnemonic) mnemonic = get(user).mnemonic;
+  if (!pass) pass = get(password);
+
+  mnemonic = cryptojs.AES.decrypt(mnemonic, pass).toString(
     cryptojs.enc.Utf8
   );
   if (!mnemonic) throw new Error("Unable to decrypt mnmemonic");
@@ -43,6 +42,8 @@ const keypair = (mnemonic, password) => {
 };
 
 export const payment = (pubkey) => {
+  if (!pubkey) pubkey = keypair().publicKey;
+
   return payments.p2sh({
     redeem: payments.p2wpkh({
       pubkey,
@@ -50,6 +51,11 @@ export const payment = (pubkey) => {
     }),
     network,
   });
+};
+
+export const getAddress = () => {
+  let { address } = payment();
+  return address;
 };
 
 function shuffle(array) {
@@ -126,7 +132,7 @@ export const pay = async (asset, to, amount, fee) => {
       value: fee,
     });
 
-  let out = payment(keypair($user.mnemonic, $password).publicKey);
+  let out = payment();
   if (asset === btc) {
     await fund(swap, out, asset, amount + fee);
   } else {
@@ -138,7 +144,7 @@ export const pay = async (asset, to, amount, fee) => {
 };
 
 export const cancelSwap = async (asset, fee) => {
-  let out = payment(keypair($user.mnemonic, $password).publicKey);
+  let out = payment();
 
   let swap = new Psbt()
     .addOutput({
@@ -161,8 +167,8 @@ export const cancelSwap = async (asset, fee) => {
 };
 
 export const sign = (psbt, sighash) => {
-  let addr = getAddress($user.mnemonic, $password);
-  let { privateKey } = addr;
+  let { privateKey } = keypair();
+
   psbt.data.inputs.map((_, i) => {
     try {
       psbt = psbt
@@ -185,7 +191,7 @@ export const broadcast = async (psbt) => {
 
 export const executeSwap = async (swap, fee) => {
   let asset = swap.data.inputs[0].witnessUtxo.asset;
-  let out = payment(keypair($user.mnemonic, $password).publicKey);
+  let out = payment();
   let ask = swap.__CACHE.__TX.outs[0];
 
   await fund(swap, out, parseAsset(ask.asset), parseVal(ask.value));
@@ -209,7 +215,7 @@ export const executeSwap = async (swap, fee) => {
 };
 
 export const createIssuance = async (editions, fee) => {
-  let out = payment(keypair($user.mnemonic, $password).publicKey);
+  let out = payment();
 
   let swap = new Psbt()
     // fee
@@ -241,7 +247,7 @@ export const createIssuance = async (editions, fee) => {
 };
 
 export const createSwap = async (asset, asking_asset, amount) => {
-  let out = payment(keypair($user.mnemonic, $password).publicKey);
+  let out = payment();
 
   let swap = new Psbt().addOutput({
     asset: asking_asset,
@@ -260,7 +266,7 @@ export const createOffer = async (artwork, amount, fee) => {
   fee = parseInt(fee);
 
   let { asking_asset: asset } = artwork;
-  let out = payment(keypair($user.mnemonic, $password).publicKey);
+  let out = payment();
 
   let swap = new Psbt()
     .addOutput({

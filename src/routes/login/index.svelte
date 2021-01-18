@@ -2,36 +2,24 @@
   import { prompt, password, user, token } from "$lib/store";
   import { goto } from "$lib/utils";
   import { api } from "$lib/api";
-  import decode from "jwt-decode";
   import cryptojs from "crypto-js";
-  import { fromSeed } from "bip32";
-  import { payments, networks } from "@asoltys/liquidjs-lib";
-  import { generateMnemonic, mnemonicToSeedSync } from "bip39";
+  import { generateMnemonic } from "bip39";
   import { onMount, tick } from "svelte";
+  import { keypair, payment } from "$lib/wallet";
 
   let error;
   let username = "anon";
   let attempt = "liquidart";
 
   let setupWallet = (attempt) => {
-    let { AES: aes } = cryptojs;
-    let mnemonic = generateMnemonic();
-    let seed = mnemonicToSeedSync(mnemonic);
-    let network = networks.regtest;
-    let hd = fromSeed(seed, network).derivePath("m/84'/0'/0'/0");
-
-    let { address } = payments.p2sh({
-      redeem: payments.p2wpkh({
-        pubkey: hd.derive(0).publicKey,
-        network,
-      }),
-      network,
-    });
+    let mnemonic = cryptojs.AES.encrypt(generateMnemonic(), attempt).toString();
+    let kp = keypair(mnemonic, attempt);
+    let { address } = payment(kp.publicKey);
 
     return {
       address,
-      pubkey: hd.neutered().toBase58(),
-      mnemonic: aes.encrypt(mnemonic, attempt).toString(),
+      pubkey: kp.neutered().toBase58(),
+      mnemonic,
     };
   };
 
