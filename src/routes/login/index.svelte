@@ -131,7 +131,7 @@
         type="submit">Login</button>
       <button
         on:click|preventDefault={register}
-        class="block bg-gray-600 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Register</button>
+        class="block bg-gray-600 hover:bg-green-dark uppercase text-lg mx-auto rounded flex-1">Register</button>
     </div>
   </form>
 </div>

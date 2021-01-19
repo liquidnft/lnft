@@ -25,15 +25,36 @@
 </script>
 
 <style>
+  :global(.primary-color) {
+    color: #133e7c;
+  }
+
+  :global(.sec-color) {
+    color: #82e5ec;
+  }
+
   :global(.brand-color) {
-    background-color: #05b298;
+    background-color: #82e5ec;
   }
 
   :global(button) {
-    @apply p-4;
     border-radius: 30px !important;
-    width: 100%;
-    max-width: 300px;
+    padding: 0.7rem 1.1rem;
+    color: #444444;
+    font-weight: bold;
+  }
+
+  :global(.button-transparent) {
+    background-color: none;
+    border: 1px solid #133e7c;
+  }
+
+  :global(button:focus) {
+    outline: none;
+  }
+
+  :global(button:hover) {
+    color: gray;
   }
 
   :global(input, textarea, select) {
@@ -57,8 +78,13 @@
     color: #05b298;
   }
 
-  img {
-    max-width: 25px;
+  :global(body) { 
+    font-size: 17px;
+    color: #525252;
+  }
+
+  :global(.box-shadow) { 
+    box-shadow: 1px 1px 10px 1px #cbcbcb;
   }
 </style>
 
@@ -77,7 +103,7 @@
   <Dialog />
 
   <main>
-    <div class="container mx-auto px-6">
+    <div class="mx-auto">
       <App>
         <slot />
       </App>

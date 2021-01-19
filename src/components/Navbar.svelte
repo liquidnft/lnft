@@ -28,9 +28,8 @@
 
 <header class="flex container mx-auto justify-between p-2 items-center text-gray-600 mb-20">
 	<h1 class="flex-auto my-auto text-green-400 text-3xl">
-    <a href="/">
-      R<span class="text-black">aretoshi</span></a>
-  </h1>
+    	<a href="/"><img src="/logo.png" alt="logo" class="w-48 mt-3"></a>
+  	</h1>
 	<nav class="flex hambuger">
 		<Hamburger bind:open={sidebar}/>
 	</nav>
