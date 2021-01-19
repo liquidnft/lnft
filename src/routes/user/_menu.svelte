@@ -10,26 +10,17 @@
   };
 </script>
 
-<style>
-  .edit-button{
-    max-width: 150px;
-  }
-
-  hr{
-    margin: 30px 0;
-    border: 1px solid #cdcdcd;
-  }
-</style>
-<hr>
-<div class="mb-4">
+<div class="mb-10 mt-10">
   <button
-    class="bg-black text-white p-2 rounded brand-color edit-button"
+    class="rounded brand-color"
     on:click={() => goto(`/user/${$user.id}/edit`)}>Edit Profile</button>
 </div>
 
-<div class="mb-2 text-sm mt-5"><a href="/history">Download tx history</a></div>
-<div class="mb-2 text-sm mt-5"><a href="/wallet">View Wallet</a></div>
-<div class="mb-2 text-sm mt-5"><a href="/settings">Update Settings</a></div>
-<div class="text-sm cursor-pointer mt-5">
-  <a on:click={logout} class="cursor-pointer">Sign Out</a>
+<div class="uppercase font-bold">
+  <div class="mb-2 mt-5"><a href="/history">Download tx history</a></div>
+  <div class="mb-2 mt-5"><a href="/wallet">View Wallet</a></div>
+  <div class="mb-2 mt-5"><a href="/settings">Update Settings</a></div>
+  <div class="cursor-pointer mt-5">
+    <a href="/login" on:click={logout} class="cursor-pointer">Sign Out</a>
+  </div>
 </div>

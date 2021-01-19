@@ -30,13 +30,13 @@
 <div class="flex flex-grow-1 menu">
   <a href="/discover" class="my-auto"><img
       on:click={() => (open = !open)}
-      src="/search.svg" /></a>
-  <a href="/market" class="my-auto"><button
+      src="/search.svg" alt="Search"/></a>
+  <a href="/market" class="my-auto ml-10"><button
       on:click={() => (open = !open)}>Market</button></a>
-  <a href="/activity" class="my-auto"><button
+  <a href="/activity" class="my-auto ml-10"><button
       on:click={() => (open = !open)}>Activity</button></a>
   {#if $user}
-    <a href={`/user/${$user.id}`}>
+    <a href={`/user/${$user.id}`} class="ml-10">
       <button on:click={() => (open = !open)} class="flex">
         <Avatar src={$user.avatar_url} />
         <div class="my-auto ml-2">{$user.full_name}</div>

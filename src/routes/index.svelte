@@ -38,6 +38,7 @@
   </div>
 </div>
 
+
 <div class="flex secondary-header mt-20 mb-20 text-white">
   <div class="container flex mx-auto flex-col justify-center secondary-header-text m-10 pl-6">
     <h2 class="text-5xl font-bold mb-3">Anon artist</h2>
@@ -45,6 +46,7 @@
     <button class="button-transparent header-button text-white border mt-10"> More from this artist</button>
   </div>  
 </div>
+
 
 <div class="container mx-auto pl-6 mb-8"><h3 class="primary-color font-bold text-3xl">Recent Activity</h3></div>
 <div class="container mx-auto flex flex-wrap mb-20 pb-10">
@@ -63,8 +65,9 @@
     time="1 Hours"
     title="Place a bid for about $300 on the white Wizard"
   />
-  <div class="mx-auto"><button class="button-transparent">See All</button></div>
+  <div class="mx-auto container text-center"><button class="button-transparent">See All</button></div>
 </div>
+
 
 <div class="container mx-auto pl-6 mb-10"><h3 class="primary-color font-bold text-3xl">Watch the market move</h3></div>
 <div class="container mx-auto flex flex-wrap">

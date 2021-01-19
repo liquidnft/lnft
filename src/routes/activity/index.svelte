@@ -47,7 +47,7 @@
   <h1 class="title">Activity</h1>
 </div>
 
-<div class="flex activity">
+<div class="container mx-auto flex activity">
   <div class="cards-container">
     {#each transactions as transaction}
       <Activity {transaction} showImage={true} />

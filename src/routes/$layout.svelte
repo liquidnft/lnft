@@ -29,17 +29,17 @@
     color: #133e7c;
   }
 
-  :global(.sec-color) {
+  :global(.secondary-color) {
     color: #82e5ec;
   }
 
   :global(.brand-color) {
-    background-color: #82e5ec;
+    background-color: #6aced5;
   }
 
   :global(button) {
     border-radius: 30px !important;
-    padding: 0.7rem 1.1rem;
+    padding: 0.7rem 1.2rem;
     color: #444444;
     font-weight: bold;
   }
@@ -49,7 +49,7 @@
     border: 1px solid #133e7c;
   }
 
-  :global(button:focus) {
+  :global(button:focus, select:focus) {
     outline: none;
   }
 

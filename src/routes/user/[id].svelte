@@ -130,30 +130,34 @@
     }
   }
 </style>
-
+<div class="container mx-auto px-16">
 {#if $user && subject}
   <div class="flex profile-container" in:fade>
-    <div class="col1">
-      <Avatar size="large" src={subject.avatar_url} />
+    <div class="w-1/2">
+      <div class="flex">
+        <Avatar size="large" src={subject.avatar_url} />
 
-      <div class="my-4">
+        <div class="ml-16">
+          <div class="text-3xl primary-color font-bold">{subject.full_name}</div>
+          <div class="text-gray-600">@{subject.username}</div>
+        </div>
+      </div>
+
+      <div class="flex mt-5">
         <div>Followers: {subject.num_followers}</div>
-        <div>Following: {subject.num_follows}</div>
+        <div class="ml-14">Following: {subject.num_follows}</div>
       </div>
 
       {#if $user.id === id}
         <Menu />
       {:else}
         <button
-          class="bg-black text-white p-2 rounded brand-color follow"
+          class="p-2 rounded brand-color follow"
           on:click={follow}>
           {subject.followed ? 'Unfollow' : 'Follow'}</button>
       {/if}
     </div>
-    <div class="col2">
-      <div class="text-3xl">{subject.full_name}</div>
-      <div class="text-gray-600">@{subject.username}</div>
-    </div>
+   
     <div class="col3">
       <div
         class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
@@ -224,3 +228,4 @@
     <ProgressLinear />
   </div>
 {/if}
+</div>

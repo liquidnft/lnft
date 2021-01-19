@@ -28,6 +28,7 @@
   .card {
     border-radius: 10px;
     box-shadow: 1px 1px 10px 1px #cbcbcb;
+    height: 600px;
   }
 
   .card img,
@@ -36,12 +37,12 @@
   }
 </style>
 
-<div class="bg-white card" class:link on:click={click}>
-  <div class="relative">
+<div class="bg-white card flex flex-col justify-between" class:link on:click={click}>
+  <div class="flex justify-center h-3/5">
     {#if artwork.filename.includes('mp4')}
       <video
         controls
-        class="w-full"
+        class="w-auto h-auto object-contain"
         class:shadow-2xl={shadow}
         autoplay
         muted
@@ -52,17 +53,20 @@
     {:else}
       <img
         src={`/api/storage/o/public/${artwork.filename}`}
-        alt=""
-        class="w-full"
+        alt="{artwork.filename}"
+        class="w-auto h-auto object-contain"
         class:shadow-2xl={shadow} />
     {/if}
   </div>
   {#if showDetails}
-    <div class="px-4 py-4 md:px-10">
-      <h1 class="font-bold text-lg">{artwork.title}</h1>
+    <div class="p-6">
+      <div class="flex flex-row justify-between">
+        <h1 class="font-bold text-2xl">{artwork.title}</h1>
+        <img src='/heart.png' alt="{artwork.filename}" class="w-8 h-8" />
+      </div>
       <div class="flex pt-8">
         <div class="1/2 flex-1">
-          <div>
+          <div class="text-3xl">
             {artwork.list_price ? val(artwork.list_price) : '---'}
             {ticker}
           </div>
@@ -70,7 +74,7 @@
         </div>
         {#if artwork.bid[0].user}
           <div class="1/2 flex-1">
-            <div>{val(artwork.bid[0].amount)} {ticker}</div>
+            <div class="text-3xl">{val(artwork.bid[0].amount)} {ticker}</div>
             <div class="text-sm font-medium">
               Current bid by
               <a
@@ -81,4 +85,5 @@
       </div>
     </div>
   {/if}
+  <div class="p-4 brand-color rounded-b-lg"> Auction ends in 25 minutes</div>
 </div>
