@@ -92,7 +92,7 @@
       hash: tx.getId(),
       psbt: $psbt.toBase64(),
       tags,
-    }).then(() => goto("/market"));
+    }).then(() => goto(`/artwork/${artwork.id}`));
   };
 </script>
 

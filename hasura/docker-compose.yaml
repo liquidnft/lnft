@@ -1,13 +1,24 @@
 version: '3.6'
 services:
+  chain-monitor:
+    container_name: chain-monitor
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      ESPLORA_URL: http://electrs-liquid:3002
+      HASURA_URL: http://hasura:8080/v1/graphql
+      SECRET: liquidart
   postgres:
+    container_name: postgres
     image: postgres:12
     restart: always
     environment:
       POSTGRES_PASSWORD: postgrespassword
     volumes:
       - ${DATA_DIR}:/var/lib/postgresql/data
-  graphql-engine:
+  hasura:
+    container_name: hasura
     image: hasura/graphql-engine:v1.3.3
     ports:
       - '8080:8080'
@@ -24,14 +35,15 @@ services:
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
   hasura-backend-plus:
+    container_name: hasura-backend-plus
     image: nhost/hasura-backend-plus:latest
     depends_on:
-      - 'graphql-engine'
+      - 'hasura'
       - 'minio'
     ports:
       - '3400:3000'
     environment:
-      HASURA_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      HASURA_ENDPOINT: http://hasura:8080/v1/graphql
       HASURA_GRAPHQL_ADMIN_SECRET: liquidart
       REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address
       JWT_ALGORITHM: RS256
@@ -43,6 +55,7 @@ services:
       S3_ACCESS_KEY_ID: '${S3_ACCESS_KEY_ID:-minio_access_key}'
       S3_SECRET_ACCESS_KEY: '${S3_SECRET_ACCESS_KEY:-liquidart}' ## min 8 character
   minio:
+    container_name: minio
     image: minio/minio
     restart: always
     volumes:

@@ -28,13 +28,13 @@ const getHex = async (txid) => {
   return electrs.url(`/tx/${txid}/hex`).get().text();
 };
 
+const DUST = 1000
+
 export const keypair = (mnemonic, pass) => {
   if (!mnemonic) mnemonic = get(user).mnemonic;
   if (!pass) pass = get(password);
 
-  mnemonic = cryptojs.AES.decrypt(mnemonic, pass).toString(
-    cryptojs.enc.Utf8
-  );
+  mnemonic = cryptojs.AES.decrypt(mnemonic, pass).toString(cryptojs.enc.Utf8);
   if (!mnemonic) throw new Error("Unable to decrypt mnmemonic");
   return fromSeed(mnemonicToSeedSync(mnemonic), network).derivePath(
     "m/84'/0'/0'/0/0"
@@ -80,7 +80,7 @@ const fund = async (psbt, out, asset, amount, sighashType = 1) => {
   let utxos = shuffle(
     (await electrs.url(`/address/${address}/utxo`).get().json()).filter(
       (o) => o.asset === asset
-    )
+    ).filter((o) => o.asset !== btc || o.value > DUST)
   );
 
   let i = 0;
@@ -174,9 +174,7 @@ export const sign = (psbt, sighash) => {
       psbt = psbt
         .signInput(i, ECPair.fromPrivateKey(privateKey), [sighash])
         .finalizeInput(i);
-    } catch (e) {
-      console.log(e.message);
-    } // silently fail when signing an input that's not ours
+    } catch(e) {}
   });
 
   return psbt;
@@ -194,7 +192,12 @@ export const executeSwap = async (swap, fee) => {
   let out = payment();
   let ask = swap.__CACHE.__TX.outs[0];
 
-  await fund(swap, out, parseAsset(ask.asset), parseVal(ask.value));
+  let asking_asset = parseAsset(ask.asset);
+  let total = parseVal(ask.value);
+
+  if (asking_asset === btc) total += fee;
+  else await fund(swap, out, btc, fee);
+  await fund(swap, out, asking_asset, total);
 
   swap
     .addOutput({
@@ -210,7 +213,6 @@ export const executeSwap = async (swap, fee) => {
       value: fee,
     });
 
-  await fund(swap, out, btc, fee);
   return swap;
 };
 

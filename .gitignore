@@ -8,7 +8,6 @@ hasura/liquidregtest/config/regtest/
 hasura/liquidregtest/liquid-config/liquidregtest/
 hasura/db
 hasura/storage
-hasura/server
 hasura/.env
 hasura/data/certbot
 hasura/data/raretoshi

@@ -515,10 +515,11 @@
       - amount
       - artwork_id
       - asset
+      - confirmed
       - created_at
       - hash
-      - psbt
       - id
+      - psbt
       - type
       - user_id
       filter: {}
