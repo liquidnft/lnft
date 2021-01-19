@@ -30,7 +30,7 @@
   }
 
   :global(.secondary-color) {
-    color: #82e5ec;
+    color: #3ba5ac;
   }
 
   :global(.brand-color) {
