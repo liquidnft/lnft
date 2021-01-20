@@ -57,7 +57,7 @@
     await requirePassword();
 
     try {
-      $psbt = await createOffer(artwork, transaction.amount, 10000);
+      $psbt = await createOffer(artwork, transaction.amount, 500);
     } catch (e) {
       $snack = e.message;
       return;
@@ -112,7 +112,7 @@
     transaction.amount = artwork.list_price;
     transaction.type = "purchase";
     try {
-      $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx), 10000);
+      $psbt = await executeSwap(Psbt.fromBase64(artwork.list_price_tx), 500);
     } catch (e) {
       $snack = e.message;
       return;

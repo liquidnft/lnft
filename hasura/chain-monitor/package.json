@@ -5,10 +5,11 @@
   "license": "MIT",
   "dependencies": {
     "form-data": "^3.0.0",
+    "http-proxy": "^1.18.1",
     "node-fetch": "^2.6.1",
     "wretch": "^1.7.4"
   },
   "scripts": {
     "start": "node index.js"
-  } 
+  }
 }

@@ -15,9 +15,9 @@ import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
 import { password, snack, user } from "$lib/store";
 import cryptojs from "crypto-js";
+import { btc } from "$lib/utils";
 
-const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
-const network = networks.regtest;
+const network = networks.liquid;
 const sighashType =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
 

@@ -66,7 +66,7 @@
     e.preventDefault();
     await requirePassword();
     try {
-      $psbt = await createIssuance(artwork.editions, 100000);
+      $psbt = await createIssuance(artwork.editions, 1000);
     } catch(e) {
       $snack = e.message;
       return;

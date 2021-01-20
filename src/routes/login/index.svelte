@@ -1,10 +1,11 @@
 <script>
+  import { page } from "$app/stores";
   import { prompt, password, user, token } from "$lib/store";
   import { goto } from "$lib/utils";
   import { api } from "$lib/api";
   import cryptojs from "crypto-js";
   import { generateMnemonic } from "bip39";
-  import { onMount, tick } from "svelte";
+  import { tick } from "svelte";
   import { keypair, payment } from "$lib/wallet";
 
   let error;
@@ -24,10 +25,12 @@
   };
 
   let usernameInput;
-  onMount(async () => {
+  let pageChange = async () => {
     await tick();
+    console.log("eep");
     usernameInput.select();
-  });
+  };
+  $: pageChange($page);
 
   let login = () => {
     api

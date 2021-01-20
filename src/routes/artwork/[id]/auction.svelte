@@ -49,7 +49,7 @@
 
     if (artwork.list_price_tx) {
       try {
-        $psbt = await cancelSwap(artwork.asset, 10000);
+        $psbt = await cancelSwap(artwork.asset, 500);
       } catch (e) {
         $snack = e.message;
         return;
