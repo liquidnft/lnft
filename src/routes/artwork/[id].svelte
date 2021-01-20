@@ -171,13 +171,15 @@
   }
 </style>
 
+<div class="container mx-auto p-10">
 {#if artwork}
   <div class="flex flex-wrap" bind:this={target}>
     <div class="text-center lg:text-left w-full lg:w-1/4">
-      <h1 class="text-3xl font-black text-gray-900">
+      <h1 class="text-3xl font-black primary-color">
         {artwork.title || 'Untitled'}
       </h1>
-      <div class="font-black mb-6">{artwork.editions} Editions</div>
+      <div class="mt-4 mb-6">{artwork.editions} Editions</div>
+      <Sidebar bind:artwork />
       <div class="text-sm text-gray-600 break-all">
         Asset Id:
         <a
@@ -266,7 +268,7 @@
     <div class="w-full lg:w-1/2 lg:px-12 card-container">
       <Card {artwork} link={false} columns={1} showDetails={false} />
     </div>
-    <Sidebar bind:artwork />
+   
   </div>
 
   <div class="flex mt-2">
@@ -291,3 +293,4 @@
 {:else}
   Artwork not found
 {/if}
+</div>

@@ -47,7 +47,7 @@
   }
 </style>
 
-<div class="w-full sidebar">
+<div class="">
   <a href={`/user/${artwork.artist_id}`}>
     <div class="flex mb-6">
       <Avatar src={artwork.artist.avatar_url} />
