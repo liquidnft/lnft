@@ -5,7 +5,11 @@
   import { onMount, tick } from "svelte";
   import { prompt, password, snack, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
-  import { getArtwork, destroyArtwork } from "$queries/artworks";
+  import {
+    getArtwork,
+    getArtworksByArtist,
+    destroyArtwork,
+  } from "$queries/artworks";
   import {
     createTransaction,
     getArtworkTransactions,
@@ -24,6 +28,13 @@
     operationStore(getArtworkTransactions(id)),
     (a, b) => (transactions = b.transactions)
   );
+
+  let others = [];
+  $: if (artwork)
+    subscription(
+      operationStore(getArtworksByArtist(artwork.artist_id)),
+      (a, b) => (others = b.artworks)
+    );
 
   let artwork, start_counter, end_counter;
   let createTransaction$ = mutation(createTransaction);
@@ -257,7 +268,23 @@
     <Sidebar bind:artwork />
   </div>
 
-  {#each transactions as transaction}
-    <Activity {transaction} />
-  {/each}
+  <div class="flex mt-2">
+    <div class="w-1/4">
+      {#each transactions as transaction}
+        <Activity {transaction} />
+      {/each}
+    </div>
+    <div class="w-3/4">
+      <h2 class="text-xl my-4">Other artworks by artist</h2>
+      <div class="w-full flex flex-wrap">
+        {#each others as artwork (artwork.id)}
+          <div class="w-1/2 px-4 mb-4">
+            <Card {artwork} summary={true} />
+          </div>
+        {:else}
+          <div class="mx-auto">No other artworks</div>
+        {/each}
+      </div>
+    </div>
+  </div>
 {/if}
