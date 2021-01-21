@@ -659,6 +659,17 @@
         id:
           _eq: X-Hasura-User-Id
       check: null
+  event_triggers:
+  - name: user_creation
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook: http://app-server:3090/user
 - table:
     schema: public
     name: utxos
