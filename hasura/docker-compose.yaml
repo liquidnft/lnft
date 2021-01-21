@@ -1,9 +1,16 @@
 version: '3.6'
 services:
+  gdk-server:
+    container_name: gdk-server
+    build:
+      context: ./gdk-server
+      dockerfile: Dockerfile
+    ports:
+      - '8090:80'
   chain-monitor:
     container_name: chain-monitor
     build:
-      context: ./server
+      context: ./chain-monitor
       dockerfile: Dockerfile
     environment:
       ESPLORA_URL: http://electrs-liquid:3002
