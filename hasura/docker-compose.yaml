@@ -1,5 +1,14 @@
 version: '3.6'
 services:
+  app-server:
+    container_name: app-server
+    build:
+      context: ./app-server
+      dockerfile: Dockerfile
+    ports:
+      - '8091:3000'
+    volumes:
+      - ./app-server:/app
   gdk-server:
     container_name: gdk-server
     build:
