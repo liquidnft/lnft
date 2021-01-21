@@ -1,14 +1,7 @@
 const wretch = require("wretch");
 const fetch = require("node-fetch");
-const FormData = require("form-data");
 
-console.log(new Date());
-
-wretch().polyfills({
-  fetch: fetch,
-  FormData: FormData,
-  URLSearchParams: require("url").URLSearchParams,
-});
+wretch().polyfills({ fetch });
 
 const { ESPLORA_URL, SECRET, HASURA_URL } = process.env;
 
@@ -78,23 +71,17 @@ setInterval(
                 api
                   .post({ query: setConfirmed, variables: { id: tx.id } })
                   .json(
-                    ({ data: { update_transactions_by_pk: transaction } }) => {
-                      console.log(transaction);
-                      api
-                        .post({
-                          query: updateArtwork,
-                          variables: {
-                            id: transaction.artwork_id,
-                            owner_id: transaction.user_id,
-                          },
-                        })
-                        .json(console.log);
-                    }
+                    ({ data: { update_transactions_by_pk: transaction } }) => api
+                    .post({
+                      query: updateArtwork,
+                      variables: {
+                        id: transaction.artwork_id,
+                        owner_id: transaction.user_id,
+                      },
+                    })
                   )
             )
-            .catch(console.log)
         )
       )
-      .catch(console.log),
   2000
 );

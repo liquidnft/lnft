@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - '8090:80'
+    volumes:
+      - ./gdk-server:/app
   chain-monitor:
     container_name: chain-monitor
     build:

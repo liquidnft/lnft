@@ -14,6 +14,14 @@ module.exports = {
     ],
   ],
   proxy: {
+    "/gdk": {
+      target: "http://localhost:8090",
+      on: {
+        proxyReq: (p, req, res) => {
+          p.path = req.url.replace("/gdk", "");
+        },
+      },
+    },
     "/api": {
       target: "http://localhost:3400",
       on: {

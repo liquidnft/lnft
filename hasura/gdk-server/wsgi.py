@@ -29,7 +29,7 @@ def hello_world():
     # Login to a GDK wallet session using the mnemonic.
     wallet = gdk_wallet.login_with_mnemonic(mnemonic)
 
-    return json.dumps(wallet.gaid)
+    return json.dumps({ "gaid": wallet.gaid, "mnemonic": wallet.mnemonic })
 
 # To install GDK, download the GDK python wheel from:
 # https://github.com/Blockstream/gdk/releases
