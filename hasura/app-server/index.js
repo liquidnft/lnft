@@ -28,7 +28,7 @@ const fastify = require("fastify")({
   logger: true,
 });
 
-fastify.post("/issue", async (req, res) => {
+fastify.post("/issue", auth, async (req, res) => {
   let {
     title: name,
     ticker,
@@ -55,7 +55,7 @@ fastify.post("/issue", async (req, res) => {
   );
 });
 
-fastify.post("/user", async (req, res) => {
+fastify.post("/user", auth, async (req, res) => {
   const query = `mutation update_user($user: users_set_input!, $username: String!) {
     update_users(where: { username: { _eq: $username }}, _set: $user) {
       affected_rows
