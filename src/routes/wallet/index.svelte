@@ -22,7 +22,7 @@
   let loading = true;
   let amount = 0.0001;
   let fee = 0.00001;
-  let to = "XXUnXi5z8AJnPQznxeQcbmZi83aBaiHaxY";
+  let to;
   let asset = btc;
   let name = (asset) => {
     let artwork = artworks.find((a) => a.asset === asset);

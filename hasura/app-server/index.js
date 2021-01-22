@@ -64,6 +64,15 @@ fastify.post("/user", async (req, res) => {
   let user = await gdk.get().json();
   let { username } = req.body;
 
+  user.amp_user_id = (await amp
+    .url("/registered_users/add")
+    .post({
+      is_company: false,
+      name: username,
+      GAID: user.gaid,
+    })
+    .json()).id;
+
   res.send(
     await api
       .post({
