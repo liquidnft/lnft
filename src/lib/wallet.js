@@ -79,7 +79,6 @@ export const payment = (key) => {
 
   let blindingKey = slip77(seed).derive(redeem.output);
   let { publicKey: blindkey } = blindingKey;
-  console.log(blindingKey.publicKey, blindingKey.privateKey);
 
   return payments.p2sh({
     redeem,

@@ -1,34 +1,12 @@
-const wretch = require("wretch");
-const fetch = require("node-fetch");
-const httpProxy = require("http-proxy");
 const auth = require("./auth");
+const { amp, gdk, api } = require("./api");
+require("./proxy");
 
-httpProxy
-  .createProxyServer({
-    target: "https://blockstream.info/liquid/api",
-    changeOrigin: true,
-  })
-  .listen(8092);
-
-const { AMP_TOKEN, HASURA_SECRET, HASURA_URL } = process.env;
-wretch().polyfills({ fetch });
-
-const amp = wretch()
-  .url("https://amp-beta.blockstream.com/api")
-  .headers({ authorization: `token ${AMP_TOKEN}` });
-
-const api = wretch()
-  .url(HASURA_URL)
-  .headers({ "x-hasura-admin-secret": HASURA_SECRET });
-
-const gdk = wretch().url("http://gdk-server");
-
-// Require the framework and instantiate it
-const fastify = require("fastify")({
+const app = require("fastify")({
   logger: true,
 });
 
-fastify.post("/issue", auth, async (req, res) => {
+app.post("/issue", auth, async (req, res) => {
   let {
     title: name,
     ticker,
@@ -55,7 +33,7 @@ fastify.post("/issue", auth, async (req, res) => {
   );
 });
 
-fastify.post("/user", auth, async (req, res) => {
+app.post("/user", auth, async (req, res) => {
   const query = `mutation update_user($user: users_set_input!, $username: String!) {
     update_users(where: { username: { _eq: $username }}, _set: $user) {
       affected_rows
@@ -65,6 +43,7 @@ fastify.post("/user", auth, async (req, res) => {
   let user = await gdk.get().json();
   let { username } = req.body;
 
+  /*
   user.amp_user_id = (
     await amp
       .url("/registered_users/add")
@@ -75,6 +54,7 @@ fastify.post("/user", auth, async (req, res) => {
       })
       .json()
   ).id;
+  */
 
   res.send(
     await api
@@ -86,10 +66,10 @@ fastify.post("/user", auth, async (req, res) => {
   );
 });
 
-fastify.listen(8091, "0.0.0.0", function (err, address) {
+app.listen(8091, "0.0.0.0", function (err, address) {
   if (err) {
-    fastify.log.error(err);
+    app.log.error(err);
     process.exit(1);
   }
-  fastify.log.info(`server listening on ${address}`);
+  app.log.info(`server listening on ${address}`);
 });

@@ -3,9 +3,6 @@ const jwksClient = require("jwks-rsa");
 const { HASURA_JWT } = process.env;
 
 const client = jwksClient({
-  cache: true, // Default Value
-  cacheMaxEntries: 5, // Default value
-  cacheMaxAge: 600000, // Defaults to 10m
   jwksUri: JSON.parse(HASURA_JWT).jwk_url,
 });
 
