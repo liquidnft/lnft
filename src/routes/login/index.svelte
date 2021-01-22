@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { prompt, password, user, token } from "$lib/store";
   import { goto } from "$lib/utils";
-  import { api } from "$lib/api";
+  import { api, amp } from "$lib/api";
   import cryptojs from "crypto-js";
   import { generateMnemonic } from "bip39";
   import { tick } from "svelte";
@@ -14,23 +14,20 @@
 
   let setupWallet = (attempt) => {
     let mnemonic = cryptojs.AES.encrypt(generateMnemonic(), attempt).toString();
-    let kp = keypair(mnemonic, attempt);
-    let { address } = payment(kp.publicKey);
+    let key = keypair(mnemonic, attempt);
+    let { address, confidentialAddress: confidential } = payment(key);
 
     return {
       address,
-      pubkey: kp.neutered().toBase58(),
+      confidential,
+      pubkey: key.base58,
       mnemonic,
     };
   };
 
   let usernameInput;
-  let pageChange = async () => {
-    await tick();
-    console.log("eep");
-    usernameInput.select();
-  };
-  $: pageChange($page);
+  let pageChange = () => setTimeout(() => usernameInput.select(), 50);
+  $: if (usernameInput) pageChange($page);
 
   let login = () => {
     api
@@ -48,7 +45,6 @@
         window.sessionStorage.setItem("token", $token);
         $password = attempt;
         $prompt = false;
-
         goto("/market");
       });
   };
@@ -68,7 +64,9 @@
       .badRequest((err) => {
         error = JSON.parse(err.message).message;
       })
-      .res(login);
+      .res(() => {
+        amp.url("/user").post({ username }).res(login);
+      });
   };
 </script>
 
@@ -119,7 +117,6 @@
       <input
         placeholder="username"
         bind:value={username}
-        autofocus
         bind:this={usernameInput} />
     </div>
     <div class="flex flex-col mb-4">

@@ -15,6 +15,8 @@ def hello_world():
     # Wallet creation and login using Mnemonic
     # ========================================
 
+    return json.dumps({ "gaid": "GA3GNhj39JbwhVookixHizBVcKdxpQ", "amp_mnemonic": "issue spin cover boring clerk unaware lab argue giraffe record night state shrug mansion twist whale acquire artist jealous rice bag enough weekend leader", "confidential": "VJLK93mjnNpjPNA2GQT1yQJwbPGvmCRZp6qRHkiGjvNBbj4xqa268k7oL6rP4xe92FqP4kyGpLoT3k1Z" })
+
     # To create a wallet with a Managed Assets account, pass a mnemonic
     # into the following. You can generate a 24 word mnemonic yourself or
     # have GDK generate it for you by leaving mnemonic as None.
@@ -29,7 +31,7 @@ def hello_world():
     # Login to a GDK wallet session using the mnemonic.
     wallet = gdk_wallet.login_with_mnemonic(mnemonic)
 
-    return json.dumps({ "gaid": wallet.gaid, "mnemonic": wallet.mnemonic })
+    return json.dumps({ "gaid": wallet.gaid, "amp_mnemonic": wallet.mnemonic, "confidential": wallet.get_new_address()["address"] })
 
 # To install GDK, download the GDK python wheel from:
 # https://github.com/Blockstream/gdk/releases

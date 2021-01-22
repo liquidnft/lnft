@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "fastify": "^3.10.1",
+    "http-proxy": "^1.18.1",
     "node-fetch": "^2.6.1",
     "wretch": "^1.7.4"
   },

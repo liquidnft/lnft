@@ -15,12 +15,11 @@
     requireLogin,
     requirePassword,
   } from "$lib/utils";
-  import { getAddress, broadcast, pay } from "$lib/wallet";
+  import { broadcast, pay, keypair, payment, unblind } from "$lib/wallet";
 
   $: requireLogin($page);
 
   let loading = true;
-  let address;
   let amount = 0.0001;
   let fee = 0.00001;
   let to = "XXUnXi5z8AJnPQznxeQcbmZi83aBaiHaxY";
@@ -32,35 +31,41 @@
   };
 
   let artworks = [];
-  subscription(operationStore(getArtworks), async (_, data) => {
-    await new Promise((resolve) =>
-      user.subscribe((value) => value && resolve())
-    );
-    artworks = data.artworks.filter((a) => a.owner_id === $user.id);
-    if (address) getUtxos(address);
-  });
+  $: if ($user)
+    subscription(operationStore(getArtworks), async (_, data) => {
+      await new Promise((resolve) =>
+        user.subscribe((value) => value && resolve())
+      );
+      artworks = data.artworks.filter((a) => a.owner_id === $user.id);
+      if ($user.address) getUtxos($user.address);
+    });
 
   $: [_, val, _] = units(asset);
 
   let init = async () => {
-    await requirePassword();
-
-    try {
-      address = getAddress();
-    } catch (e) {
-      $snack = "Failed to decrypt wallet";
-      return;
-    }
-
-    $poll = setInterval(() => getUtxos(address), 2000);
+    $poll = setInterval(() => getUtxos($user.address), 5000);
   };
 
   $: if ($user && loading) init();
 
   let utxos = [];
   let assets = [];
+  let unblinded = {};
+
   let getUtxos = async (address) => {
     utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+    await requirePassword();
+
+    for (let i = 0; i < utxos.length; i++) {
+      if (utxos[i].asset) break;
+      let { txid, vout } = utxos[i];
+      if (!unblinded[txid]) {
+        let hex = await electrs.url(`/tx/${txid}/hex`).get().text();
+        unblinded[txid] = unblind(hex, vout);
+      }
+      utxos[i] = unblinded[txid];
+    }
+
     assets = utxos
       .map(({ asset }) => ({ name: name(asset), asset }))
       .sort((a, b) => a.name.localeCompare(b.name))
@@ -71,6 +76,7 @@
           item.asset !== btc &&
           (!pos || item.asset != ary[pos - 1].asset)
       );
+
     loading = false;
   };
 
@@ -136,7 +142,11 @@
 {:else}
   <div class="mb-2">
     <div class="text-sm text-gray-600">Address</div>
-    {address}
+    {$user.address}<br />
+  </div>
+  <div class="mb-2">
+    <div class="text-sm text-gray-600">Confidential Address</div>
+    {$user.confidential}
   </div>
   <div class="mb-2">
     <div class="text-sm text-gray-600">Balance</div>
@@ -159,7 +169,7 @@
     </div>
     <div class="flex flex-col mb-4">
       <label>Amount</label>
-      <input placeholder={val(0)} bind:value={amount} autofocus />
+      <input placeholder={val(0)} bind:value={amount} />
     </div>
     <div class="flex flex-col mb-4">
       <label>Fee</label>

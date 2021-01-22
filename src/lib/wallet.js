@@ -5,6 +5,7 @@ import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
 import {
   address as Address,
+  confidential,
   ECPair,
   Psbt,
   payments,
@@ -16,6 +17,7 @@ import reverse from "buffer-reverse";
 import { password, snack, user } from "$lib/store";
 import cryptojs from "crypto-js";
 import { btc } from "$lib/utils";
+import { fromSeed as slip77 } from "slip77";
 
 const network = networks.liquid;
 const sighashType =
@@ -28,7 +30,7 @@ const getHex = async (txid) => {
   return electrs.url(`/tx/${txid}/hex`).get().text();
 };
 
-const DUST = 1000
+const DUST = 1000;
 
 export const keypair = (mnemonic, pass) => {
   if (!mnemonic) mnemonic = get(user).mnemonic;
@@ -36,26 +38,54 @@ export const keypair = (mnemonic, pass) => {
 
   mnemonic = cryptojs.AES.decrypt(mnemonic, pass).toString(cryptojs.enc.Utf8);
   if (!mnemonic) throw new Error("Unable to decrypt mnmemonic");
-  return fromSeed(mnemonicToSeedSync(mnemonic), network).derivePath(
-    "m/84'/0'/0'/0/0"
-  );
+  let seed = mnemonicToSeedSync(mnemonic);
+  let key = fromSeed(seed, network).derivePath("m/84'/0'/0'/0/0");
+  let { publicKey: pubkey, privateKey: privkey } = key;
+  let base58 = key.neutered().toBase58();
+
+  return { pubkey, privkey, seed, base58 };
 };
 
-export const payment = (pubkey) => {
-  if (!pubkey) pubkey = keypair().publicKey;
+export const unblind = (hex, vout) => {
+  return;
+  let { pubkey, seed } = keypair();
 
-  return payments.p2sh({
-    redeem: payments.p2wpkh({
-      pubkey,
-      network,
-    }),
+  let redeem = payments.p2wpkh({
+    pubkey,
     network,
   });
+
+  let blindingKey = slip77(seed).derive(redeem.output);
+  let output = Transaction.fromHex(hex).outs[vout];
+  let unblinded = confidential.unblindOutput(
+    output.nonce,
+    blindingKey.privateKey,
+    output.rangeProof,
+    output.value,
+    output.asset,
+    output.script
+  );
+  return unblinded;
 };
 
-export const getAddress = () => {
-  let { address } = payment();
-  return address;
+export const payment = (key) => {
+  if (!key) key = keypair();
+  let { pubkey, seed } = key;
+
+  let redeem = payments.p2wpkh({
+    pubkey,
+    network,
+  });
+
+  let blindingKey = slip77(seed).derive(redeem.output);
+  let { publicKey: blindkey } = blindingKey;
+  console.log(blindingKey.publicKey, blindingKey.privateKey);
+
+  return payments.p2sh({
+    redeem,
+    network,
+    blindkey,
+  });
 };
 
 function shuffle(array) {
@@ -78,9 +108,9 @@ function shuffle(array) {
 const fund = async (psbt, out, asset, amount, sighashType = 1) => {
   let { address, redeem, output } = out;
   let utxos = shuffle(
-    (await electrs.url(`/address/${address}/utxo`).get().json()).filter(
-      (o) => o.asset === asset
-    ).filter((o) => o.asset !== btc || o.value > DUST)
+    (await electrs.url(`/address/${address}/utxo`).get().json())
+      .filter((o) => o.asset === asset)
+      .filter((o) => o.asset !== btc || o.value > DUST)
   );
 
   let i = 0;
@@ -174,7 +204,7 @@ export const sign = (psbt, sighash) => {
       psbt = psbt
         .signInput(i, ECPair.fromPrivateKey(privateKey), [sighash])
         .finalizeInput(i);
-    } catch(e) {}
+    } catch (e) {}
   });
 
   return psbt;

@@ -33,6 +33,6 @@
     Enter password
   </h3>
   <div class="mt-2">
-    <input bind:value={attempt} placeholder="Password" class="mb-2" autofocus />
+    <input bind:value={attempt} placeholder="Password" class="mb-2" />
   </div>
 </form>

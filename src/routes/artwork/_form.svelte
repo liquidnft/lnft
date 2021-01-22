@@ -5,14 +5,29 @@
   export let artwork;
   let items;
 
-  $: selectedValue = artwork.tags.map(({ tag }) => ({ value: tag, label: tag }))
+  $: selectedValue = artwork.tags.map(({ tag }) => ({
+    value: tag,
+    label: tag,
+  }));
+
+  let managedItems = [
+    { value: true, label: "Yes" },
+    { value: false, label: "No" },
+  ];
 
   subscription(operationStore(`subscription { tags { tag } }`), (a, b) => {
-    items = [...new Set(b.tags.map(t => t.tag))].map((value) => ({ value, label: value }));
+    items = [...new Set(b.tags.map((t) => t.tag))].map((value) => ({
+      value,
+      label: value,
+    }));
   });
 
   let handle = ({ detail }) => {
-    artwork.tags = detail.map(({ value: tag }) => ({ tag }))
+    artwork.tags = detail.map(({ value: tag }) => ({ tag }));
+  };
+
+  let handleManaged = ({ detail }) => {
+    artwork.managed = detail.value;
   };
 </script>
 
@@ -22,15 +37,19 @@
     <input placeholder="Title" bind:value={artwork.title} />
   </div>
   <div class="flex flex-col mb-4">
+    <label>Ticker</label>
+    <input placeholder="Ticker" bind:value={artwork.ticker} />
+  </div>
+  <div class="flex flex-col mb-4">
     <label>Description</label>
     <textarea placeholder="Description" bind:value={artwork.description} />
   </div>
   {#if !artwork.id}
-  <div class="flex flex-col mb-4">
-    <label>Editions</label>
-    <input placeholder="Editions" bind:value={artwork.editions} />
-  </div>
-{/if}
+    <div class="flex flex-col mb-4">
+      <label>Editions</label>
+      <input placeholder="Editions" bind:value={artwork.editions} />
+    </div>
+  {/if}
   <div class="flex flex-col mb-4">
     <label>Tags</label>
     <Select
@@ -40,6 +59,14 @@
       on:select={handle}
       {selectedValue}
       isCreatable={true} />
+  </div>
+  <div class="flex flex-col mb-4">
+    <label>Managed</label>
+    <Select
+      items={managedItems}
+      placeholder="Managed"
+      on:select={handleManaged}
+      selectedValue={managedItems.find(i => i.value === artwork.managed)} />
   </div>
   <div class="flex">
     <button

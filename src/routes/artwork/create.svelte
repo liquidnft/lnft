@@ -1,6 +1,7 @@
 <script>
+  import { page } from "$app/stores";
   import { v4 } from "uuid";
-  import { electrs } from "$lib/api";
+  import { amp, electrs } from "$lib/api";
   import { tick, onMount } from "svelte";
   import { psbt, password, prompt, user, snack, token } from "$lib/store";
   import { Dropzone, SignaturePrompt } from "$comp";
@@ -9,9 +10,11 @@
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
   import { goto } from "$lib/utils";
-  import { requirePassword } from "$lib/utils";
+  import { requireLogin, requirePassword } from "$lib/utils";
   import { createIssuance, broadcast } from "$lib/wallet";
   import reverse from "buffer-reverse";
+
+  $: requireLogin($page);
 
   let preview;
   let filename;
@@ -58,19 +61,19 @@
     asset: "",
     editions: 1,
     tags: [],
+    managed: true
   };
 
   const createArtwork = mutation(create);
 
-  let submit = async (e) => {
-    e.preventDefault();
+  const issueLocal = async () => {
     await requirePassword();
     try {
       $psbt = await createIssuance(artwork.editions, 1000);
     } catch(e) {
       $snack = e.message;
       return;
-    } 
+    }
 
     $prompt = SignaturePrompt;
     await new Promise((resolve) =>
@@ -78,9 +81,21 @@
     );
     await tick();
     await broadcast($psbt);
-
     let tx = $psbt.extractTransaction();
     artwork.asset = reverse(tx.outs[3].asset.slice(1)).toString("hex");
+
+    return tx.getId();
+  };
+
+  const issueManaged = async () =>
+    amp.url("/issue").post({ ...artwork, address: $user.confidential }).json();
+
+  let submit = async (e) => {
+    e.preventDefault();
+    await requireLogin();
+
+    let hash = artwork.managed ? (await issueManaged()).txid : await issueLocal();
+
     artwork.id = v4();
     let tags = artwork.tags.map(({ tag }) => ({ tag, artwork_id: artwork.id }));
     let artworkSansTags = { ...artwork };
@@ -89,8 +104,8 @@
     createArtwork({
       artwork: artworkSansTags,
       id: artwork.id,
-      hash: tx.getId(),
-      psbt: $psbt.toBase64(),
+      hash,
+      // psbt: $psbt.toBase64(),
       tags,
     }).then(() => goto(`/artwork/${artwork.id}`));
   };
@@ -106,26 +121,26 @@
   <h1 class="text-2xl font-black text-gray-900 pb-6">Submit Artwork</h1>
 </div>
 
-  {#if preview}
-    <div class="flex flex-wrap">
-      <Form bind:artwork on:submit={submit} />
-      <div class="ml-2 flex-1 flex">
-        <div class="mx-auto w-1/2">
-          {#if type.includes('image')}<img src={preview} class="w-full" />{/if}
-          <video controls class:hidden muted autoplay loop class="w-full">
-            <source bind:this={video} />
-            Your browser does not support HTML5 video.
-          </video>
-          <div class="shadow w-full bg-grey-light mt-2 mb-2">
-            <div
-              class="bg-gray-800 text-xs leading-none py-2 text-center text-white"
-              style={width}>
-              {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
-            </div>
+{#if preview}
+  <div class="flex flex-wrap">
+    <Form bind:artwork on:submit={submit} />
+    <div class="ml-2 flex-1 flex">
+      <div class="mx-auto w-1/2">
+        {#if type.includes('image')}<img src={preview} class="w-full" />{/if}
+        <video controls class:hidden muted autoplay loop class="w-full">
+          <source bind:this={video} />
+          Your browser does not support HTML5 video.
+        </video>
+        <div class="shadow w-full bg-grey-light mt-2 mb-2">
+          <div
+            class="bg-gray-800 text-xs leading-none py-2 text-center text-white"
+            style={width}>
+            {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
           </div>
         </div>
       </div>
     </div>
-  {:else}
-    <Dropzone on:file={uploadFile} />
-  {/if}
+  </div>
+{:else}
+  <Dropzone on:file={uploadFile} />
+{/if}

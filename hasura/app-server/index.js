@@ -1,11 +1,25 @@
 const wretch = require("wretch");
 const fetch = require("node-fetch");
+const httpProxy = require("http-proxy");
+httpProxy
+  .createProxyServer({
+    target: "https://blockstream.info/liquid/api",
+    changeOrigin: true,
+  })
+  .listen(8092);
 
-const { AMP_TOKEN: token } = process.env;
+const { AMP_TOKEN, HASURA_SECRET, HASURA_URL } = process.env;
 wretch().polyfills({ fetch });
+
 const amp = wretch()
   .url("https://amp-beta.blockstream.com/api")
-  .headers({ authorization: `token ${token}` });
+  .headers({ authorization: `token ${AMP_TOKEN}` });
+
+const api = wretch()
+  .url(HASURA_URL)
+  .headers({ "x-hasura-admin-secret": HASURA_SECRET });
+
+const gdk = wretch().url("http://gdk-server");
 
 // Require the framework and instantiate it
 const fastify = require("fastify")({
@@ -13,18 +27,24 @@ const fastify = require("fastify")({
 });
 
 // Declare a route
-fastify.get("/", async (req, res) => {
+fastify.post("/issue", async (req, res) => {
+  let {
+    title: name,
+    ticker,
+    editions: amount,
+    address: destination_address,
+  } = req.body;
+
   res.send(
     await amp
       .url("/assets/issue")
       .post({
-        name: "An example asset with registration data",
-        amount: 1,
+        name,
+        amount,
         is_confidential: false,
-        destination_address:
-          "VJLDx6D5vo4VqQDY2kSJu8A9LinUVu6gW2DX5P8BDx46P8DXhCeNhz2pg35W3fsVuLjwbabfJbXmS6en",
+        destination_address,
         domain: "coinos.com",
-        ticker: "AMPZE",
+        ticker,
         precision: 0,
         pubkey:
           "038babfbe4d62b796b51c3e7158bebdcc3770e93689d8298dd0f18729ef28ccdf3",
@@ -34,19 +54,28 @@ fastify.get("/", async (req, res) => {
   );
 });
 
-fastify.post("/user", function (request, reply) {
-  fastify.log.info(request.body);
-  reply.send(true);
-});
+fastify.post("/user", async (req, res) => {
+  const query = `mutation update_user($user: users_set_input!, $username: String!) {
+    update_users(where: { username: { _eq: $username }}, _set: $user) {
+      affected_rows
+    }
+  }`;
 
-fastify.post("/asset", function (request, reply) {
-  fastify.log.info(request.body);
-  wretch;
-  reply.send(true);
+  let user = await gdk.get().json();
+  let { username } = req.body;
+
+  res.send(
+    await api
+      .post({
+        query,
+        variables: { username, user },
+      })
+      .json()
+  );
 });
 
 // Run the server!
-fastify.listen(3090, "0.0.0.0", function (err, address) {
+fastify.listen(8091, "0.0.0.0", function (err, address) {
   if (err) {
     fastify.log.error(err);
     process.exit(1);

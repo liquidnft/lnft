@@ -7,8 +7,11 @@ services:
       dockerfile: Dockerfile
     environment:
       AMP_TOKEN: '${AMP_TOKEN}'
+      HASURA_URL: http://hasura:8080/v1/graphql
+      HASURA_SECRET: liquidart
     ports:
-      - '8091:3090'
+      - '8091:8091'
+      - '8092:8092'
     volumes:
       - ./app-server:/app
   gdk-server:
@@ -65,7 +68,7 @@ services:
     environment:
       HASURA_ENDPOINT: http://hasura:8080/v1/graphql
       HASURA_GRAPHQL_ADMIN_SECRET: liquidart
-      REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address
+      REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address,confidential
       JWT_ALGORITHM: RS256
       AUTO_MIGRATE: "true"
       STORAGE_ENABLE: "true"

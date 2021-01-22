@@ -75,6 +75,7 @@
     artwork = b.artworks_by_pk;
 
     let count = () => {
+      if (!artwork) return;
       start_counter = countdown(new Date(artwork.auction_start));
       end_counter = countdown(new Date(artwork.auction_end));
       setTimeout(count, 1000);
@@ -287,4 +288,6 @@
       </div>
     </div>
   </div>
+{:else}
+  Artwork not found
 {/if}

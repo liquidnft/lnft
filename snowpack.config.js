@@ -14,6 +14,14 @@ module.exports = {
     ],
   ],
   proxy: {
+    "/amp": {
+      target: "http://localhost:8091",
+      on: {
+        proxyReq: (p, req, res) => {
+          p.path = req.url.replace("/amp", "");
+        },
+      },
+    },
     "/gdk": {
       target: "http://localhost:8090",
       on: {
@@ -31,7 +39,7 @@ module.exports = {
       },
     },
     "/electrs": {
-      target: "http://localhost:8002",
+      target: "http://localhost:8092",
       on: {
         proxyReq: (p, req, res) => {
           p.path = req.url.replace("/electrs", "");
