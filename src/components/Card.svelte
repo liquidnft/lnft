@@ -35,15 +35,18 @@
   .card video {
     border-radius: 10px 10px 0 0;
   }
+
+  .image-container{
+    height:550px;
+  }
 </style>
 
-<div class="bg-white card flex flex-col justify-between" class:link on:click={click}>
-  <div class="flex justify-center h-3/5">
+<div class="{showDetails? 'card': ""} bg-white flex flex-col justify-between" class:link on:click={click}>
+  <div class="flex justify-center h-3/5 {showDetails? '': 'image-container'}">
     {#if artwork.filename.includes('mp4')}
       <video
         controls
-        class="w-auto h-auto object-contain"
-        class:shadow-2xl={shadow}
+        class="w-auto h-auto {showDetails? 'object-cover': 'object-contain'}"
         autoplay
         muted
         loop>
@@ -54,8 +57,7 @@
       <img
         src={`/api/storage/o/public/${artwork.filename}`}
         alt="{artwork.filename}"
-        class="w-auto h-auto object-contain"
-        class:shadow-2xl={shadow} />
+        class="w-auto h-auto {showDetails? 'object-cover': 'object-contain'}"/>
     {/if}
   </div>
   {#if showDetails}
@@ -84,6 +86,6 @@
         {/if}
       </div>
     </div>
+    <div class="p-4 brand-color rounded-b-lg"> Auction ends in 25 minutes</div>
   {/if}
-  <div class="p-4 brand-color rounded-b-lg"> Auction ends in 25 minutes</div>
 </div>

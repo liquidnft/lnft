@@ -11,7 +11,7 @@
 
 <style>
   a {
-    @apply text-green-400;
+    color: #3ba5ac;
   }
 
   .divider {

@@ -159,42 +159,19 @@
     }
   }
 
-  .card-container {
-    padding: 0 100px;
-  }
-
-  @media only screen and (max-width: 1023px) {
-    .card-container {
-      padding: 0;
-      margin: 40px 0;
-    }
-  }
 </style>
 
 <div class="container mx-auto p-10">
 {#if artwork}
   <div class="flex flex-wrap" bind:this={target}>
-    <div class="text-center lg:text-left w-full lg:w-1/4">
+    <div class="text-center lg:text-left w-full lg:w-1/5">
       <h1 class="text-3xl font-black primary-color">
         {artwork.title || 'Untitled'}
       </h1>
       <div class="mt-4 mb-6">{artwork.editions} Editions</div>
-      <Sidebar bind:artwork />
-      <div class="text-sm text-gray-600 break-all">
-        Asset Id:
-        <a
-          href={`${explorer}/asset/${artwork.asset}`}
-          class="text-green-400">{artwork.asset}</a>
-      </div>
-      <div class="text-sm text-gray-600">{artwork.description}</div>
-      <div class="mb-6">
-        {#each artwork.tags.map((t) => t.tag) as tag (tag)}
-          <a
-            href={`/tag/${tag}`}
-            class="underline text-green-400 text-xs">#{tag}</a>{' '}
-        {/each}
-      </div>
 
+      <Sidebar bind:artwork />
+    
       {#if $user && $user.id === artwork.owner_id}
         <button on:click={() => goto(`/artwork/${id}/auction`)}>List</button>
         <button on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
@@ -264,29 +241,29 @@
           </div>
         {/if}
       </div>
-    </div>
-    <div class="w-full lg:w-1/2 lg:px-12 card-container">
-      <Card {artwork} link={false} columns={1} showDetails={false} />
-    </div>
-   
-  </div>
 
-  <div class="flex mt-2">
-    <div class="w-1/4">
-      {#each transactions as transaction}
-        <Activity {transaction} />
-      {/each}
+      <h2 class="font-bold mt-20">History</h2>
+      <div class="flex mt-2">
+        <div class="w-full">
+          {#each transactions as transaction}
+            <Activity {transaction} />
+          {/each}
+        </div>
+      </div>
     </div>
-    <div class="w-3/4">
-      <h2 class="text-xl my-4">Other artworks by artist</h2>
-      <div class="w-full flex flex-wrap">
-        {#each others as artwork (artwork.id)}
-          <div class="w-1/2 px-4 mb-4">
-            <Card {artwork} summary={true} />
-          </div>
-        {:else}
-          <div class="mx-auto">No other artworks</div>
-        {/each}
+    <div class="w-full lg:w-4/5 lg:px-12">
+      <Card {artwork} link={false} columns={1} showDetails={false} />
+      <div class="w-full mt-28">
+        <h2 class="text-2xl font-bold primary-color p-10">More by this artist</h2>
+        <div class="w-full flex flex-wrap">
+          {#each others as artwork (artwork.id)}
+            <div class="w-full md:w-full lg:w-1/2 px-10 mb-20">
+              <Card {artwork} summary={true} />
+            </div>
+          {:else}
+            <div class="mx-auto">No other artworks</div>
+          {/each}
+        </div>
       </div>
     </div>
   </div>
