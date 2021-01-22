@@ -7,8 +7,9 @@ services:
       dockerfile: Dockerfile
     environment:
       AMP_TOKEN: '${AMP_TOKEN}'
-      HASURA_URL: http://hasura:8080/v1/graphql
-      HASURA_SECRET: liquidart
+      HASURA_URL: '${HASURA_ENDPOINT}'
+      HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
+      HASURA_JWT: '${HASURA_GRAPHQL_JWT_SECRET}'
     ports:
       - '8091:8091'
       - '8092:8092'
@@ -53,8 +54,8 @@ services:
       - ./metadata:/hasura-metadata
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
-      HASURA_GRAPHQL_ADMIN_SECRET: liquidart
-      HASURA_GRAPHQL_JWT_SECRET: '{"type": "RS256", "jwk_url": "http://hasura-backend-plus:3000/auth/jwks"}'
+      HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
+      HASURA_GRAPHQL_JWT_SECRET: '${HASURA_GRAPHQL_JWT_SECRET}'
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
   hasura-backend-plus:
@@ -66,8 +67,8 @@ services:
     ports:
       - '3400:3000'
     environment:
-      HASURA_ENDPOINT: http://hasura:8080/v1/graphql
-      HASURA_GRAPHQL_ADMIN_SECRET: liquidart
+      HASURA_ENDPOINT: '${HASURA_ENDPOINT}'
+      HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address,confidential
       JWT_ALGORITHM: RS256
       AUTO_MIGRATE: "true"

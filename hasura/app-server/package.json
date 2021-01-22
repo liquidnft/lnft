@@ -6,6 +6,8 @@
   "dependencies": {
     "fastify": "^3.10.1",
     "http-proxy": "^1.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.12.2",
     "node-fetch": "^2.6.1",
     "wretch": "^1.7.4"
   },

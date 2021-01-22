@@ -1,6 +1,8 @@
 const wretch = require("wretch");
 const fetch = require("node-fetch");
 const httpProxy = require("http-proxy");
+const auth = require("./auth");
+
 httpProxy
   .createProxyServer({
     target: "https://blockstream.info/liquid/api",
@@ -26,7 +28,6 @@ const fastify = require("fastify")({
   logger: true,
 });
 
-// Declare a route
 fastify.post("/issue", async (req, res) => {
   let {
     title: name,
@@ -64,14 +65,16 @@ fastify.post("/user", async (req, res) => {
   let user = await gdk.get().json();
   let { username } = req.body;
 
-  user.amp_user_id = (await amp
-    .url("/registered_users/add")
-    .post({
-      is_company: false,
-      name: username,
-      GAID: user.gaid,
-    })
-    .json()).id;
+  user.amp_user_id = (
+    await amp
+      .url("/registered_users/add")
+      .post({
+        is_company: false,
+        name: username,
+        GAID: user.gaid,
+      })
+      .json()
+  ).id;
 
   res.send(
     await api
@@ -83,7 +86,6 @@ fastify.post("/user", async (req, res) => {
   );
 });
 
-// Run the server!
 fastify.listen(8091, "0.0.0.0", function (err, address) {
   if (err) {
     fastify.log.error(err);
