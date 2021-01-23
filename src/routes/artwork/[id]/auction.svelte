@@ -119,68 +119,70 @@
   };
 </script>
 
-<h1 class="title">Listing Settings</h1>
-<p class="text-xl italic mb-4">All fields are optional</p>
+<div class="container mx-auto px-10">
+  <h1 class="title">Listing Settings</h1>
+  <p class="text-xl italic mb-4">All fields are optional</p>
 
-{#if artwork}
-  <form class="w-full md:w-1/2 mb-6" on:submit={update} autocomplete="off">
-    <div class="flex flex-col mb-4">
-      <div>
-        <div class="mt-1 relative rounded-md shadow-sm">
-          <label>Asset</label>
-          <select
-            placeholder="Currency"
-            bind:value={artwork.asking_asset}
-            class="form-input block w-full pl-7 pr-12">
-            {#each Object.keys(tickers) as asset}
-              <option value={asset}>{tickers[asset].ticker}</option>
-            {/each}
-          </select>
-          <input
-            class="form-input block w-full pl-7 pr-12"
-            placeholder="0"
-            bind:value={artwork.asking_asset} />
+  {#if artwork}
+    <form class="w-full md:w-1/2 mb-6" on:submit={update} autocomplete="off">
+      <div class="flex flex-col mb-4">
+        <div>
+          <div class="mt-1 relative rounded-md shadow-sm">
+            <label>Asset</label>
+            <select
+              placeholder="Currency"
+              bind:value={artwork.asking_asset}
+              class="form-input block w-full pl-7 pr-12">
+              {#each Object.keys(tickers) as asset}
+                <option value={asset}>{tickers[asset].ticker}</option>
+              {/each}
+            </select>
+            <input
+              class="form-input block w-full pl-7 pr-12"
+              placeholder="0"
+              bind:value={artwork.asking_asset} />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex flex-col mb-4">
-      <div class="mt-1 relative rounded-md shadow-sm">
-        <label>Price</label>
+      <div class="flex flex-col mb-4">
+        <div class="mt-1 relative rounded-md shadow-sm">
+          <label>Price</label>
+          <input
+            class="form-input block w-full pl-7 pr-12"
+            placeholder={val(0)}
+            bind:value={list_price} />
+
+          <div class="absolute inset-y-0 right-0 flex items-center mr-2">
+            {ticker}
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col mb-4">
+        <label>Auction Start Time</label>
         <input
-          class="form-input block w-full pl-7 pr-12"
-          placeholder={val(0)}
-          bind:value={list_price} />
-
-        <div class="absolute inset-y-0 right-0 flex items-center mr-2">
-          {ticker}
+          placeholder="Auction Start Time"
+          bind:value={artwork.auction_start} />
+      </div>
+      <div class="flex flex-col mb-4">
+        <label>Auction End Time</label>
+        <input placeholder="Auction End Time" bind:value={artwork.auction_end} />
+      </div>
+      <div class="flex flex-col mb-4">
+        <div>
+          <div class="mt-1 relative rounded-md shadow-sm">
+            <label>Reserve Price</label>
+            <input
+              class="form-input block w-full pl-7 pr-12"
+              placeholder="0"
+              bind:value={artwork.reserve_price} />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex flex-col mb-4">
-      <label>Auction Start Time</label>
-      <input
-        placeholder="Auction Start Time"
-        bind:value={artwork.auction_start} />
-    </div>
-    <div class="flex flex-col mb-4">
-      <label>Auction End Time</label>
-      <input placeholder="Auction End Time" bind:value={artwork.auction_end} />
-    </div>
-    <div class="flex flex-col mb-4">
-      <div>
-        <div class="mt-1 relative rounded-md shadow-sm">
-          <label>Reserve Price</label>
-          <input
-            class="form-input block w-full pl-7 pr-12"
-            placeholder="0"
-            bind:value={artwork.reserve_price} />
-        </div>
+      <div class="flex">
+        <button
+          type="submit"
+          class="block bg-green-400 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
       </div>
-    </div>
-    <div class="flex">
-      <button
-        type="submit"
-        class="block bg-green-400 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
-    </div>
-  </form>
-{/if}
+    </form>
+  {/if}
+</div>

@@ -18,12 +18,14 @@
   });
 </script>
 
-{#if $psbt}
-  <Transaction />
-{:else}Transaction not found{/if}
+<div class="container mx-auto px-10">
+  {#if $psbt}
+    <Transaction />
+  {:else}Transaction not found{/if}
 
-<div class="flex">
-  <button
-    class="border my-4 mx-auto"
-    on:click={() => window.history.back()}>Back</button>
+  <div class="flex">
+    <button
+      class="border my-4 mx-auto"
+      on:click={() => window.history.back()}>Back</button>
+  </div>
 </div>

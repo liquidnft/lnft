@@ -152,7 +152,7 @@
         <Menu />
       {:else}
         <button
-          class="p-2 rounded brand-color follow"
+          class="p-2 rounded brand-color follow mt-8"
           on:click={follow}>
           {subject.followed ? 'Unfollow' : 'Follow'}</button>
       {/if}

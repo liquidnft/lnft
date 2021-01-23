@@ -20,7 +20,7 @@
   }
 </style>
 
-<div class="flex flex-wrap mb-4">
+<div class="flex gap-2 mb-4 text-left">
   <Avatar src={transaction.user.avatar_url} />
   <div class="ml-2">
     <div>
@@ -50,7 +50,7 @@
         href={`/artwork/${transaction.artwork.id}`}>{transaction.artwork.title}</a>
     </div>
     <div>
-      <span class="uppercase font-medium text-gray-600 text-xs">
+      <span class="font-medium text-gray-600 text-xs">
         {formatDistanceStrict(new Date(transaction.created_at), new Date())}
         ago
       </span>

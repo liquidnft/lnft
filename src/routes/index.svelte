@@ -27,6 +27,7 @@
   .header-button{
     width: 170px;
     border: 1px solid white;
+    color: white;
   }
 </style>
 

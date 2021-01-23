@@ -48,11 +48,11 @@
 </style>
 
 
-  <div class="flex flex-wrap justify-between gap-10">
+  <div class="flex flex-wrap justify-between gap-10 text-left">
     <a href={`/user/${artwork.artist_id}`}>
       <div class="flex mb-6">
         <Avatar src={artwork.artist.avatar_url} />
-        <div class="ml-2 my-auto secondary-color">
+        <div class="ml-2 secondary-color">
           <div>@{artwork.artist.username}</div>
           <div class="text-xs text-gray-600">Artist</div>
         </div>
@@ -61,7 +61,7 @@
     <a href={`/user/${artwork.owner_id}`}>
       <div class="flex mb-6 secondary-color">
         <Avatar src={artwork.owner.avatar_url} />
-        <div class="ml-2 my-auto">
+        <div class="ml-2">
           <div>@{artwork.owner.username}</div>
           <div class="text-xs text-gray-600">Owner</div>
         </div>
@@ -87,7 +87,7 @@
   </div>
  
 
-  <div class="flex justify-between gap-10 mb-10">
+  <div class="flex flex-wrap justify-between gap-10 mb-10">
     <div class="flex gap-5">
       <div class="w-1/3 flex">
         <Heart on:click={favorite} favorited={artwork.favorited} />

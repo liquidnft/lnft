@@ -147,9 +147,9 @@
 
 <style>
   button {
-    @apply mb-2 border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded;
+    @apply mb-2 border w-full text-sm font-bold py-2 px-4 rounded;
     &:hover {
-      @apply border-green-400;
+      @apply border-green-700;
     }
 
     &.dangerous {
@@ -164,7 +164,7 @@
 <div class="container mx-auto p-10">
 {#if artwork}
   <div class="flex flex-wrap" bind:this={target}>
-    <div class="text-center lg:text-left w-full lg:w-1/5">
+    <div class="text-center lg:text-left w-full lg:w-2/6 lg:pr-36">
       <h1 class="text-3xl font-black primary-color">
         {artwork.title || 'Untitled'}
       </h1>
@@ -173,9 +173,9 @@
       <Sidebar bind:artwork />
     
       {#if $user && $user.id === artwork.owner_id}
-        <button on:click={() => goto(`/artwork/${id}/auction`)}>List</button>
-        <button on:click={() => goto(`/artwork/${id}/edit`)}>Edit</button>
-        <button on:click={destroy} class="dangerous">Destroy</button>
+        <button on:click={() => goto(`/artwork/${id}/auction`)} class="button-transparent">List</button>
+        <button on:click={() => goto(`/artwork/${id}/edit`)} class="button-transparent">Edit</button>
+        <button on:click={destroy} class="dangerous button-transparent">Destroy</button>
       {:else if artwork.asking_asset}
         {#if artwork.list_price}<button on:click={buyNow}>Buy Now</button>{/if}
         {#if bidding}
@@ -200,47 +200,54 @@
           </form>
         {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
       {/if}
-      <div class="flex my-2 font-bold">
-        {#if Date.parse(artwork.auction_start) > new Date()}
-          <div class="mt-auto font-thin text-sm">Auction starts in</div>
-          <div class="text-right flex-1 text-2xl">{start_counter}</div>
-        {/if}
-      </div>
-      <div class="flex my-2 font-bold">
-        {#if Date.parse(artwork.auction_end) > new Date()}
-          <div class="mt-auto font-thin text-sm">Auction closes in</div>
-          <div class="text-right flex-1 text-2xl">{end_counter}</div>
-        {:else if artwork.auction_end}
-          <div class="mt-auto font-thin text-sm">Auction ended at</div>
-          <div class="text-right flex-1 text-2xl">{artwork.auction_end}</div>
-        {/if}
-      </div>
-      <div>
+
+      <div class="flex justify-between">
         {#if artwork.list_price}
-          <div class="flex flex-1 font-bold my-2">
-            <div class="font-thin text-sm mt-auto">List Price</div>
-            <div class="text-right flex-1 text-2xl">{list_price} {ticker}</div>
+          <div class="my-2">
+            <div class="text-sm mt-auto">List Price</div>
+            <div class="text-2xl">{list_price} {ticker}</div>
           </div>
         {/if}
         {#if artwork.reserve_price}
-          <div class="flex flex-1 font-bold my-2">
-            <div class="font-thin text-sm mt-auto">Reserve Price</div>
-            <div class="text-right flex-1 text-2xl">
+          <div class="my-2">
+            <div class="text-sm mt-auto">Reserve Price</div>
+            <div class="flex-1 text-2xl">
               {artwork.reserve_price}
               {ticker}
             </div>
           </div>
         {/if}
         {#if artwork.bid[0].amount}
-          <div class="flex flex-1 font-bold my-2">
-            <div class="font-thin text-sm mt-auto">Current bid</div>
-            <div class="text-right flex-1 text-2xl">
+          <div class="my-2">
+            <div class="text-sm mt-auto">Current bid</div>
+            <div class="text-2xl">
               {val(artwork.bid[0].amount)}
               {ticker}
             </div>
           </div>
         {/if}
       </div>
+
+      {#if Date.parse(artwork.auction_start) > new Date()}
+      <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
+        <div class="mt-auto text-sm">Auction starts in</div>
+        <div class="mt-1">{start_counter}</div>
+      </div>
+      {/if}
+    
+      {#if Date.parse(artwork.auction_end) > new Date()}
+      <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
+        <div class="mt-auto text-sm">Auction closes in</div>
+        <div class="mt-1">{end_counter}</div>
+      </div>
+      {:else if artwork.auction_end}
+      <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
+        <div class="mt-auto text-sm">Auction ended at</div>
+        <div class="mt-1">{artwork.auction_end}</div>
+      </div>
+      {/if}
+    
+      
 
       <h2 class="font-bold mt-20">History</h2>
       <div class="flex mt-2">
@@ -251,7 +258,7 @@
         </div>
       </div>
     </div>
-    <div class="w-full lg:w-4/5 lg:px-12">
+    <div class="w-full lg:w-4/6 lg:px-12">
       <Card {artwork} link={false} columns={1} showDetails={false} />
       <div class="w-full mt-28">
         <h2 class="text-2xl font-bold primary-color p-10">More by this artist</h2>

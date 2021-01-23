@@ -47,6 +47,7 @@
   :global(.button-transparent) {
     background-color: none;
     border: 1px solid #133e7c;
+    color: #133e7c;
   }
 
   :global(button:focus, select:focus) {
