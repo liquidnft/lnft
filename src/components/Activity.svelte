@@ -1,9 +1,10 @@
 <script>
   import Avatar from "$components/Avatar";
   import Card from "$components/Card";
+  import TransactionText from "$components/TransactionTime";
+  import TransactionTime from "$components/TransactionTime";
   import { user } from "$lib/store";
   import { formatDistanceStrict } from "date-fns";
-  import { ticker, val } from "$lib/utils";
 
   export let transaction;
   export let showImage = false;
@@ -22,43 +23,8 @@
 
 <div class="flex gap-2 mb-4 text-left">
   <Avatar src={transaction.user.avatar_url} />
-  <div class="ml-2">
-    <div>
-      <a href={`/user/${transaction.user.id}`}>@{transaction.user.username}</a>
-      {#if transaction.type === 'bid'}
-        offered
-        {val(transaction.asset, transaction.amount)}
-        {ticker(transaction.asset)}
-        for
-      {:else if transaction.type === 'creation'}
-        created
-      {:else if transaction.type === 'purchase'}
-        paid
-        {val(transaction.asset, transaction.amount)}
-        {ticker(transaction.asset)}
-        for
-      {:else if transaction.type === 'accept'}
-        accepted 
-        {val(transaction.asset, transaction.amount)}
-        {ticker(transaction.asset)}
-        from
-        <a
-          href={`/user/${transaction.artwork.owner.id}`}>@{transaction.artwork.owner.username}</a>
-        for
-      {/if}
-      <a
-        href={`/artwork/${transaction.artwork.id}`}>{transaction.artwork.title}</a>
-    </div>
-    <div>
-      <span class="font-medium text-gray-600 text-xs">
-        {formatDistanceStrict(new Date(transaction.created_at), new Date())}
-        ago
-      </span>
-      <a href={`/tx/${transaction.id}`} class="text-xs text-green-400">
-        [view tx]
-      </a>
-    </div>
-  </div>
+  <TransactionTime {transaction} />
+  <TransactionText {transaction} />
 </div>
 
 {#if showImage}

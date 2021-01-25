@@ -75,10 +75,6 @@
     color: #05b298;
   }
 
-  :global(a:hover) {
-    color: #05b298;
-  }
-
   :global(body) { 
     font-size: 17px;
     color: #525252;

@@ -1,4 +1,5 @@
 <script>
+  import ArtworkMedia from "$components/ArtworkMedia";
   import { goto, units } from "$lib/utils";
 
   export let artwork;
@@ -43,22 +44,7 @@
 
 <div class="{showDetails? 'card': ""} bg-white flex flex-col justify-between" class:link on:click={click}>
   <div class="flex justify-center h-3/5 {showDetails? '': 'image-container'}">
-    {#if artwork.filename.includes('mp4')}
-      <video
-        controls
-        class="w-auto h-auto {showDetails? 'object-cover': 'object-contain'}"
-        autoplay
-        muted
-        loop>
-        <source src={`/api/storage/o/public/${artwork.filename}`} />
-        Your browser does not support HTML5 video.
-      </video>
-    {:else}
-      <img
-        src={`/api/storage/o/public/${artwork.filename}`}
-        alt="{artwork.filename}"
-        class="w-auto h-auto {showDetails? 'object-cover': 'object-contain'}"/>
-    {/if}
+    <ArtworkMedia {artwork} {showDetails} />
   </div>
   {#if showDetails}
     <div class="p-6">

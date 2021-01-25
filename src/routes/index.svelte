@@ -2,14 +2,24 @@
   import { Summary } from "$comp";
   import { operationStore, subscription } from "@urql/svelte";
   import { getCollectors } from "$queries/users";
+  import Activity from '$components/Activity';
   import RecentActivityCard from '$components/RecentActivityCard';
   import LatestPiecesCard from '$components/LatestPiecesCard';
+  import { goto } from "$lib/utils";
+  import { getTransactions } from "$queries/transactions";
 
   let collectors = [];
   let getCollectors$ = operationStore(getCollectors);
   subscription(getCollectors$, (a, b) => (collectors = b.collectors));
 
   $: items = collectors.map(u => ({ user: u, value: u.num_artworks })).splice(0, 3)
+
+  let featuredArtworkId = '40585b78-ec02-401f-8ef3-1474d2aaf783';
+  let transactions = [];
+  subscription(
+    operationStore(getTransactions),
+    (a, b) => (transactions = b.transactions.slice(0, 3))
+  );
 </script>
 
 <style>
@@ -36,7 +46,7 @@
   <div class="header text-center">
     <h1 class="text-7xl mb-10 font-bold primary-color">The Raretoshi <br/>digital art gallery</h1>
     <p>Upload, collect, and transact rare digital artworks as <br/> secure assets in the Liquid Network </p>
-    <button class="mt-10 my-auto text-center mx-auto brand-color">Start exploring</button>
+    <button class="mt-10 my-auto text-center mx-auto brand-color" on:click={() => goto('/market')}>Start exploring</button>
   </div>
 </div>
 
@@ -45,28 +55,16 @@
   <div class="container flex mx-auto flex-col justify-center secondary-header-text m-10 pl-6">
     <h2 class="text-5xl font-bold mb-3">Anon artist</h2>
     <p>The artwork</p>
-    <button class="button-transparent header-button text-white border mt-10"> View Artwork</button>
+    <button class="button-transparent header-button text-white border mt-10" on:click={() => goto(`/artwork/${featuredArtworkId}`)}> View Artwork</button>
   </div>  
 </div>
 
 
 <div class="container mx-auto pl-6 mb-8"><h3 class="primary-color font-bold text-3xl">Recent Activity</h3></div>
 <div class="container mx-auto flex flex-wrap mb-20 pb-10">
-  <RecentActivityCard 
-    username="@Cindy"
-    time="30 Minutes"
-    price="4 BTC"
-  />
-  <RecentActivityCard  
-    username="@Juan"
-    time="2 Hours"
-    price="4 BTC"
-  />
-  <RecentActivityCard 
-    username="@Selene"
-    time="1 Hours"
-    price="4 BTC"
-  />
+    {#each transactions as transaction}
+      <RecentActivityCard {transaction} />
+    {/each}
   <div class="mx-auto container text-center"><button class="button-transparent">View more</button></div>
 </div>
 
