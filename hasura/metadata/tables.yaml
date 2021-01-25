@@ -424,6 +424,24 @@
             _eq: X-Hasura-User-Id
 - table:
     schema: public
+    name: search
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - s
+      - type
+      - id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - id
+      - s
+      - type
+      filter: {}
+- table:
+    schema: public
     name: tags
   object_relationships:
   - name: artwork

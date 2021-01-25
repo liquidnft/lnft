@@ -38,6 +38,9 @@ module.exports = {
         },
       },
     },
+    "/v1/graphql": {
+      target: "http://localhost:8080",
+    },
     "/electrs": {
       target: "http://localhost:8092",
       on: {

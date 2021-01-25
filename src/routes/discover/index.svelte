@@ -2,6 +2,7 @@
   import { operationStore, subscription } from "@urql/svelte";
   import { getTags } from "$queries/artworks";
   import { Card } from "$comp";
+  import Search from "$components/Search";
 
   let tags = [];
 
@@ -26,7 +27,7 @@
   <div class="px-8">
     <h1 class="title">Discover</h1>
     <div class="border-b mb-8">
-      <input placeholder="Search..." class="border-none border-b w-full outline-none pb-0" />
+      <Search {tags} />
     </div>
 
     <div class="w-full text-center my-12">
