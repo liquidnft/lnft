@@ -1,4 +1,5 @@
 <script>
+  import { goto } from "$lib/utils";
   import { page } from "$app/stores";
   import { electrs } from "$lib/api";
   import { onMount, tick } from "svelte";
@@ -129,23 +130,14 @@
   };
 </script>
 
-<style>
-  button {
-    @apply border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded my-4;
-  }
-
-  .stuff div {
-    @apply my-4;
-  }
-</style>
-
 <div class="container mx-auto">
   {#if loading}
     <div class="absolute top-0 w-full left-0">
       <ProgressLinear />
     </div>
   {:else}
-    <h1>Assets</h1>
+    <button
+      on:click={() => goto('/wallet')}>&lt; Back</button>
 
     {#each assets as asset}
       <div class="flex mb-2">

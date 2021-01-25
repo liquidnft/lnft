@@ -1,7 +1,7 @@
 import decode from "jwt-decode";
 import { onMount, tick } from "svelte";
 import { get } from "svelte/store";
-import { prompt, password, token } from "$lib/store";
+import { prompt, password, snack, token } from "$lib/store";
 import { goto as go } from "$app/navigation";
 import PasswordPrompt from "$components/PasswordPrompt";
 
@@ -12,7 +12,7 @@ if (import.meta) {
     btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
     cad = "c3e0755bf62ebcdd51884b861f062dd159c3bc7ee667d7fe819450d1fa498e55";
     usd = "9f852208cd04ab21b07872ad5abdb08ac2aea29dacaa416f1c9a87234f449301";
-  } else { 
+  } else {
     btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
     cad = "1e31485c787e7432c7d09a4e38d893982cebfdafcf70ec5c82bf632363fdc90f";
     usd = "61c35eb3198e4713a28b77a56a281ad6a1ad04484385b69ab5ce1c1016aa622a";
@@ -26,13 +26,30 @@ if (import.meta) {
   usd = "9f852208cd04ab21b07872ad5abdb08ac2aea29dacaa416f1c9a87234f449301";
 }
 
-
 export { btc, cad, usd };
 
 export const tickers = {
-  [btc]: { name: "Liquid Bitcoin", ticker: "L-BTC", precision: 8, decimals: 8, color: "orange-500" },
-  [cad]: { name: "Liquid CAD", ticker: "L-CAD", precision: 8, decimals: 2, color: "red-500" },
-  [usd]: { name: "Liquid USDt", ticker: "L-USDt", precision: 8, decimals: 2, color: "green-400" },
+  [btc]: {
+    name: "Liquid Bitcoin",
+    ticker: "L-BTC",
+    precision: 8,
+    decimals: 8,
+    color: "orange-500",
+  },
+  [cad]: {
+    name: "Liquid CAD",
+    ticker: "L-CAD",
+    precision: 8,
+    decimals: 2,
+    color: "red-500",
+  },
+  [usd]: {
+    name: "Liquid USDt",
+    ticker: "L-USDt",
+    precision: 8,
+    decimals: 2,
+    color: "green-400",
+  },
 };
 export const ticker = (asset) =>
   asset ? (tickers[asset] ? tickers[asset].ticker : asset.substr(0, 4)) : "";
@@ -81,3 +98,19 @@ export const explorer =
   import.meta && import.meta.env && import.meta.env !== "production"
     ? import.meta.env.SNOWPACK_PUBLIC_EXPLORER
     : "https://explorer.coinos.io";
+
+export function copy(v) {
+  let textArea = document.createElement("textarea");
+  textArea.style.position = "fixed";
+  textArea.value = v;
+
+  document.body.appendChild(textArea);
+
+  textArea.focus();
+  textArea.select();
+
+  document.execCommand("copy");
+  document.body.removeChild(textArea);
+
+  snack.set("Copied!");
+}

@@ -48,6 +48,7 @@
 		"buffer-reverse": "^1.0.1",
 		"crypto-js": "^4.0.0",
 		"long": "^4.0.0",
+		"qrcode-generator-es6": "^1.1.4",
 		"slip77": "https://github.com/vulpemventures/slip77",
 		"svelte-select": "^3.16.1"
 	}
