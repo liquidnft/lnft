@@ -45,13 +45,6 @@
         window.sessionStorage.setItem("token", $token);
         $password = attempt;
         $prompt = false;
-        if (registered)
-          amp
-            .url("/user")
-            .headers({ authorization: `Bearer ${$token}` })
-            .post({ username })
-            .res()
-            .catch((err) => (error = "Registration failed"));
         goto("/market");
       });
   };
