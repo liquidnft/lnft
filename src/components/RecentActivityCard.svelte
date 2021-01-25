@@ -35,6 +35,6 @@
   <div
     class="mb-5 w-full mt-7 rounded-lg box-shadow thumb"
     on:click={() => goto(`/artwork/${artwork.id}`)}>
-    <ArtworkMedia {artwork} />
+    <ArtworkMedia {artwork} showDetails={false} />
   </div>
 </div>
