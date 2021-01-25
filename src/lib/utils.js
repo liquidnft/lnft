@@ -30,9 +30,9 @@ if (import.meta) {
 export { btc, cad, usd };
 
 export const tickers = {
-  [btc]: { ticker: "BTC", precision: 8, decimals: 8 },
-  [cad]: { ticker: "CAD", precision: 8, decimals: 2 },
-  [usd]: { ticker: "USD", precision: 8, decimals: 2 },
+  [btc]: { name: "Liquid Bitcoin", ticker: "L-BTC", precision: 8, decimals: 8 },
+  [cad]: { name: "Liquid CAD", ticker: "L-CAD", precision: 8, decimals: 2 },
+  [usd]: { name: "Liquid USDt", ticker: "L-USDt", precision: 8, decimals: 2 },
 };
 export const ticker = (asset) =>
   asset ? (tickers[asset] ? tickers[asset].ticker : asset.substr(0, 4)) : "";
