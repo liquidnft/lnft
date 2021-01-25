@@ -43,8 +43,7 @@
 
   const updateArtwork$ = mutation(updateArtwork);
 
-  let update = async (e) => {
-    e.preventDefault();
+  const setupSwaps = async () => {
     await requirePassword();
 
     if (artwork.list_price_tx) {
@@ -54,6 +53,7 @@
         $snack = e.message;
         return;
       }
+
       $prompt = SignaturePrompt;
       await new Promise((resolve) =>
         prompt.subscribe((value) => value === "success" && resolve())
@@ -87,6 +87,11 @@
     );
     await tick();
     artwork.list_price_tx = $psbt.toBase64();
+  };
+
+  let update = async (e) => {
+    e.preventDefault();
+    if (artwork.managed) setupSwaps();
 
     let {
       id: artwork_id,

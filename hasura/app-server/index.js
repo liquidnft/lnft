@@ -12,6 +12,7 @@ app.post("/issue", auth, async (req, res) => {
     ticker,
     editions: amount,
     address: destination_address,
+    domain,
   } = req.body;
 
   res.send(
@@ -22,7 +23,7 @@ app.post("/issue", auth, async (req, res) => {
         amount,
         is_confidential: false,
         destination_address,
-        domain: "coinos.com",
+        domain,
         ticker,
         precision: 0,
         pubkey:
@@ -43,7 +44,6 @@ app.post("/user", auth, async (req, res) => {
   let user = await gdk.get().json();
   let { username } = req.body;
 
-  /*
   user.amp_user_id = (
     await amp
       .url("/registered_users/add")
@@ -54,7 +54,6 @@ app.post("/user", auth, async (req, res) => {
       })
       .json()
   ).id;
-  */
 
   res.send(
     await api

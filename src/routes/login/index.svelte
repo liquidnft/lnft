@@ -50,7 +50,7 @@
             .url("/user")
             .headers({ authorization: `Bearer ${$token}` })
             .post({ username })
-        .res()
+            .res()
             .catch((err) => (error = "Registration failed"));
         goto("/market");
       });
