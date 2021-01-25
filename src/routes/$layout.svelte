@@ -25,10 +25,6 @@
 </script>
 
 <style>
-  .dark {
-    @apply bg-black text-white;
-  }
-
   :global(.primary-color) {
     color: #133e7c;
   }

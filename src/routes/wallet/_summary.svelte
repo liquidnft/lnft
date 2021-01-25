@@ -119,6 +119,11 @@
     <ProgressLinear />
   </div>
 {:else}
+  <div class="mb-2">
+    <a class="secondary-color" href="/wallet/asset">4 assets available in this
+      wallet &gt;</a>
+  </div>
+
   <div class="dark mb-2">
     {name(asset)}
 
