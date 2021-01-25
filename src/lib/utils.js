@@ -13,12 +13,12 @@ if (import.meta) {
     cad = "c3e0755bf62ebcdd51884b861f062dd159c3bc7ee667d7fe819450d1fa498e55";
     usd = "9f852208cd04ab21b07872ad5abdb08ac2aea29dacaa416f1c9a87234f449301";
   } else { 
-    // btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
-    // cad = "1e31485c787e7432c7d09a4e38d893982cebfdafcf70ec5c82bf632363fdc90f";
-    // usd = "61c35eb3198e4713a28b77a56a281ad6a1ad04484385b69ab5ce1c1016aa622a";
-    btc = "6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d";
-    cad = "ce091c998b83c78bb71a632313ba3760f1763d9cfcffae02258ffa9865a37bd2";
-    usd = "8026fa969633b7b6f504f99dde71335d633b43d18314c501055fcd88b9fcb8de";
+    btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
+    cad = "1e31485c787e7432c7d09a4e38d893982cebfdafcf70ec5c82bf632363fdc90f";
+    usd = "61c35eb3198e4713a28b77a56a281ad6a1ad04484385b69ab5ce1c1016aa622a";
+    //btc = "6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d";
+    //cad = "ce091c998b83c78bb71a632313ba3760f1763d9cfcffae02258ffa9865a37bd2";
+    //usd = "8026fa969633b7b6f504f99dde71335d633b43d18314c501055fcd88b9fcb8de";
   }
 } else {
   btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
@@ -30,9 +30,9 @@ if (import.meta) {
 export { btc, cad, usd };
 
 export const tickers = {
-  [btc]: { name: "Liquid Bitcoin", ticker: "L-BTC", precision: 8, decimals: 8 },
-  [cad]: { name: "Liquid CAD", ticker: "L-CAD", precision: 8, decimals: 2 },
-  [usd]: { name: "Liquid USDt", ticker: "L-USDt", precision: 8, decimals: 2 },
+  [btc]: { name: "Liquid Bitcoin", ticker: "L-BTC", precision: 8, decimals: 8, color: "orange-500" },
+  [cad]: { name: "Liquid CAD", ticker: "L-CAD", precision: 8, decimals: 2, color: "red-500" },
+  [usd]: { name: "Liquid USDt", ticker: "L-USDt", precision: 8, decimals: 2, color: "green-400" },
 };
 export const ticker = (asset) =>
   asset ? (tickers[asset] ? tickers[asset].ticker : asset.substr(0, 4)) : "";

@@ -42,7 +42,7 @@ module.exports = {
       target: "http://localhost:8080",
     },
     "/electrs": {
-      target: "http://localhost:8092",
+      target: "http://localhost:3012",
       on: {
         proxyReq: (p, req, res) => {
           p.path = req.url.replace("/electrs", "");

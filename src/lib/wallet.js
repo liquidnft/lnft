@@ -19,7 +19,7 @@ import cryptojs from "crypto-js";
 import { btc } from "$lib/utils";
 import { fromSeed as slip77 } from "slip77";
 
-const network = networks.liquid;
+const network = networks.regtest;
 const sighashType =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
 

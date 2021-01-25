@@ -30,6 +30,10 @@
     return tickers[asset] ? tickers[asset].ticker : asset.substr(0, 12);
   };
 
+  let color = (asset) => {
+    return "bg-" + (tickers[asset] ? tickers[asset].color : "gray-400");
+  };
+
   let artworks = [];
   $: if ($user)
     subscription(operationStore(getArtworks), async (_, data) => {
@@ -67,7 +71,7 @@
     }
 
     assets = utxos
-      .map(({ asset }) => ({ name: name(asset), asset }))
+      .map(({ asset }) => ({ name: name(asset), asset, color: color(asset) }))
       .sort((a, b) => a.name.localeCompare(b.name))
       .sort((a, b) => (a.name.length === 12 ? 1 : -1))
       .filter(
@@ -136,15 +140,21 @@
 </style>
 
 <div class="container mx-auto">
-{#if loading}
-  <div class="absolute top-0 w-full left-0">
-    <ProgressLinear />
-  </div>
-{:else}
-  <h1>Assets</h1>
+  {#if loading}
+    <div class="absolute top-0 w-full left-0">
+      <ProgressLinear />
+    </div>
+  {:else}
+    <h1>Assets</h1>
 
-        {#each assets as asset}
-          <div>{asset.name} - {balances[asset.asset]}</div>
-        {/each}
-{/if}
+    {#each assets as asset}
+      <div class="flex mb-2">
+        <div class={`${asset.color} py-2`} style="width: 20px"></div>
+        <div class="flex dark flex-grow">
+          <div class="flex-grow">{asset.name}</div>
+          <div>{balances[asset.asset]}</div>
+        </div>
+      </div>
+    {/each}
+  {/if}
 </div>
