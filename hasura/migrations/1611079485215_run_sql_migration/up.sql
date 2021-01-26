@@ -1,1 +1,0 @@
-drop function trigger_transfer_on_bid;
