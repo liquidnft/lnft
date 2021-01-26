@@ -3,7 +3,16 @@
   import { page } from "$app/stores";
   import { electrs } from "$lib/api";
   import { onMount, tick } from "svelte";
-  import { poll, snack, password, user, token, prompt, psbt } from "$lib/store";
+  import {
+    asset,
+    poll,
+    snack,
+    password,
+    user,
+    token,
+    prompt,
+    psbt,
+  } from "$lib/store";
   import { ProgressLinear, SignaturePrompt } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
@@ -24,15 +33,17 @@
   let amount = 0.0001;
   let fee = 0.00001;
   let to;
-  let asset = btc;
-  let name = (asset) => {
-    let artwork = artworks.find((a) => a.asset === asset);
+
+  if (!$asset) $asset = btc;
+
+  let name = (a) => {
+    let artwork = artworks.find((aw) => aw.asset === a);
     if (artwork) return artwork.title;
-    return tickers[asset] ? tickers[asset].ticker : asset.substr(0, 12);
+    return tickers[a] ? tickers[a].ticker : a.substr(0, 12);
   };
 
-  let color = (asset) => {
-    return "bg-" + (tickers[asset] ? tickers[asset].color : "gray-400");
+  let color = (a) => {
+    return "bg-" + (tickers[a] ? tickers[a].color : "gray-400");
   };
 
   let artworks = [];
@@ -45,7 +56,7 @@
       if ($user.address) getUtxos($user.address);
     });
 
-  $: [_, val, _] = units(asset);
+  $: [_, val, _] = units($asset || btc);
 
   let init = async () => {
     $poll = setInterval(() => getUtxos($user.address), 5000);
@@ -72,7 +83,7 @@
     }
 
     assets = utxos
-      .map(({ asset }) => ({ name: name(asset), asset, color: color(asset) }))
+      .map(({ asset: a }) => ({ name: name(a), asset: a, color: color(a) }))
       .sort((a, b) => a.name.localeCompare(b.name))
       .sort((a, b) => (a.name.length === 12 ? 1 : -1))
       .filter(
@@ -120,7 +131,7 @@
   let send = async (e) => {
     e.preventDefault();
     try {
-      $psbt = await pay(asset, to, sats(asset, amount), sats(btc, fee));
+      $psbt = await pay($asset, to, sats($asset, amount), sats(btc, fee));
     } catch (e) {
       $snack = e.message;
       return;
@@ -130,6 +141,7 @@
   };
 </script>
 
+{$asset}
 <div class="container mx-auto">
   {#if loading}
     <div class="absolute top-0 w-full left-0">
@@ -140,12 +152,12 @@
       <a href="/wallet" class="secondary-color">&lt; Back</a>
     </div>
 
-    {#each assets as asset}
-      <div class="flex mb-2">
-        <div class={`${asset.color} py-2`} style="width: 20px" />
+    {#each assets as a}
+      <div class="flex mb-2 cursor-pointer" on:click={() => { ($asset = a.asset); goto('/wallet'); }}>
+        <div class={`${a.color} py-2`} style="width: 20px" />
         <div class="flex dark flex-grow">
-          <div class="flex-grow">{asset.name}</div>
-          <div>{balances[asset.asset]}</div>
+          <div class="flex-grow">{a.name}</div>
+          <div>{balances[a.asset]}</div>
         </div>
       </div>
     {/each}

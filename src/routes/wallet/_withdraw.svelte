@@ -5,7 +5,6 @@
   import { btc, sats } from "$lib/utils";
   import { SignaturePrompt } from "$comp";
 
-  export let asset;
   export let val;
 
   let amount = 0.0001;
@@ -15,7 +14,7 @@
   let send = async (e) => {
     e.preventDefault();
     try {
-      $psbt = await pay(asset, to, sats(asset, amount), sats(btc, fee));
+      $psbt = await pay($asset, to, sats($asset, amount), sats(btc, fee));
     } catch (e) {
       $snack = e.message;
       return;

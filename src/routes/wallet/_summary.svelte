@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { electrs } from "$lib/api";
   import { onMount, tick } from "svelte";
-  import { poll, snack, password, user, token, prompt, psbt } from "$lib/store";
+  import { asset, poll, snack, password, user, token, prompt, psbt } from "$lib/store";
   import { ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
@@ -23,17 +23,17 @@
   $: requireLogin($page);
 
   let loading = true;
-  let asset = btc;
-  let name = (asset) => {
-    let artwork = artworks.find((a) => a.asset === asset);
+  if (!$asset) $asset = btc;
+  let name = (a) => {
+    let artwork = artworks.find((aw) => aw.a === a);
     if (artwork) return artwork.title;
-    return tickers[asset] ? tickers[asset].name : asset.substr(0, 12);
+    return tickers[a] ? tickers[a].name : a.substr(0, 12);
   };
 
-  let ticker = (asset) => {
-    let artwork = artworks.find((a) => a.asset === asset);
+  let ticker = (a) => {
+    let artwork = artworks.find((aw) => aw.a === a);
     if (artwork) return artwork.title;
-    return tickers[asset] ? tickers[asset].ticker : asset.substr(0, 5);
+    return tickers[a] ? tickers[a].ticker : a.substr(0, 5);
   };
 
   let funding = false;
@@ -49,7 +49,7 @@
       if ($user.address) getUtxos($user.address);
     });
 
-  $: [_, val, _] = units(asset);
+  $: [_, val, _] = units($asset);
 
   let init = async () => {
     $poll = setInterval(() => getUtxos($user.address), 5000);
@@ -76,7 +76,7 @@
     }
 
     assets = utxos
-      .map(({ asset }) => ({ name: name(asset), asset }))
+      .map(({ asset: a }) => ({ name: name(a), asset: a }))
       .sort((a, b) => a.name.localeCompare(b.name))
       .sort((a, b) => (a.name.length === 12 ? 1 : -1))
       .filter(
@@ -121,22 +121,22 @@
   </div>
 {:else}
   <div class="mb-2">
-    <a class="secondary-color" href="/wallet/asset">4 assets available in this
+    <a class="secondary-color" href="/wallet/asset">{assets.length} assets available in this
       wallet &gt;</a>
   </div>
 
   <div class="dark mb-2">
-    {name(asset)}
+    {name($asset)}
 
     <div class="mb-2">
       <div class="text-sm text-gray-600">Balance</div>
-      {val(balances[asset] || 0)}
-      {ticker(asset)}
+      {val(balances[$asset] || 0)}
+      {ticker($asset)}
     </div>
     <div class="mb-2">
       <div class="text-sm text-gray-600">Pending</div>
-      {val(pending[asset] || 0)}
-      {ticker(asset)}
+      {val(pending[$asset] || 0)}
+      {ticker($asset)}
     </div>
 
     <button on:click={() => (funding = !funding)}>Fund</button>
@@ -148,9 +148,9 @@
     {/if}
 
     {#if withdrawing}
-      <Withdraw {asset} {val} />
+      <Withdraw {val} />
     {/if}
 
-    <Transactions asset={ticker(asset)} />
+    <Transactions asset={ticker($asset)} />
   </div>
 {/if}

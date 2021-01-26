@@ -51,8 +51,14 @@ export const tickers = {
     color: "green-400",
   },
 };
-export const ticker = (asset) =>
-  asset ? (tickers[asset] ? tickers[asset].ticker : asset.substr(0, 4)) : "";
+export const ticker = (asset) => {
+  console.log(asset);
+  return asset
+    ? tickers[asset]
+      ? tickers[asset].ticker
+      : asset.substr(0, 4)
+    : "";
+};
 
 export const units = (asset) => {
   let decimals = 0;
