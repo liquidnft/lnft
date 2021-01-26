@@ -18,6 +18,7 @@
   import { broadcast, pay, keypair, payment, unblind } from "$lib/wallet";
   import Fund from "./_fund";
   import Withdraw from "./_withdraw";
+  import Transactions from "./_transactions";
 
   $: requireLogin($page);
 
@@ -149,5 +150,7 @@
     {#if withdrawing}
       <Withdraw {asset} {val} />
     {/if}
+
+    <Transactions asset={ticker(asset)} />
   </div>
 {/if}
