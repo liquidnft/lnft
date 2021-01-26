@@ -114,35 +114,6 @@ services:
     volumes:
       - ./liquidregtest/liquid-config/:/config
     restart: unless-stopped
-  electrs:
-    image: vulpemventures/electrs:latest
-    container_name: electrs
-    entrypoint:
-      - /build/electrs
-    command:
-      - -vvvv
-      - --network
-      - regtest
-      - --daemon-dir
-      - /config
-      - --daemon-rpc-addr
-      - bitcoin:19001
-      - --cookie
-      - admin1:123
-      - --http-addr
-      - 0.0.0.0:3002
-      - --electrum-rpc-addr
-      - 0.0.0.0:60401
-      - --cors
-      - "*"
-    depends_on:
-      - bitcoin
-    ports:
-      - ${BITCOIN_ELECTRS_RPC_PORT}:60401
-      - ${BITCOIN_ELECTRS_PORT}:3002
-    volumes:
-      - ./liquidregtest/config/:/config
-    restart: unless-stopped
   electrs-liquid:
     image: vulpemventures/electrs-liquid:latest
     container_name: electrs-liquid
