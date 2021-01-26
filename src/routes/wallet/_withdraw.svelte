@@ -1,5 +1,10 @@
 <script>
+  import { tick } from "svelte";
   import { prompt, psbt, snack } from "$lib/store";
+  import { broadcast, pay, keypair, payment, unblind } from "$lib/wallet";
+  import { btc, sats } from "$lib/utils";
+  import { SignaturePrompt } from "$comp";
+
   export let asset;
   export let val;
 
@@ -16,7 +21,9 @@
       return;
     }
     if (!(await sign())) return;
+    await tick();
     await broadcast($psbt);
+    $snack = "Payment sent!";
   };
 
   let sign = async () => {
@@ -28,7 +35,6 @@
           value === "success" && resolve();
         })
       );
-      await tick();
 
       return true;
     } catch (e) {

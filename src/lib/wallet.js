@@ -195,13 +195,13 @@ export const cancelSwap = async (asset, fee) => {
   return swap;
 };
 
-export const sign = (psbt, sighash) => {
-  let { privateKey } = keypair();
+export const sign = (psbt, sighash = 1) => {
+  let { privkey } = keypair();
 
   psbt.data.inputs.map((_, i) => {
     try {
       psbt = psbt
-        .signInput(i, ECPair.fromPrivateKey(privateKey), [sighash])
+        .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
         .finalizeInput(i);
     } catch (e) {}
   });

@@ -11,3 +11,4 @@ export const poll = writable();
 export const assets = writable();
 export const loading = writable();
 export const sighash = writable();
+export const wallet = writable();

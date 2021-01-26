@@ -1,6 +1,6 @@
 <script>
   import { goto } from "$lib/utils";
-  import { user } from "$lib/store";
+  import { wallet } from "$lib/store";
 </script>
 
 <style>
@@ -16,7 +16,7 @@
     <button on:click={() => goto('/wallet/import')}>Import wallet from seed</button>
     <button
       on:click={() => {
-        $user.wallet = true;
+        $wallet = true;
         goto('/wallet');
       }}>View Wallet (for dev)</button>
   </div>

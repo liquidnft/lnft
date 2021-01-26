@@ -3,7 +3,7 @@
   import { electrs } from "$lib/api";
   import { onMount, tick } from "svelte";
   import { poll, snack, password, user, token, prompt, psbt } from "$lib/store";
-  import { ProgressLinear, SignaturePrompt } from "$comp";
+  import { ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
@@ -15,7 +15,7 @@
     requireLogin,
     requirePassword,
   } from "$lib/utils";
-  import { broadcast, pay, keypair, payment, unblind } from "$lib/wallet";
+  import { unblind } from "$lib/wallet";
   import Fund from "./_fund";
   import Withdraw from "./_withdraw";
   import Transactions from "./_transactions";

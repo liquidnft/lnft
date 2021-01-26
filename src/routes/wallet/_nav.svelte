@@ -6,7 +6,7 @@
 
 {#if $user}
 <div>
-  <h1 class="text-4xl">Wallet</h1>
+  <h1 class="text-4xl"><a href="/wallet">Wallet</a></h1>
 
   <div class="uppercase font-bold">
     <div class="mb-2 mt-5"><a href="/wallet/asset">Change Asset</a></div>
