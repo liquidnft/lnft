@@ -31,7 +31,7 @@
   }
   .secondary-header {
     height: 600px;
-    background-image: url("/secondary-header.jpg/");
+    background-image: url("/secondary-header.jpg");
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;

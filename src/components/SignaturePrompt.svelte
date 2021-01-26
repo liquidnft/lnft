@@ -1,5 +1,13 @@
 <script>
-  import { psbt, prompt, password, user, sighash, snack, token } from "$lib/store";
+  import {
+    psbt,
+    prompt,
+    password,
+    user,
+    sighash,
+    snack,
+    token,
+  } from "$lib/store";
   import Transaction from "$components/Transaction";
   import { api } from "$lib/api";
   import Lock from "$icons/lock";
