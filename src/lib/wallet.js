@@ -32,12 +32,17 @@ const getHex = async (txid) => {
 
 const DUST = 1000;
 
-export const keypair = (mnemonic, pass) => {
+export const getMnemonic = (mnemonic, pass) => {
   if (!mnemonic) mnemonic = get(user).mnemonic;
   if (!pass) pass = get(password);
 
   mnemonic = cryptojs.AES.decrypt(mnemonic, pass).toString(cryptojs.enc.Utf8);
   if (!mnemonic) throw new Error("Unable to decrypt mnmemonic");
+  return mnemonic;
+};
+
+export const keypair = (mnemonic, pass) => {
+  mnemonic = getMnemonic(mnemonic, pass);
   let seed = mnemonicToSeedSync(mnemonic);
   let key = fromSeed(seed, network).derivePath("m/84'/0'/0'/0/0");
   let { publicKey: pubkey, privateKey: privkey } = key;
