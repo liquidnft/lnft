@@ -30,6 +30,10 @@ const getHex = async (txid) => {
   return electrs.url(`/tx/${txid}/hex`).get().text();
 };
 
+export const getTx = async (txid) => {
+  return Transaction.fromHex(await getHex(txid));
+};
+
 const DUST = 1000;
 
 export const getMnemonic = (mnemonic, pass) => {
