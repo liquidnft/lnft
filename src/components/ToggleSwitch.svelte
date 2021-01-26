@@ -1,7 +1,7 @@
 <script>
   export let id;
   export let label;
-  let checked;
+  export let checked;
 </script>
 
 <style>
