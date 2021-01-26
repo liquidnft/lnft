@@ -82,7 +82,6 @@
       .filter(
         (item, pos, ary) =>
           item &&
-          item.asset !== btc &&
           (!pos || item.asset != ary[pos - 1].asset)
       );
 

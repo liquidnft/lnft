@@ -89,7 +89,6 @@
       .filter(
         (item, pos, ary) =>
           item &&
-          item.asset !== btc &&
           (!pos || item.asset != ary[pos - 1].asset)
       );
 
@@ -141,7 +140,6 @@
   };
 </script>
 
-{$asset}
 <div class="container mx-auto">
   {#if loading}
     <div class="absolute top-0 w-full left-0">
