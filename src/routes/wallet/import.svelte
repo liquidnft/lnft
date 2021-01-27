@@ -33,11 +33,33 @@
   };
 </script>
 
+<style>
+
+  input{
+    @apply border-0 border-b-2;
+  }
+
+  .button-transparent:focus {     
+    background-color:#6aced5; 
+    border: none;   
+  }
+  
+  .pagination{
+    color:lightgray;
+    padding: 7px;
+  }
+  .pagination:focus{
+    color: #6aced5;
+  }
+</style>
+
+
+
 <div class="block">
-  <div class="flex">
+  <div class="flex flex-col gap-6">
     <p class="mb-2">Enter your backup phrase in the correct order:</p>
 
-    <div class="ml-auto">
+    <div class="text-right">
       <ToggleSwitch
         id="list-price"
         label="Show words"
@@ -97,8 +119,12 @@
       on:click={() => take(suggestion)}>{suggestion}</button>
   {/each}
 
-  <div class="text-center">
-    <button on:click={() => (offset = 0)}>1</button>
-    <button on:click={() => (offset = 12)}>2</button>
+  <div class="flex justify-center text-center mt-5">
+    <button on:click={() => (offset = 0)} class="pagination"><i class="fas fa-circle"></i></button>
+    <button on:click={() => (offset = 12)} class="pagination"><i class="fas fa-circle"></i></button>
+  </div>
+  <div class="flex justify-center gap-6 text-center mt-5">
+    <button on:click={() => (offset = 0)} class="w-2/4 button-transparent">Back</button>
+    <button on:click={() => (offset = 12)} class="w-2/4 button-transparent">Next</button>
   </div>
 </div>
