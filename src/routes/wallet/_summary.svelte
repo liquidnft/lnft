@@ -104,52 +104,50 @@
   }
 </script>
 
-<style>
-  button {
-    @apply border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded my-4;
-  }
-
-  .stuff div {
-    @apply my-4;
-  }
-</style>
 
 {#if loading}
   <div class="absolute top-0 w-full left-0">
     <ProgressLinear />
   </div>
 {:else}
-  <div class="mb-2">
-    <a class="secondary-color" href="/wallet/asset">{assets.length} assets available in this
-      wallet &gt;</a>
-  </div>
-
-  <div class="dark mb-2">
-    {name($asset)}
-
-    <div class="mb-2">
-      <div class="text-sm text-gray-600">Balance</div>
-      {val(balances[$asset] || 0)}
-      {ticker($asset)}
-    </div>
-    <div class="mb-2">
-      <div class="text-sm text-gray-600">Pending</div>
-      {val(pending[$asset] || 0)}
-      {ticker($asset)}
+  <div class="w-3/4">
+    <div class="mb-5">
+      <a class="secondary-color" href="/wallet/asset">{assets.length} assets available in this
+        wallet <i class="fas fa-chevron-right ml-3"></i></a>
     </div>
 
-    <button on:click={() => (funding = !funding)}>Fund</button>
-    <button on:click={() => (withdrawing = !withdrawing)}>Withdraw</button>
-  </div>
-  <div>
-    {#if funding}
-      <Fund />
-    {/if}
+    <div class="bg-black mb-2 pt-1 rounded-lg">
+      <div class="brand-color text-center p-3 text-black text-xl font-bold w-1/2 rounded-r-full mt-5">{name($asset)}</div>
 
-    {#if withdrawing}
-      <Withdraw {val} />
-    {/if}
+      <div class="m-6">
+        <div class="text-sm text-gray-400">Balance</div>
+        <div class="flex gap-2 mt-3">
+          <span class="text-4xl text-white">{val(balances[$asset] || 0)}</span>
+          <span class="text-gray-400 mt-3.5">{ticker($asset)}</span>
+        </div>
+      </div>
+      <div class="m-6">
+        <div class="text-sm text-gray-400">Pending</div>
+        <div class="flex gap-2 mt-3">
+          <span class="text-gray-400">{val(pending[$asset] || 0)}</span>
+          <span class="text-gray-400">{ticker($asset)}</span>
+        </div>
+      </div>
+      <div class="flex gap-10 p-6 pt-2">
+        <button on:click={() => (funding = !funding)} class="button-trans-gray w-full">Fund</button>
+        <button on:click={() => (withdrawing = !withdrawing)} class="button-trans-gray w-full">Withdraw</button>
+      </div>
+    </div>
+    <div>
+      {#if funding}
+        <Fund />
+      {/if}
 
-    <Transactions asset={ticker($asset)} />
+      {#if withdrawing}
+        <Withdraw {val} />
+      {/if}
+
+      <Transactions asset={ticker($asset)} />
+    </div>
   </div>
 {/if}

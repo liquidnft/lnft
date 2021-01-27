@@ -41,6 +41,7 @@
 	"dependencies": {
 		"@asoltys/liquidjs-lib": "^5.1.21",
 		"@bitauth/libauth": "^1.17.3",
+		"@fortawesome/fontawesome-free": "^5.15.2",
 		"@sveltejs/adapter-static": "^1.0.0-next.0",
 		"bip32": "^2.0.6",
 		"bip39": "^3.0.3",
