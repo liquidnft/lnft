@@ -187,7 +187,7 @@
           <div class="w-full flex flex-wrap">
             {#each creations as artwork (artwork.id)}
               <div class="card-container">
-                <Card {artwork} summary={true} />
+                <Card {artwork} />
               </div>
             {:else}
               <div class="mx-auto">No creations yet</div>

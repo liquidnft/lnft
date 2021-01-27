@@ -147,8 +147,6 @@ const fund = async (psbt, out, asset, amount, sighashType = 1) => {
     i++;
   }
 
-  console.log(sighashType);
-
   for (var j = 0; j < i; j++) {
     let prevout = utxos[j];
     let tx = Transaction.fromHex(await getHex(prevout.txid));

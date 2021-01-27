@@ -84,24 +84,28 @@
           <ToggleSwitch
             id="list-price"
             label="Has list price"
+            checked={listPrice}
             on:change={(e) => (listPrice = e.target.checked)} />
         </div>
         <div>
           <ToggleSwitch
             id="open-bid"
             label="Has open bid"
+            checked={openBid}
             on:change={(e) => (openBid = e.target.checked)} />
         </div>
         <div>
           <ToggleSwitch
             id="owned-by-creator"
             label="Owned by creator"
+            checked={ownedByCreator}
             on:change={(e) => (ownedByCreator = e.target.checked)} />
         </div>
         <div>
           <ToggleSwitch
             id="has-sold"
             label="Has sold"
+            checked={hasSold}
             on:change={(e) => (hasSold = e.target.checked)} />
         </div>
       </div>
