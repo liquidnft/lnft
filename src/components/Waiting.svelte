@@ -9,7 +9,6 @@
       $prompt = "success";
       $prompt = undefined;
       clearInterval($poll);
-      console.log("clear!");
       $poll = undefined;
     }
   };

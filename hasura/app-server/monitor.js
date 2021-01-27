@@ -1,20 +1,10 @@
-const wretch = require("wretch");
-const fetch = require("node-fetch");
-
-wretch().polyfills({ fetch });
-
-const { ESPLORA_URL, SECRET, HASURA_URL } = process.env;
-
-const api = wretch()
-  .url(HASURA_URL)
-  .headers({ "x-hasura-admin-secret": SECRET });
-const esplora = wretch().url(ESPLORA_URL);
+const { api, electrs } = require("./api");
 
 const query = `
   query transactions {
     transactions(where: {
       confirmed: {_eq: false},
-      type: {_eq: "purchase"},
+      type: {_in: ["purchase", "creation", "royalty", "accept"] },
     }) {
       id
       hash
@@ -61,8 +51,9 @@ setInterval(
     api
       .post({ query })
       .json(({ data: { transactions } }) =>
-        transactions.map((tx) =>
-          esplora
+        transactions.map((tx) => {
+          console.log(tx);
+          electrs
             .url(`/tx/${tx.hash}/status`)
             .get()
             .json(
@@ -71,19 +62,19 @@ setInterval(
                 api
                   .post({ query: setConfirmed, variables: { id: tx.id } })
                   .json(
-                    ({ data: { update_transactions_by_pk: transaction } }) => api
-                    .post({
-                      query: updateArtwork,
-                      variables: {
-                        id: transaction.artwork_id,
-                        owner_id: transaction.user_id,
-                      },
-                    })
+                    ({ data: { update_transactions_by_pk: transaction } }) =>
+                      api.post({
+                        query: updateArtwork,
+                        variables: {
+                          id: transaction.artwork_id,
+                          owner_id: transaction.user_id,
+                        },
+                      })
                   )
-            )
-        )
+                  .catch(console.log)
+            );
+        })
       )
+      .catch(console.log),
   2000
 );
-
-

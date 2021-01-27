@@ -11,4 +11,7 @@
   <a href={`/tx/${transaction.id}`} class="text-sm secondary-color">
     [view tx]
   </a>
+  {#if !transaction.confirmed}
+    <span class="text-yellow-500">(pending)</span>
+  {/if}
 </div>

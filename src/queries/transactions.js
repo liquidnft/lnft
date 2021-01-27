@@ -15,6 +15,7 @@ const fields = `
   type
   created_at
   asset
+  confirmed
   user {
     id
     username

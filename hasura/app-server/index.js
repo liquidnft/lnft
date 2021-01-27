@@ -2,6 +2,7 @@ const { generateMnemonic } = require("bip39");
 const auth = require("./auth");
 const { amp, gdk, api } = require("./api");
 require("./proxy");
+require("./monitor");
 
 const app = require("fastify")({
   logger: true,
