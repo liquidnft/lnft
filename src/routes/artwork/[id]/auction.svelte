@@ -57,7 +57,7 @@
   const updateArtwork$ = mutation(updateArtwork);
 
   const setupSwaps = async () => {
-    if (parseInt(artwork.list_price) === sats(list_price)) return true;
+    if (parseInt(artwork.list_price || 0) === sats(list_price)) return true;
     await requirePassword();
 
     if (artwork.list_price_tx) {

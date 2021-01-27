@@ -27,7 +27,7 @@
       let txid = reverse(hash).toString("hex");
       let input = (await electrs.url(`/tx/${txid}`).get().json()).vout[index];
       input.asset = input.asset.substr(0, 6);
-      input.signed = !!p.data.inputs[i].finalScriptWitness;
+      input.signed = p.data.inputs[i] && !!p.data.inputs[i].finalScriptWitness;
 
       ins = [...ins, input];
     }
