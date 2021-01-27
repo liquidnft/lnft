@@ -11,6 +11,7 @@
   import { show, snack, user, token } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
+  import '@fortawesome/fontawesome-free/js/all.js';
 
   let clearSnack = () => setTimeout(() => ($snack = null), 5000);
   $: clearSnack($snack);
@@ -34,7 +35,7 @@
   }
 
   :global(.brand-color) {
-    background-color: #6aced5;
+    background: #3ba5ac;
   }
 
   :global(button) {
@@ -50,12 +51,18 @@
     color: #133e7c;
   }
 
+  :global(.button-trans-gray) {
+    background-color: none;
+    border: 1px solid gray !important;
+    color:white;
+  }
+
   :global(button:focus, select:focus) {
     outline: none;
   }
 
   :global(button:hover) {
-    color: gray;
+    color: rgb(84, 110, 157);
   }
 
   :global(input, textarea, select) {

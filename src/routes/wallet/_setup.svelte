@@ -9,15 +9,15 @@
   }
 </style>
 
-<div>
-  <p class="mb-4">Welcome! Choose your option to get started</p>
-  <div class="text-center">
-    <button on:click={() => goto('/wallet/create')}>Create New Wallet</button>
-    <button on:click={() => goto('/wallet/import')}>Import wallet from seed</button>
+<div class="w-3/4">
+  <p class="mb-6 text-2xl">Welcome! Choose your option to get started</p>
+  <div class="text-center flex flex-col gap-2">
+    <button on:click={() => goto('/wallet/create')} class="brand-color">Create New Wallet</button>
+    <button on:click={() => goto('/wallet/import')} class="button-transparent">Import wallet from seed</button>
     <button
       on:click={() => {
         $wallet = true;
         goto('/wallet');
-      }}>View Wallet (for dev)</button>
+      }} class="button-transparent">View Wallet (for dev)</button>
   </div>
 </div>

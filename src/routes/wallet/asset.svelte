@@ -146,13 +146,13 @@
       <ProgressLinear />
     </div>
   {:else}
-    <div class="mb-2">
-      <a href="/wallet" class="secondary-color">&lt; Back</a>
+    <div class="mb-5">
+      <a href="/wallet" class="secondary-color"><i class="fas fa-chevron-left mr-2"></i> Back</a>
     </div>
 
     {#each assets as a}
       <div class="flex mb-2 cursor-pointer" on:click={() => { ($asset = a.asset); goto('/wallet'); }}>
-        <div class={`${a.color} py-2`} style="width: 20px" />
+        <div class={`${a.color} py-2 w-3 brand-color`}/>
         <div class="flex dark flex-grow">
           <div class="flex-grow">{a.name}</div>
           <div>{balances[a.asset]}</div>
