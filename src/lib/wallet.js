@@ -77,7 +77,7 @@ export const unblind = (hex, vout) => {
   return unblinded;
 };
 
-export const payment = (key) => {
+export const payment = (key, blind = false) => {
   if (!key) key = keypair();
   let { pubkey, seed } = key;
 
@@ -86,14 +86,13 @@ export const payment = (key) => {
     network,
   });
 
-  let blindingKey = slip77(seed).derive(redeem.output);
-  let { publicKey: blindkey } = blindingKey;
+  let params = { redeem, network };
 
-  return payments.p2sh({
-    redeem,
-    network,
-    blindkey,
-  });
+  if (blind) {
+    params.blindkey = slip77(seed).derive(redeem.output).publicKey;
+  }
+
+  return payments.p2sh(params);
 };
 
 export const multisig = (pubkey, key) => {
@@ -345,8 +344,10 @@ export const createOffer = async (artwork, amount, fee) => {
       value: fee,
     });
 
-  let key = fromBase58(artwork.owner.pubkey, network).derive(0);
-  let ownerOut = payment(key.publicKey);
+  let { publicKey: pubkey } = fromBase58(artwork.owner.pubkey, network).derive(
+    0
+  );
+  let ownerOut = payment({ pubkey });
   await fund(swap, ownerOut, artwork.asset, 1);
 
   if (asset === btc) {

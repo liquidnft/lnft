@@ -31,6 +31,11 @@
   let { id } = $page.params;
   $: requireLogin($page);
 
+  let input;
+  let initialized;
+  let focus = (i) => i && tick().then(() => input.focus())
+  $: focus(initialized);
+
   let artwork, list_price, sats, val, ticker, royalty;
   subscription(operationStore(getArtwork(id)), (a, b) => {
     artwork = {
@@ -45,6 +50,7 @@
     [sats, val, ticker] = units(artwork.asking_asset);
     list_price = val(artwork.list_price);
     royalty = artwork.royalty;
+    initialized = true;
   });
   $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
 
@@ -209,7 +215,7 @@
           <input
             class="form-input block w-full pl-7 pr-12"
             placeholder={val(0)}
-            bind:value={list_price} />
+            bind:value={list_price} bind:this={input} />
 
           <div class="absolute inset-y-0 right-0 flex items-center mr-2">
             {ticker}

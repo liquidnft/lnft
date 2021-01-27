@@ -60,6 +60,7 @@
       $psbt = await createOffer(artwork, transaction.amount, 500);
     } catch (e) {
       $snack = e.message;
+      console.log(e.stack);
       return;
     }
 
@@ -68,6 +69,7 @@
       prompt.subscribe((value) => value === "success" && resolve())
     );
     transaction.psbt = $psbt.toBase64();
+    transaction.hash = $psbt.__CACHE.__TX.getId()
     save();
   };
 

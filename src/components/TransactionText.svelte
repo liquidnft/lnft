@@ -26,10 +26,10 @@
       {ticker(transaction.asset)}
       from
       <a
-        href={`/user/${transaction.artwork.owner.id}`}>@{transaction.artwork.owner.username}</a>
+        href={`/user/${transaction.bid.user.id}`} class="secondary-color">@{transaction.bid.user.username}</a>
       for
     {/if}
     <a
-      href={`/artwork/${transaction.artwork.id}`}>{transaction.artwork.title}</a>
+      href={`/artwork/${transaction.artwork.id}`} class="secondary-color">{transaction.artwork.title}</a>
   </div>
 </div>

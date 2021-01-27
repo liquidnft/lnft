@@ -8,6 +8,9 @@ const query = `
     }) {
       id
       hash
+      bid {
+        id
+      } 
     }
   }
 `;
@@ -33,12 +36,6 @@ const updateArtwork = `
       pk_columns: { id: $id }, 
       _set: { 
         owner_id: $owner_id,
-        reserve_price: null,
-        list_price: null,
-        list_price_tx: null,
-        auction_start: null,
-        auction_end: null,
-        asking_asset: null
       }
     ) {
       id
@@ -46,13 +43,28 @@ const updateArtwork = `
   }
 `;
 
+const acceptOffer = {
+  query: `mutation accept_offer($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!) {
+    insert_transactions_one(object: {
+      artwork_id: $id,
+      asset: $asset,
+      type: "accept",
+      amount: $amount,
+      hash: $hash,
+      psbt: $psbt,
+    }) {
+      id,
+      artwork_id
+    } 
+  }`,
+};
+
 setInterval(
   async () =>
     api
       .post({ query })
       .json(({ data: { transactions } }) =>
         transactions.map((tx) => {
-          console.log(tx);
           electrs
             .url(`/tx/${tx.hash}/status`)
             .get()
@@ -67,7 +79,10 @@ setInterval(
                         query: updateArtwork,
                         variables: {
                           id: transaction.artwork_id,
-                          owner_id: transaction.user_id,
+                          owner_id:
+                            transaction.type === "accept"
+                              ? transaction.bid.user_id
+                              : transaction.user_id,
                         },
                       })
                   )

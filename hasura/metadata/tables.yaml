@@ -513,6 +513,9 @@
   - name: artwork
     using:
       foreign_key_constraint_on: artwork_id
+  - name: bid
+    using:
+      foreign_key_constraint_on: bid_id
   - name: user
     using:
       manual_configuration:
@@ -531,9 +534,10 @@
       - amount
       - artwork_id
       - asset
+      - bid_id
       - hash
-      - psbt
       - id
+      - psbt
       - type
       backend_only: false
   select_permissions:
@@ -543,10 +547,12 @@
       - amount
       - artwork_id
       - asset
+      - bid_id
+      - confirmed
       - created_at
       - hash
-      - psbt
       - id
+      - psbt
       - type
       - user_id
       filter: {}
@@ -556,6 +562,7 @@
       - amount
       - artwork_id
       - asset
+      - bid_id
       - confirmed
       - created_at
       - hash
