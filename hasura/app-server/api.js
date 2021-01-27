@@ -12,5 +12,6 @@ const api = wretch()
   .headers({ "x-hasura-admin-secret": HASURA_SECRET });
 
 const gdk = wretch().url("http://gdk-server");
+const electrs = wretch().url("http://electrs-liquid:3002");
 
-module.exports = { amp, api, gdk };
+module.exports = { amp, api, gdk, electrs };

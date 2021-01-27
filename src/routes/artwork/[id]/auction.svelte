@@ -15,7 +15,13 @@
     token,
   } from "$lib/store";
   import { requireLogin, requirePassword } from "$lib/utils";
-  import { createSwap, cancelSwap, broadcast } from "$lib/wallet";
+  import { createTransaction } from "$queries/transactions";
+  import {
+    createSwap,
+    cancelSwap,
+    broadcast,
+    sendToMultisig,
+  } from "$lib/wallet";
   import { formatISO, addDays } from "date-fns";
   import Select from "svelte-select";
   import { btc, units, tickers } from "$lib/utils";
@@ -25,7 +31,7 @@
   let { id } = $page.params;
   $: requireLogin($page);
 
-  let artwork, list_price, sats, val, ticker;
+  let artwork, list_price, sats, val, ticker, royalty;
   subscription(operationStore(getArtwork(id)), (a, b) => {
     artwork = {
       ...b.artworks_by_pk,
@@ -38,12 +44,14 @@
 
     [sats, val, ticker] = units(artwork.asking_asset);
     list_price = val(artwork.list_price);
+    royalty = artwork.royalty;
   });
   $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
 
   const updateArtwork$ = mutation(updateArtwork);
 
   const setupSwaps = async () => {
+    if (!artwork.list_price || artwork.list_price === sats(list_price)) return true;
     await requirePassword();
 
     if (artwork.list_price_tx) {
@@ -87,11 +95,50 @@
     );
     await tick();
     artwork.list_price_tx = $psbt.toBase64();
+
+    return true;
+  };
+
+  let createTransaction$ = mutation(createTransaction);
+  let setupRoyalty = async () => {
+    if (artwork.royalty || !royalty) return true;
+    await requirePassword();
+    try {
+      $psbt = await sendToMultisig(artwork, 10000);
+
+      $prompt = SignaturePrompt;
+      await new Promise((resolve) =>
+        prompt.subscribe((value) => value === "success" && resolve())
+      );
+      await tick();
+
+      await broadcast($psbt);
+
+      createTransaction$({
+        transaction: {
+          amount: artwork.editions,
+          artwork_id: artwork.id,
+          asset: artwork.asking_asset,
+          hash: $psbt.extractTransaction().getId(),
+          psbt: $psbt.toBase64(),
+          type: "royalty",
+        },
+      }).then(() => {
+        $snack = "Royalties activated!";
+      });
+
+      return true;
+    } catch (e) {
+      $snack = e.message;
+      return false;
+    }
   };
 
   let update = async (e) => {
     e.preventDefault();
-    if (artwork.managed) setupSwaps();
+
+    if (!(await setupSwaps())) return;
+    if (!(await setupRoyalty())) return;
 
     let {
       id: artwork_id,
@@ -103,6 +150,9 @@
       reserve_price,
       list_price_tx,
       title,
+      bid_increment,
+      max_extensions,
+      extension_interval,
     } = artwork;
 
     if (!auction_start) auction_start = null;
@@ -116,6 +166,10 @@
         auction_start,
         auction_end,
         asking_asset,
+        bid_increment,
+        max_extensions,
+        extension_interval,
+        royalty,
       },
       id,
     }).then(() => {
@@ -151,7 +205,7 @@
       </div>
       <div class="flex flex-col mb-4">
         <div class="mt-1 relative rounded-md shadow-sm">
-          <label>Price</label>
+          <label>Listing Price ("Buy it Now")</label>
           <input
             class="form-input block w-full pl-7 pr-12"
             placeholder={val(0)}
@@ -170,16 +224,64 @@
       </div>
       <div class="flex flex-col mb-4">
         <label>Auction End Time</label>
-        <input placeholder="Auction End Time" bind:value={artwork.auction_end} />
+        <input
+          placeholder="Auction End Time"
+          bind:value={artwork.auction_end} />
       </div>
       <div class="flex flex-col mb-4">
         <div>
           <div class="mt-1 relative rounded-md shadow-sm">
-            <label>Reserve Price</label>
+            <label>Reserve Price (Minimum Accepted Offer)</label>
             <input
               class="form-input block w-full pl-7 pr-12"
               placeholder="0"
               bind:value={artwork.reserve_price} />
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col mb-4">
+        <div>
+          <div class="mt-1 relative rounded-md shadow-sm">
+            <label>Bid Increment (Bids must be higher than previous bid)</label>
+            <input
+              class="form-input block w-full pl-7 pr-12"
+              placeholder="0"
+              bind:value={artwork.bid_increment} />
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col mb-4">
+        <div>
+          <div class="mt-1 relative rounded-md shadow-sm">
+            <label>Extension Interval (Auction end time gets extended if bid
+              received within this interval)</label>
+            <input
+              class="form-input block w-full pl-7 pr-12"
+              placeholder="0"
+              bind:value={artwork.extension_interval} />
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col mb-4">
+        <div>
+          <div class="mt-1 relative rounded-md shadow-sm">
+            <label>Max Extensions (Number of times the auction can be extended)</label>
+            <input
+              class="form-input block w-full pl-7 pr-12"
+              placeholder="0"
+              bind:value={artwork.max_extensions} />
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col mb-4">
+        <div>
+          <div class="mt-1 relative rounded-md shadow-sm">
+            <label>Royalty Rate (Percentage paid to artist of every
+              sale)</label>
+            <input
+              class="form-input block w-full pl-7 pr-12"
+              placeholder="0"
+              bind:value={royalty} />
           </div>
         </div>
       </div>

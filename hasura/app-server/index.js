@@ -1,3 +1,4 @@
+const { generateMnemonic } = require("bip39");
 const auth = require("./auth");
 const { amp, gdk, api } = require("./api");
 require("./proxy");
@@ -6,63 +7,22 @@ const app = require("fastify")({
   logger: true,
 });
 
-app.post("/issue", auth, async (req, res) => {
-  let {
-    title: name,
-    ticker,
-    editions: amount,
-    address: destination_address,
-    domain,
-  } = req.body;
-
-  res.send(
-    await amp
-      .url("/assets/issue")
-      .post({
-        name,
-        amount,
-        is_confidential: false,
-        destination_address,
-        domain,
-        ticker,
-        precision: 0,
-        pubkey:
-          "038babfbe4d62b796b51c3e7158bebdcc3770e93689d8298dd0f18729ef28ccdf3",
-        is_reissuable: false,
-      })
-      .json()
-  );
+app.get("/pubkey", async (req, res) => {
+  const { pubkey } = require("./wallet").keypair(generateMnemonic());
+  res.send({ pubkey });
 });
 
-app.post("/user", auth, async (req, res) => {
-  const query = `mutation update_user($user: users_set_input!, $username: String!) {
-    update_users(where: { username: { _eq: $username }}, _set: $user) {
-      affected_rows
-    }
-  }`;
+app.post("/multisig", async (req, res) => {
+  const { pubkey } = req.body;
+  const { multisig } = require("./wallet");
+  res.send(multisig(pubkey));
+});
 
-  let user = await gdk.get().json();
-  let { username } = req.body;
-
-  user.amp_user_id = (
-    await amp
-      .url("/registered_users/add")
-      .post({
-        is_company: false,
-        name: username,
-        GAID: user.gaid,
-      })
-      .json()
-  ).id;
-
-  res.send(
-    await api
-      .post({
-        query,
-        variables: { username, user },
-      })
-      .json()
-  );
+app.post("/multipay", async (req, res) => {
+  const { address, fee, pubkey } = req.body;
+  const { multipay } = require("./wallet");
+  const swap = await multipay(pubkey, 1000, fee, address);
+  res.send({ swap });
 });
 
 app.listen(8091, "0.0.0.0", function (err, address) {

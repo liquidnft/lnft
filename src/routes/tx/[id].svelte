@@ -16,7 +16,7 @@
     let transaction = b.transactions_by_pk;
     let { psbt: p } = transaction;
     if (p) $psbt = Psbt.fromBase64(p);
-    else {
+    else if(!$psbt) {
       tx = await getTx(transaction.hash);
       $psbt = new Psbt();
       console.log(tx);

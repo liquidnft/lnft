@@ -1,10 +1,16 @@
 <svelte:options accessors={true} />
 
 <script>
+  import { onMount } from "svelte";
   import { prompt, password, user, snack, token } from "$lib/store";
   import { api } from "$lib/api";
 
   let attempt = "liquidart";
+  let input;
+
+  onMount(() => {
+    input.select();
+  }); 
 
   export let submit = (e) => {
     if (e) e.preventDefault();
@@ -33,6 +39,6 @@
     Enter password
   </h3>
   <div class="mt-2">
-    <input bind:value={attempt} placeholder="Password" class="mb-2" />
+    <input bind:value={attempt} placeholder="Password" class="mb-2" bind:this={input} />
   </div>
 </form>

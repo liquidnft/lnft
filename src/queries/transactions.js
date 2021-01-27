@@ -25,6 +25,7 @@ const fields = `
     title
     filename
     asking_asset
+    royalty
     owner {
       id
       username

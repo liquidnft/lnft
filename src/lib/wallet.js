@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { electrs } from "$lib/api";
+import { amp, electrs } from "$lib/api";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
@@ -20,7 +20,7 @@ import { btc } from "$lib/utils";
 import { fromSeed as slip77 } from "slip77";
 
 const network = networks.regtest;
-const sighashType =
+const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
 
 const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
@@ -96,6 +96,23 @@ export const payment = (key) => {
   });
 };
 
+export const multisig = (pubkey, key) => {
+  if (!key) key = keypair();
+
+  let redeem = payments.p2ms({
+    m: 2,
+    pubkeys: [Buffer.from(pubkey, "hex"), key.pubkey],
+    network,
+  });
+
+  return payments.p2sh({
+    redeem: payments.p2wsh({
+      redeem,
+      network,
+    }),
+  });
+};
+
 function shuffle(array) {
   var currentIndex = array.length,
     temporaryValue,
@@ -129,6 +146,8 @@ const fund = async (psbt, out, asset, amount, sighashType = 1) => {
     total += utxos[i].value;
     i++;
   }
+
+  console.log(sighashType);
 
   for (var j = 0; j < i; j++) {
     let prevout = utxos[j];
@@ -296,7 +315,7 @@ export const createSwap = async (asset, asking_asset, amount) => {
     value: amount,
   });
 
-  await fund(swap, out, asset, 1, sighashType);
+  await fund(swap, out, asset, 1, singleAnyoneCanPay);
 
   return swap;
 };
@@ -337,6 +356,40 @@ export const createOffer = async (artwork, amount, fee) => {
   } else {
     await fund(swap, out, asset, amount);
     await fund(swap, out, btc, fee);
+  }
+
+  return swap;
+};
+
+export const sendToMultisig = async (artwork, fee) => {
+  let out = payment();
+  let { pubkey } = await amp.url("/pubkey").get().json();
+  let { output: script } = multisig(pubkey);
+  let { asset, editions: value } = artwork;
+
+  let swap = new Psbt()
+    .addOutput({
+      asset,
+      nonce: Buffer.alloc(1),
+      script,
+      value,
+    })
+    .addOutput({
+      asset: btc,
+      nonce: Buffer.alloc(1, 0),
+      script: Buffer.alloc(0),
+      value: fee,
+    });
+
+  try {
+    if (asset === btc) {
+      await fund(swap, out, btc, value + fee);
+    } else {
+      await fund(swap, out, asset, value);
+      await fund(swap, out, btc, fee);
+    }
+  } catch (e) {
+    console.log(e.message);
   }
 
   return swap;

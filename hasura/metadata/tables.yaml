@@ -178,15 +178,19 @@
       - asset
       - auction_end
       - auction_start
+      - bid_increment
       - description
       - editions
+      - extension_interval
       - filename
       - id
       - list_price
       - list_price_tx
       - managed
+      - max_extensions
       - owner_id
       - reserve_price
+      - royalty
       - ticker
       - title
       backend_only: false
@@ -199,15 +203,20 @@
       - asset
       - auction_end
       - auction_start
+      - bid_increment
       - created_at
       - description
       - editions
+      - extension_interval
       - filename
       - id
       - list_price
       - list_price_tx
+      - managed
+      - max_extensions
       - owner_id
       - reserve_price
+      - royalty
       - ticker
       - title
       - transferred_at
@@ -224,16 +233,20 @@
       - asset
       - auction_end
       - auction_start
+      - bid_increment
       - created_at
       - description
       - editions
+      - extension_interval
       - filename
       - id
       - list_price
       - list_price_tx
       - managed
+      - max_extensions
       - owner_id
       - reserve_price
+      - royalty
       - ticker
       - title
       - transferred_at
@@ -250,15 +263,19 @@
       - asking_asset
       - auction_end
       - auction_start
+      - bid_increment
       - description
       - editions
+      - extension_interval
       - filename
       - id
       - list_price
       - list_price_tx
       - managed
+      - max_extensions
       - owner_id
       - reserve_price
+      - royalty
       - title
       filter:
         owner_id:

@@ -19,6 +19,10 @@ const fields = `
   auction_end
   list_price_tx
   asking_asset
+  bid_increment
+  extension_interval
+  max_extensions
+  royalty
   bid {
     user {
       id
