@@ -3,7 +3,7 @@
   export let transaction;
 </script>
 
-<div class="ml-2">
+
   <div>
     <a href={`/user/${transaction.user.id}`} class="secondary-color">@{transaction.user.username}</a>
     {#if transaction.type === 'bid'}
@@ -32,4 +32,4 @@
     <a
       href={`/artwork/${transaction.artwork.id}`} class="secondary-color">{transaction.artwork.title}</a>
   </div>
-</div>
+

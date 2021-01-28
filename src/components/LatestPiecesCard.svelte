@@ -21,17 +21,16 @@
 <div
   class="w-full md:w-1/2 lg:w-1/3 px-6 mb-10"
   on:click={() => goto(`/artwork/${artwork.id}`)}>
-  <div class="box-shadow rounded-lg">
+  <div class="h-full box-shadow rounded-lg">
     <div class="thumb">
       <ArtworkMedia {artwork} showDetails={false} />
     </div>
     <div class="p-4">
-      <div class="flex justify-between mb-4">
+      <div class="flex justify-between gap-5 mb-4">
         <h3 class="text-xl font-bold">{artwork.title}</h3>
-        <p>4 BTC</p>
+        <p class="w-1/4 text-right">4 BTC</p>
       </div>
-      <div class="flex"
-  >
+      <div class="flex">
         <div class="my-auto cursor-pointer" on:click|stopPropagation={() => goto(`/user/${artwork.owner.id}`)}>
           <Avatar src={transaction.user.avatar_url} size="large" />
         </div>
