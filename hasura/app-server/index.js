@@ -1,27 +1,13 @@
 const { generateMnemonic } = require("bip39");
 const auth = require("./auth");
-const { amp, gdk, api } = require("./api");
-const { keypair, sign } = require("./wallet");
-require("./proxy");
-require("./monitor");
 
-const app = require("fastify")({
+app = require("fastify")({
   logger: true,
 });
 
-app.get("/pubkey", async (req, res) => {
-  const { pubkey } = keypair();
-  res.send({ pubkey: pubkey.toString("hex") });
-});
-
-app.post("/sign", async (req, res) => {
-  const { psbt } = req.body;
-  try {
-    res.send({ base64: sign(psbt).toBase64() });
-  } catch(e) {
-    res.status(500).send(e.message);
-  } 
-});
+require("./proxy");
+require("./monitor");
+require("./signing");
 
 app.listen(8091, "0.0.0.0", function (err, address) {
   if (err) {
