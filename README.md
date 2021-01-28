@@ -15,3 +15,11 @@ Hasura CLI: https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cl
     docker-compose up -d
     hasura migrate apply
     hasura metadata apply
+
+## Regtest Mining
+
+Mine some blocks to get the electrs API server started and send some funds:
+
+    chmod +x mine.sh
+    ./mine.sh   # run in a separate tab/window
+    docker exec -it liquid elements-cli -datadir=/config sendtoaddress <address> <amount>

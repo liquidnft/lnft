@@ -75,10 +75,12 @@
 <div class="container mx-auto pl-6 mb-8">
   <h3 class="primary-color font-bold text-3xl">Recent Activity</h3>
 </div>
-<div class="container mx-auto flex flex-wrap mb-20 pb-10">
-  {#each recent as transaction}
-    <RecentActivityCard {transaction} />
-  {/each}
+<div class="container mx-auto mb-20 pb-10">
+  <div class="flex flex-wrap">
+    {#each recent as transaction}
+      <RecentActivityCard {transaction} />
+    {/each}
+  </div>
   <div class="mx-auto container text-center">
     <button class="button-transparent" on:click={() => goto('/activity')}>View more</button>
   </div>
@@ -87,10 +89,12 @@
 <div class="container mx-auto pl-6 mb-8">
   <h3 class="primary-color font-bold text-3xl">Latest Pieces</h3>
 </div>
-<div class="container mx-auto flex flex-wrap mb-20 pb-10">
-  {#each latest as transaction}
-    <LatestPiecesCard {transaction} />
-  {/each}
+<div class="container mx-auto mb-20 pb-10">
+  <div class="flex flex-wrap">
+    {#each latest as transaction}
+      <LatestPiecesCard {transaction} />
+    {/each}
+  </div>
   <div class="mx-auto container text-center">
     <button class="button-transparent" on:click={() => goto('/market')}>View gallery</button>
   </div>

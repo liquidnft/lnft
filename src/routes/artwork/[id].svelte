@@ -60,6 +60,7 @@
       $psbt = await createOffer(artwork, transaction.amount, 500);
     } catch (e) {
       $snack = e.message;
+      console.log(e.stack);
       return;
     }
 
@@ -68,6 +69,7 @@
       prompt.subscribe((value) => value === "success" && resolve())
     );
     transaction.psbt = $psbt.toBase64();
+    transaction.hash = $psbt.__CACHE.__TX.getId()
     save();
   };
 
@@ -265,7 +267,7 @@
         <div class="w-full flex flex-wrap">
           {#each others as artwork (artwork.id)}
             <div class="w-full md:w-full lg:w-1/2 px-10 mb-20">
-              <Card {artwork} summary={true} />
+              <Card {artwork} />
             </div>
           {:else}
             <div class="mx-auto">No other artworks</div>

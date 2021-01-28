@@ -15,6 +15,13 @@ const fields = `
   type
   created_at
   asset
+  confirmed
+  bid {
+    user {
+      id 
+      username
+    } 
+  } 
   user {
     id
     username
@@ -25,11 +32,13 @@ const fields = `
     title
     filename
     asking_asset
+    royalty
     owner {
       id
       username
     } 
     bid {
+      id
       amount
       user {
         id
@@ -45,7 +54,6 @@ export const getArtworkTransactions = (id) => `subscription {
   }
 }`;
 
-
 export const getTransaction = (id) => `subscription {
   transactions_by_pk(id: "${id}") {
     ${fields}
@@ -60,33 +68,16 @@ export const getTransactions = `subscription {
 
 export const getOffers = `subscription {
   offers {
-    id
-    amount 
-    psbt
-    artwork {
-      id
-      title
-      filename
-      asset
-      asking_asset
-      bid {
-        amount
-        user {
-          id
-          username
-        } 
-      } 
-    } 
+    ${fields}
   }
 }`;
 
 export const acceptOffer = {
-  query: `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!) {
+  query: `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!, $bid_id: uuid) {
     update_artworks_by_pk(
       pk_columns: { id: $id }, 
       _set: { 
         owner_id: $owner_id,
-        list_price: 0
       }
     ) {
       id
@@ -96,8 +87,9 @@ export const acceptOffer = {
       asset: $asset,
       type: "accept",
       amount: $amount,
-      hash: "",
-      psbt: $psbt
+      hash: $hash,
+      psbt: $psbt,
+      bid_id: $bid_id,
     }) {
       id,
       artwork_id

@@ -9,13 +9,13 @@
       $prompt = "success";
       $prompt = undefined;
       clearInterval($poll);
-      console.log("clear!");
       $poll = undefined;
     }
   };
 
   $poll = setInterval(getStatus, 2000);
   export let submit = () => {};
+  export let hide = true;
 </script>
 
 <svelte:options accessors={true} />

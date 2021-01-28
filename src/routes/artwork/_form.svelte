@@ -1,9 +1,15 @@
 <script>
+  import { page } from "$app/stores";
+  import { tick } from "svelte";
   import Select from "svelte-select";
   import { mutation, subscription, operationStore } from "@urql/svelte";
 
   export let artwork;
+  let input;
   let items;
+
+  $: focus($page);
+  let focus = (p) => p && tick().then(() => input.select());
 
   $: selectedValue = artwork.tags.map(({ tag }) => ({
     value: tag,
@@ -34,7 +40,10 @@
 <form class="w-full md:w-1/2 mb-6" on:submit autocomplete="off">
   <div class="flex flex-col mb-4">
     <label>Title</label>
-    <input placeholder="Title" bind:value={artwork.title} />
+    <input
+      placeholder="Title"
+      bind:value={artwork.title}
+      bind:this={input} />
   </div>
   <div class="flex flex-col mb-4">
     <label>Ticker</label>
@@ -66,7 +75,7 @@
       items={managedItems}
       placeholder="Managed"
       on:select={handleManaged}
-      selectedValue={managedItems.find(i => i.value === artwork.managed)} />
+      selectedValue={managedItems.find((i) => i.value === artwork.managed)} />
   </div>
   <div class="flex">
     <button

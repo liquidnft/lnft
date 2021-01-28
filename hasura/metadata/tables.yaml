@@ -178,15 +178,19 @@
       - asset
       - auction_end
       - auction_start
+      - bid_increment
       - description
       - editions
+      - extension_interval
       - filename
       - id
       - list_price
       - list_price_tx
       - managed
+      - max_extensions
       - owner_id
       - reserve_price
+      - royalty
       - ticker
       - title
       backend_only: false
@@ -199,15 +203,20 @@
       - asset
       - auction_end
       - auction_start
+      - bid_increment
       - created_at
       - description
       - editions
+      - extension_interval
       - filename
       - id
       - list_price
       - list_price_tx
+      - managed
+      - max_extensions
       - owner_id
       - reserve_price
+      - royalty
       - ticker
       - title
       - transferred_at
@@ -224,16 +233,20 @@
       - asset
       - auction_end
       - auction_start
+      - bid_increment
       - created_at
       - description
       - editions
+      - extension_interval
       - filename
       - id
       - list_price
       - list_price_tx
       - managed
+      - max_extensions
       - owner_id
       - reserve_price
+      - royalty
       - ticker
       - title
       - transferred_at
@@ -250,15 +263,19 @@
       - asking_asset
       - auction_end
       - auction_start
+      - bid_increment
       - description
       - editions
+      - extension_interval
       - filename
       - id
       - list_price
       - list_price_tx
       - managed
+      - max_extensions
       - owner_id
       - reserve_price
+      - royalty
       - title
       filter:
         owner_id:
@@ -496,6 +513,9 @@
   - name: artwork
     using:
       foreign_key_constraint_on: artwork_id
+  - name: bid
+    using:
+      foreign_key_constraint_on: bid_id
   - name: user
     using:
       manual_configuration:
@@ -514,9 +534,10 @@
       - amount
       - artwork_id
       - asset
+      - bid_id
       - hash
-      - psbt
       - id
+      - psbt
       - type
       backend_only: false
   select_permissions:
@@ -526,10 +547,12 @@
       - amount
       - artwork_id
       - asset
+      - bid_id
+      - confirmed
       - created_at
       - hash
-      - psbt
       - id
+      - psbt
       - type
       - user_id
       filter: {}
@@ -539,6 +562,7 @@
       - amount
       - artwork_id
       - asset
+      - bid_id
       - confirmed
       - created_at
       - hash

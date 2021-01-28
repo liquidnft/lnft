@@ -9,39 +9,12 @@
   import { broadcast } from "$lib/wallet";
   import SignaturePrompt from "$components/SignaturePrompt";
   import { val, ticker, requirePassword } from "$lib/utils";
+  import AcceptOffer from "$components/AcceptOffer";
 
   let offers = [];
-  let accept;
-  let acceptOffer$ = mutation(acceptOffer);
 
   subscription(operationStore(getOffers), (a, b) => {
     offers = b.offers;
-
-    accept = async ({ artwork, psbt: base64 }) => {
-      try {
-        await requirePassword();
-        $psbt = Psbt.fromBase64(base64);
-        $prompt = SignaturePrompt;
-        await new Promise((resolve) =>
-          prompt.subscribe((value) => value === "success" && resolve())
-        );
-        await tick();
-        await broadcast($psbt);
-        let params = {
-          id: artwork.id,
-          owner_id: artwork.bid[0].user.id,
-          amount: artwork.bid[0].amount,
-          psbt: $psbt.toBase64(),
-          asset: artwork.asking_asset,
-        };
-
-        acceptOffer$(params);
-        offers = offers.filter((o) => o.artwork_id !== artwork.id);
-        $snack = "Offer accepted! Sold!";
-      } catch (e) {
-        $snack = e.message;
-      }
-    };
   });
 </script>
 
@@ -57,7 +30,11 @@
 <div class="flex flex-wrap px-6">
   {#each offers as offer}
     <div class="w-1/2 p-4">
-      <Card artwork={offer.artwork} columns={1} showDetails={false} shadow={false} />
+      <Card
+        artwork={offer.artwork}
+        columns={1}
+        showDetails={false}
+        shadow={false} />
       <div class="mt-4 mx-2 whitespace-no-wrap text-center">
         {val(offer.artwork.asking_asset, offer.amount)}
         {ticker(offer.artwork.asking_asset)}

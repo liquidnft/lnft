@@ -39,7 +39,7 @@
     <h2 class="text-xl mb-6 m-6 px-4">#{tag.tag}</h2>
   <div class="flex flex-wrap">
     {#each tag.artworks as artwork}
-      <div class="w-full md:w-1/2 lg:w-1/3 px-10">
+      <div class="w-full md:w-1/2 lg:w-1/3 px-10 mb-20">
         <Card {artwork} />
       </div>
     {/each}

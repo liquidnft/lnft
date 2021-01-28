@@ -52,7 +52,6 @@ export const tickers = {
   },
 };
 export const ticker = (asset) => {
-  console.log(asset);
   return asset
     ? tickers[asset]
       ? tickers[asset].ticker
