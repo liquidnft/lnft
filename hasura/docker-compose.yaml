@@ -55,7 +55,7 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address,confidential
       JWT_ALGORITHM: RS256
-      AUTO_MIGRATE: "false"
+      AUTO_MIGRATE: "true"
       STORAGE_ENABLE: "true"
       S3_ENDPOINT: http://minio:9000
       S3_SSL_ENABLED: "false"

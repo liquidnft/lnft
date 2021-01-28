@@ -1,4 +1,22 @@
-CREATE EXTENSION pg_trgm;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+ALTER TABLE public.users
+ADD COLUMN    username text NOT NULL,
+ADD COLUMN    location text,
+ADD COLUMN    bio text,
+ADD COLUMN    website text,
+ADD COLUMN    email text,
+ADD COLUMN    full_name text,
+ADD COLUMN    address_index integer DEFAULT 0 NOT NULL,
+ADD COLUMN    pubkey text,
+ADD COLUMN    mnemonic text,
+ADD COLUMN    address text,
+ADD COLUMN    gaid text,
+ADD COLUMN    amp_mnemonic text,
+ADD COLUMN    confidential text,
+ADD COLUMN    amp_user_id integer;
+
 CREATE TABLE public.artworks (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     artist_id uuid NOT NULL,
@@ -88,27 +106,6 @@ CREATE TABLE public.tags (
     artwork_id uuid NOT NULL,
     tag text NOT NULL
 );
-CREATE TABLE public.users (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    username text NOT NULL,
-    avatar_url text,
-    display_name text NOT NULL,
-    location text,
-    bio text,
-    website text,
-    email text,
-    full_name text,
-    address_index integer DEFAULT 0 NOT NULL,
-    pubkey text,
-    mnemonic text,
-    address text,
-    gaid text,
-    amp_mnemonic text,
-    confidential text,
-    amp_user_id integer
-);
 CREATE VIEW public.search AS
  SELECT a.id,
     a.title AS s,
@@ -131,17 +128,6 @@ SELECT   *
 FROM     search 
 WHERE    t <% ( s ) 
 ORDER BY similarity(t, ( s )) DESC limit 5; 
-$$;
-CREATE FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-declare
-  _new record;
-begin
-  _new := new;
-  _new. "updated_at" = now();
-  return _new;
-end;
 $$;
 CREATE FUNCTION public.trigger_set_transferred_at() RETURNS trigger
     LANGUAGE plpgsql
@@ -236,10 +222,7 @@ ALTER TABLE ONLY public.transactions
     ADD CONSTRAINT transactions_hash_type_key UNIQUE (hash, type);
 ALTER TABLE ONLY public.transactions
     ADD CONSTRAINT transactions_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 CREATE INDEX artworks_title_gin_idx ON public.artworks USING gin (title public.gin_trgm_ops);
-CREATE TRIGGER set_public_users_updated_at BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION public.set_current_timestamp_updated_at();
 CREATE TRIGGER set_transferred_at BEFORE UPDATE ON public.artworks FOR EACH ROW EXECUTE FUNCTION public.trigger_set_transferred_at();
 ALTER TABLE ONLY public.utxos
     ADD CONSTRAINT addresses_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
