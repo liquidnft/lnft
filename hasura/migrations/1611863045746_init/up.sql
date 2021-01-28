@@ -1,3 +1,4 @@
+CREATE EXTENSION pg_trgm;
 CREATE TABLE public.artworks (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     artist_id uuid NOT NULL,
@@ -56,6 +57,10 @@ CREATE FUNCTION public.artwork_bid2(artwork_row public.artworks) RETURNS public.
     ORDER BY amount DESC
     LIMIT 1
 $$;
+CREATE TABLE public.favorites (
+    user_id uuid NOT NULL,
+    artwork_id uuid NOT NULL
+);
 CREATE FUNCTION public.artwork_favorited(artwork_row public.artworks, hasura_session json) RETURNS boolean
     LANGUAGE sql STABLE
     AS $$
@@ -157,6 +162,10 @@ BEGIN
   RETURN NEW;
 END;
 $$;
+CREATE TABLE public.follows (
+    follower_id uuid NOT NULL,
+    user_id uuid NOT NULL
+);
 CREATE FUNCTION public.user_followed(user_row public.users, hasura_session json) RETURNS boolean
     LANGUAGE sql STABLE
     AS $$
@@ -199,14 +208,6 @@ CREATE VIEW public.collectors AS
   ORDER BY ( SELECT count(*) AS count
            FROM public.artworks a
           WHERE (u.id = a.owner_id)) DESC;
-CREATE TABLE public.favorites (
-    user_id uuid NOT NULL,
-    artwork_id uuid NOT NULL
-);
-CREATE TABLE public.follows (
-    follower_id uuid NOT NULL,
-    user_id uuid NOT NULL
-);
 CREATE VIEW public.offers AS
  SELECT t.artwork_id,
     t.amount,
