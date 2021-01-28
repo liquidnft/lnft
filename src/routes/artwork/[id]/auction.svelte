@@ -33,7 +33,7 @@
 
   let input;
   let initialized;
-  let focus = (i) => i && tick().then(() => input.focus())
+  let focus = (i) => i && tick().then(() => input.focus());
   $: focus(initialized);
 
   let artwork, list_price, sats, val, ticker, royalty;
@@ -48,24 +48,28 @@
       artwork.auction_end = formatISO(addDays(new Date(), 3));
 
     [sats, val, ticker] = units(artwork.asking_asset);
-    list_price = val(artwork.list_price);
-    royalty = artwork.royalty;
+    if (!list_price) list_price = val(artwork.list_price);
+    if (!royalty) royalty = artwork.royalty;
     initialized = true;
   });
   $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
 
   const updateArtwork$ = mutation(updateArtwork);
 
-  const setupSwaps = async () => {
-    if (parseInt(artwork.list_price || 0) === sats(list_price)) return true;
-    await requirePassword();
+  const spendPreviousSwap = async () => {
+    if (
+      !(royalty && !artwork.royalty) &&
+      parseInt(artwork.list_price || 0) === sats(list_price)
+    )
+      return true;
 
     if (artwork.list_price_tx) {
       try {
         $psbt = await cancelSwap(artwork, 500);
       } catch (e) {
         $snack = e.message;
-        return;
+        console.log(e.stack);
+        return false;
       }
 
       $prompt = SignaturePrompt;
@@ -83,10 +87,18 @@
       await tick();
     }
 
+    return true;
+  };
+
+  const setupSwaps = async () => {
+    if (parseInt(artwork.list_price || 0) === sats(list_price)) return true;
+    await requirePassword();
+
     try {
       $psbt = await createSwap(artwork, sats(list_price));
     } catch (e) {
       $snack = e.message;
+      console.log(e.stack);
       return;
     }
 
@@ -141,6 +153,7 @@
   let update = async (e) => {
     e.preventDefault();
 
+    if (!(await spendPreviousSwap())) return;
     if (!(await setupRoyalty())) return;
     if (!(await setupSwaps())) return;
 
@@ -213,7 +226,8 @@
           <input
             class="form-input block w-full pl-7 pr-12"
             placeholder={val(0)}
-            bind:value={list_price} bind:this={input} />
+            bind:value={list_price}
+            bind:this={input} />
 
           <div class="absolute inset-y-0 right-0 flex items-center mr-2">
             {ticker}
@@ -280,8 +294,7 @@
       <div class="flex flex-col mb-4">
         <div>
           <div class="mt-1 relative rounded-md shadow-sm">
-            <label>Royalty Rate (Percentage paid to artist of every
-              sale)</label>
+            <label>Royalty Rate (Percentage paid to artist of every sale)</label>
             <input
               class="form-input block w-full pl-7 pr-12"
               placeholder="0"

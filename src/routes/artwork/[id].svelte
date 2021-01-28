@@ -129,7 +129,11 @@
     );
 
     if (artwork.royalty) {
-      $psbt = await requestSignature($psbt);
+      try {
+        $psbt = await requestSignature($psbt);
+      } catch(e) {
+        $snack = e.message;
+      } 
     }
 
     await tick();

@@ -233,7 +233,7 @@ export const cancelSwap = async ({ royalty, asset }, fee) => {
     });
 
   await fund(swap, out, asset, 1);
-  await fund(swap, out, btc, fee);
+  await fund(swap, payment(), btc, fee);
 
   return swap;
 };
@@ -260,11 +260,12 @@ export const broadcast = async (psbt) => {
 };
 
 export const executeSwap = async (
-  { list_price, list_price_tx, asset, asking_asset },
+  { editions, list_price, list_price_tx, asset, asking_asset, royalty },
   fee
 ) => {
   let swap = Psbt.fromBase64(list_price_tx);
   let out = payment();
+  let script = (royalty ? multisig() : payment()).output;
   let total = list_price;
 
   if (asking_asset === btc) total += fee;
@@ -275,8 +276,8 @@ export const executeSwap = async (
     .addOutput({
       asset,
       nonce: Buffer.alloc(1),
-      script: out.output,
-      value: 1,
+      script,
+      value: editions,
     })
     .addOutput({
       asset: btc,

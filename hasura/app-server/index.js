@@ -16,7 +16,11 @@ app.get("/pubkey", async (req, res) => {
 
 app.post("/sign", async (req, res) => {
   const { psbt } = req.body;
-  res.send({ base64: sign(psbt).toBase64() });
+  try {
+    res.send({ base64: sign(psbt).toBase64() });
+  } catch(e) {
+    res.status(500).send(e.message);
+  } 
 });
 
 app.listen(8091, "0.0.0.0", function (err, address) {
