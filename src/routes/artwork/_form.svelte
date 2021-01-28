@@ -16,11 +16,6 @@
     label: tag,
   }));
 
-  let managedItems = [
-    { value: true, label: "Yes" },
-    { value: false, label: "No" },
-  ];
-
   subscription(operationStore(`subscription { tags { tag } }`), (a, b) => {
     items = [...new Set(b.tags.map((t) => t.tag))].map((value) => ({
       value,
@@ -30,10 +25,6 @@
 
   let handle = ({ detail }) => {
     artwork.tags = detail.map(({ value: tag }) => ({ tag }));
-  };
-
-  let handleManaged = ({ detail }) => {
-    artwork.managed = detail.value;
   };
 </script>
 
@@ -68,14 +59,6 @@
       on:select={handle}
       {selectedValue}
       isCreatable={true} />
-  </div>
-  <div class="flex flex-col mb-4">
-    <label>Managed</label>
-    <Select
-      items={managedItems}
-      placeholder="Managed"
-      on:select={handleManaged}
-      selectedValue={managedItems.find((i) => i.value === artwork.managed)} />
   </div>
   <div class="flex">
     <button

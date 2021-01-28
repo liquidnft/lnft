@@ -61,14 +61,14 @@
     asset: "",
     editions: 1,
     tags: [],
-    managed: false,
   };
 
   const createArtwork = mutation(create);
 
   let hash;
-  const local = async () => {
+  const issue = async () => {
     await requirePassword();
+
     try {
       $psbt = await createIssuance(artwork.editions, 1000);
     } catch (e) {
@@ -86,55 +86,7 @@
     artwork.asset = reverse(tx.outs[3].asset.slice(1)).toString("hex");
 
     hash = tx.getId();
-  };
-
-  const managed = async () => {
-    /*
-    let response = amp
-      .url("/issue")
-      .headers({ authorization: `Bearer ${$token}` })
-      .post({
-        ...artwork,
-        address: $user.confidential,
-        domain: `${$user.username}.coinos.io`,
-      })
-      .json();
-*/
-    let response = {
-      name: "Jazzy",
-      amount: 1,
-      destination_address:
-        "VJL8bwdsJqSkEmYmEZWajDYD9eMcJMcCxWFfHDkSdo33gn9Su7JXVRUdkxkbMPhF1hLRbaTYetJ84tQh",
-      domain: "ron.coinos.io",
-      ticker: "JAZZ",
-      precision: 0,
-      pubkey:
-        "038babfbe4d62b796b51c3e7158bebdcc3770e93689d8298dd0f18729ef28ccdf3",
-      is_confidential: false,
-      is_reissuable: false,
-      reissuance_amount: 0,
-      reissuance_address: "",
-      asset_id:
-        "8091e85736bdb4941794f1d8fe6cd31d09243e8923a453713ce014ba46a5b583",
-      reissuance_token_id: null,
-      asset_uuid: "f1bbccd7-9cd2-414d-8a04-befaa9821da7",
-      txid: "2497952a27365987e87e6bc6dc78d927a3c1ee22b596527e7afdc920a25cd79a",
-      vin: 0,
-      asset_vout: 0,
-      reissuance_vout: null,
-      issuer_authorization_endpoint: "",
-      issuance_assetblinder:
-        "0000000000000000000000000000000000000000000000000000000000000000",
-      issuance_tokenblinder: null,
-      investors_restricted: true,
-      transfer_restricted: true,
-    };
-
-    artwork.asset = response.asset_id;
-    hash = response.txid;
-  };
-
-  const issue = () => (artwork.managed ? managed() : local());
+  }
 
   let submit = async (e) => {
     e.preventDefault();

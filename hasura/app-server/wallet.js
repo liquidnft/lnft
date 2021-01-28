@@ -132,7 +132,7 @@ const fund = async (
       sighashType,
     };
 
-    if (multi) {
+    if (multisig) {
       input.witnessScript = redeem.redeem.output;
     }
 
@@ -148,13 +148,17 @@ const fund = async (
     });
   }
 };
-const sign = (psbt, sighash = 1, privkey) => {
-  if (!privkey) ({ privkey } = keypair());
 
-  psbt.data.inputs.map((_, i) => {
+const sign = (psbt, sighash = 1, privkey) => {
+//  throw new Error("no!");
+  if (!privkey) ({ privkey } = keypair());
+  psbt = Psbt.fromBase64(psbt)
+
+  psbt.data.inputs.map((input, i) => {
+    console.log(input);
     try {
       psbt = psbt
-        .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
+        .signInput(i, ECPair.fromPrivateKey(privkey), [input.sighashType])
         .finalizeInput(i);
     } catch (e) {
       console.log(e.message);
@@ -257,4 +261,4 @@ const createOffer = async (artwork, amount, fee) => {
   return swap;
 };
 
-module.exports = { keypair };
+module.exports = { keypair, sign };

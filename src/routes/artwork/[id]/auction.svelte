@@ -62,7 +62,7 @@
 
     if (artwork.list_price_tx) {
       try {
-        $psbt = await cancelSwap(artwork.asset, 500);
+        $psbt = await cancelSwap(artwork, 500);
       } catch (e) {
         $snack = e.message;
         return;
@@ -84,11 +84,7 @@
     }
 
     try {
-      $psbt = await createSwap(
-        artwork.asset,
-        artwork.asking_asset,
-        sats(list_price)
-      );
+      $psbt = await createSwap(artwork, sats(list_price));
     } catch (e) {
       $snack = e.message;
       return;
@@ -108,6 +104,8 @@
   let createTransaction$ = mutation(createTransaction);
   let setupRoyalty = async () => {
     if (artwork.royalty || !royalty) return true;
+
+    artwork.royalty = royalty;
     await requirePassword();
     try {
       $psbt = await sendToMultisig(artwork, 10000);
@@ -143,8 +141,8 @@
   let update = async (e) => {
     e.preventDefault();
 
-    if (!(await setupSwaps())) return;
     if (!(await setupRoyalty())) return;
+    if (!(await setupSwaps())) return;
 
     let {
       id: artwork_id,

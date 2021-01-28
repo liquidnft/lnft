@@ -1,6 +1,7 @@
 const { generateMnemonic } = require("bip39");
 const auth = require("./auth");
 const { amp, gdk, api } = require("./api");
+const { keypair, sign } = require("./wallet");
 require("./proxy");
 require("./monitor");
 
@@ -9,21 +10,13 @@ const app = require("fastify")({
 });
 
 app.get("/pubkey", async (req, res) => {
-  const { pubkey } = require("./wallet").keypair(generateMnemonic());
-  res.send({ pubkey });
+  const { pubkey } = keypair();
+  res.send({ pubkey: pubkey.toString("hex") });
 });
 
-app.post("/multisig", async (req, res) => {
-  const { pubkey } = req.body;
-  const { multisig } = require("./wallet");
-  res.send(multisig(pubkey));
-});
-
-app.post("/multipay", async (req, res) => {
-  const { address, fee, pubkey } = req.body;
-  const { multipay } = require("./wallet");
-  const swap = await multipay(pubkey, 1000, fee, address);
-  res.send({ swap });
+app.post("/sign", async (req, res) => {
+  const { psbt } = req.body;
+  res.send({ base64: sign(psbt).toBase64() });
 });
 
 app.listen(8091, "0.0.0.0", function (err, address) {

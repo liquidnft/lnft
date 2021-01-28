@@ -3,7 +3,7 @@
   import { prompt, snack, psbt, user } from "$lib/store";
   import { mutation } from "@urql/svelte";
   import { acceptOffer } from "$queries/transactions";
-  import { broadcast } from "$lib/wallet";
+  import { broadcast, requestSignature } from "$lib/wallet";
   import SignaturePrompt from "$components/SignaturePrompt";
   import { requirePassword } from "$lib/utils";
   import { Psbt } from "@asoltys/liquidjs-lib";
@@ -18,6 +18,9 @@
         prompt.subscribe((value) => value === "success" && resolve())
       );
       await tick();
+      if (artwork.royalty) {
+        $psbt = await requestSignature($psbt);
+      }
       await broadcast($psbt);
       acceptOffer$({
         id: artwork.id,

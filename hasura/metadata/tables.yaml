@@ -186,7 +186,6 @@
       - id
       - list_price
       - list_price_tx
-      - managed
       - max_extensions
       - owner_id
       - reserve_price
@@ -212,7 +211,6 @@
       - id
       - list_price
       - list_price_tx
-      - managed
       - max_extensions
       - owner_id
       - reserve_price
@@ -242,7 +240,6 @@
       - id
       - list_price
       - list_price_tx
-      - managed
       - max_extensions
       - owner_id
       - reserve_price
@@ -271,7 +268,6 @@
       - id
       - list_price
       - list_price_tx
-      - managed
       - max_extensions
       - owner_id
       - reserve_price

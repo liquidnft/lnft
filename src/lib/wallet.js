@@ -19,6 +19,10 @@ import cryptojs from "crypto-js";
 import { btc } from "$lib/utils";
 import { fromSeed as slip77 } from "slip77";
 
+const signingKey = Buffer.from(
+  "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b",
+  "hex"
+);
 const network = networks.regtest;
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
@@ -95,12 +99,12 @@ export const payment = (key, blind = false) => {
   return payments.p2sh(params);
 };
 
-export const multisig = (pubkey, key) => {
+export const multisig = (key) => {
   if (!key) key = keypair();
 
   let redeem = payments.p2ms({
     m: 2,
-    pubkeys: [Buffer.from(pubkey, "hex"), key.pubkey],
+    pubkeys: [key.pubkey, signingKey],
     network,
   });
 
@@ -129,7 +133,14 @@ function shuffle(array) {
   return array;
 }
 
-const fund = async (psbt, out, asset, amount, sighashType = 1) => {
+const fund = async (
+  psbt,
+  out,
+  asset,
+  amount,
+  sighashType = 1,
+  multisig = false
+) => {
   let { address, redeem, output } = out;
   let utxos = shuffle(
     (await electrs.url(`/address/${address}/utxo`).get().json())
@@ -149,13 +160,20 @@ const fund = async (psbt, out, asset, amount, sighashType = 1) => {
   for (var j = 0; j < i; j++) {
     let prevout = utxos[j];
     let tx = Transaction.fromHex(await getHex(prevout.txid));
-    psbt.addInput({
+
+    let input = {
       hash: prevout.txid,
       index: prevout.vout,
       witnessUtxo: tx.outs[prevout.vout],
       redeemScript: redeem.output,
       sighashType,
-    });
+    };
+
+    if (multisig) {
+      input.witnessScript = redeem.redeem.output;
+    }
+
+    psbt.addInput(input);
   }
 
   if (total > amount) {
@@ -197,8 +215,8 @@ export const pay = async (asset, to, amount, fee) => {
   return swap;
 };
 
-export const cancelSwap = async (asset, fee) => {
-  let out = payment();
+export const cancelSwap = async ({ royalty, asset }, fee) => {
+  let out = royalty ? multisig() : payment();
 
   let swap = new Psbt()
     .addOutput({
@@ -241,13 +259,13 @@ export const broadcast = async (psbt) => {
   return electrs.url("/tx").body(hex).post().text();
 };
 
-export const executeSwap = async (swap, fee) => {
-  let asset = swap.data.inputs[0].witnessUtxo.asset;
+export const executeSwap = async (
+  { list_price, list_price_tx, asset, asking_asset },
+  fee
+) => {
+  let swap = Psbt.fromBase64(list_price_tx);
   let out = payment();
-  let ask = swap.__CACHE.__TX.outs[0];
-
-  let asking_asset = parseAsset(ask.asset);
-  let total = parseVal(ask.value);
+  let total = list_price;
 
   if (asking_asset === btc) total += fee;
   else await fund(swap, out, btc, fee);
@@ -302,8 +320,8 @@ export const createIssuance = async (editions, fee) => {
   return swap;
 };
 
-export const createSwap = async (asset, asking_asset, amount) => {
-  let out = payment();
+export const createSwap = async ({ asset, asking_asset, royalty }, amount) => {
+  let out = royalty ? multisig() : payment();
 
   let swap = new Psbt().addOutput({
     asset: asking_asset,
@@ -312,7 +330,7 @@ export const createSwap = async (asset, asking_asset, amount) => {
     value: amount,
   });
 
-  await fund(swap, out, asset, 1, singleAnyoneCanPay);
+  await fund(swap, out, asset, 1, singleAnyoneCanPay, !!royalty);
 
   return swap;
 };
@@ -344,12 +362,6 @@ export const createOffer = async (artwork, amount, fee) => {
       value: fee,
     });
 
-  let { publicKey: pubkey } = fromBase58(artwork.owner.pubkey, network).derive(
-    0
-  );
-  let ownerOut = payment({ pubkey });
-  await fund(swap, ownerOut, artwork.asset, 1);
-
   if (asset === btc) {
     await fund(swap, out, asset, amount + fee);
   } else {
@@ -357,13 +369,18 @@ export const createOffer = async (artwork, amount, fee) => {
     await fund(swap, out, btc, fee);
   }
 
+  let ms = !!artwork.royalty;
+  let pubkey = fromBase58(artwork.owner.pubkey, network).derive(0).publicKey;
+  out = ms ? multisig({ pubkey }) : payment({ pubkey });
+
+  await fund(swap, out, artwork.asset, 1, 1, ms);
+
   return swap;
 };
 
 export const sendToMultisig = async (artwork, fee) => {
   let out = payment();
-  let { pubkey } = await amp.url("/pubkey").get().json();
-  let { output: script } = multisig(pubkey);
+  let { output: script } = multisig();
   let { asset, editions: value } = artwork;
 
   let swap = new Psbt()
@@ -392,4 +409,12 @@ export const sendToMultisig = async (artwork, fee) => {
   }
 
   return swap;
+};
+
+export const requestSignature = async (psbt) => {
+  let { base64 } = await amp
+    .url("/sign")
+    .post({ psbt: psbt.toBase64() })
+    .json();
+  return Psbt.fromBase64(base64);
 };
