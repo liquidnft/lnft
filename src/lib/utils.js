@@ -41,9 +41,7 @@ export const addressLabel = (address) => {
 export const assetLabel = (asset) => {
   let $assets = get(assets);
 
-  let r =
-    $assets &&
-    $assets.find((u) => u.asset === asset);
+  let r = $assets && $assets.find((u) => u.asset === asset);
 
   return r ? r.title : ticker(asset);
 };
@@ -143,3 +141,5 @@ export const copy = (v) => {
 
 export const pick = (obj, ...keys) =>
   Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));
+
+export const sanitize = (input) => input.replace(/[^\w.]+/g, "_");

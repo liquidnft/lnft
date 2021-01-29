@@ -9,9 +9,8 @@
   import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import { goto } from "$lib/utils";
-  import { requireLogin, requirePassword } from "$lib/utils";
-  import { createIssuance, broadcast } from "$lib/wallet";
+  import { goto, sanitize, requireLogin, requirePassword } from "$lib/utils";
+  import { createIssuance, broadcast, parseAsset } from "$lib/wallet";
   import reverse from "buffer-reverse";
 
   $: requireLogin($page);
@@ -83,7 +82,7 @@
     await tick();
     await broadcast($psbt);
     let tx = $psbt.extractTransaction();
-    artwork.asset = reverse(tx.outs[3].asset.slice(1)).toString("hex");
+    artwork.asset = parseAsset(tx.outs[3].asset);
 
     hash = tx.getId();
   }
