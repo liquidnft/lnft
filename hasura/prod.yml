@@ -1,5 +1,15 @@
 version: '3.6'
 services:
+  app-server:
+    container_name: app-server
+    image: asoltys/app-server
+    environment:
+      HASURA_URL: '${HASURA_ENDPOINT}'
+      HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
+      HASURA_JWT: '${HASURA_GRAPHQL_JWT_SECRET}'
+    ports:
+      - '8091:8091'
+      - '8092:8092'
   nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
