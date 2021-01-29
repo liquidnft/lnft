@@ -13,3 +13,4 @@ export const loading = writable();
 export const sighash = writable();
 export const wallet = writable();
 export const asset = writable();
+export const addresses = writable();

@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import Card from "$components/Card";
-  import { show, token } from "$lib/store";
+  import { addresses, show, token } from "$lib/store";
   import ToggleSwitch from "$components/ToggleSwitch";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
@@ -71,6 +71,7 @@
   }
 
 </style>
+
 <div class="container mx-auto flex justify-between px-8">
   <h1 class="title primary-color">Market</h1>
   <button on:click={() => goto('/artwork/create')}

@@ -570,6 +570,10 @@
 - table:
     schema: public
     name: users
+  configuration:
+    custom_root_fields: {}
+    custom_column_names:
+      multisig: multisig
   object_relationships:
   - name: account
     using:
@@ -667,7 +671,7 @@
       - address_index
       - avatar_url
       - bio
-      - confidential
+      - multisig
       - created_at
       - display_name
       - email
@@ -692,7 +696,7 @@
       - address_index
       - avatar_url
       - bio
-      - confidential
+      - multisig
       - display_name
       - email
       - full_name

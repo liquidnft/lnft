@@ -7,6 +7,7 @@ app.get("/pubkey", async (req, res) => {
 });
 
 app.post("/sign", async (req, res) => {
+  throw new Error("no!");
   const { psbt } = req.body;
   try {
     res.send({ base64: sign(psbt).toBase64() });

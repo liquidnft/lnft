@@ -43,3 +43,8 @@
       </button></a>
   {:else}<a href="/login"><button>Sign In</button></a>{/if}
 </div>
+
+{#if $user}
+  {$user.address}<br />
+{$user.multisig}
+{/if}

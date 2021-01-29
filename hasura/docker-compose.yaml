@@ -49,7 +49,7 @@ services:
     environment:
       HASURA_ENDPOINT: '${HASURA_ENDPOINT}'
       HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
-      REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address,confidential
+      REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address,multisig
       JWT_ALGORITHM: RS256
       AUTO_MIGRATE: "true"
       STORAGE_ENABLE: "true"

@@ -58,7 +58,7 @@
 
   const spendPreviousSwap = async () => {
     if (
-      !(royalty && !artwork.royalty) &&
+      royalty ||
       parseInt(artwork.list_price || 0) === sats(list_price)
     )
       return true;

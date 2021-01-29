@@ -1,8 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import decode from "jwt-decode";
-  import { poll, user, token } from "$lib/store";
-  import { getUser } from "$queries/users";
+  import { poll, user, addresses, token } from "$lib/store";
+  import { getUser, getAddresses } from "$queries/users";
   import { api } from "$lib/api";
   import { fade } from "svelte/transition";
   import { update } from "$queries/users";
@@ -24,6 +24,10 @@
       setupUrql(t);
       subscription(operationStore(getUser(id)), (_, data) => {
         $user = data.users_by_pk;
+      });
+
+      subscription(operationStore(getAddresses), (a, b) => {
+        $addresses = b.users;
       });
 
       timeout = setTimeout(() => refreshToken(t), 600000);

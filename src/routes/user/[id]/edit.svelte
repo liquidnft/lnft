@@ -54,6 +54,7 @@
     let {num_followers, num_follows, followed, id, balance, ...user} = form;
     updateUser$({ user, id }).then((r) => {
       $snack = "Profile updated";
+      goto(`/user/${id}`);
     });
   };
 

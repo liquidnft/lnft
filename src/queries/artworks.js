@@ -1,6 +1,3 @@
-import { get } from "svelte/store";
-import { operationStore, query } from "@urql/svelte";
-
 const fields = `
   id,
   asset
