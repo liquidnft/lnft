@@ -11,15 +11,15 @@
 </script>
 
 <style>
-  .thumb {
-    max-height: 260px;
+  .thumb{
+    height: 260px;
     overflow: hidden;
     cursor: pointer;
   }
 </style>
 
 <div
-  class="w-full md:w-1/2 lg:w-1/3 px-6 mb-10"
+  class="w-full lg:w-1/3 px-6 mb-10"
   on:click={() => goto(`/artwork/${artwork.id}`)}>
   <div class="h-full box-shadow rounded-lg">
     <div class="thumb">
@@ -27,8 +27,8 @@
     </div>
     <div class="p-4">
       <div class="flex justify-between gap-5 mb-4">
-        <h3 class="text-xl font-bold">{artwork.title}</h3>
-        <p class="w-1/4 text-right">4 BTC</p>
+        <h3 class="text-xl break-all font-bold">{artwork.title}</h3>
+        <p class="w-2/4 text-right">4 BTC</p>
       </div>
       <div class="flex">
         <div class="my-auto cursor-pointer" on:click|stopPropagation={() => goto(`/user/${artwork.owner.id}`)}>

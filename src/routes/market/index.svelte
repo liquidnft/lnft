@@ -123,7 +123,7 @@
 
   <div class="flex flex-wrap">
     {#each filtered as artwork (artwork.id)}
-      <div class="w-full md:w-1/2 lg:w-1/3 px-10 mb-20">
+      <div class="w-full lg:w-1/3 lg:px-5 xl:px-10 mb-20">
         <Card {artwork} />
       </div>
     {/each}

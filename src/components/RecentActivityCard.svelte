@@ -12,22 +12,22 @@
 
 <style>
   .thumb {
-    max-height: 260px;
+    height: 260px;
     overflow: hidden;
     cursor: pointer;
   }
 </style>
 
-<div class="w-full md:w-1/2 lg:w-1/3 px-6 mb-10">
+<div class="w-full lg:w-1/3 px-6 mb-10">
     <div class="flex gap-3">
       <div class="mt-2"><Avatar src={transaction.user.avatar_url} /></div>
       <div class="flex flex-col">
-        <p class="mt-2"><TransactionText {transaction} /></p>
+        <p class="mt-2 break-words"><TransactionText {transaction} /></p>
         <p class="text-sm"><TransactionTime {transaction} /></p>
       </div>
     </div>
     <div
-      class="mb-5 w-full mt-7 rounded-lg box-shadow thumb"
+      class="mb-5 h-full w-full mt-7 rounded-lg box-shadow thumb"
       on:click={() => goto(`/artwork/${artwork.id}`)}>
       <ArtworkMedia {artwork} showDetails={false} />
     </div>
