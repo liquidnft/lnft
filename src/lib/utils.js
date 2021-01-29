@@ -1,7 +1,7 @@
 import decode from "jwt-decode";
 import { onMount, tick } from "svelte";
 import { get } from "svelte/store";
-import { prompt, password, snack, token } from "$lib/store";
+import { assets, addresses, prompt, password, snack, token } from "$lib/store";
 import { goto as go } from "$app/navigation";
 import PasswordPrompt from "$components/PasswordPrompt";
 
@@ -28,6 +28,26 @@ if (import.meta) {
 
 export { btc, cad, usd };
 
+export const addressLabel = (address) => {
+  let $addresses = get(addresses);
+
+  let r =
+    $addresses &&
+    $addresses.find((u) => u.address === address || u.multisig === address);
+
+  return r ? r.username : address;
+};
+
+export const assetLabel = (asset) => {
+  let $assets = get(assets);
+
+  let r =
+    $assets &&
+    $assets.find((u) => u.asset === asset);
+
+  return r ? r.title : ticker(asset);
+};
+
 export const tickers = {
   [btc]: {
     name: "Liquid Bitcoin",
@@ -51,6 +71,7 @@ export const tickers = {
     color: "green-400",
   },
 };
+
 export const ticker = (asset) => {
   return asset
     ? tickers[asset]
@@ -104,7 +125,7 @@ export const explorer =
     ? import.meta.env.SNOWPACK_PUBLIC_EXPLORER
     : "https://explorer.coinos.io";
 
-export function copy(v) {
+export const copy = (v) => {
   let textArea = document.createElement("textarea");
   textArea.style.position = "fixed";
   textArea.value = v;
@@ -118,4 +139,7 @@ export function copy(v) {
   document.body.removeChild(textArea);
 
   snack.set("Copied!");
-}
+};
+
+export const pick = (obj, ...keys) =>
+  Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));

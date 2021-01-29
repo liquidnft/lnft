@@ -1,11 +1,11 @@
 <script>
   import { onMount } from "svelte";
   import decode from "jwt-decode";
-  import { poll, user, addresses, token } from "$lib/store";
-  import { getUser, getAddresses } from "$queries/users";
+  import { poll, user, addresses, assets, token } from "$lib/store";
   import { api } from "$lib/api";
   import { fade } from "svelte/transition";
-  import { update } from "$queries/users";
+  import { getUser, getAddresses, updateUser } from "$queries/users";
+  import { getAssets } from "$queries/artworks";
   import { setupUrql } from "$lib/urql";
   import { operationStore, subscription } from "@urql/svelte";
   import { page } from "$app/stores";
@@ -28,6 +28,10 @@
 
       subscription(operationStore(getAddresses), (a, b) => {
         $addresses = b.users;
+      });
+
+      subscription(operationStore(getAssets), (a, b) => {
+        $assets = b.artworks;
       });
 
       timeout = setTimeout(() => refreshToken(t), 600000);

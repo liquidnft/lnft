@@ -29,6 +29,13 @@ const fields = `
   } 
 `;
 
+export const getAssets = `subscription {
+ artworks {
+   title
+   asset
+ }
+}`;
+
 export const getArtworks = `subscription {
  artworks {
     ${fields}

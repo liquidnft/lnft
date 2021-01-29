@@ -13,7 +13,7 @@ export const getUser = (id) => `subscription {
   }
 }`;
 
-export const update = {
+export const updateUser = {
   query: `mutation update_user($user: users_set_input!, $id: uuid!) {
     update_users_by_pk(pk_columns: { id: $id }, _set: $user) {
       ${fields}

@@ -4,7 +4,8 @@
   import reverse from "buffer-reverse";
   import { address as Address, script, networks } from "@asoltys/liquidjs-lib";
   import { electrs } from "$lib/api";
-  import { explorer } from "$lib/utils";
+  import { parseVal, parseAsset } from "$lib/wallet";
+  import { explorer, addressLabel, assetLabel, ticker } from "$lib/utils";
 
   const network = networks.regtest;
 
@@ -13,14 +14,6 @@
   let ins = [];
   let outs = [];
   let tx;
-
-  const label = (address) => {
-    let r = $addresses && $addresses.find(
-      (u) => u.address === address || u.multisig === address
-    );
-
-    return r ? r.username : address;
-  } 
 
   $: init($psbt);
   let init = async (p) => {
@@ -36,8 +29,6 @@
       let { hash, index } = tx.ins[i];
       let txid = reverse(hash).toString("hex");
       let input = (await electrs.url(`/tx/${txid}`).get().json()).vout[index];
-      input.asset = input.asset.substr(0, 6);
-      input.signed = p.data.inputs[i] && !!p.data.inputs[i].finalScriptWitness;
 
       ins = [...ins, input];
     }
@@ -45,15 +36,17 @@
     outs = tx.outs
       .map((out) => {
         let address;
+
         try {
           address = Address.fromOutputScript(out.script, network);
         } catch (e) {
           if (!out.script.length) address = "Fee";
           else return;
         }
+
         return {
-          value: parseInt(out.value.slice(1).toString("hex"), 16),
-          asset: reverse(out.asset).toString("hex").substr(0, 6),
+          value: parseVal(out.value),
+          asset: parseAsset(out.asset),
           address,
         };
       })
@@ -81,7 +74,7 @@
     {#each ins as input}
       <div class="flex break-all mb-2 text-sm">
         <div class="w-1/6">{input.value}</div>
-        <div class="mr-2">{input.asset}</div>
+        <div class="mr-2">{assetLabel(input.asset)}</div>
         <div class="text-right flex-grow">
           {#if input.signed}
             <div class="ml-auto" style="max-width: 20px">
@@ -100,8 +93,8 @@
     {#each outs as out}
       <div class="flex break-all mb-2 text-sm">
         <div class="w-1/6">{out.value}</div>
-        <div class="mr-2">{out.asset}</div>
-        <div class="text-right flex-grow">{label(out.address)}</div>
+        <div class="mr-2">{assetLabel(out.asset)}</div>
+        <div class="text-right flex-grow">{addressLabel(out.address)}</div>
       </div>
     {/each}
     {#if !summary}

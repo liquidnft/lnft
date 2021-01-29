@@ -27,8 +27,8 @@ const network = networks.regtest;
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
 
-const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
-const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
+export const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
+export const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 const getHex = async (txid) => {
   return electrs.url(`/tx/${txid}/hex`).get().text();

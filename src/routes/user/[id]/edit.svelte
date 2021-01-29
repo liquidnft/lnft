@@ -1,12 +1,19 @@
 <script>
   import { onMount } from "svelte";
   import { snack, user, token } from "$lib/store";
-  import { goto }  from "$lib/utils";
+  import { goto } from "$lib/utils";
   import { Avatar } from "$components/index";
   import upload from "$lib/upload";
-  import { update } from "$queries/users";
+  import { updateUser } from "$queries/users";
   import { mutation, subscription } from "@urql/svelte";
 
+  let initialize = (user) => {
+    if (!(form && form.id) && user) form = { ...user };
+  };
+
+  $: initialize($user);
+
+  let form;
   let fileInput;
   let filename;
   let preview;
@@ -43,26 +50,18 @@
       form.avatar_url = "/api/storage/o/public/" + file.name;
     }
 
-    updateUser(form);
+    update(form);
   };
-  let pick = (obj, ...keys) =>
-    Object.fromEntries(
-      Object.entries(obj).filter(([key]) => keys.includes(key))
-    );
-  let updateUser$ = mutation(update);
-  let updateUser = (form) => {
-    let {num_followers, num_follows, followed, id, balance, ...user} = form;
+
+  let updateUser$ = mutation(updateUser);
+
+  let update = (form) => {
+    let { num_followers, num_follows, followed, id, balance, ...user } = form;
     updateUser$({ user, id }).then((r) => {
       $snack = "Profile updated";
       goto(`/user/${id}`);
     });
   };
-
-  let form;
-  let initialize = (user) => {
-    if (!(form && form.id) && user) form = { ...user };
-  };
-  $: initialize($user);
 </script>
 
 {#if form}
