@@ -28,7 +28,7 @@
 
 <header class="flex container mx-auto justify-between p-2 items-center text-gray-600 mb-20">
 	<h1 class="flex-auto my-auto text-green-400 text-3xl">
-    	<a href="/"><img src="/logo.png" alt="logo" class="w-48 mt-3"></a>
+    	<a href="/"><img src="/logo-default.png" alt="logo" class="w-48 mt-3"></a>
   	</h1>
 	<nav class="flex hambuger">
 		<Hamburger bind:open={sidebar}/>

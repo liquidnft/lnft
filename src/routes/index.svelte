@@ -122,12 +122,12 @@
 </div>
 
 <div class="bg-black bg-opacity-75 mt-20">
-  <div class="container footer mx-auto flex flex-wrap text-white pt-12 pb-12">
-    <div class="flex flex-col text-sm w-full lg:w-1/3">
-      <a href="/"><img src="/logo.png" alt="logo" class="w-48 mt-3" /></a>
+  <div class="container footer mx-auto flex flex-wrap text-white p-12">
+    <div class="flex flex-col text-sm w-full lg:w-1/3 mb-10">
+      <a href="/"><img src="/logo-white.png" alt="logo" class="w-48 mb-4" /></a>
       <p>@2021 Raretoshi</p>
     </div>
-    <div class="w-full lg:w-1/3">
+    <div class="w-full lg:w-1/3 mb-10">
       <h4 class="font-bold mb-4">Follow US</h4>
       <ul class="list-none">
         <li class="mb-2">Twitter</li>
