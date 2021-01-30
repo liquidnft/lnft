@@ -1,6 +1,7 @@
 const { generateMnemonic } = require("bip39");
 const auth = require("./auth");
 
+require("./hyp");
 app = require("fastify")({
   logger: true,
 });
