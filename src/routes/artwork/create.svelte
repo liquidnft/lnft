@@ -126,7 +126,7 @@
         </div>
         <div class="ml-2 flex-1 flex">
           <div class="mx-auto">
-            {#if type.includes('image')}<img src={preview} class="w-full" />{/if}
+            {#if type.includes('image')}<img alt="preview" src={preview} class="w-full" />{/if}
             <video controls class:hidden muted autoplay loop class="w-full">
               <source bind:this={video} />
               Your browser does not support HTML5 video.
