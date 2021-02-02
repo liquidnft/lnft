@@ -1,9 +1,8 @@
 <script>
-  import { multisig } from "$lib/wallet";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
-  import { goto } from "$lib/utils";
+  import { goto }  from "$lib/utils";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { getUser } from "$queries/users";
@@ -23,7 +22,8 @@
   let artworks;
   subscription(operationStore(getArtworks), (_, data) => {
     artworks = data.artworks;
-  });
+  }
+);
 
   let subject;
   subscription(operationStore(getUser(id)), (_, data) => {
@@ -123,11 +123,18 @@
           Creations
         </div>
         <div
-          class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
+          class:hover={tab === 'collection'}
+          on:click={() => (tab = 'collection')}>
+          Collection
+        </div>
+        {#if $user.id === id}
+          <div class:hover={tab === 'offers'} on:click={() => (tab = 'offers')}>
+            Offers
+          </div>
           <div
-            class:hover={tab === 'creations'}
-            on:click={() => (tab = 'creations')}>
-            Creations
+            class:hover={tab === 'favorites'}
+            on:click={() => (tab = 'favorites')}>
+            Favorites
           </div>
         {/if}
       </div>
@@ -142,18 +149,6 @@
               <div class="mx-auto">No creations yet</div>
             {/each}
           </div>
-          {#if $user.id === id}
-            <div
-              class:hover={tab === 'offers'}
-              on:click={() => (tab = 'offers')}>
-              Offers
-            </div>
-            <div
-              class:hover={tab === 'favorites'}
-              on:click={() => (tab = 'favorites')}>
-              Favorites
-            </div>
-          {/if}
         </div>
       {:else if tab === 'collection'}
         <div class="w-full flex justify-center">
@@ -180,26 +175,13 @@
               <div class="mx-auto">No favorites yet</div>
             {/each}
           </div>
-        {:else if tab === 'offers'}
-          <Offers />
-        {:else}
-          <div class="w-full flex justify-center">
-            <div class="w-full flex flex-wrap">
-              {#each favorites as artwork (artwork.id)}
-                <div class="card-container">
-                  <Card {artwork} showDetails={false} />
-                </div>
-              {:else}
-                <div class="mx-auto">No favorites yet</div>
-              {/each}
-            </div>
-          </div>
-        {/if}
-      </div>
+        </div>
+      {/if}
     </div>
-  {:else}
-    <div class="absolute top-0 w-full left-0">
-      <ProgressLinear />
-    </div>
-  {/if}
+  </div>
+{:else}
+  <div class="absolute top-0 w-full left-0">
+    <ProgressLinear />
+  </div>
+{/if}
 </div>
