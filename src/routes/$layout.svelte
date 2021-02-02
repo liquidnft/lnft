@@ -7,6 +7,7 @@
     Sidebar,
     Navbar,
     Dialog,
+    Footer,
   } from "$comp";
   import { show, snack, user, token } from "$lib/store";
   import { onMount } from "svelte";
@@ -66,7 +67,7 @@
   }
 
   :global(input, textarea, select) {
-    @apply border p-4 bg-white;
+    @apply border p-4 bg-white focus:outline-none;
     overflow-y: auto;
   }
 
@@ -107,12 +108,13 @@
   <Dialog />
 
   <main>
-    <div class="mx-auto">
+    <div class="mx-auto min-h-screen">
       <App>
         <slot />
       </App>
     </div>
   </main>
+  <Footer />
 {:else}
   <div class="absolute top-0 w-full left-0">
     <ProgressLinear />
