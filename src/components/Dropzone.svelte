@@ -38,7 +38,10 @@
   on:drop={drop}
   class:highlight>
   <form class="text-center">
-    Upload your artwork by dragging an image file here
+    <div class="flex justify-center flex-col align-center h-full">
+      <span>UPLOAD YOUR ARTWORK</span>
+      <i class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-5xl secondary-color"></i>
+    </div>
     <input
       bind:this={fileInput}
       type="file"
@@ -56,14 +59,19 @@
   }
 
   #drop-area {
-    min-height: 200px;
     cursor: pointer;
-    border: 2px dashed #ccc;
-    border-radius: 20px;
-    width: 480px;
+    border: 2px solid #3ba5ac;
+    border-radius: 10px;
+    width: 70%;
+    height:70%;
+    max-width: 320px;
+    max-height: 320px;
     font-family: sans-serif;
     margin: 100px auto;
-    padding: 20px;
+  }
+
+  form{
+    height: 320px;
   }
 
   #drop-area.highlight {
