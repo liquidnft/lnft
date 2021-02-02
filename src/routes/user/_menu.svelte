@@ -10,7 +10,7 @@
   };
 </script>
 
-<div class="mb-10 mt-10">
+<div class="mb-10">
   <button
     class="rounded brand-color"
     on:click={() => goto(`/user/${$user.id}/edit`)}>Edit Profile</button>

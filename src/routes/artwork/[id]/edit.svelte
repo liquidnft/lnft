@@ -45,6 +45,10 @@
   };
 </script>
 
-{#if artwork}
-  <Form bind:artwork on:submit={update} />
-{/if}
+<div class="container mx-auto px-8">
+  <div class="w-full xl:w-1/3 mx-auto">
+    {#if artwork}
+      <Form bind:artwork on:submit={update} />
+    {/if}
+  </div>
+</div>

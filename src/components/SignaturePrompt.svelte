@@ -27,17 +27,32 @@
 
 <svelte:options accessors={true} />
 
-<h1 class="text-xl font-bold">Sign Transaction</h1>
-<div class="w-1/4 mx-auto my-4">
-  <Lock />
+<div class="flex justify-between">
+  <h1 class="font-black text-4xl primary-color">Sign transaction</h1>
+  <i class="far fa-times-circle text-4xl"></i>
 </div>
+<div class="flex my-6">
+  <div class="w-1/3 flex flex-col">
+    <span class="text-sm mb-2">Artwork title</span>
+    <span>Myartwork</span>
+  </div>
+  <div class="w-2/3 flex flex-col">
+    <span class="text-sm mb-2">Number of issues</span>
+    <span>5</span>
+  </div>
+</div>
+<div class="text-sm">Transaction fee: 1000 sats</div>
+<div class="flex justify-between items-center my-6">
+  <span class="secondary-color">View details</span>
+  <button
+    class="button-transparent"
+    on:click={() => copy($psbt.toBase64())}>Copy transaction</button>
+</div>
+<hr class="mb-4">
+
 <Transaction summary={true} />
 {#if base64}
   <div class="break-all font-mono text-xs mb-2">{$psbt.toBase64()}</div>
 {/if}
 
-<div class="flex">
-  <button
-    class="mx-auto my-4 border border-black"
-    on:click={() => copy($psbt.toBase64())}>Copy to Clipboard</button>
-</div>
+

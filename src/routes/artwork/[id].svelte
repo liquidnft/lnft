@@ -173,8 +173,8 @@
 
 <div class="container mx-auto p-10">
   {#if artwork}
-    <div class="flex flex-wrap" bind:this={target}>
-      <div class="text-center lg:text-left w-full lg:w-2/6 lg:pr-36">
+    <div class="flex justify-between flex-wrap" bind:this={target}>
+      <div class="text-center lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || 'Untitled'}
         </h1>
@@ -271,15 +271,15 @@
           </div>
         </div>
       </div>
-      <div class="w-full lg:w-4/6 lg:px-12">
+      <div class="w-full lg:w-2/3 lg:px-12">
         <Card {artwork} link={false} columns={1} showDetails={false} />
         <div class="w-full mt-28">
-          <h2 class="text-2xl font-bold primary-color p-10">
+          <h2 class="text-2xl font-bold primary-color py-10 px-5">
             More by this artist
           </h2>
           <div class="w-full flex flex-wrap">
             {#each others as artwork (artwork.id)}
-              <div class="w-full md:w-full lg:w-1/2 px-10 mb-20">
+              <div class="w-full lg:w-full xl:w-1/2 px-5 mb-20">
                 <Card {artwork} />
               </div>
             {:else}

@@ -28,11 +28,21 @@
   };
 </script>
 
-<form class="w-full md:w-1/2 mb-6" on:submit autocomplete="off">
+<style>
+  input, select, textarea{ 
+    @apply rounded-lg;
+  }
+
+  label{
+    @apply mb-4;
+  }
+</style>
+
+<form class="flex gap-5 flex-col w-full mb-6" on:submit autocomplete="off">
   <div class="flex flex-col mb-4">
-    <label>Title</label>
     <input
-      placeholder="Title"
+      class="border-0 border-b-2 rounded-none"
+      placeholder="What's your artwork title?"
       bind:value={artwork.title}
       bind:this={input} />
   </div>
@@ -41,17 +51,17 @@
     <input placeholder="Ticker" bind:value={artwork.ticker} />
   </div>
   <div class="flex flex-col mb-4">
-    <label>Description</label>
+    <label>How would you describe it?</label>
     <textarea placeholder="Description" bind:value={artwork.description} />
   </div>
   {#if !artwork.id}
     <div class="flex flex-col mb-4">
-      <label>Editions</label>
+      <label>No of editions</label>
       <input placeholder="Editions" bind:value={artwork.editions} />
     </div>
   {/if}
   <div class="flex flex-col mb-4">
-    <label>Tags</label>
+    <label>Tags <span class="text-gray-400">(e.g. Abstract, monochromatic, etc)</span></label>
     <Select
       {items}
       isMulti={true}
@@ -63,6 +73,6 @@
   <div class="flex">
     <button
       type="submit"
-      class="block bg-green-400 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
+      class="brand-color">Submit</button>
   </div>
 </form>

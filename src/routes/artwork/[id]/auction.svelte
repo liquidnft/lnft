@@ -195,12 +195,23 @@
   };
 </script>
 
-<div class="container mx-auto px-10">
-  <h1 class="title">Listing Settings</h1>
-  <p class="text-xl italic mb-4">All fields are optional</p>
+<style>
+  input, select, textarea{ 
+    @apply rounded-lg mb-4;
+  }
 
+  label{
+    @apply mb-2;
+  }
+</style>
+
+<div class="container mx-auto px-8">
+  <div class="w-full xl:w-1/3 mx-auto">
+  <h1 class="primary-color title">Listing Settings</h1>
+  <p class="text-xl italic my-4">All fields are optional</p>
+  
   {#if artwork}
-    <form class="w-full md:w-1/2 mb-6" on:submit={update} autocomplete="off">
+    <form class="w-full mb-6" on:submit={update} autocomplete="off">
       <div class="flex flex-col mb-4">
         <div>
           <div class="mt-1 relative rounded-md shadow-sm">
@@ -305,8 +316,9 @@
       <div class="flex">
         <button
           type="submit"
-          class="block bg-green-400 hover:bg-green-dark text-white uppercase text-lg mx-auto p-4 rounded flex-1">Submit</button>
+          class="brand-color">Submit</button>
       </div>
     </form>
   {/if}
+  </div>
 </div>

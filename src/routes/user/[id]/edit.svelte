@@ -64,11 +64,12 @@
   };
 </script>
 
+<div class="container mx-auto px-8">
 {#if form}
-  <h1 class="title">Edit Profile</h1>
-  <div class="flex mb-4 w-2/4 shadow p-6 m-auto">
+  <h1 class="primary-color title">Edit Profile</h1>
+  <div class="flex mb-4 w-full xl:w-2/3 shadow p-8 m-auto flex-col-reverse sm:flex-row">
     <form
-      class="mb-6 flex-grow mr-8"
+      class="mb-6 flex-grow sm:mr-8"
       on:submit|preventDefault={submit}
       autocomplete="off">
       <div class="flex flex-col mb-4">
@@ -92,13 +93,13 @@
       <div class="flex">
         <button
           on:click|preventDefault={submit}
-          class="block bg-gray-800 rounded text-white px-4 py-2 rounded brand-color">Save</button>
+          class="brand-color">Save</button>
       </div>
     </form>
-    <div class="text-center" on:click={() => fileInput.click()}>
+    <div class="text-center mx-auto" on:click={() => fileInput.click()}>
       <Avatar size="xl" src={preview || $user.avatar_url} />
       <button
-        class="mt-4 rounded-full border-radius-100 bg-gray-800 text-white p-4 brand-color">Change
+        class="my-6 brand-color">Change
         Avatar</button>
 
       <input
@@ -112,3 +113,4 @@
     </div>
   </div>
 {/if}
+</div>

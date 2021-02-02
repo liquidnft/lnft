@@ -40,11 +40,7 @@
     justify-content: space-around;
     margin-top: 20px;
   }
-  .filter-container{
-    padding-bottom: 30px;
-    margin: 1.6%;
-    margin-top: 50px;
-  }
+  
   .switch-container div{
     margin: 0px 20px 20px 0; 
   }
@@ -71,14 +67,13 @@
   }
 
 </style>
-
-<div class="container mx-auto flex justify-between px-8">
+<div class="container mx-auto flex flex-wrap justify-center sm:justify-between px-8">
   <h1 class="title primary-color">Market</h1>
   <button on:click={() => goto('/artwork/create')}
-      class="my-auto text-center brand-color mt-0">Submit a New Artwork</button>
+      class="my-auto text-center brand-color mt-0 w-full sm:w-auto">Submit a New Artwork</button>
 </div>
 <div class="container mx-auto">
-  <div class="mb-6 px-4 flex filter-container">
+  <div class="mb-6 flex filter-container p-8 pb-30 mt-50">
     <div class="mt-auto">
       <div class="switch-container">
         <div>
@@ -124,7 +119,7 @@
 
   <div class="flex flex-wrap">
     {#each filtered as artwork (artwork.id)}
-      <div class="w-full md:w-1/2 lg:w-1/3 px-10 mb-20">
+      <div class="w-full lg:w-1/3 lg:px-5 xl:px-10 mb-20">
         <Card {artwork} />
       </div>
     {/each}

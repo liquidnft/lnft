@@ -78,88 +78,50 @@
       @apply hover;
     }
   }
-
-  .card-container {
-    width: 44% !important;
-    margin: 3%;
-  }
-
-  .follow {
-    width: 150px;
-  }
-
-  .profile-container .col1 {
-    width: 10%;
-    min-width: 150px;
-  }
-
-  .profile-container .col2 {
-    width: 20%;
-    min-width: 150px;
-    margin-right: 20%;
-  }
-
-  .profile-container .col3 {
-    width: 50%;
-  }
-
-  @media only screen and (max-width: 1280px) {
-    .profile-container .col2 {
-      margin-right: 5%;
-    }
-
-    .profile-container .col3 {
-      width: 65%;
-    }
-  }
-
-  @media only screen and (max-width: 1023px) {
-    .card-container {
-      width: 100% !important;
-    }
-  }
-
-  @media only screen and (max-width: 800px) {
-    .profile-container {
-      flex-wrap: wrap;
-    }
-
-    .profile-container .col3 {
-      width: 100%;
-      margin-top: 40px;
-    }
-  }
 </style>
 
-<div class="container mx-auto px-16">
-  {#if $user && subject}
-    <div class="flex profile-container" in:fade>
-      <div class="w-1/2">
-        <div class="flex">
-          <Avatar size="large" src={subject.avatar_url} />
+<div class="container mx-auto lg:px-16 px-8">
+{#if $user && subject}
+  <div class="flex justify-between flex-wrap" in:fade>
+    <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
+      <div class="flex xl:flex-col justify-between gap-10">
+        <div class="flex flex-col">
+          <div class="flex flex-wrap xl:flex-nowrap gap-10">
+            <Avatar size="large" src={subject.avatar_url} />
 
-          <div class="ml-16">
-            <div class="text-3xl primary-color font-bold">
-              {subject.full_name}
+            <div>
+              <div class="text-3xl primary-color font-bold">{subject.full_name}</div>
+              <div class="text-gray-600">@{subject.username}</div>
             </div>
-            <div class="text-gray-600">@{subject.username}</div>
+          </div>
+
+          <div class="flex flex-wrap xl:flex-nowrap gap-7 mt-5">
+            <div>Followers: {subject.num_followers}</div>
+            <div>Following: {subject.num_follows}</div>
           </div>
         </div>
-
-        <div class="flex mt-5">
-          <div>Followers: {subject.num_followers}</div>
-          <div class="ml-14">Following: {subject.num_follows}</div>
+      
+        <div>
+          {#if $user.id === id}
+            <Menu />
+          {:else}
+            <button
+              class="p-2 rounded brand-color follow mt-8"
+              on:click={follow}>
+              {subject.followed ? 'Unfollow' : 'Follow'}</button>
+          {/if}
         </div>
-
-        {#if $user.id === id}
-          <Menu />
-        {:else}
-          <button class="p-2 rounded brand-color follow mt-8" on:click={follow}>
-            {subject.followed ? 'Unfollow' : 'Follow'}</button>
-        {/if}
       </div>
-
-      <div class="col3">
+    </div>
+   
+    <div class="w-full xl:w-2/3">
+      <div
+        class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
+        <div
+          class:hover={tab === 'creations'}
+          on:click={() => (tab = 'creations')}>
+          Creations
+        </div>
         <div
           class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
           <div
@@ -167,10 +129,18 @@
             on:click={() => (tab = 'creations')}>
             Creations
           </div>
-          <div
-            class:hover={tab === 'collection'}
-            on:click={() => (tab = 'collection')}>
-            Collection
+        {/if}
+      </div>
+      {#if tab === 'creations'}
+        <div class="w-full flex justify-center">
+          <div class="w-full flex flex-wrap">
+            {#each creations as artwork (artwork.id)}
+              <div class="w-full lg:w-1/2 px-5 mb-10">
+                <Card {artwork} />
+              </div>
+            {:else}
+              <div class="mx-auto">No creations yet</div>
+            {/each}
           </div>
           {#if $user.id === id}
             <div
@@ -185,29 +155,30 @@
             </div>
           {/if}
         </div>
-        {#if tab === 'creations'}
-          <div class="w-full flex justify-center">
-            <div class="w-full flex flex-wrap">
-              {#each creations as artwork (artwork.id)}
-                <div class="card-container">
-                  <Card {artwork} />
-                </div>
-              {:else}
-                <div class="mx-auto">No creations yet</div>
-              {/each}
-            </div>
+      {:else if tab === 'collection'}
+        <div class="w-full flex justify-center">
+          <div class="w-full flex flex-wrap">
+            {#each collection as artwork (artwork.id)}
+              <div class="w-full lg:w-1/2 px-5 mb-10">
+                <Card {artwork} />
+              </div>
+            {:else}
+              <div class="mx-auto">Nothing collected yet</div>
+            {/each}
           </div>
-        {:else if tab === 'collection'}
-          <div class="w-full flex justify-center">
-            <div class="w-full flex flex-wrap">
-              {#each collection as artwork (artwork.id)}
-                <div class="card-container">
-                  <Card {artwork} />
-                </div>
-              {:else}
-                <div class="mx-auto">Nothing collected yet</div>
-              {/each}
-            </div>
+        </div>
+      {:else if tab === 'offers'}
+        <Offers />
+      {:else}
+        <div class="w-full flex justify-center">
+          <div class="w-full flex flex-wrap">
+            {#each favorites as artwork (artwork.id)}
+              <div class="w-full lg:w-1/2 px-5 mb-10">
+                <Card {artwork} showDetails={false} />
+              </div>
+            {:else}
+              <div class="mx-auto">No favorites yet</div>
+            {/each}
           </div>
         {:else if tab === 'offers'}
           <Offers />

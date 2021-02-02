@@ -7,6 +7,13 @@
   let comp;
 </script>
 
+<style>
+  div, a, span{ 
+    @apply break-all;
+  }
+
+</style>
+
 <AcceptOffer bind:this={comp} />
 <div>
   <span class="font-medium text-gray-600 text-xs">
