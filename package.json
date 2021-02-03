@@ -48,6 +48,7 @@
 		"buffer": "^6.0.3",
 		"buffer-reverse": "^1.0.1",
 		"crypto-js": "^4.0.0",
+		"fastify-http-proxy": "^4.3.0",
 		"long": "^4.0.0",
 		"qrcode-generator-es6": "^1.1.4",
 		"slip77": "https://github.com/vulpemventures/slip77",

@@ -1,7 +1,7 @@
 import { sanitize } from "$lib/utils";
 
 export default (file, token, progress) => {
-  file = { ...file, name: sanitize(file.name) };
+  file = new File([file], sanitize(file.name), { type: file.type });
 
   let url = `/api/storage/o/public/${file.name}`;
   let formData = new FormData();

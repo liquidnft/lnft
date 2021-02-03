@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { prompt, password, user, token } from "$lib/store";
   import { goto } from "$lib/utils";
-  import { api, amp } from "$lib/api";
+  import { api } from "$lib/api";
   import cryptojs from "crypto-js";
   import { generateMnemonic } from "bip39";
   import { tick } from "svelte";

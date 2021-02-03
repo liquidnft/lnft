@@ -14,46 +14,11 @@ module.exports = {
     ],
   ],
   proxy: {
-    "/amp": {
+    "/api": {
       target: "http://localhost:8091",
       on: {
         proxyReq: (p, req, res) => {
-          p.path = req.url.replace("/amp", "");
-        },
-      },
-    },
-    "/gdk": {
-      target: "http://localhost:8090",
-      on: {
-        proxyReq: (p, req, res) => {
-          p.path = req.url.replace("/gdk", "");
-        },
-      },
-    },
-    "/api": {
-      target: "http://localhost:3400",
-      on: {
-        proxyReq: (p, req, res) => {
           p.path = req.url.replace("/api", "");
-        },
-      },
-    },
-    "/v1/graphql": {
-      target: "http://localhost:8080",
-    },
-    "/electrs": {
-      target: "http://localhost:3012",
-      on: {
-        proxyReq: (p, req, res) => {
-          p.path = req.url.replace("/electrs", "");
-        },
-      },
-    },
-    "/esplora": {
-      target: "http://localhost:5005",
-      on: {
-        proxyReq: (p, req, res) => {
-          p.path = req.url.replace("/esplora", "");
         },
       },
     },

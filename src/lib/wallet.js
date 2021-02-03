@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { amp, electrs } from "$lib/api";
+import { electrs } from "$lib/api";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";

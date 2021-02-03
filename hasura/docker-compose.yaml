@@ -2,7 +2,8 @@ version: '3.6'
 services:
   app-server:
     container_name: app-server
-    image: asoltys/app-server
+    build:
+      context: ./app-server
     environment:
       HASURA_URL: '${HASURA_ENDPOINT}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
@@ -10,6 +11,8 @@ services:
     ports:
       - '8091:8091'
       - '8092:8092'
+    volumes:
+      - ./app-server:/app
   postgres:
     container_name: postgres
     image: postgres:12
@@ -37,8 +40,8 @@ services:
       HASURA_GRAPHQL_JWT_SECRET: '${HASURA_GRAPHQL_JWT_SECRET}'
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
-  hasura-backend-plus:
-    container_name: hasura-backend-plus
+  hbp:
+    container_name: hbp
     image: nhost/hasura-backend-plus:latest
     depends_on:
       - 'hasura'

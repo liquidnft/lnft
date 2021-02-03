@@ -57,10 +57,7 @@
   const updateArtwork$ = mutation(updateArtwork);
 
   const spendPreviousSwap = async () => {
-    if (
-      royalty ||
-      parseInt(artwork.list_price || 0) === sats(list_price)
-    )
+    if (royalty || parseInt(artwork.list_price || 0) === sats(list_price))
       return true;
 
     if (artwork.list_price_tx) {
@@ -196,129 +193,132 @@
 </script>
 
 <style>
-  input, select, textarea{ 
+  input,
+  select,
+  textarea {
     @apply rounded-lg mb-4;
   }
 
-  label{
+  label {
     @apply mb-2;
   }
 </style>
 
 <div class="container mx-auto px-8">
   <div class="w-full xl:w-1/3 mx-auto">
-  <h1 class="primary-color title">Listing Settings</h1>
-  <p class="text-xl italic my-4">All fields are optional</p>
-  
-  {#if artwork}
-    <form class="w-full mb-6" on:submit={update} autocomplete="off">
-      <div class="flex flex-col mb-4">
-        <div>
-          <div class="mt-1 relative rounded-md shadow-sm">
-            <label>Asset</label>
-            <select
-              placeholder="Currency"
-              bind:value={artwork.asking_asset}
-              class="form-input block w-full pl-7 pr-12">
-              {#each Object.keys(tickers) as asset}
-                <option value={asset}>{tickers[asset].ticker}</option>
-              {/each}
-            </select>
-            <input
-              class="form-input block w-full pl-7 pr-12"
-              placeholder="0"
-              bind:value={artwork.asking_asset} />
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col mb-4">
-        <div class="mt-1 relative rounded-md shadow-sm">
-          <label>Listing Price ("Buy it Now")</label>
-          <input
-            class="form-input block w-full pl-7 pr-12"
-            placeholder={val(0)}
-            bind:value={list_price}
-            bind:this={input} />
+    <h1 class="primary-color title">Listing Settings</h1>
+    <p class="text-xl italic my-4">All fields are optional</p>
 
-          <div class="absolute inset-y-0 right-0 flex items-center mr-2">
-            {ticker}
+    {#if artwork}
+      <form class="w-full mb-6" on:submit={update} autocomplete="off">
+        <div class="flex flex-col mb-4">
+          <div>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <label>Asset</label>
+              <select
+                placeholder="Currency"
+                bind:value={artwork.asking_asset}
+                class="form-input block w-full pl-7 pr-12">
+                {#each Object.keys(tickers) as asset}
+                  <option value={asset}>{tickers[asset].ticker}</option>
+                {/each}
+              </select>
+              <input
+                class="form-input block w-full pl-7 pr-12"
+                placeholder="0"
+                bind:value={artwork.asking_asset} />
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex flex-col mb-4">
-        <label>Auction Start Time</label>
-        <input
-          placeholder="Auction Start Time"
-          bind:value={artwork.auction_start} />
-      </div>
-      <div class="flex flex-col mb-4">
-        <label>Auction End Time</label>
-        <input
-          placeholder="Auction End Time"
-          bind:value={artwork.auction_end} />
-      </div>
-      <div class="flex flex-col mb-4">
-        <div>
+        <div class="flex flex-col mb-4">
           <div class="mt-1 relative rounded-md shadow-sm">
-            <label>Reserve Price (Minimum Accepted Offer)</label>
+            <label>Listing Price ("Buy it Now")</label>
             <input
               class="form-input block w-full pl-7 pr-12"
-              placeholder="0"
-              bind:value={artwork.reserve_price} />
+              placeholder={val(0)}
+              bind:value={list_price}
+              bind:this={input} />
+
+            <div class="absolute inset-y-0 right-0 flex items-center mr-2">
+              {ticker}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex flex-col mb-4">
-        <div>
-          <div class="mt-1 relative rounded-md shadow-sm">
-            <label>Bid Increment (Bids must be higher than previous bid)</label>
-            <input
-              class="form-input block w-full pl-7 pr-12"
-              placeholder="0"
-              bind:value={artwork.bid_increment} />
+        <div class="flex flex-col mb-4">
+          <label>Auction Start Time</label>
+          <input
+            placeholder="Auction Start Time"
+            bind:value={artwork.auction_start} />
+        </div>
+        <div class="flex flex-col mb-4">
+          <label>Auction End Time</label>
+          <input
+            placeholder="Auction End Time"
+            bind:value={artwork.auction_end} />
+        </div>
+        <div class="flex flex-col mb-4">
+          <div>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <label>Reserve Price (Minimum Accepted Offer)</label>
+              <input
+                class="form-input block w-full pl-7 pr-12"
+                placeholder="0"
+                bind:value={artwork.reserve_price} />
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex flex-col mb-4">
-        <div>
-          <div class="mt-1 relative rounded-md shadow-sm">
-            <label>Extension Interval (Auction end time gets extended if bid
-              received within this interval)</label>
-            <input
-              class="form-input block w-full pl-7 pr-12"
-              placeholder="0"
-              bind:value={artwork.extension_interval} />
+        <div class="flex flex-col mb-4">
+          <div>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <label>Bid Increment (Bids must be higher than previous bid)</label>
+              <input
+                class="form-input block w-full pl-7 pr-12"
+                placeholder="0"
+                bind:value={artwork.bid_increment} />
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex flex-col mb-4">
-        <div>
-          <div class="mt-1 relative rounded-md shadow-sm">
-            <label>Max Extensions (Number of times the auction can be extended)</label>
-            <input
-              class="form-input block w-full pl-7 pr-12"
-              placeholder="0"
-              bind:value={artwork.max_extensions} />
+        <div class="flex flex-col mb-4">
+          <div>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <label>Extension Interval (Auction end time gets extended if bid
+                received within this interval)</label>
+              <input
+                class="form-input block w-full pl-7 pr-12"
+                placeholder="0"
+                bind:value={artwork.extension_interval} />
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex flex-col mb-4">
-        <div>
-          <div class="mt-1 relative rounded-md shadow-sm">
-            <label>Royalty Rate (Percentage paid to artist of every sale)</label>
-            <input
-              class="form-input block w-full pl-7 pr-12"
-              placeholder="0"
-              bind:value={royalty} />
+        <div class="flex flex-col mb-4">
+          <div>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <label>Max Extensions (Number of times the auction can be
+                extended)</label>
+              <input
+                class="form-input block w-full pl-7 pr-12"
+                placeholder="0"
+                bind:value={artwork.max_extensions} />
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex">
-        <button
-          type="submit"
-          class="brand-color">Submit</button>
-      </div>
-    </form>
-  {/if}
+        {#if $user.id === artwork.artist_id}
+          <div class="flex flex-col mb-4">
+            <div>
+              <div class="mt-1 relative rounded-md shadow-sm">
+                <label>Royalty Rate (Percentage paid to artist of every sale)</label>
+                <input
+                  class="form-input block w-full pl-7 pr-12"
+                  placeholder="0"
+                  bind:value={royalty} />
+              </div>
+            </div>
+          </div>
+        {/if}
+        <div class="flex">
+          <button type="submit" class="brand-color">Submit</button>
+        </div>
+      </form>
+    {/if}
   </div>
 </div>

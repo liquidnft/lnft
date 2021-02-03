@@ -1,7 +1,7 @@
 <script>
   import { page } from "$app/stores";
   import { v4 } from "uuid";
-  import { amp, electrs } from "$lib/api";
+  import { electrs } from "$lib/api";
   import { tick, onMount } from "svelte";
   import { psbt, password, prompt, user, snack, token } from "$lib/store";
   import { Dropzone, SignaturePrompt } from "$comp";
@@ -24,7 +24,7 @@
   $: hidden = type && !type.includes("video");
 
   let previewFile = (file) => {
-    artwork.filename = file.name;
+    artwork.filename = sanitize(file.name);
     type = file.type;
     var reader = new FileReader();
 
