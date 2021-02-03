@@ -7,17 +7,15 @@
   export let items = [];
 </script>
 
-<div class="w-full md:w-full lg:w-1/3 px-6 mb-10">
-  <div class="border-gray-400 border-b-2 pb-2 flex">
-    <h1 class="text-xl flex-1">{title}</h1>
+<div class="w-full md:w-full lg:w-1/2 px-6 mb-10">
+  <div class="border-gray-400 border-b-2 flex justify-between">
+    <p class="text-xl">{title}</p>
+    <div class="mb-4">{stat}</div>
   </div>
-  <div class="text-right w-full mt-2 mb-4">{stat}</div>
   <div class="py-4">
     {#each items as item}
       <Row {item} />
     {/each}
   </div>
-  <div class="text-right text-sm font-bold primary-color">
-    <a href={link}>See all</a>
-  </div>
+  <a class="block text-right text-sm text-midblue primary-color" href={link}>See all</a>
 </div>

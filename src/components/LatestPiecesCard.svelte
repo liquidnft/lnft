@@ -16,19 +16,25 @@
     overflow: hidden;
     cursor: pointer;
   }
+
+  @media only screen and (max-width: 1024px){
+    .recentCard{
+      width: 300px;
+    }
+  }
 </style>
 
 <div
-  class="w-full lg:w-1/3 px-6 mb-10"
+  class="w-full lg:w-1/3 px-4 mb-10"
   on:click={() => goto(`/artwork/${artwork.id}`)}>
-  <div class="h-full box-shadow rounded-lg">
+  <div class="h-full box-shadow rounded-lg recentCard">
     <div class="thumb">
       <ArtworkMedia {artwork} showDetails={false} />
     </div>
     <div class="p-4">
-      <div class="flex justify-between gap-5 mb-4">
+      <div class="flex justify-between mb-4">
         <h3 class="text-xl break-all font-bold">{artwork.title}</h3>
-        <p class="w-2/4 text-right">4 BTC</p>
+        <p class="text-right pl-5">4 BTC</p>
       </div>
       <div class="flex">
         <div class="my-auto cursor-pointer" on:click|stopPropagation={() => goto(`/user/${artwork.owner.id}`)}>

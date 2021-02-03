@@ -17,5 +17,5 @@
   <img
     src={`/api/storage/o/public/${artwork.filename}`}
     alt={artwork.filename}
-    class="w-full rounded-t-lg object-cover {showDetails ? 'rounded-t-lg' : 'rounded-lg'}" />
+    class="w-full h-full rounded-t-lg object-cover {showDetails ? 'rounded-t-lg' : 'rounded-lg'}" />
 {/if}

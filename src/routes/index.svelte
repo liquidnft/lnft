@@ -44,7 +44,7 @@
 </style>
 
 <div class="flex mx-auto justify-center">
-  <div class="header text-center">
+  <div class="header mt-20 text-center">
     <h1 class="mb-10 text-left md:text-center w-2/3 md:w-full">
       The Raretoshi
       <br />digital art gallery
@@ -71,7 +71,7 @@
   </div>
 </div>
 
-<div class="container mx-auto pl-6 mb-8">
+<div class="container mx-auto px-10 mb-8">
   <h3 class="primary-color font-bold text-3xl">Recent Activity</h3>
 </div>
 <div class="container mx-auto flex overflow-x-auto">
@@ -83,24 +83,22 @@
   <button class="secondary-btn" on:click={() => goto('/activity')}>View more</button>
 </div>
 
-<div class="container mx-auto pl-6 mb-8">
+<div class="container mx-auto px-10 mb-8">
   <h3 class="primary-color font-bold text-3xl">Latest Pieces</h3>
 </div>
-<div class="container mx-auto mb-20 pb-10">
-  <div class="flex flex-wrap">
+<div class="container mx-auto flex pb-10 overflow-x-auto">
     {#each latest as transaction}
       <LatestPiecesCard {transaction} />
     {/each}
-  </div>
-  <div class="mx-auto container text-center">
-    <button class="button-transparent" on:click={() => goto('/market')}>View gallery</button>
-  </div>
+</div>
+<div class="mx-auto container text-center mb-20">
+  <button class="secondary-btn" on:click={() => goto('/market')}>View gallery</button>
 </div>
 
-<div class="container mx-auto pl-6 mb-10">
+<div class="container mx-auto px-10 mb-10">
   <h3 class="primary-color font-bold text-3xl">Watch the market move</h3>
 </div>
-<div class="container mx-auto flex flex-wrap">
+<div class="container mx-auto flex flex-wrap mb-20">
   <Summary
     title="Top Collectors"
     stat="Recently Collected"
@@ -111,11 +109,6 @@
     stat="Recent Sales"
     {items}
     link="/top-artists" />
-  <Summary
-    title="Largest Collections"
-    stat="Artworks Owned"
-    {items}
-    link="/largest-collections" />
 </div>
 
 

@@ -85,6 +85,10 @@ Brand Colors
   background: #6ED8E0;
 }
 
+.text-midblue{
+  color: #0F828A;
+}
+
 /*Light blue gradient — Gradient accent color */
 .lightblue-grad{
   background: rgb(143,238,245);
@@ -106,16 +110,17 @@ button{
   width: 100%;
   border-radius: 30px;
   padding: 0.7rem 1.5rem !important;
-  color: #444444;
 }
 
 .primary-btn{
+  color: #444444;
   font-weight: bold;
   background: rgb(143,238,245);
   background: linear-gradient(90deg, rgba(143,238,245,1) 0%, rgba(127,228,235,1) 50%, rgba(110,216,224,1) 100%);
 }
 
 .secondary-btn{
+  color: #133E7C;
   font-weight: bold;
   background: none;
   border:1px solid #133E7C;
