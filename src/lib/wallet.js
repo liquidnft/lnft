@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { electrs } from "$lib/api";
+import { api, electrs } from "$lib/api";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
@@ -413,7 +413,7 @@ export const sendToMultisig = async (artwork, fee) => {
 };
 
 export const requestSignature = async (psbt) => {
-  let { base64 } = await amp
+  let { base64 } = await api 
     .url("/sign")
     .post({ psbt: psbt.toBase64() })
     .json();

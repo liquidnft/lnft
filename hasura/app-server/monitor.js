@@ -1,4 +1,4 @@
-const { api, electrs } = require("./api");
+const { hasura, electrs } = require("./api");
 
 const query = `
   query transactions {
@@ -61,7 +61,7 @@ const acceptOffer = {
 
 setInterval(
   async () =>
-    api
+    hasura
       .post({ query })
       .json(({ data: { transactions } }) =>
         transactions.map((tx) => {
@@ -71,11 +71,11 @@ setInterval(
             .json(
               ({ confirmed }) =>
                 confirmed &&
-                api
+                hasura
                   .post({ query: setConfirmed, variables: { id: tx.id } })
                   .json(
                     ({ data: { update_transactions_by_pk: transaction } }) =>
-                      api.post({
+                      hasura.post({
                         query: updateArtwork,
                         variables: {
                           id: transaction.artwork_id,

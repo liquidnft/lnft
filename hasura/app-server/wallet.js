@@ -1,7 +1,14 @@
 const { mnemonicToSeedSync } = require("bip39");
 const { fromSeed } = require("bip32");
-const { ECPair, Psbt, payments, networks } = require("@asoltys/liquidjs-lib");
+const {
+  address: Address,
+  ECPair,
+  Psbt,
+  payments,
+  networks,
+} = require("@asoltys/liquidjs-lib");
 const { electrs } = require("./api");
+const reverse = require("buffer-reverse");
 
 const network = networks.regtest;
 
@@ -20,22 +27,43 @@ const keypair = () => {
 };
 
 const sign = (psbt, sighash = 1, privkey) => {
-  //  throw new Error("no!");
   if (!privkey) ({ privkey } = keypair());
   psbt = Psbt.fromBase64(psbt);
 
   psbt.data.inputs.map((input, i) => {
-    console.log(input);
     try {
       psbt = psbt
         .signInput(i, ECPair.fromPrivateKey(privkey), [input.sighashType])
         .finalizeInput(i);
-    } catch (e) {
-      console.log(e.message);
-    }
+    } catch (e) {}
   });
 
   return psbt;
 };
 
-module.exports = { keypair, sign };
+let parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
+let parseAsset = (v) => reverse(v.slice(1)).toString("hex");
+
+module.exports = {
+  keypair,
+
+  parse(psbt) {
+    psbt = Psbt.fromBase64(psbt);
+    return psbt.__CACHE.__TX.outs.map((o) => {
+      let address;
+
+      try {
+        address = Address.fromOutputScript(o.script, network);
+      } catch (e) {}
+
+      return {
+        ...o,
+        asset: parseAsset(o.asset),
+        value: parseVal(o.value),
+        address,
+      };
+    });
+  },
+
+  sign,
+};
