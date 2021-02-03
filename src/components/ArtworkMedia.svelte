@@ -6,7 +6,7 @@
 {#if artwork.filename.includes('mp4')}
   <video
     controls
-    class="w-full h-full rounded-t-lg {showDetails ? 'object-cover' : 'object-contain'}"
+    class="w-full h-full object-cover {showDetails ? 'rounded-t-lg' : 'rounded-lg'}"
     autoplay
     muted
     loop>
@@ -17,5 +17,5 @@
   <img
     src={`/api/storage/o/public/${artwork.filename}`}
     alt={artwork.filename}
-    class="w-full rounded-t-lg {showDetails ? 'object-cover' : 'object-contain'}" />
+    class="w-full rounded-t-lg object-cover {showDetails ? 'rounded-t-lg' : 'rounded-lg'}" />
 {/if}

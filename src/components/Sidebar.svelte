@@ -6,13 +6,13 @@
 
 <style>
 	aside {
-		right: -100%;
-		transition: right 0.3s ease-in-out;
+		left: -100%;
+		transition: left 0.3s ease-in-out;
 		z-index: 10;
 	}
 	
 	.open {
-		right: 0
+		left: 0;
 	}
 
 	@media only screen and (min-width: 640px){
@@ -23,6 +23,6 @@
 </style>
 
 
-<aside class="absolute w-10/12 h-full bg-gray-200 border-r-2 shadow-lg sideBar" class:open>
+<aside class="absolute w-2/3 h-full bg-gray-200 border-r-2 shadow-lg sideBar" class:open>
 	<Menu bind:open={open}/>
 </aside>

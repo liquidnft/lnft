@@ -10,13 +10,16 @@
 	  display: none;
   }
 
-  header{
-	  justify-content: flex-end;
-	  padding-left: 30px;
+  .mobileSearch{
+	  display: none;
   }
 
   @media only screen and (max-width: 640px){
 	.hambuger{
+	  display: block;
+	}
+	  
+	.mobileSearch{
 	  display: block;
   	}
 	
@@ -26,13 +29,14 @@
   }
 </style>
 
-<header class="flex container mx-auto justify-between p-2 items-center text-gray-600 mb-20">
-	<h1 class="flex-auto my-auto text-green-400 text-3xl">
-    	<a href="/"><img src="/logo-default.png" alt="logo" class="w-48 mt-3"></a>
-  	</h1>
+<header class="flex container mx-auto justify-between px-4 py-4 items-center text-gray-600 mb-20">
 	<nav class="flex hambuger">
 		<Hamburger bind:open={sidebar}/>
 	</nav>
+	<div>
+    	<a href="/"><img src="/logo-default.png" alt="logo" class="w-36 lg:w-48"></a>
+	</div>
+	<a class="mobileSearch" href="/discover"><i class="fas fa-search text-2xl"></i></a>
 	<nav class="hidden text-bold sm:block">
 		<Menu />
 	</nav>

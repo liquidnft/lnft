@@ -7,6 +7,7 @@
   export let link = true;
   export let showDetails = true;
   export let shadow = !showDetails;
+  export let activityPage = false
 
   $: [sats, val, ticker] = units(artwork.asking_asset);
 
@@ -37,13 +38,15 @@
     border-radius: 10px 10px 0 0;
   }
 
-  .image-container{
-    height:550px;
+  .square{
+    height:450px;
   }
+
+  
 </style>
 
 <div class="{showDetails? 'card': ""} bg-white flex flex-col justify-between" class:link on:click={click}>
-  <div class="flex justify-center h-3/5 {showDetails? '': 'image-container'}">
+  <div class="flex justify-center {activityPage? 'square' : 'h-3/5'}">
     <ArtworkMedia {artwork} {showDetails} />
   </div>
   {#if showDetails}

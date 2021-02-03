@@ -30,6 +30,6 @@
 </div>
 
 {#if showImage}
-  <Card artwork={transaction.artwork} columns={2} showDetails={false} />
+  <Card artwork={transaction.artwork} columns={2} showDetails={false} activityPage={true}/>
   <hr class="mb-6 divider" />
 {/if}

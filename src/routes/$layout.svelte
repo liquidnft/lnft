@@ -27,9 +27,6 @@
 </script>
 
 <style>
-  :global(.primary-color) {
-    color: #133e7c;
-  }
 
   :global(.secondary-color) {
     color: #3ba5ac;
@@ -39,13 +36,7 @@
     background: #3ba5ac;
   }
 
-  :global(button) {
-    border-radius: 30px !important;
-    padding: 0.7rem 1.2rem;
-    color: #444444;
-    font-weight: bold;
-  }
-
+  
   :global(.button-transparent) {
     background-color: none;
     border: 1px solid #133e7c;
@@ -72,9 +63,8 @@
   }
 
   :global(.title) {
-    @apply font-black pb-14;
-    text-align: center !important;
-    font-size: 2.3rem;
+    @apply font-bold pb-14 text-4xl text-left;
+    color: #133e7c;
   }
 
   :global(.sub-title) {

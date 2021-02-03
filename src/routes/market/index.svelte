@@ -72,7 +72,7 @@
   <button on:click={() => goto('/artwork/create')}
       class="my-auto text-center brand-color mt-0 w-full sm:w-auto">Submit a New Artwork</button>
 </div>
-<div class="container mx-auto">
+<div class="container mx-auto px-8">
   <div class="mb-6 flex filter-container p-8 pb-30 mt-50">
     <div class="mt-auto">
       <div class="switch-container">

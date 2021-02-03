@@ -84,20 +84,18 @@
 
   .form-container form {
     width: 100%;
-    max-width: 500px;
+    max-width: 450px;
     background-color: white;
     padding: 40px;
-    box-shadow: 0 4px 20px rgb(0 0 0 / 18%);
+    box-shadow: 0 1px 5px rgb(0 0 0 / 18%);
     border-radius: 10px;
   }
 
   input {
-    @apply shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight;
+    @apply shadow appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
   }
 
-  button {
-    @apply border shadow px-4 py-2;
-  }
+ 
 </style>
 
 {#if error}
@@ -109,13 +107,14 @@
   </div>
 {/if}
 
-<div class="form-container">
-  <h1 class="title">Sign In</h1>
+<div class="container mx-auto form-container">
+  
   <form class="mb-6" on:submit|preventDefault={login} autocomplete="off">
+    <h2 class="mb-8">Sign In</h2>
     <div class="flex flex-col mb-4">
       <label
-        class="mb-2 uppercase font-medium text-gray-600"
-        for="first_name">Username</label>
+        class="mb-2 font-medium text-gray-600"
+        for="first_name">Email or username</label>
       <input
         placeholder="username"
         bind:value={username}
@@ -123,17 +122,14 @@
     </div>
     <div class="flex flex-col mb-4">
       <label
-        class="mb-2 uppercase font-medium text-gray-600"
+        class="mb-2 font-medium text-gray-600"
         for="last_name">Password</label>
       <input placeholder="Password" type="password" bind:value={attempt} />
     </div>
-    <div class="flex">
-      <button
-        class="block brand-color text-white uppercase text-lg mx-auto p-4 flex-1 ml-1"
-        type="submit">Login</button>
-      <button
-        on:click|preventDefault={register}
-        class="block bg-gray-600 hover:bg-green-dark uppercase text-lg mx-auto rounded flex-1">Register</button>
+    <a class="block w-full text-lightblue" href="/">Forgot password?</a>
+    <div class="flex my-5 justify-end">
+      <button class="primary-btn w-1/2" type="submit">Sign In</button>
     </div>
+    <span class="text-lightblue" on:click|preventDefault={register}>Don't have an account? Sign up</span>
   </form>
 </div>
