@@ -93,6 +93,7 @@
       $psbt = await createSwap(artwork, sats(list_price));
     } catch (e) {
       err(e);
+      console.log(e.stack);
       return;
     }
 
