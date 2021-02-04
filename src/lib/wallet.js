@@ -350,7 +350,7 @@ export const createSwap = async ({ asset, asking_asset, royalty }, amount) => {
     value: amount,
   });
 
-  await fund(swap, multisig(), asset, 1, singleAnyoneCanPay, !!royalty);
+  await fund(swap, royalty ? multisig() : singlesig(), asset, 1, singleAnyoneCanPay, !!royalty);
 
   return swap;
 };
