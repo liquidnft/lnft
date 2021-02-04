@@ -32,9 +32,20 @@
   });
 
   let listPrice, openBid, ownedByCreator, hasSold, sort;
+
+  let isActive = false
 </script>
 
 <style>
+  select{
+    background: url(down-arrow.png);
+    background-repeat: no-repeat;
+    background-position: 90%;
+    appearance: none !important;
+    background-color: whitesmoke;
+    padding-right: 3rem;
+    background-size: 20px;
+  }
   .switch-container{
     display: flex;
     justify-content: space-around;
@@ -45,21 +56,35 @@
     margin: 0px 20px 20px 0; 
   }
 
-  .sort-container select{
-      margin-top:20px;
+  .filters{
+      display: none;
+      cursor: pointer;
   }
 
-
+  
   @media only screen and (max-width: 1023px){
     .switch-container{
       flex-direction: column;
     }
+
+    select{ 
+      border: none;
+      background-color: white;
+      margin-top: -20px;
+      text-transform:uppercase;
+      font-weight: bold;
+    }
+
+    .filters{
+      display: block;
+    }
+
+    .active{
+      display: none;
+    }
   }
 
   @media only screen and (max-width: 500px){
-    .filter-container{
-      flex-direction: column-reverse;
-    }
     .sort-container{
       margin: 0;
       margin-bottom: 20px;
@@ -67,15 +92,25 @@
   }
 
 </style>
-<div class="container mx-auto flex flex-wrap justify-center sm:justify-between px-8">
-  <h1 class="title primary-color">Market</h1>
+<div class="container mx-auto flex flex-wrap justify-center sm:justify-between mt-20">
+  <h2 class="mb-10 md:mb-0">Market</h2>
   <button on:click={() => goto('/artwork/create')}
-      class="my-auto text-center brand-color mt-0 w-full sm:w-auto">Submit a New Artwork</button>
+      class="primary-btn">Submit a New Artwork</button>
 </div>
-<div class="container mx-auto px-8">
-  <div class="mb-6 flex filter-container p-8 pb-30 mt-50">
-    <div class="mt-auto">
-      <div class="switch-container">
+<div class="container mx-auto mt-10">
+  <div class="flex items-center">
+    <input type="search" class="w-full lg:w-1/3 border-0 border-b-2 border-lightblue" 
+      placeholder="What are you looking for?">
+    <i class="fas fa-search text-2xl -ml-5"></i>
+  </div>
+</div>
+<div class="container mx-auto">
+  <div class="mb-6 flex filter-container justify-between py-10 pb-30 mt-50">
+    <div class="switch">
+      <p class="filters mb-8 font-bold" on:click={() => isActive = !isActive}>FILTERS
+         <i class="fas fa-sliders-h ml-3"></i>
+      </p>
+      <div class:active={isActive} class="switch-container">
         <div>
           <ToggleSwitch
             id="list-price"
@@ -106,8 +141,9 @@
         </div>
       </div>
     </div>
-    <div class="ml-auto sort-container">
-      <select class="rounded-full bg-gray-200" bind:value={sort}>
+    
+    <div class="sort-container">
+      <select class="rounded-full bg-gray-100 px-8" bind:value={sort}>
         <option value="active">Recently active</option>
         <option value="lowest">Lowest price</option>
         <option value="highest">Highest price</option>
@@ -119,7 +155,7 @@
 
   <div class="flex flex-wrap">
     {#each filtered as artwork (artwork.id)}
-      <div class="w-full lg:w-1/3 lg:px-5 xl:px-10 mb-20">
+      <div class="w-full lg:w-1/3 lg:px-5 xl:px-8 mb-20">
         <Card {artwork} />
       </div>
     {/each}

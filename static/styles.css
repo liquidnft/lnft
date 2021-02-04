@@ -85,6 +85,10 @@ Brand Colors
   background: #6ED8E0;
 }
 
+.border-lightblue{
+  border: 1px solid #6ED8E0;
+}
+
 .text-midblue{
   color: #0F828A;
 }
