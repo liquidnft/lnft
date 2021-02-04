@@ -68,7 +68,9 @@ export const getTransactions = `subscription {
 
 export const getOffers = `subscription {
   offers {
-    ${fields}
+    transaction {
+      ${fields}
+    }
   }
 }`;
 

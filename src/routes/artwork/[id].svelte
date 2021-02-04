@@ -1,6 +1,12 @@
 <script>
   import { page } from "$app/stores";
-  import { Activity, Avatar, Card, SignaturePrompt } from "$comp";
+  import {
+    Activity,
+    Avatar,
+    Card,
+    ProgressLinear,
+    SignaturePrompt,
+  } from "$comp";
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
   import { prompt, password, snack, user, token, psbt } from "$lib/store";
@@ -17,7 +23,12 @@
   import { goto } from "$lib/utils";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { explorer, requireLogin, requirePassword } from "$lib/utils";
-  import { createOffer, executeSwap, requestSignature, broadcast } from "$lib/wallet";
+  import {
+    createOffer,
+    executeSwap,
+    requestSignature,
+    broadcast,
+  } from "$lib/wallet";
   import { units } from "$lib/utils";
   import { Psbt } from "@asoltys/liquidjs-lib";
 
@@ -33,7 +44,7 @@
   $: if (artwork)
     subscription(
       operationStore(getArtworksByArtist(artwork.artist_id)),
-      (a, b) => (others = b.artworks.filter(a => a.id !== artwork.id))
+      (a, b) => (others = b.artworks.filter((a) => a.id !== artwork.id))
     );
 
   let artwork, start_counter, end_counter;
@@ -60,7 +71,6 @@
       $psbt = await createOffer(artwork, transaction.amount, 500);
     } catch (e) {
       $snack = e.message;
-      console.log(e.stack);
       return;
     }
 
@@ -110,39 +120,35 @@
   };
 
   let buyNow = async () => {
-    await requirePassword();
-
-    transaction.amount = artwork.list_price;
-    transaction.type = "purchase";
     try {
+      await requirePassword();
+
+      transaction.amount = artwork.list_price;
+      transaction.type = "purchase";
+
       $psbt = await executeSwap(artwork, 500);
+
+      $prompt = SignaturePrompt;
+
+      $prompt = SignaturePrompt;
+      await new Promise((resolve) =>
+        prompt.subscribe((value) => value === "success" && resolve())
+      );
+
+      if (artwork.royalty) {
+        $psbt = await requestSignature($psbt);
+      }
+
+      await tick();
+      await broadcast($psbt);
+      let tx = $psbt.extractTransaction();
+      transaction.hash = tx.getId();
+      transaction.psbt = $psbt.toBase64();
+
+      save();
     } catch (e) {
       $snack = e.message;
-      console.log(e.stack);
-      return;
     }
-    $prompt = SignaturePrompt;
-
-    $prompt = SignaturePrompt;
-    await new Promise((resolve) =>
-      prompt.subscribe((value) => value === "success" && resolve())
-    );
-
-    if (artwork.royalty) {
-      try {
-        $psbt = await requestSignature($psbt);
-      } catch(e) {
-        $snack = e.message;
-      } 
-    }
-
-    await tick();
-    await broadcast($psbt);
-    let tx = $psbt.extractTransaction();
-    transaction.hash = tx.getId();
-    transaction.psbt = $psbt.toBase64();
-
-    save();
   };
 
   let target;
@@ -289,5 +295,7 @@
         </div>
       </div>
     </div>
-  {:else}Artwork not found{/if}
+  {:else}
+    <ProgressLinear app={true} />
+  {/if}
 </div>

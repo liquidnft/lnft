@@ -25,7 +25,7 @@
     requireLogin,
     requirePassword,
   } from "$lib/utils";
-  import { broadcast, pay, keypair, payment, unblind } from "$lib/wallet";
+  import { broadcast, pay, keypair, unblind } from "$lib/wallet";
 
   $: requireLogin($page);
 

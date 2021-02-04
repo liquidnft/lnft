@@ -1,7 +1,7 @@
 <script>
   import { tick } from "svelte";
   import { asset, prompt, psbt, snack } from "$lib/store";
-  import { broadcast, pay, keypair, payment, unblind } from "$lib/wallet";
+  import { broadcast, pay, keypair, unblind } from "$lib/wallet";
   import { btc, sats } from "$lib/utils";
   import { SignaturePrompt } from "$comp";
 

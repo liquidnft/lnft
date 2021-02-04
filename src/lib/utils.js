@@ -31,11 +31,16 @@ export { btc, cad, usd };
 export const addressLabel = (address) => {
   let $addresses = get(addresses);
 
-  let r =
-    $addresses &&
-    $addresses.find((u) => u.address === address || u.multisig === address);
+  let r;
 
-  return r ? r.username : address;
+  if ($addresses) {
+    r = $addresses.find((u) => u.multisig === address);
+    if (r) return r.username + " 2of2";
+    r = $addresses.find((u) => u.address === address);
+    if (r) return  r.username;
+  }
+
+  return address;
 };
 
 export const assetLabel = (asset) => {

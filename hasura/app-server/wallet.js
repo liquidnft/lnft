@@ -32,8 +32,11 @@ const sign = (psbt, sighash = 1, privkey) => {
 
   psbt.data.inputs.map((input, i) => {
     try {
+      let sighashTypes;
+      if (input.sighashType) sighashTypes = [input.sighashType];
+
       psbt = psbt
-        .signInput(i, ECPair.fromPrivateKey(privkey), [input.sighashType])
+        .signInput(i, ECPair.fromPrivateKey(privkey), sighashTypes)
         .finalizeInput(i);
     } catch (e) {}
   });
@@ -49,7 +52,7 @@ module.exports = {
 
   parse(psbt) {
     psbt = Psbt.fromBase64(psbt);
-    return psbt.__CACHE.__TX.outs.map((o) => {
+    return [psbt.__CACHE.__TX.getId(), psbt.__CACHE.__TX.outs.map((o) => {
       let address;
 
       try {
@@ -62,7 +65,7 @@ module.exports = {
         value: parseVal(o.value),
         address,
       };
-    });
+    })];
   },
 
   sign,

@@ -1,5 +1,4 @@
-const auth = require("./auth");
-const proxy = require("fastify-http-proxy");
+auth = require("./auth");
 
 app = require("fastify")({
   logger: true,

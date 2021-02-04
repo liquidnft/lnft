@@ -11,13 +11,15 @@
 
   export let summary = false;
 
-  let ins = [];
-  let outs = [];
   let tx;
 
+  let ins, outs;
   $: init($psbt);
   let init = async (p) => {
     if (!p) return;
+
+    ins = [];
+    outs = [];
 
     try {
       tx = p.extractTransaction();
@@ -29,6 +31,12 @@
       let { hash, index } = tx.ins[i];
       let txid = reverse(hash).toString("hex");
       let input = (await electrs.url(`/tx/${txid}`).get().json()).vout[index];
+      input.signed =
+        !!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig;
+      input.pSig = !!p.data.inputs[i].partialSig;
+      input.txid = txid;
+      input.index = index;
+
 
       ins = [...ins, input];
     }
@@ -71,14 +79,14 @@
       <div class="w-1/6">Value</div>
       <div class="mr-2">Asset</div>
     </div>
-    {#each ins as input}
+    {#each ins as input (input.txid + input.index)}
       <div class="flex break-all mb-2 text-sm">
         <div class="w-1/6">{input.value}</div>
         <div class="mr-2">{assetLabel(input.asset)}</div>
         <div class="text-right flex-grow">
           {#if input.signed}
             <div class="ml-auto" style="max-width: 20px">
-              <Check />
+              <Check color={input.pSig ? 'orange' : '#32c671'} />
             </div>
           {/if}
         </div>

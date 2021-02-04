@@ -321,6 +321,35 @@
       filter: {}
 - table:
     schema: public
+    name: currentuser
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - display_name
+      - avatar_url
+      - username
+      - location
+      - bio
+      - website
+      - email
+      - full_name
+      - address_index
+      - pubkey
+      - mnemonic
+      - address
+      - gaid
+      - amp_mnemonic
+      - multisig
+      - amp_user_id
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+- table:
+    schema: public
     name: favorites
   object_relationships:
   - name: artwork
@@ -415,6 +444,14 @@
           name: artworks
         column_mapping:
           artwork_id: id
+  - name: transaction
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: transactions
+        column_mapping:
+          id: id
   select_permissions:
   - role: anonymous
     permission:

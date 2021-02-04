@@ -16,8 +16,14 @@
 
   export let submit = async (e) => {
     await requirePassword();
-    $psbt = sign($psbt, $sighash || 1);
-    $prompt = "success";
+
+    try {
+      $psbt = sign($psbt, $sighash || 1);
+      $prompt = "success";
+    } catch(e) {
+      $snack = e.message;
+    }
+
     $prompt = undefined;
     $sighash = undefined;
   };

@@ -14,7 +14,7 @@ import {
 } from "@asoltys/liquidjs-lib";
 import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
-import { password, snack, user } from "$lib/store";
+import { password, snack, user, token } from "$lib/store";
 import cryptojs from "crypto-js";
 import { btc } from "$lib/utils";
 import { fromSeed as slip77 } from "slip77";
@@ -81,7 +81,7 @@ export const unblind = (hex, vout) => {
   return unblinded;
 };
 
-export const payment = (key, blind = false) => {
+export const singlesig = (key, blind = false) => {
   if (!key) key = keypair();
   let { pubkey, seed } = key;
 
@@ -204,7 +204,7 @@ export const pay = async (asset, to, amount, fee) => {
       value: fee,
     });
 
-  let out = payment();
+  let out = singlesig();
   if (asset === btc) {
     await fund(swap, out, asset, amount + fee);
   } else {
@@ -216,7 +216,7 @@ export const pay = async (asset, to, amount, fee) => {
 };
 
 export const cancelSwap = async ({ royalty, asset }, fee) => {
-  let out = royalty ? multisig() : payment();
+  let out = royalty ? multisig() : singlesig();
 
   let swap = new Psbt()
     .addOutput({
@@ -233,7 +233,7 @@ export const cancelSwap = async ({ royalty, asset }, fee) => {
     });
 
   await fund(swap, out, asset, 1);
-  await fund(swap, payment(), btc, fee);
+  await fund(swap, singlesig(), btc, fee);
 
   return swap;
 };
@@ -259,18 +259,22 @@ export const broadcast = async (psbt) => {
   return electrs.url("/tx").body(hex).post().text();
 };
 
-export const executeSwap = async (
-  { editions, list_price, list_price_tx, asset, asking_asset, royalty },
-  fee
-) => {
+export const executeSwap = async (artwork, fee) => {
+  let {
+    editions,
+    list_price,
+    list_price_tx,
+    asset,
+    asking_asset,
+    royalty,
+    artist: { address },
+    artist_id,
+    owner_id,
+  } = artwork;
   let swap = Psbt.fromBase64(list_price_tx);
-  let out = payment();
-  let script = (royalty ? multisig() : payment()).output;
+  let out = singlesig();
+  let script = (royalty ? multisig() : singlesig()).output;
   let total = list_price;
-
-  if (asking_asset === btc) total += fee;
-  else await fund(swap, out, btc, fee);
-  await fund(swap, out, asking_asset, total);
 
   swap
     .addOutput({
@@ -286,11 +290,28 @@ export const executeSwap = async (
       value: fee,
     });
 
+  if (royalty && artist_id !== owner_id) {
+    let value = Math.round((total * royalty) / 100);
+    total += value;
+
+    console.log("artist address", address);
+    swap.addOutput({
+      asset: asking_asset,
+      value,
+      nonce: Buffer.alloc(1),
+      script: Address.toOutputScript(address, network),
+    });
+  }
+
+  if (asking_asset === btc) total += fee;
+  else await fund(swap, out, btc, fee);
+  await fund(swap, out, asking_asset, total);
+
   return swap;
 };
 
 export const createIssuance = async (editions, fee) => {
-  let out = payment();
+  let out = singlesig();
 
   let swap = new Psbt()
     // fee
@@ -322,16 +343,14 @@ export const createIssuance = async (editions, fee) => {
 };
 
 export const createSwap = async ({ asset, asking_asset, royalty }, amount) => {
-  let out = royalty ? multisig() : payment();
-
   let swap = new Psbt().addOutput({
     asset: asking_asset,
     nonce: Buffer.alloc(1),
-    script: out.output,
+    script: singlesig().output,
     value: amount,
   });
 
-  await fund(swap, out, asset, 1, singleAnyoneCanPay, !!royalty);
+  await fund(swap, multisig(), asset, 1, singleAnyoneCanPay, !!royalty);
 
   return swap;
 };
@@ -340,8 +359,8 @@ export const createOffer = async (artwork, amount, fee) => {
   amount = parseInt(amount);
   fee = parseInt(fee);
 
-  let { asking_asset: asset } = artwork;
-  let out = payment();
+  let { asking_asset: asset, artist_id, owner_id, royalty } = artwork;
+  let out = singlesig();
 
   let swap = new Psbt()
     .addOutput({
@@ -351,36 +370,61 @@ export const createOffer = async (artwork, amount, fee) => {
       value: amount,
     })
     .addOutput({
-      asset: artwork.asset,
-      nonce: Buffer.alloc(1),
-      script: out.output,
-      value: 1,
-    })
-    .addOutput({
       asset: btc,
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
       value: fee,
     });
 
-  if (asset === btc) {
-    await fund(swap, out, asset, amount + fee);
+  let total = parseInt(amount);
+  let pubkey = fromBase58(artwork.owner.pubkey, network).publicKey;
+  let ownerOut;
+
+  if (royalty && artist_id !== owner_id) {
+    let value = Math.round((total * royalty) / 100);
+    total += value;
+
+    swap.addOutput({
+      asset: artwork.asset,
+      nonce: Buffer.alloc(1),
+      script: multisig().output,
+      value: 1,
+    });
+
+    swap.addOutput({
+      asset,
+      value,
+      nonce: Buffer.alloc(1),
+      script: Address.toOutputScript(artwork.artist.address, network),
+    });
+
+    ownerOut = multisig({ pubkey });
   } else {
-    await fund(swap, out, asset, amount);
+    ownerOut = singlesig({ pubkey });
+
+    swap.addOutput({
+      asset: artwork.asset,
+      nonce: Buffer.alloc(1),
+      script: out.output,
+      value: 1,
+    });
+  }
+
+  await fund(swap, ownerOut, artwork.asset, 1, 1, !!royalty);
+
+  if (asset === btc) {
+    total += fee;
+  } else {
     await fund(swap, out, btc, fee);
   }
 
-  let ms = !!artwork.royalty;
-  let pubkey = fromBase58(artwork.owner.pubkey, network).derive(0).publicKey;
-  out = ms ? multisig({ pubkey }) : payment({ pubkey });
-
-  await fund(swap, out, artwork.asset, 1, 1, ms);
+  await fund(swap, out, asset, total);
 
   return swap;
 };
 
 export const sendToMultisig = async (artwork, fee) => {
-  let out = payment();
+  let out = singlesig();
   let { output: script } = multisig();
   let { asset, editions: value } = artwork;
 
@@ -413,8 +457,9 @@ export const sendToMultisig = async (artwork, fee) => {
 };
 
 export const requestSignature = async (psbt) => {
-  let { base64 } = await api 
+  let { base64 } = await api
     .url("/sign")
+    .headers({ authorization: `Bearer ${get(token)}` })
     .post({ psbt: psbt.toBase64() })
     .json();
   return Psbt.fromBase64(base64);

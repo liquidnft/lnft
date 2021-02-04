@@ -13,6 +13,11 @@
       for
     {:else if transaction.type === 'creation'}
       created
+    {:else if transaction.type === 'listing'}
+      set a listing price of  
+      {val(transaction.asset, transaction.amount)}
+      {ticker(transaction.asset)}
+      for
     {:else if transaction.type === 'royalty'}
       added a {transaction.artwork.royalty}% royalty to
     {:else if transaction.type === 'purchase'}

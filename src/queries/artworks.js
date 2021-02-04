@@ -107,6 +107,7 @@ export const getArtwork = (id) => `subscription {
   artworks_by_pk(id: "${id}") {
     ${fields}
     artist {
+      address
       username
       avatar_url
     },

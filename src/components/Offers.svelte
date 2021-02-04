@@ -12,6 +12,7 @@
   import AcceptOffer from "$components/AcceptOffer";
 
   let offers = [];
+  let comp;
 
   subscription(operationStore(getOffers), (a, b) => {
     offers = b.offers;
@@ -27,22 +28,24 @@
   }
 </style>
 
+<AcceptOffer bind:this={comp} />
 <div class="flex flex-wrap px-6">
   {#each offers as offer}
     <div class="w-1/2 p-4">
       <Card
-        artwork={offer.artwork}
+        artwork={offer.transaction.artwork}
         columns={1}
         showDetails={false}
         shadow={false} />
       <div class="mt-4 mx-2 whitespace-no-wrap text-center">
-        {val(offer.artwork.asking_asset, offer.amount)}
-        {ticker(offer.artwork.asking_asset)}
-        from @{offer.artwork.bid[0].user.username}
+        {val(offer.transaction.artwork.asking_asset, offer.transaction.amount)}
+        {ticker(offer.transaction.artwork.asking_asset)}
+        from @{offer.transaction.artwork.bid[0].user.username}
         <a href={`/tx/${offer.id}`} class="text-xs text-green-400">
           [view tx]
         </a>
-        <button on:click={() => accept(offer)}>Accept</button>
+        <button
+          on:click={() => comp.accept(offer.transaction)}>Accept</button>
       </div>
     </div>
   {:else}

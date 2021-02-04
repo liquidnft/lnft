@@ -26,6 +26,11 @@ const setConfirmed = `
       id
       user_id
       artwork_id
+      type
+      bid {
+        id
+        user_id
+      } 
     }
   }
 `;
@@ -68,26 +73,32 @@ setInterval(
           electrs
             .url(`/tx/${tx.hash}/status`)
             .get()
-            .json(
-              ({ confirmed }) =>
-                confirmed &&
+            .json(({ confirmed }) => {
+              confirmed &&
                 hasura
                   .post({ query: setConfirmed, variables: { id: tx.id } })
                   .json(
-                    ({ data: { update_transactions_by_pk: transaction } }) =>
+                    ({ data: { update_transactions_by_pk: transaction } }) => {
+                      let owner_id;
+
+                      if (transaction.type === "accept")
+                        owner_id = transaction.bid.user_id;
+
+                      if (transaction.type === "purchase")
+                        owner_id = transaction.user_id;
+
                       hasura.post({
                         query: updateArtwork,
                         variables: {
                           id: transaction.artwork_id,
-                          owner_id:
-                            transaction.type === "accept"
-                              ? transaction.bid.user_id
-                              : transaction.user_id,
+                          owner_id,
                         },
-                      })
+                      });
+                    }
                   )
-                  .catch(console.log)
-            );
+                  .catch(console.log);
+            })
+            .catch(console.log);
         })
       )
       .catch(console.log),

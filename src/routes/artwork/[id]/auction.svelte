@@ -65,7 +65,6 @@
         $psbt = await cancelSwap(artwork, 500);
       } catch (e) {
         $snack = e.message;
-        console.log(e.stack);
         return false;
       }
 
@@ -95,7 +94,6 @@
       $psbt = await createSwap(artwork, sats(list_price));
     } catch (e) {
       $snack = e.message;
-      console.log(e.stack);
       return;
     }
 
@@ -106,6 +104,19 @@
     );
     await tick();
     artwork.list_price_tx = $psbt.toBase64();
+
+    createTransaction$({
+      transaction: {
+        amount: sats(list_price),
+        artwork_id: artwork.id,
+        asset: artwork.asking_asset,
+        hash: $psbt.__CACHE.__TX.getId(),
+        psbt: $psbt.toBase64(),
+        type: "listing",
+      },
+    }).then(() => {
+      $snack = "List price updated!";
+    });
 
     return true;
   };
@@ -126,6 +137,12 @@
       await tick();
 
       await broadcast($psbt);
+
+      $prompt = Waiting;
+      await new Promise((resolve) =>
+        prompt.subscribe((value) => value === "success" && resolve())
+      );
+      await tick();
 
       createTransaction$({
         transaction: {
@@ -244,6 +261,19 @@
             </div>
           </div>
         </div>
+        {#if $user.id === artwork.artist_id}
+          <div class="flex flex-col mb-4">
+            <div>
+              <div class="mt-1 relative rounded-md shadow-sm">
+                <label>Royalty Rate (Percentage paid to artist of every sale)</label>
+                <input
+                  class="form-input block w-full pl-7 pr-12"
+                  placeholder="0"
+                  bind:value={royalty} />
+              </div>
+            </div>
+          </div>
+        {/if}
         <div class="flex flex-col mb-4">
           <label>Auction Start Time</label>
           <input
@@ -302,19 +332,6 @@
             </div>
           </div>
         </div>
-        {#if $user.id === artwork.artist_id}
-          <div class="flex flex-col mb-4">
-            <div>
-              <div class="mt-1 relative rounded-md shadow-sm">
-                <label>Royalty Rate (Percentage paid to artist of every sale)</label>
-                <input
-                  class="form-input block w-full pl-7 pr-12"
-                  placeholder="0"
-                  bind:value={royalty} />
-              </div>
-            </div>
-          </div>
-        {/if}
         <div class="flex">
           <button type="submit" class="brand-color">Submit</button>
         </div>

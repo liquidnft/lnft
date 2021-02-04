@@ -6,7 +6,7 @@
   import cryptojs from "crypto-js";
   import { generateMnemonic } from "bip39";
   import { tick } from "svelte";
-  import { keypair, payment, multisig } from "$lib/wallet";
+  import { keypair, singlesig, multisig } from "$lib/wallet";
 
   let error;
   let username = "anon";
@@ -15,7 +15,7 @@
   let setupWallet = (attempt) => {
     let mnemonic = cryptojs.AES.encrypt(generateMnemonic(), attempt).toString();
     let key = keypair(mnemonic, attempt);
-    let { address } = payment(key);
+    let { address } = singlesig(key);
     let { address: ms } = multisig(key);
 
     return {

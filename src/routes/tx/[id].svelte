@@ -15,11 +15,11 @@
   subscription(operationStore(getTransaction(id)), async (a, b) => {
     let transaction = b.transactions_by_pk;
     let { psbt: p } = transaction;
+
     if (p) $psbt = Psbt.fromBase64(p);
     else if(!$psbt) {
       tx = await getTx(transaction.hash);
       $psbt = new Psbt();
-      console.log(tx);
       tx.ins.map((input) => {
         $psbt.addInput(input);
       });
