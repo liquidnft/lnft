@@ -16,13 +16,13 @@
     try {
       $psbt = await pay($asset, to, sats($asset, amount), sats(btc, fee));
     } catch (e) {
-      $snack = e.message;
+      err(e);
       return;
     }
     if (!(await sign())) return;
     await tick();
     await broadcast($psbt);
-    $snack = "Payment sent!";
+    info("Payment sent!");
   };
 
   let sign = async () => {

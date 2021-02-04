@@ -9,12 +9,11 @@
     password,
     sighash,
     prompt,
-    snack,
     psbt,
     user,
     token,
   } from "$lib/store";
-  import { requireLogin, requirePassword } from "$lib/utils";
+  import { requireLogin, requirePassword, err, info } from "$lib/utils";
   import { createTransaction } from "$queries/transactions";
   import {
     createSwap,
@@ -64,7 +63,7 @@
       try {
         $psbt = await cancelSwap(artwork, 500);
       } catch (e) {
-        $snack = e.message;
+        err(e);
         return false;
       }
 
@@ -93,7 +92,7 @@
     try {
       $psbt = await createSwap(artwork, sats(list_price));
     } catch (e) {
-      $snack = e.message;
+      err(e);
       return;
     }
 
@@ -115,7 +114,7 @@
         type: "listing",
       },
     }).then(() => {
-      $snack = "List price updated!";
+      info("List price updated!");
     });
 
     return true;
@@ -154,12 +153,12 @@
           type: "royalty",
         },
       }).then(() => {
-        $snack = "Royalties activated!";
+        info("Royalties activated!");
       });
 
       return true;
     } catch (e) {
-      $snack = e.message;
+      err(e);
       return false;
     }
   };

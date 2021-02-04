@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { snack, user, token } from "$lib/store";
-  import { goto, sanitize } from "$lib/utils";
+  import { user, token } from "$lib/store";
+  import { info, goto, sanitize } from "$lib/utils";
   import { Avatar } from "$components/index";
   import upload from "$lib/upload";
   import { updateUser } from "$queries/users";
@@ -58,7 +58,7 @@
   let update = (form) => {
     let { num_followers, num_follows, followed, id, balance, ...user } = form;
     updateUser$({ user, id }).then((r) => {
-      $snack = "Profile updated";
+      info("Profile updated");
       goto(`/user/${id}`);
     });
   };

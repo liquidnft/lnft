@@ -9,13 +9,11 @@
     Dialog,
     Footer,
   } from "$comp";
-  import { show, snack, user, token } from "$lib/store";
+  import Snack from "$components/Snack";
+  import { show, user, token } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import '@fortawesome/fontawesome-free/js/all.js';
-
-  let clearSnack = () => setTimeout(() => ($snack = null), 5000);
-  $: clearSnack($snack);
 
   let open = false;
   let mounted = false;
@@ -83,14 +81,7 @@
   }
 </style>
 
-{#if $snack}
-  <div class="fixed w-full flex z-20 mt-6">
-    <div
-      class="border-2 border-green-400 px-4 py-3 rounded relative mb-4 mx-auto w-1/6 text-center font-bold bg-white">
-      {$snack}
-    </div>
-  </div>
-{/if}
+<Snack />
 
 {#if mounted}
   <Sidebar bind:open />

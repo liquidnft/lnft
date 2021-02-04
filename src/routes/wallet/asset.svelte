@@ -6,7 +6,6 @@
   import {
     asset,
     poll,
-    snack,
     password,
     user,
     token,
@@ -19,6 +18,7 @@
   import reverse from "buffer-reverse";
   import {
     btc,
+    err,
     sats,
     units,
     tickers,
@@ -132,7 +132,7 @@
     try {
       $psbt = await pay($asset, to, sats($asset, amount), sats(btc, fee));
     } catch (e) {
-      $snack = e.message;
+      err(e);
       return;
     }
     if (!(await sign())) return;

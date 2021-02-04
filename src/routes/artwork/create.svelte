@@ -3,13 +3,13 @@
   import { v4 } from "uuid";
   import { electrs } from "$lib/api";
   import { tick, onMount } from "svelte";
-  import { psbt, password, prompt, user, snack, token } from "$lib/store";
+  import { psbt, password, prompt, user, token } from "$lib/store";
   import { Dropzone, SignaturePrompt } from "$comp";
   import upload from "$lib/upload";
   import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import { goto, sanitize, requireLogin, requirePassword } from "$lib/utils";
+  import { goto, sanitize, requireLogin, requirePassword, err } from "$lib/utils";
   import { createIssuance, broadcast, parseAsset } from "$lib/wallet";
   import reverse from "buffer-reverse";
 
@@ -71,7 +71,7 @@
     try {
       $psbt = await createIssuance(artwork.editions, 1000);
     } catch (e) {
-      $snack = e.message;
+      err(e);
       return;
     }
 

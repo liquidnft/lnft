@@ -12,7 +12,7 @@
   import { api } from "$lib/api";
   import Lock from "$icons/lock";
   import { sign } from "$lib/wallet";
-  import { copy, requirePassword } from "$lib/utils";
+  import { copy, err, requirePassword } from "$lib/utils";
 
   export let submit = async (e) => {
     await requirePassword();
@@ -21,7 +21,7 @@
       $psbt = sign($psbt, $sighash || 1);
       $prompt = "success";
     } catch(e) {
-      $snack = e.message;
+      err(e);
     }
 
     $prompt = undefined;

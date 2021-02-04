@@ -148,3 +148,16 @@ export const pick = (obj, ...keys) =>
   Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));
 
 export const sanitize = (input) => input.replace(/[^\w.]+/g, "_");
+
+export const err = (e) => {
+  let msg = e.message;
+  try {
+    msg = JSON.parse(msg).message;
+  } catch {}
+  if (!msg) msg = "An error occurred";
+  snack.set({ msg, type: "error" });
+};
+
+export const info = (msg) => {
+  snack.set({ msg, type: "info" });
+};

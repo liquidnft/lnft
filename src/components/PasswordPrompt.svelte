@@ -2,8 +2,9 @@
 
 <script>
   import { tick } from "svelte";
-  import { prompt, password, user, snack, token } from "$lib/store";
+  import { prompt, password, user, token } from "$lib/store";
   import { api } from "$lib/api";
+  //  import { err } from "$lib/utils";
 
   let attempt = "liquidart";
   let input;
@@ -20,10 +21,8 @@
         email: `${$user.username}@liquidart.com`,
         password: attempt,
       })
-      .badRequest((err) => {
-        $snack = JSON.parse(err.message).message;
-      })
-      .unauthorized((err) => ($snack = "Wrong password"))
+    //.badRequest(err)
+    // .unauthorized(err)
       .json((r) => {
         $token = r.jwt_token;
         window.sessionStorage.setItem("token", $token);

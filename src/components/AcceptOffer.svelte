@@ -5,7 +5,7 @@
   import { acceptOffer } from "$queries/transactions";
   import { broadcast, requestSignature } from "$lib/wallet";
   import SignaturePrompt from "$components/SignaturePrompt";
-  import { requirePassword } from "$lib/utils";
+  import { requirePassword, err, info } from "$lib/utils";
   import { Psbt } from "@asoltys/liquidjs-lib";
 
   let acceptOffer$ = mutation(acceptOffer);
@@ -31,9 +31,9 @@
         asset: artwork.asking_asset,
         bid_id: artwork.bid[0].id,
       });
-      $snack = "Offer accepted! Sold!";
+      info("Offer accepted! Sold!");
     } catch (e) {
-      $snack = e.message;
+      err(e);
     }
   };
 </script>

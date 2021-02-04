@@ -9,7 +9,7 @@
   } from "$comp";
   import Sidebar from "./_sidebar";
   import { onMount, tick } from "svelte";
-  import { prompt, password, snack, user, token, psbt } from "$lib/store";
+  import { prompt, password, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
   import {
     getArtwork,
@@ -20,7 +20,7 @@
     createTransaction,
     getArtworkTransactions,
   } from "$queries/transactions";
-  import { goto } from "$lib/utils";
+  import { goto, err, info } from "$lib/utils";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { explorer, requireLogin, requirePassword } from "$lib/utils";
   import {
@@ -70,7 +70,7 @@
     try {
       $psbt = await createOffer(artwork, transaction.amount, 500);
     } catch (e) {
-      $snack = e.message;
+      err(e);
       return;
     }
 
@@ -99,8 +99,8 @@
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
     createTransaction$({ transaction }).then(() => {
-      if (transaction.type === "purchase") $snack = "Sold! Congratulations!";
-      if (transaction.type === "bid") $snack = "Bid placed!";
+      if (transaction.type === "purchase") info("Sold! Congratulations!");
+      if (transaction.type === "bid") info("Bid placed!");
       bidding = false;
     });
   };
@@ -147,7 +147,7 @@
 
       save();
     } catch (e) {
-      $snack = e.message;
+      err(e);
     }
   };
 
