@@ -10,13 +10,13 @@
   };
 </script>
 
-<div class="mb-10">
+<div class="my-10">
   <button
-    class="rounded brand-color"
+    class="primary-btn"
     on:click={() => goto(`/user/${$user.id}/edit`)}>Edit Profile</button>
 </div>
 
-<div class="uppercase font-bold">
+<div class="uppercase">
   <div class="mb-2 mt-5"><a href="/history">Download tx history</a></div>
   <div class="mb-2 mt-5"><a href="/wallet">View Wallet</a></div>
   <div class="mb-2 mt-5"><a href="/settings">Update Settings</a></div>

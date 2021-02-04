@@ -23,15 +23,15 @@
   });
 </script>
 
-<div class="container mx-auto">
+<div class="container mx-auto mt-20">
   <div class="px-8">
-    <h1 class="title">Discover</h1>
-    <div class="border-b mb-8">
+    <h2>Discover</h2>
+    <div class="border-b mb-8 mt-10">
       <Search {tags} />
     </div>
 
-    <div class="w-full text-center my-12">
-      <h1 class="font-bold">Trending Tags</h1>
+    <div class="w-full text-center my-10">
+      <h3>Trending Tags</h3>
     </div>
   </div>
 

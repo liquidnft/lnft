@@ -18,9 +18,9 @@
 </script>
 
 
-<div class="container mx-auto px-8">
-  <h1 class="title">Activity</h1>
-  <div class="flex flex-wrap justify-between">
+<div class="container mx-auto mt-20">
+  <h2>Activity</h2>
+  <div class="flex flex-wrap justify-between mt-20">
     <div class="w-full lg:max-w-lg">
       {#each transactions as transaction}
         <Activity {transaction} showImage={true} />

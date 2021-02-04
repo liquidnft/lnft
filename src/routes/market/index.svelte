@@ -65,6 +65,7 @@
   @media only screen and (max-width: 1023px){
     .switch-container{
       flex-direction: column;
+      display: none;
     }
 
     select{ 
@@ -80,7 +81,7 @@
     }
 
     .showFilters{
-      display: none;
+      display: block !important;
     }
   }
 
