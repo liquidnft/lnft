@@ -6,11 +6,12 @@
 
 <style>
   .toggle-checkbox:checked {
-    @apply right-0 border-green-400;
+    @apply right-0;
+    border: 1px solid #6ED8E0;
     right: 0;
   }
   .toggle-checkbox:checked + .toggle-label {
-    @apply bg-green-400;
+    background: #6ED8E0;
   }
 </style>
 

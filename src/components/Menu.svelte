@@ -6,8 +6,8 @@
 </script>
 
 <style>
-  img {
-    max-width: 25px;
+  .menu{
+    width: 400px;
   }
 
   @media only screen and (max-width: 640px) {
@@ -16,30 +16,32 @@
       align-items: flex-start;
       margin-top: 70px;
       border-top: 1px solid gray;
+      width: 100%;
     }
 
     .menu a {
       margin: 20px 0 0 20px;
     }
-    .menu img {
-      margin: 20px 0 0 20px;
+    .menu .search {
+      margin: 40px 0 0 45px;
     }
   }
 </style>
 
-<div class="flex flex-grow-1 menu">
-  <a href="/discover" class="my-auto"><img
-      on:click={() => (open = !open)}
-      src="/search.svg" alt="Search"/></a>
-  <a href="/market" class="my-auto ml-10"><button
-      on:click={() => (open = !open)}>Market</button></a>
-  <a href="/activity" class="my-auto ml-10"><button
+<div class="flex justify-between items-center menu">
+  <a href="/discover" on:click={() => (open = !open)} class="search">
+    <i class="fas fa-search text-2xl"></i>
+  </a>
+  <a href="/market">
+    <button on:click={() => (open = !open)}>Market</button>
+  </a>
+  <a href="/activity"><button
       on:click={() => (open = !open)}>Activity</button></a>
   {#if $user}
-    <a href={`/user/${$user.id}`} class="ml-10">
+    <a href={`/user/${$user.id}`}>
       <button on:click={() => (open = !open)} class="flex">
         <Avatar src={$user.avatar_url} />
         <div class="my-auto ml-2">{$user.full_name}</div>
       </button></a>
-  {:else}<a href="/login"><button>Sign In</button></a>{/if}
+  {:else}<a href="/login"><button on:click={() => (open = !open)} >Sign In</button></a>{/if}
 </div>

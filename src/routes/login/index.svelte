@@ -76,7 +76,7 @@
 <style>
   .form-container {
     width: 100%;
-    height: 80vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -85,56 +85,65 @@
 
   .form-container form {
     width: 100%;
-    max-width: 500px;
+    max-width: 450px;
     background-color: white;
     padding: 40px;
-    box-shadow: 0 4px 20px rgb(0 0 0 / 18%);
+    box-shadow: 0 1px 5px rgb(0 0 0 / 18%);
     border-radius: 10px;
   }
 
   input {
-    @apply shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight;
+    @apply appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
   }
 
-  button {
-    @apply border shadow px-4 py-2;
+  span{ cursor: pointer;}
+
+  @media only screen and (max-width: 640px) {
+    .form-container {
+      background: none;
+      height: auto;
+    }
+
+    .form-container form{
+      box-shadow: none;
+      padding: 0.2rem;
+      margin-top: 50px;
+    }
   }
 </style>
 
-{#if error}
-  <div
-    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-    role="alert">
-    <strong class="font-bold">Error!</strong>
-    <span class="block sm:inline">{error}</span>
-  </div>
-{/if}
 
-<div class="form-container">
-  <h1 class="title">Sign In</h1>
-  <form class="mb-6" on:submit|preventDefault={login} autocomplete="off">
-    <div class="flex flex-col mb-4">
-      <label
-        class="mb-2 uppercase font-medium text-gray-600"
-        for="first_name">Username</label>
-      <input
-        placeholder="username"
-        bind:value={username}
-        bind:this={usernameInput} />
+  {#if error}
+    <div
+      class="container mx-auto bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+      role="alert">
+      <strong class="font-bold">Error!</strong>
+      <span class="block sm:inline">{error}</span>
     </div>
-    <div class="flex flex-col mb-4">
-      <label
-        class="mb-2 uppercase font-medium text-gray-600"
-        for="last_name">Password</label>
-      <input placeholder="Password" type="password" bind:value={attempt} />
-    </div>
-    <div class="flex">
-      <button
-        class="block brand-color text-white uppercase text-lg mx-auto p-4 flex-1 ml-1"
-        type="submit">Login</button>
-      <button
-        on:click|preventDefault={register}
-        class="block bg-gray-600 hover:bg-green-dark uppercase text-lg mx-auto rounded flex-1">Register</button>
-    </div>
-  </form>
-</div>
+  {/if}
+
+  <div class="form-container bg-lightblue">
+    <form class="mb-6" on:submit|preventDefault={login} autocomplete="off">
+      <h2 class="mb-8">Sign In</h2>
+      <div class="flex flex-col mb-4">
+        <label
+          class="mb-2 font-medium text-gray-600"
+          for="first_name">Email or username</label>
+        <input
+          placeholder="username"
+          bind:value={username}
+          bind:this={usernameInput} />
+      </div>
+      <div class="flex flex-col mb-4">
+        <label
+          class="mb-2 font-medium text-gray-600"
+          for="last_name">Password</label>
+        <input placeholder="Password" type="password" bind:value={attempt} />
+      </div>
+      <span class="block w-full text-midblue" on:click|preventDefault={register}>Forgot password?</span>
+      <div class="flex my-5 justify-end">
+        <button class="primary-btn w-1/2" type="submit">Sign In</button>
+      </div>
+      <span class="text-midblue" on:click|preventDefault={register}>Don't have an account? Sign up</span>
+    </form>
+  </div>
