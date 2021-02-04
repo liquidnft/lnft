@@ -154,11 +154,13 @@
       destroyArtwork$().then(() => goto("/market"));
     };
   }
+
+  let showPopup = false
 </script>
 
 <style>
   button {
-    @apply mb-2 border w-full text-sm font-bold py-2 px-4 rounded;
+    @apply mb-2 w-full text-sm;
     &:hover {
       @apply border-green-700;
     }
@@ -168,6 +170,29 @@
         @apply border-red-400;
       }
     }
+  }
+
+  span{cursor: pointer;}
+
+  .popup{
+    display: none;
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #000;
+    scroll-behavior: contain;
+  }
+
+  .showPopup {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
   }
 </style>
 
@@ -185,16 +210,16 @@
         {#if $user && $user.id === artwork.owner_id}
           <button
             on:click={() => goto(`/artwork/${id}/auction`)}
-            class="button-transparent">List</button>
+            class="secondary-btn">List</button>
           <button
             on:click={() => goto(`/artwork/${id}/edit`)}
-            class="button-transparent">Edit</button>
+            class="secondary-btn">Edit</button>
           <button
             on:click={destroy}
-            class="dangerous button-transparent">Destroy</button>
+            class="dangerous secondary-btn">Destroy</button>
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
-            <button on:click={buyNow}>Buy Now</button>
+            <button on:click={buyNow} class="secondary-btn">Buy Now</button>
           {/if}
           {#if bidding}
             <form on:submit={makeOffer}>
@@ -214,9 +239,9 @@
                   </div>
                 </div>
               </div>
-              <button type="submit">Submit</button>
+              <button type="submit" class="secondary-btn">Submit</button>
             </form>
-          {:else}<button on:click={startBidding}>Make an Offer</button>{/if}
+          {:else}<button on:click={startBidding} class="secondary-btn">Make an Offer</button>{/if}
         {/if}
 
         <div class="flex justify-between">
@@ -262,8 +287,8 @@
           </div>
         {/if}
 
-        <h2 class="font-bold mt-20">History</h2>
-        <div class="flex mt-2">
+        <p class="font-bold mt-20">History</p>
+        <div class="flex mt-5">
           <div class="w-full">
             {#each transactions as transaction}
               <Activity {transaction} />
@@ -271,8 +296,10 @@
           </div>
         </div>
       </div>
+
       <div class="w-full lg:w-2/3 lg:px-12">
-        <Card {artwork} link={false} columns={1} showDetails={false} />
+        <span on:click={() => showPopup = !showPopup}><Card {artwork} link={false} columns={1} showDetails={false} /></span>
+        <span on:click={() => showPopup = !showPopup} class:showPopup={showPopup} class="popup"><Card {artwork} link={false} columns={1} showDetails={false} /></span>
         <div class="w-full mt-28">
           <h2 class="text-2xl font-bold primary-color py-10 px-5">
             More by this artist

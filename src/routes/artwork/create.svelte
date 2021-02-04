@@ -114,7 +114,7 @@
   }
 </style>
 
-<div class="container mx-auto px-10">
+<div class="container mx-auto mt-20">
   <div class="flex flex-1">
     <h1 class="title primary-color">Submit Artwork</h1>
   </div>

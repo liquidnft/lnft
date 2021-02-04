@@ -33,7 +33,7 @@
 
   let listPrice, openBid, ownedByCreator, hasSold, sort;
 
-  let isActive = false
+  let showFilters = false
 </script>
 
 <style>
@@ -79,7 +79,7 @@
       display: block;
     }
 
-    .active{
+    .showFilters{
       display: none;
     }
   }
@@ -105,12 +105,12 @@
   </div>
 </div>
 <div class="container mx-auto">
-  <div class="mb-6 flex filter-container justify-between py-10 pb-30 mt-50">
+  <div class="mb-6 flex filter-container justify-between pt-10 xl:py-10 xl:pb-30 mt-50">
     <div class="switch">
-      <p class="filters mb-8 font-bold" on:click={() => isActive = !isActive}>FILTERS
+      <p class="filters mb-8 font-bold" on:click={() => showFilters = !showFilters}>FILTERS
          <i class="fas fa-sliders-h ml-3"></i>
       </p>
-      <div class:active={isActive} class="switch-container">
+      <div class:showFilters={showFilters} class="switch-container">
         <div>
           <ToggleSwitch
             id="list-price"
