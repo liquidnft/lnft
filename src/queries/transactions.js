@@ -33,6 +33,7 @@ const fields = `
     filename
     asking_asset
     royalty
+    transferred_at
     owner {
       id
       username

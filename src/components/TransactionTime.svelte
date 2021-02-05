@@ -1,6 +1,6 @@
 <script>
   import { user } from "$lib/store";
-  import { formatDistanceStrict } from "date-fns";
+  import { compareAsc, formatDistanceStrict } from "date-fns";
   import AcceptOffer from "$components/AcceptOffer";
   export let transaction;
 
@@ -23,7 +23,7 @@
   <a href={`/tx/${transaction.id}`} class="text-sm secondary-color">
     [view tx]
   </a>
-  {#if $user && transaction.type === 'bid' && $user.id === transaction.artwork.owner.id}
+  {#if $user && transaction.type === 'bid' && compareAsc(transaction.created_at, transaction.artwork.transferred_at) && $user.id === transaction.artwork.owner.id}
     <a
       href="#"
       on:click={() => comp.accept(transaction)}
