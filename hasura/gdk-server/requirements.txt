@@ -1,3 +1,0 @@
-https://github.com/Blockstream/gdk/releases/download/release_0.0.33/greenaddress-0.0.36-cp36-cp36m-linux_x86_64.whl; 'linux' in sys_platform and python_version == '3.6' --hash=sha256:c35a15cbbbfedda785cf019bd0691e582219f6a1a491a8d979551dd1a7b0fb6a
-https://github.com/Blockstream/gdk/releases/download/release_0.0.33/greenaddress-0.0.36-cp37-cp37m-linux_x86_64.whl; 'linux' in sys_platform and python_version == '3.7' --hash=sha256:cd15e21699cd2ffe4229af4b400ac78fa06e93356e5055d94e83a449ceab1a92
-https://github.com/Blockstream/gdk/releases/download/release_0.0.33/greenaddress-0.0.36-cp37-cp37m-macosx_10_14_x86_64.whl; 'darwin' in sys_platform and python_version == '3.7' --hash=sha256:e58be5b848f7a5c71b7872f3cd8588d5e89128473b022a71210da5f095208d8e
