@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
-  import { goto }  from "$lib/utils";
+  import { goto } from "$lib/utils";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { getUser } from "$queries/users";
@@ -22,8 +22,7 @@
   let artworks;
   subscription(operationStore(getArtworks), (_, data) => {
     artworks = data.artworks;
-  }
-);
+  });
 
   let subject;
   subscription(operationStore(getUser(id)), (_, data) => {
@@ -81,107 +80,109 @@
 </style>
 
 <div class="container mx-auto lg:px-16 px-8">
-{#if $user && subject}
-  <div class="flex justify-between flex-wrap" in:fade>
-    <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
-      <div class="flex xl:flex-col justify-between gap-10">
-        <div class="flex flex-col">
-          <div class="flex flex-wrap xl:flex-nowrap gap-10">
-            <Avatar size="large" src={subject.avatar_url} />
+  {#if $user && subject}
+    <div class="flex justify-between flex-wrap" in:fade>
+      <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
+        <div class="flex xl:flex-col justify-between gap-10">
+          <div class="flex flex-col">
+            <div class="flex flex-wrap xl:flex-nowrap gap-10">
+              <Avatar size="large" src={subject.avatar_url} />
 
-            <div>
-              <div class="text-3xl primary-color font-bold">{subject.full_name}</div>
-              <div class="text-gray-600">@{subject.username}</div>
+              <div>
+                <div class="text-3xl primary-color font-bold">
+                  {subject.full_name}
+                </div>
+                <div class="text-gray-600">@{subject.username}</div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap xl:flex-nowrap gap-7 mt-5">
+              <div>Followers: {subject.num_followers}</div>
+              <div>Following: {subject.num_follows}</div>
             </div>
           </div>
 
-          <div class="flex flex-wrap xl:flex-nowrap gap-7 mt-5">
-            <div>Followers: {subject.num_followers}</div>
-            <div>Following: {subject.num_follows}</div>
+          <div>
+            {#if $user.id === id}
+              <Menu />
+            {:else}
+              <button
+                class="p-2 rounded brand-color follow mt-8"
+                on:click={follow}>
+                {subject.followed ? 'Unfollow' : 'Follow'}</button>
+            {/if}
           </div>
-        </div>
-      
-        <div>
-          {#if $user.id === id}
-            <Menu />
-          {:else}
-            <button
-              class="p-2 rounded brand-color follow mt-8"
-              on:click={follow}>
-              {subject.followed ? 'Unfollow' : 'Follow'}</button>
-          {/if}
         </div>
       </div>
-    </div>
-   
-    <div class="w-full xl:w-2/3">
-      <div
-        class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
+
+      <div class="w-full xl:w-2/3">
         <div
-          class:hover={tab === 'creations'}
-          on:click={() => (tab = 'creations')}>
-          Creations
-        </div>
-        <div
-          class:hover={tab === 'collection'}
-          on:click={() => (tab = 'collection')}>
-          Collection
-        </div>
-        {#if $user.id === id}
-          <div class:hover={tab === 'offers'} on:click={() => (tab = 'offers')}>
-            Offers
+          class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
+          <div
+            class:hover={tab === 'creations'}
+            on:click={() => (tab = 'creations')}>
+            Creations
           </div>
           <div
-            class:hover={tab === 'favorites'}
-            on:click={() => (tab = 'favorites')}>
-            Favorites
+            class:hover={tab === 'collection'}
+            on:click={() => (tab = 'collection')}>
+            Collection
+          </div>
+          {#if $user.id === id}
+            <div
+              class:hover={tab === 'offers'}
+              on:click={() => (tab = 'offers')}>
+              Offers
+            </div>
+            <div
+              class:hover={tab === 'favorites'}
+              on:click={() => (tab = 'favorites')}>
+              Favorites
+            </div>
+          {/if}
+        </div>
+        {#if tab === 'creations'}
+          <div class="w-full flex justify-center">
+            <div class="w-full flex flex-wrap">
+              {#each creations as artwork (artwork.id)}
+                <div class="w-full lg:w-1/2 px-5 mb-10">
+                  <Card {artwork} />
+                </div>
+              {:else}
+                <div class="mx-auto">No creations yet</div>
+              {/each}
+            </div>
+          </div>
+        {:else if tab === 'collection'}
+          <div class="w-full flex justify-center">
+            <div class="w-full flex flex-wrap">
+              {#each collection as artwork (artwork.id)}
+                <div class="w-full lg:w-1/2 px-5 mb-10">
+                  <Card {artwork} />
+                </div>
+              {:else}
+                <div class="mx-auto">Nothing collected yet</div>
+              {/each}
+            </div>
+          </div>
+        {:else if tab === 'offers'}
+          <Offers />
+        {:else}
+          <div class="w-full flex justify-center">
+            <div class="w-full flex flex-wrap">
+              {#each favorites as artwork (artwork.id)}
+                <div class="w-full lg:w-1/2 px-5 mb-10">
+                  <Card {artwork} showDetails={false} />
+                </div>
+              {:else}
+                <div class="mx-auto">No favorites yet</div>
+              {/each}
+            </div>
           </div>
         {/if}
       </div>
-      {#if tab === 'creations'}
-        <div class="w-full flex justify-center">
-          <div class="w-full flex flex-wrap">
-            {#each creations as artwork (artwork.id)}
-              <div class="w-full lg:w-1/2 px-5 mb-10">
-                <Card {artwork} />
-              </div>
-            {:else}
-              <div class="mx-auto">No creations yet</div>
-            {/each}
-          </div>
-        </div>
-      {:else if tab === 'collection'}
-        <div class="w-full flex justify-center">
-          <div class="w-full flex flex-wrap">
-            {#each collection as artwork (artwork.id)}
-              <div class="w-full lg:w-1/2 px-5 mb-10">
-                <Card {artwork} />
-              </div>
-            {:else}
-              <div class="mx-auto">Nothing collected yet</div>
-            {/each}
-          </div>
-        </div>
-      {:else if tab === 'offers'}
-        <Offers />
-      {:else}
-        <div class="w-full flex justify-center">
-          <div class="w-full flex flex-wrap">
-            {#each favorites as artwork (artwork.id)}
-              <div class="w-full lg:w-1/2 px-5 mb-10">
-                <Card {artwork} showDetails={false} />
-              </div>
-            {:else}
-              <div class="mx-auto">No favorites yet</div>
-            {/each}
-          </div>
-        </div>
-      {/if}
     </div>
-  </div>
-{:else}
-  <div class="absolute top-0 w-full left-0">
-    <ProgressLinear />
-  </div>
-{/if}
+  {:else}
+    <ProgressLinear app={true} />
+  {/if}
 </div>

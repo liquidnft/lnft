@@ -50,7 +50,10 @@
 <div
   class:fixed={app}
   class:z-50={app}
-  class="top-0 left-0 w-full h-1 brand-color overflow-hidden relative"
+  class:relative={!app}
+  class:inset-y-36={!app}
+  class:top-0={app}
+  class="left-0 w-full h-1 brand-color overflow-hidden"
   class:hidden={app && !initialized}
   transition:slide={{ duration: 300 }}>
   <div

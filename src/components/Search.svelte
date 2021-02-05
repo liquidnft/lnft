@@ -34,9 +34,11 @@
 </script>
 
 <Select
+  containerStyles="border: 0"
+  inputStyles="border-top: 0; outline: none; border-bottom: 2px solid lightblue"
   {loadOptions}
   {optionIdentifier}
   {getSelectionLabel}
   {getOptionLabel}
-  placeholder="Search..."
+  placeholder="What are you looking for?"
   on:select={go} />

@@ -6,6 +6,26 @@
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
   import { goto } from "$lib/utils";
+  import Search from "$components/Search";
+  import { getTags } from "$queries/artworks";
+
+  let tags = [];
+
+  let getTags$ = operationStore(getTags);
+
+  subscription(getTags$, (a, b) => {
+    let reduced = [];
+    b.tags.map((t) => {
+      let i = reduced.find((r) => t.tag === r.tag);
+      if (i) i.artworks.push(t.artwork);
+      else
+        reduced.push({
+          tag: t.tag,
+          artworks: [t.artwork],
+        });
+    });
+    tags = reduced;
+  });
 
   let filtered = [];
   subscription(operationStore(getArtworks), (a, b) => {
@@ -33,11 +53,11 @@
 
   let listPrice, openBid, ownedByCreator, hasSold, sort;
 
-  let showFilters = false
+  let showFilters = false;
 </script>
 
 <style>
-  select{
+  select {
     background: url(down-arrow.png);
     background-repeat: no-repeat;
     background-position: 90%;
@@ -46,71 +66,73 @@
     padding-right: 3rem;
     background-size: 20px;
   }
-  .switch-container{
+  .switch-container {
     display: flex;
     justify-content: space-around;
     margin-top: 20px;
   }
-  
-  .switch-container div{
-    margin: 0px 20px 20px 0; 
+
+  .switch-container div {
+    margin: 0px 20px 20px 0;
   }
 
-  .filters{
-      display: none;
-      cursor: pointer;
+  .filters {
+    display: none;
+    cursor: pointer;
   }
 
-  
-  @media only screen and (max-width: 1023px){
-    .switch-container{
+  @media only screen and (max-width: 1023px) {
+    .switch-container {
       flex-direction: column;
     }
 
-    select{ 
+    select {
       border: none;
       background-color: white;
       margin-top: -20px;
-      text-transform:uppercase;
+      text-transform: uppercase;
       font-weight: bold;
     }
 
-    .filters{
+    .filters {
       display: block;
     }
 
-    .showFilters{
+    .showFilters {
       display: none;
     }
   }
 
-  @media only screen and (max-width: 500px){
-    .sort-container{
+  @media only screen and (max-width: 500px) {
+    .sort-container {
       margin: 0;
       margin-bottom: 20px;
     }
   }
-
 </style>
-<div class="container mx-auto flex flex-wrap justify-center sm:justify-between mt-20">
+
+<div
+  class="container mx-auto flex flex-wrap justify-center sm:justify-between mt-20">
   <h2 class="mb-10 md:mb-0">Market</h2>
-  <button on:click={() => goto('/artwork/create')}
-      class="primary-btn">Submit a New Artwork</button>
+  <button on:click={() => goto('/artwork/create')} class="primary-btn">Submit a
+    New Artwork</button>
 </div>
 <div class="container mx-auto mt-10">
-  <div class="flex items-center">
-    <input type="search" class="w-full lg:w-1/3 border-0 border-b-2 border-lightblue" 
-      placeholder="What are you looking for?">
-    <i class="fas fa-search text-2xl -ml-5"></i>
+  <div class="w-full lg:w-1/3">
+    <Search {tags} />
   </div>
 </div>
 <div class="container mx-auto">
-  <div class="mb-6 flex filter-container justify-between pt-10 xl:py-10 xl:pb-30 mt-50">
+  <div
+    class="mb-6 flex filter-container justify-between pt-10 xl:py-10 xl:pb-30 mt-50">
     <div class="switch">
-      <p class="filters mb-8 font-bold" on:click={() => showFilters = !showFilters}>FILTERS
-         <i class="fas fa-sliders-h ml-3"></i>
+      <p
+        class="filters mb-8 font-bold"
+        on:click={() => (showFilters = !showFilters)}>
+        FILTERS
+        <i class="fas fa-sliders-h ml-3" />
       </p>
-      <div class:showFilters={showFilters} class="switch-container">
+      <div class:showFilters class="switch-container">
         <div>
           <ToggleSwitch
             id="list-price"
@@ -141,7 +163,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="sort-container">
       <select class="rounded-full bg-gray-100 px-8" bind:value={sort}>
         <option value="active">Recently active</option>
