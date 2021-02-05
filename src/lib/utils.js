@@ -117,7 +117,7 @@ export const copy = (v) => {
   document.execCommand("copy");
   document.body.removeChild(textArea);
 
-  snack.set("Copied!");
+  info("Copied!");
 };
 
 export const pick = (obj, ...keys) =>
