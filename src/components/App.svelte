@@ -2,13 +2,13 @@
   import { onMount } from "svelte";
   import decode from "jwt-decode";
   import { poll, user, addresses, assets, token } from "$lib/store";
-  import { api } from "$lib/api";
   import { fade } from "svelte/transition";
   import { getUser, getAddresses, updateUser } from "$queries/users";
   import { getAssets } from "$queries/artworks";
   import { setupUrql } from "$lib/urql";
   import { operationStore, subscription } from "@urql/svelte";
   import { page } from "$app/stores";
+  import { refreshToken } from "$lib/auth";
 
   onMount(() => {
     refreshToken();
@@ -39,16 +39,6 @@
       });
 
     } 
-  };
-
-  let refreshToken = () => {
-    api
-      .url("/auth/token/refresh")
-      .get()
-      .json((r) => {
-        $token = r.jwt_token;
-        window.sessionStorage.setItem("token", $token);
-      });
   };
 </script>
 
