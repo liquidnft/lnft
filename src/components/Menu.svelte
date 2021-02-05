@@ -1,6 +1,6 @@
 <script>
   import Avatar from "$components/Avatar";
-  import { show, snack, user, token } from "$lib/store";
+  import { show, user, token } from "$lib/store";
 
   export let open = false;
 </script>

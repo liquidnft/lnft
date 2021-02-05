@@ -74,6 +74,7 @@ setInterval(
             .url(`/tx/${tx.hash}/status`)
             .get()
             .json(({ confirmed }) => {
+              console.log(tx.id, confirmed);
               confirmed &&
                 hasura
                   .post({ query: setConfirmed, variables: { id: tx.id } })

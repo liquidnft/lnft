@@ -24,7 +24,7 @@
   }
 
   .snack {
-    @apply border-2 px-4 py-3 rounded relative mb-4 mx-auto text-center font-bold;
+    @apply border-2 px-4 py-3 rounded relative mb-4 mx-auto text-center font-bold bg-white;
   }
 
   .snack.info {

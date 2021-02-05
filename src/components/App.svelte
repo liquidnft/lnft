@@ -10,6 +10,11 @@
   import { operationStore, subscription } from "@urql/svelte";
   import { page } from "$app/stores";
 
+  onMount(() => {
+    refreshToken();
+    setInterval(refreshToken, 600000);
+  });
+
   let pageChange = (p) => clearInterval($poll);
   $: pageChange($page);
 
@@ -17,7 +22,6 @@
   setupUrql();
   $: tokenUpdated($token);
 
-  let timeout;
   let tokenUpdated = async (t) => {
     if (t) {
       id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
@@ -34,14 +38,12 @@
         $assets = b.artworks;
       });
 
-      timeout = setTimeout(() => refreshToken(t), 600000);
-    } else clearTimeout(timeout);
+    } 
   };
 
-  let refreshToken = (t) => {
+  let refreshToken = () => {
     api
       .url("/auth/token/refresh")
-      .auth(`Bearer ${t}`)
       .get()
       .json((r) => {
         $token = r.jwt_token;
