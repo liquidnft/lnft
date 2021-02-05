@@ -118,9 +118,11 @@
     hash: "",
   };
 
+  let loading;
   let buyNow = async () => {
     try {
       await requirePassword();
+      loading = true;
 
       transaction.amount = artwork.list_price;
       transaction.type = "purchase";
@@ -148,6 +150,8 @@
     } catch (e) {
       err(e);
     }
+
+    loading = false;
   };
 
   let target;
@@ -204,7 +208,7 @@
 </style>
 
 <div class="container mx-auto p-10">
-  {#if artwork}
+  {#if artwork && !loading}
     <div class="flex justify-between flex-wrap" bind:this={target}>
       <div class="text-center lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">

@@ -3,29 +3,14 @@
   import { page } from "$app/stores";
   import { electrs } from "$lib/api";
   import { onMount, tick } from "svelte";
-  import {
-    asset,
-    poll,
-    password,
-    user,
-    token,
-    prompt,
-    psbt,
-  } from "$lib/store";
+  import { asset, poll, password, user, token, prompt, psbt } from "$lib/store";
   import { ProgressLinear, SignaturePrompt } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
-  import {
-    btc,
-    err,
-    sats,
-    units,
-    tickers,
-    requireLogin,
-    requirePassword,
-  } from "$lib/utils";
-  import { broadcast, pay, keypair, unblind } from "$lib/wallet";
+  import { btc, err, sats, units, tickers } from "$lib/utils";
+  import { requirePassword, requireLogin } from "$lib/auth";
+  import { broadcast, pay, keypair } from "$lib/wallet";
 
   $: requireLogin($page);
 
@@ -66,20 +51,13 @@
 
   let utxos = [];
   let assets = [];
-  let unblinded = {};
 
   let getUtxos = async (address) => {
     utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-    await requirePassword();
 
     for (let i = 0; i < utxos.length; i++) {
       if (utxos[i].asset) break;
       let { txid, vout } = utxos[i];
-      if (!unblinded[txid]) {
-        let hex = await electrs.url(`/tx/${txid}/hex`).get().text();
-        unblinded[txid] = unblind(hex, vout);
-      }
-      utxos[i] = unblinded[txid];
     }
 
     assets = utxos
@@ -87,9 +65,7 @@
       .sort((a, b) => a.name.localeCompare(b.name))
       .sort((a, b) => (a.name.length === 12 ? 1 : -1))
       .filter(
-        (item, pos, ary) =>
-          item &&
-          (!pos || item.asset != ary[pos - 1].asset)
+        (item, pos, ary) => item && (!pos || item.asset != ary[pos - 1].asset)
       );
 
     loading = false;
@@ -147,12 +123,19 @@
     </div>
   {:else}
     <div class="mb-5">
-      <a href="/wallet" class="secondary-color"><i class="fas fa-chevron-left mr-2"></i> Back</a>
+      <a href="/wallet" class="secondary-color"><i
+          class="fas fa-chevron-left mr-2" />
+        Back</a>
     </div>
 
     {#each assets as a}
-      <div class="flex mb-2 cursor-pointer" on:click={() => { ($asset = a.asset); goto('/wallet'); }}>
-        <div class={`${a.color} py-2 w-3 brand-color`}/>
+      <div
+        class="flex mb-2 cursor-pointer"
+        on:click={() => {
+          $asset = a.asset;
+          goto('/wallet');
+        }}>
+        <div class={`${a.color} py-2 w-3 brand-color`} />
         <div class="flex dark flex-grow">
           <div class="flex-grow">{a.name}</div>
           <div>{balances[a.asset]}</div>

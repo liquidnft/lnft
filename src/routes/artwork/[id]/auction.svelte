@@ -5,14 +5,7 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
   import { goto } from "$lib/utils";
-  import {
-    password,
-    sighash,
-    prompt,
-    psbt,
-    user,
-    token,
-  } from "$lib/store";
+  import { password, sighash, prompt, psbt, user, token } from "$lib/store";
   import { err, info } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import { createTransaction } from "$queries/transactions";
@@ -23,8 +16,10 @@
     sendToMultisig,
   } from "$lib/wallet";
   import { formatISO, addDays } from "date-fns";
-  import Select from "svelte-select";
   import { btc, units, tickers } from "$lib/utils";
+
+  import ProgressLinear from "$components/ProgressLinear";
+  import Select from "svelte-select";
   import SignaturePrompt from "$components/SignaturePrompt";
   import Waiting from "$components/Waiting";
 
@@ -337,6 +332,8 @@
           <button type="submit" class="brand-color">Submit</button>
         </div>
       </form>
+    {:else}
+      <ProgressLinear />
     {/if}
   </div>
 </div>
