@@ -5,7 +5,8 @@
   import { acceptOffer } from "$queries/transactions";
   import { broadcast, requestSignature } from "$lib/wallet";
   import SignaturePrompt from "$components/SignaturePrompt";
-  import { requirePassword, err, info } from "$lib/utils";
+  import { err, info } from "$lib/utils";
+  import { requirePassword } from "$lib/auth";
   import { Psbt } from "@asoltys/liquidjs-lib";
 
   let acceptOffer$ = mutation(acceptOffer);

@@ -1,10 +1,8 @@
-<svelte:options accessors={true} />
-
 <script>
   import { tick } from "svelte";
   import { prompt, password, user, token } from "$lib/store";
   import { api } from "$lib/api";
-  //  import { err } from "$lib/utils";
+  import { err } from "$lib/utils";
 
   let attempt = "liquidart";
   let input;
@@ -21,10 +19,11 @@
         email: `${$user.username}@liquidart.com`,
         password: attempt,
       })
-    //.badRequest(err)
-    // .unauthorized(err)
+      .badRequest(err)
+      .unauthorized(err)
       .json((r) => {
         $token = r.jwt_token;
+        window.sessionStorage.setItem("password", attempt);
         window.sessionStorage.setItem("token", $token);
         $password = attempt;
         $prompt = undefined;
@@ -32,11 +31,16 @@
   };
 </script>
 
+<svelte:options accessors={true} />
 <form on:submit={submit}>
   <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
     Enter password
   </h3>
   <div class="mt-2">
-    <input bind:value={attempt} placeholder="Password" class="mb-2" bind:this={input} />
+    <input
+      bind:value={attempt}
+      placeholder="Password"
+      class="mb-2"
+      bind:this={input} />
   </div>
 </form>

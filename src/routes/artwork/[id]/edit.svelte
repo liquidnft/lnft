@@ -7,7 +7,7 @@
   import { updateArtwork, updateTags } from "$queries/artworks";
   import { goto } from "$lib/utils";
   import { password, user, token } from "$lib/store";
-  import { requireLogin, requirePassword } from "$lib/utils";
+  import { requireLogin, requirePassword } from "$lib/auth";
 
   let { id } = $page.params;
 

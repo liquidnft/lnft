@@ -10,7 +10,7 @@
     Footer,
   } from "$comp";
   import Snack from "$components/Snack";
-  import { show, user, token } from "$lib/store";
+  import { show, user, password, token } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import '@fortawesome/fontawesome-free/js/all.js';
@@ -19,6 +19,7 @@
   let mounted = false;
 
   onMount(async () => {
+    if (!$password) $password = window.sessionStorage.getItem("password");
     if (!$token) $token = window.sessionStorage.getItem("token");
     mounted = true;
   });

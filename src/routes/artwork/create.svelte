@@ -9,7 +9,8 @@
   import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import { goto, sanitize, requireLogin, requirePassword, err } from "$lib/utils";
+  import { goto, sanitize, err } from "$lib/utils";
+  import { requireLogin, requirePassword } from "$lib/auth";
   import { createIssuance, broadcast, parseAsset } from "$lib/wallet";
   import reverse from "buffer-reverse";
 

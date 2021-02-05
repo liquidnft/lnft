@@ -13,7 +13,8 @@
     user,
     token,
   } from "$lib/store";
-  import { requireLogin, requirePassword, err, info } from "$lib/utils";
+  import { err, info } from "$lib/utils";
+  import { requireLogin, requirePassword } from "$lib/auth";
   import { createTransaction } from "$queries/transactions";
   import {
     createSwap,

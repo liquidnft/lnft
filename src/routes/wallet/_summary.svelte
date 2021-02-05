@@ -2,20 +2,15 @@
   import { page } from "$app/stores";
   import { electrs } from "$lib/api";
   import { onMount, tick } from "svelte";
-  import { asset, poll, snack, password, user, token, prompt, psbt } from "$lib/store";
+  import { asset, poll, password, user } from "$lib/store";
   import { ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
-  import {
-    btc,
-    sats,
-    units,
-    tickers,
-    requireLogin,
-    requirePassword,
-  } from "$lib/utils";
+  import { btc, sats, units, tickers } from "$lib/utils";
+  import { requireLogin, requirePassword } from "$lib/auth";
   import { unblind } from "$lib/wallet";
+
   import Fund from "./_fund";
   import Withdraw from "./_withdraw";
   import Transactions from "./_transactions";
@@ -80,9 +75,7 @@
       .sort((a, b) => a.name.localeCompare(b.name))
       .sort((a, b) => (a.name.length === 12 ? 1 : -1))
       .filter(
-        (item, pos, ary) =>
-          item &&
-          (!pos || item.asset != ary[pos - 1].asset)
+        (item, pos, ary) => item && (!pos || item.asset != ary[pos - 1].asset)
       );
 
     loading = false;
@@ -104,7 +97,6 @@
   }
 </script>
 
-
 {#if loading}
   <div class="absolute top-0 w-full left-0">
     <ProgressLinear />
@@ -112,12 +104,16 @@
 {:else}
   <div class="w-3/4">
     <div class="mb-5">
-      <a class="secondary-color" href="/wallet/asset">{assets.length} assets available in this
-        wallet <i class="fas fa-chevron-right ml-3"></i></a>
+      <a class="secondary-color" href="/wallet/asset">{assets.length}
+        assets available in this wallet
+        <i class="fas fa-chevron-right ml-3" /></a>
     </div>
 
     <div class="bg-black mb-2 pt-1 rounded-lg">
-      <div class="brand-color text-center p-3 text-black text-xl font-bold w-1/2 rounded-r-full mt-5">{name($asset)}</div>
+      <div
+        class="brand-color text-center p-3 text-black text-xl font-bold w-1/2 rounded-r-full mt-5">
+        {name($asset)}
+      </div>
 
       <div class="m-6">
         <div class="text-sm text-gray-400">Balance</div>
@@ -134,8 +130,12 @@
         </div>
       </div>
       <div class="flex gap-10 p-6 pt-2">
-        <button on:click={() => (funding = !funding)} class="button-trans-gray w-full">Fund</button>
-        <button on:click={() => (withdrawing = !withdrawing)} class="button-trans-gray w-full">Withdraw</button>
+        <button
+          on:click={() => (funding = !funding)}
+          class="button-trans-gray w-full">Fund</button>
+        <button
+          on:click={() => (withdrawing = !withdrawing)}
+          class="button-trans-gray w-full">Withdraw</button>
       </div>
     </div>
     <div>

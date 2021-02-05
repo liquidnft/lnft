@@ -8,7 +8,7 @@
     SignaturePrompt,
   } from "$comp";
   import Sidebar from "./_sidebar";
-  import { onMount, tick } from "svelte";
+  import { tick } from "svelte";
   import { prompt, password, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
   import {
@@ -20,16 +20,15 @@
     createTransaction,
     getArtworkTransactions,
   } from "$queries/transactions";
-  import { goto, err, info } from "$lib/utils";
+  import { goto, err, explorer, info, units } from "$lib/utils";
   import { mutation, subscription, operationStore } from "@urql/svelte";
-  import { explorer, requireLogin, requirePassword } from "$lib/utils";
+  import { requirePassword } from "$lib/auth";
   import {
     createOffer,
     executeSwap,
     requestSignature,
     broadcast,
   } from "$lib/wallet";
-  import { units } from "$lib/utils";
   import { Psbt } from "@asoltys/liquidjs-lib";
 
   let { id } = $page.params;
@@ -161,7 +160,7 @@
     };
   }
 
-  let showPopup = false
+  let showPopup = false;
 </script>
 
 <style>
@@ -178,9 +177,11 @@
     }
   }
 
-  span{cursor: pointer;}
+  span {
+    cursor: pointer;
+  }
 
-  .popup{
+  .popup {
     display: none;
     position: fixed;
     z-index: 100;
@@ -196,9 +197,9 @@
   }
 
   .showPopup {
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
   }
 </style>
 
@@ -247,7 +248,9 @@
               </div>
               <button type="submit" class="secondary-btn">Submit</button>
             </form>
-          {:else}<button on:click={startBidding} class="secondary-btn">Make an Offer</button>{/if}
+          {:else}
+            <button on:click={startBidding} class="secondary-btn">Make an Offer</button>
+          {/if}
         {/if}
 
         <div class="flex justify-between">
@@ -304,8 +307,19 @@
       </div>
 
       <div class="w-full lg:w-2/3 lg:px-12">
-        <span on:click={() => showPopup = !showPopup}><Card {artwork} link={false} columns={1} showDetails={false} /></span>
-        <span on:click={() => showPopup = !showPopup} class:showPopup={showPopup} class="popup"><Card {artwork} link={false} columns={1} showDetails={false} /></span>
+        <span on:click={() => (showPopup = !showPopup)}><Card
+            {artwork}
+            link={false}
+            columns={1}
+            showDetails={false} /></span>
+        <span
+          on:click={() => (showPopup = !showPopup)}
+          class:showPopup
+          class="popup"><Card
+            {artwork}
+            link={false}
+            columns={1}
+            showDetails={false} /></span>
         <div class="w-full mt-28">
           <h2 class="text-2xl font-bold primary-color py-10 px-5">
             More by this artist

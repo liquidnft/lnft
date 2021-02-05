@@ -2,7 +2,8 @@
   import { page } from "$app/stores";
   import { user } from "$lib/store";
   import { getMnemonic } from "$lib/wallet";
-  import { copy, requirePassword } from "$lib/utils";
+  import { copy } from "$lib/utils";
+  import { requirePassword } from "$lib/auth";
 
   let show;
   let mnemonic;
@@ -13,7 +14,11 @@
   };
 </script>
 
-<style>button { @apply border my-2 }</style>
+<style>
+  button {
+    @apply border my-2;
+  }
+</style>
 
 <h1>Wallet Settings</h1>
 

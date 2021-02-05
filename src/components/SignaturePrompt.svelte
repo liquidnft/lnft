@@ -12,7 +12,8 @@
   import { api } from "$lib/api";
   import Lock from "$icons/lock";
   import { sign } from "$lib/wallet";
-  import { copy, err, requirePassword } from "$lib/utils";
+  import { copy, err } from "$lib/utils";
+  import { requirePassword } from "$lib/auth";
 
   export let submit = async (e) => {
     await requirePassword();

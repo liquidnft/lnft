@@ -10,7 +10,7 @@
   import Menu from "./_menu";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { fade } from "svelte/transition";
-  import { requireLogin } from "$lib/utils";
+  import { requireLogin } from "$lib/auth";
 
   $: requireLogin($page);
 

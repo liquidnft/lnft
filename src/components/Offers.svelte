@@ -1,5 +1,4 @@
 <script>
-  import { goto } from "$lib/utils";
   import { onMount, tick } from "svelte";
   import Card from "$components/Card";
   import { snack, prompt, psbt, token } from "$lib/store";
@@ -8,7 +7,8 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { broadcast } from "$lib/wallet";
   import SignaturePrompt from "$components/SignaturePrompt";
-  import { val, ticker, requirePassword } from "$lib/utils";
+  import { goto, val, ticker} from "$lib/utils";
+  import { requirePassword } from "$lib/auth";
   import AcceptOffer from "$components/AcceptOffer";
 
   let offers = [];
