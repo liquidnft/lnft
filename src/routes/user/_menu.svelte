@@ -1,13 +1,7 @@
 <script>
-  import { user, token } from "$lib/store";
+  import { user } from "$lib/store";
   import { goto }  from "$lib/utils";
-
-  let logout = () => {
-    window.sessionStorage.removeItem("token");
-    $token = null;
-    $user = null;
-    goto("/login");
-  };
+  import { logout } from "$lib/auth";
 </script>
 
 <div class="mb-10">
