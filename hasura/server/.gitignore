@@ -1,5 +1,0 @@
-node_modules/
-.env
-yarn-error.log
-.pnp*
-.yarn*
