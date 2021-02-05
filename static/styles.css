@@ -112,11 +112,11 @@ Buttons
 
 button{
   width: 100%;
-  border-radius: 30px;
-  padding: 0.7rem 1.5rem !important;
 }
 
 .primary-btn{
+  border-radius: 30px;
+  padding: 0.7rem 1.5rem !important;
   color: #444444;
   font-weight: bold;
   background: rgb(143,238,245);
@@ -124,6 +124,8 @@ button{
 }
 
 .secondary-btn{
+  border-radius: 30px;
+  padding: 0.7rem 1.5rem !important;
   color: #133E7C;
   font-weight: bold;
   background: none;
@@ -136,13 +138,14 @@ button{
   }
 }
 
-
-
 .container{
   padding-left: 1rem;
   padding-right: 1rem;
 }
 .overflow-x-auto::-webkit-scrollbar {display: none;}
+.boxShadow{
+  box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+}
 
 /**
 Use a better box model (opinionated).
