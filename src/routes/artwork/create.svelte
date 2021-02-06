@@ -25,15 +25,14 @@
   $: hidden = type && !type.includes("video");
 
   let previewFile = (file) => {
-    artwork.filename = sanitize(file.name);
-    type = file.type;
+    console.log(file);
     var reader = new FileReader();
 
     reader.onload = async (e) => {
       preview = e.target.result;
       await tick();
       if (type.includes("video")) {
-        video.src = URL.createObjectURL(file);
+        preview = URL.createObjectURL(file);
         video.parentElement.load();
       }
     };
@@ -48,9 +47,14 @@
 
   $: width = `width: ${percent}%`;
 
+  let url;
   const uploadFile = ({ detail: file }) => {
     if (!file) return;
-    previewFile(file);
+    artwork.filename = sanitize(file.name);
+    ({ type } = file);
+    if (file.size < 100000000) previewFile(file);
+    url = preview || `/api/storage/o/public/${file.name}`;
+
     upload(file, $token, progress);
   };
 
@@ -86,7 +90,7 @@
     artwork.asset = parseAsset(tx.outs[3].asset);
 
     hash = tx.getId();
-  }
+  };
 
   let submit = async (e) => {
     e.preventDefault();
@@ -119,29 +123,31 @@
     <h1 class="title primary-color">Submit Artwork</h1>
   </div>
 
-    {#if preview}
-      <div class="flex flex-wrap">
-        <div class="w-1/2 max-w-sm">
-          <Form bind:artwork on:submit={submit} />
-        </div>
-        <div class="ml-2 flex-1 flex">
-          <div class="mx-auto">
-            {#if type.includes('image')}<img alt="preview" src={preview} class="w-full" />{/if}
-            <video controls class:hidden muted autoplay loop class="w-full">
-              <source bind:this={video} />
-              Your browser does not support HTML5 video.
-            </video>
-            <div class="w-full bg-grey-light p-8">
-              <div
-                class="bg-green-200 font-bold rounded-full p-4 mx-auto max-w-xs text-center"
-                style={width}>
-                {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
-              </div>
+  {#if percent}
+    <div class="flex flex-wrap">
+      <div class="w-1/2 max-w-sm">
+        <Form bind:artwork on:submit={submit} />
+      </div>
+      <div class="ml-2 flex-1 flex">
+        <div class="mx-auto">
+          {#if type.includes('image')}
+            <img alt="preview" src={url} class="w-full" />
+          {/if}
+          <video controls class:hidden muted autoplay loop class="w-full">
+            <source src={url} bind:this={video} />
+            Your browser does not support HTML5 video.
+          </video>
+          <div class="w-full bg-grey-light p-8">
+            <div
+              class="bg-green-200 font-bold rounded-full p-4 mx-auto max-w-xs text-center"
+              style={width}>
+              {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
             </div>
           </div>
         </div>
       </div>
-    {:else}
-      <Dropzone on:file={uploadFile} />
-    {/if}
+    </div>
+  {:else}
+    <Dropzone on:file={uploadFile} />
+  {/if}
 </div>
