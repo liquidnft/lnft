@@ -1,19 +1,13 @@
 <script>
   import { page } from "$app/stores";
-  import { err, goto } from "$lib/utils";
-  import { api } from "$lib/api";
-  import cryptojs from "crypto-js";
-  import { generateMnemonic } from "bip39";
-  import { tick } from "svelte";
-  import { keypair, singlesig, multisig } from "$lib/wallet";
-  import { login } from "$lib/auth";
+  import { register } from "$lib/auth";
 
   let username = "anon";
   let password = "liquidart";
 
-  let usernameInput;
-  let pageChange = () => setTimeout(() => usernameInput.select(), 50);
-  $: if (usernameInput) pageChange($page);
+  let ref;
+  let pageChange = () => setTimeout(() => ref.select(), 50);
+  $: if (ref) pageChange($page);
 </script>
 
 <style>
@@ -60,28 +54,24 @@
 <div class="form-container bg-lightblue">
   <form
     class="mb-6"
-    on:submit|preventDefault={() => login(username, password)}
+    on:submit|preventDefault={() => register(username, password)}
     autocomplete="off">
-    <h2 class="mb-8">Sign In</h2>
+    <h2 class="mb-8">Sign up</h2>
     <div class="flex flex-col mb-4">
       <label class="mb-2 font-medium text-gray-600" for="first_name">Email or
         username</label>
-      <input
-        placeholder="username"
-        bind:value={username}
-        bind:this={usernameInput} />
+      <input placeholder="username" bind:value={username} bind:this={ref} />
     </div>
     <div class="flex flex-col mb-4">
       <label
         class="mb-2 font-medium text-gray-600"
         for="last_name">Password</label>
-      <input placeholder="Password" type="password" bind:value={password} />
+      <input placeholder="At least 8 characters." type="password" bind:value={password} />
     </div>
-    <a href="/forgot-password" class="block w-full text-midblue">Forgot
-      password?</a>
+    <span
+      class="block w-full">By signing up, you agree to the <a href="/terms-and-conditions" class="text-midblue">Terms and Conditions</a> and <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
     <div class="flex my-5 justify-end">
-      <button class="primary-btn w-1/2" type="submit">Sign In</button>
+      <button class="primary-btn w-1/2" type="submit">Register</button>
     </div>
-    <a href="/register" class="text-midblue">Don't have an account? Sign up</a>
   </form>
 </div>

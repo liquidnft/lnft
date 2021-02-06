@@ -4,8 +4,6 @@ app = require("fastify")({
   logger: true,
 });
 
-console.log(process.env.NODE_ENV)
-
 require("./proxy");
 require("./monitor");
 require("./signing");

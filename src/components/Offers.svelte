@@ -7,7 +7,7 @@
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { broadcast } from "$lib/wallet";
   import SignaturePrompt from "$components/SignaturePrompt";
-  import { goto, val, ticker} from "$lib/utils";
+  import { goto, val, ticker } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import AcceptOffer from "$components/AcceptOffer";
 
@@ -44,8 +44,7 @@
         <a href={`/tx/${offer.id}`} class="text-xs text-green-400">
           [view tx]
         </a>
-        <button
-          on:click={() => comp.accept(offer.transaction)}>Accept</button>
+        <button on:click={() => comp.accept(offer.transaction)}>Accept</button>
       </div>
     </div>
   {:else}
