@@ -1,0 +1,138 @@
+version: '3.6'
+services:
+  app-server:
+    container_name: app-server
+    build:
+      context: ./app-server
+    environment:
+      HASURA_URL: '${HASURA_ENDPOINT}'
+      HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
+      HASURA_JWT: '${HASURA_GRAPHQL_JWT_SECRET}'
+    ports:
+      - '8091:8091'
+      - '8092:8092'
+    volumes:
+      - ./app-server:/app
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+    volumes:
+      - ${DATA_DIR}:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
+  hasura:
+    container_name: hasura
+    image: hasura/graphql-engine:v1.3.3
+    ports:
+      - '8080:8080'
+    depends_on:
+      - 'postgres'
+    restart: always
+    volumes:
+      - ./migrations:/hasura-migrations
+      - ./metadata:/hasura-metadata
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
+      HASURA_GRAPHQL_JWT_SECRET: '${HASURA_GRAPHQL_JWT_SECRET}'
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
+  hbp:
+    container_name: hbp
+    image: nhost/hasura-backend-plus:latest
+    depends_on:
+      - 'hasura'
+      - 'minio'
+    ports:
+      - '3400:3000'
+    environment:
+      HASURA_ENDPOINT: '${HASURA_ENDPOINT}'
+      HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
+      REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address,multisig
+      JWT_ALGORITHM: RS256
+      AUTO_MIGRATE: "true"
+      STORAGE_ENABLE: "true"
+      S3_ENDPOINT: http://minio:9000
+      S3_SSL_ENABLED: "false"
+      S3_BUCKET: '${S3_BUCKET:-hasura-backend-plus}'
+      S3_ACCESS_KEY_ID: '${S3_ACCESS_KEY_ID:-minio_access_key}'
+      S3_SECRET_ACCESS_KEY: '${S3_SECRET_ACCESS_KEY:-liquidart}' ## min 8 character
+      MAX_REQUESTS: 10000
+  minio:
+    container_name: minio
+    image: minio/minio
+    restart: always
+    volumes:
+      - ${STORAGE_DIR}:/export
+    ports:
+      - 9000:9000
+    environment:
+      S3_BUCKET: '${S3_BUCKET:-hasura-backend-plus}'
+      MINIO_ACCESS_KEY: '${S3_ACCESS_KEY_ID:-minio_access_key}' ## min 8 character
+      MINIO_SECRET_KEY: '${S3_SECRET_ACCESS_KEY:-liquidart}' ## min 8 character
+    entrypoint: sh
+    command: "-c 'mkdir -p /export/$${S3_BUCKET:-hasura-backend-plus} && /usr/bin/minio server /export'"
+  bitcoin:
+    image: asoltys/bitcoin:latest
+    container_name: bitcoin
+    ports:
+      - ${BITCOIN_PEER_PORT}:19000
+      - ${BITCOIN_NODE_PORT}:19001
+    volumes:
+      - ./liquidregtest/config/:/config
+    restart: unless-stopped
+  liquid:
+    image: asoltys/liquid:latest
+    container_name: liquid
+    ports:
+      - ${LIQUID_NODE_PORT}:18884
+      - ${LIQUID_PEER_PORT}:18886
+      - ${LIQUID_BLOCK_PORT}:18602
+      - ${LIQUID_TX_PORT}:18603
+    volumes:
+      - ./liquidregtest/liquid-config/:/config
+    restart: unless-stopped
+  electrs-liquid:
+    image: vulpemventures/electrs-liquid:latest
+    container_name: electrs-liquid
+    entrypoint:
+      - /build/electrs
+    command:
+      - -vvvv
+      - --parent-network
+      - regtest
+      - --network
+      - liquidregtest
+      - --daemon-dir
+      - /config
+      - --daemon-rpc-addr
+      - liquid:18884
+      - --cookie
+      - admin1:123
+      - --http-addr
+      - 0.0.0.0:3002
+      - --electrum-rpc-addr
+      - 0.0.0.0:60401
+      - --cors
+      - "*"
+    depends_on:
+      - liquid
+    ports:
+      - ${LIQUID_ELECTRS_RPC_PORT}:60401
+      - ${LIQUID_ELECTRS_PORT}:3002
+    volumes:
+      - ./liquidregtest/liquid-config/:/config
+    restart: unless-stopped
+  esplora-liquid:
+    image: vulpemventures/esplora:latest
+    container_name: esplora-liquid
+    environment:
+      API_URL: ${LIQUID_ESPLORA_URL}
+      NATIVE_ASSET_ID: 5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225
+      IS_ELEMENTS: 1
+    ports:
+      - ${LIQUID_ESPLORA_PORT}:5000
+    restart: unless-stopped
