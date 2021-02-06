@@ -69,7 +69,7 @@
 <style>
   .hover {
     @apply border-b-2;
-    border-bottom: 3px solid #6ED8E0;
+    border-bottom: 3px solid #6ed8e0;
   }
 
   .tabs div {
@@ -81,49 +81,40 @@
 </style>
 
 <div class="container mx-auto lg:px-16 mt-20">
-{#if $user && subject}
-  <div class="flex justify-between flex-wrap" in:fade>
-    <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
-      <div class="gap-10">
-        <div class="flex flex-col">
-          <div class="flex items-center">
-            <Avatar size="large" src={subject.avatar_url} />
+  {#if $user && subject}
+    <div class="flex justify-between flex-wrap" in:fade>
+      <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
+        <div class="gap-10">
+          <div class="flex flex-col">
+            <div class="flex items-center">
+              <Avatar size="large" src={subject.avatar_url} />
 
-            <div class="ml-12">
-              <h3>{subject.full_name}</h3>
-              <div class="text-gray-600">@{subject.username}</div>
+              <div class="ml-12">
+                <h3>{subject.full_name}</h3>
+                <div class="text-gray-600">@{subject.username}</div>
+              </div>
+            </div>
+
+            <div class="flex gap-7 mt-5">
+              <div>Followers: {subject.num_followers}</div>
+              <div>Following: {subject.num_follows}</div>
             </div>
           </div>
 
-          <div class="flex gap-7 mt-5">
-            <div>Followers: {subject.num_followers}</div>
-            <div>Following: {subject.num_follows}</div>
+          <div>
+            {#if $user.id === id}
+              <Menu />
+            {:else}
+              <button class="p-2 primary-btn follow mt-8" on:click={follow}>
+                {subject.followed ? 'Unfollow' : 'Follow'}</button>
+            {/if}
           </div>
         </div>
-      
-        <div>
-          {#if $user.id === id}
-            <Menu />
-          {:else}
-            <button
-              class="p-2 primary-btn follow mt-8"
-              on:click={follow}>
-              {subject.followed ? 'Unfollow' : 'Follow'}</button>
-          {/if}
-        </div>
       </div>
-    </div>
-   
-    <div class="w-full xl:w-2/3">
-      <div
-        class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-14">
+
+      <div class="w-full xl:w-2/3">
         <div
-          class:hover={tab === 'creations'}
-          on:click={() => (tab = 'creations')}>
-          Creations
-        </div>
-        <div
-          class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-4">
+          class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-14">
           <div
             class:hover={tab === 'creations'}
             on:click={() => (tab = 'creations')}>

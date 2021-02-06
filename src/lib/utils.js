@@ -1,6 +1,7 @@
 import { get } from "svelte/store";
 import { assets, addresses, snack } from "$lib/store";
 import { goto as go } from "$app/navigation";
+import { tick } from "svelte";
 
 let cad, btc, usd;
 
@@ -23,9 +24,7 @@ if (import.meta) {
   usd = "9f852208cd04ab21b07872ad5abdb08ac2aea29dacaa416f1c9a87234f449301";
 }
 
-export { btc, cad, usd };
-
-export const addressLabel = (address) => {
+const addressLabel = (address) => {
   let $addresses = get(addresses);
 
   let r;
@@ -34,13 +33,13 @@ export const addressLabel = (address) => {
     r = $addresses.find((u) => u.multisig === address);
     if (r) return r.username + " 2of2";
     r = $addresses.find((u) => u.address === address);
-    if (r) return  r.username;
+    if (r) return r.username;
   }
 
   return address;
 };
 
-export const assetLabel = (asset) => {
+const assetLabel = (asset) => {
   let $assets = get(assets);
 
   let r = $assets && $assets.find((u) => u.asset === asset);
@@ -48,7 +47,7 @@ export const assetLabel = (asset) => {
   return r ? r.title : ticker(asset);
 };
 
-export const tickers = {
+const tickers = {
   [btc]: {
     name: "Liquid Bitcoin",
     ticker: "L-BTC",
@@ -72,7 +71,7 @@ export const tickers = {
   },
 };
 
-export const ticker = (asset) => {
+const ticker = (asset) => {
   return asset
     ? tickers[asset]
       ? tickers[asset].ticker
@@ -80,7 +79,7 @@ export const ticker = (asset) => {
     : "";
 };
 
-export const units = (asset) => {
+const units = (asset) => {
   let decimals = 0;
   let precision = 0;
   if (tickers[asset]) ({ decimals, precision } = tickers[asset]);
@@ -91,20 +90,20 @@ export const units = (asset) => {
   ];
 };
 
-export const sats = (asset, val) => units(asset)[0](val);
-export const val = (asset, sats) => units(asset)[1](sats);
+const sats = (asset, val) => units(asset)[0](val);
+const val = (asset, sats) => units(asset)[1](sats);
 
-export const goto = (path) => {
+const goto = (path) => {
   go(path);
   if (window) window.history.pushState(null, null, path);
 };
 
-export const explorer =
+const explorer =
   import.meta && import.meta.env && import.meta.env !== "production"
     ? import.meta.env.SNOWPACK_PUBLIC_EXPLORER
     : "https://explorer.coinos.io";
 
-export const copy = (v) => {
+const copy = (v) => {
   let textArea = document.createElement("textarea");
   textArea.style.position = "fixed";
   textArea.value = v;
@@ -120,12 +119,12 @@ export const copy = (v) => {
   info("Copied!");
 };
 
-export const pick = (obj, ...keys) =>
+const pick = (obj, ...keys) =>
   Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));
 
-export const sanitize = (input) => input.replace(/[^\w.]+/g, "_");
+const sanitize = (input) => input.replace(/[^\w.]+/g, "_");
 
-export const err = (e) => {
+const err = (e) => {
   let msg = e.message;
   try {
     msg = JSON.parse(msg).message;
@@ -134,6 +133,26 @@ export const err = (e) => {
   snack.set({ msg, type: "error" });
 };
 
-export const info = (msg) => {
+const info = (msg) => {
   snack.set({ msg, type: "info" });
+};
+
+export {
+  addressLabel,
+  assetLabel,
+  btc,
+  cad,
+  copy,
+  err,
+  explorer,
+  goto,
+  info,
+  pick,
+  sanitize,
+  sats,
+  ticker,
+  tickers,
+  units,
+  usd,
+  val,
 };

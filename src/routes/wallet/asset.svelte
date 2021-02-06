@@ -4,11 +4,12 @@
   import { electrs } from "$lib/api";
   import { onMount, tick } from "svelte";
   import { asset, poll, password, user, token, prompt, psbt } from "$lib/store";
-  import { ProgressLinear, SignaturePrompt } from "$comp";
+  import { ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
   import { btc, err, sats, units, tickers } from "$lib/utils";
+  import sign from "$lib/sign";
   import { requirePassword, requireLogin } from "$lib/auth";
   import { broadcast, pay, keypair } from "$lib/wallet";
 
@@ -86,23 +87,6 @@
     });
   }
 
-  let sign = async () => {
-    $prompt = SignaturePrompt;
-    try {
-      await new Promise((resolve, reject) =>
-        prompt.subscribe((value) => {
-          !value && reject();
-          value === "success" && resolve();
-        })
-      );
-      await tick();
-
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
   let send = async (e) => {
     e.preventDefault();
     try {
@@ -111,7 +95,7 @@
       err(e);
       return;
     }
-    if (!(await sign())) return;
+    await sign();
     await broadcast($psbt);
   };
 </script>

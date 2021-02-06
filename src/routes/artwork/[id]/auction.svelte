@@ -4,9 +4,7 @@
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
-  import { goto } from "$lib/utils";
   import { password, sighash, prompt, psbt, user, token } from "$lib/store";
-  import { err, info } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import { createTransaction } from "$queries/transactions";
   import {
@@ -16,11 +14,11 @@
     sendToMultisig,
   } from "$lib/wallet";
   import { formatISO, addDays } from "date-fns";
-  import { btc, units, tickers } from "$lib/utils";
+  import { btc, goto, err, units, tickers } from "$lib/utils";
+  import sign from "$lib/sign";
 
   import ProgressLinear from "$components/ProgressLinear";
   import Select from "svelte-select";
-  import SignaturePrompt from "$components/SignaturePrompt";
   import Waiting from "$components/Waiting";
 
   let { id } = $page.params;
@@ -63,12 +61,7 @@
         return false;
       }
 
-      $prompt = SignaturePrompt;
-      await new Promise((resolve) =>
-        prompt.subscribe((value) => value === "success" && resolve())
-      );
-      await tick();
-
+      await sign();
       await broadcast($psbt);
 
       $prompt = Waiting;
@@ -94,11 +87,7 @@
     }
 
     $sighash = 0x83;
-    $prompt = SignaturePrompt;
-    await new Promise((resolve) =>
-      prompt.subscribe((value) => value === "success" && resolve())
-    );
-    await tick();
+    await sign();
     artwork.list_price_tx = $psbt.toBase64();
 
     createTransaction$({
@@ -126,12 +115,7 @@
     try {
       $psbt = await sendToMultisig(artwork, 10000);
 
-      $prompt = SignaturePrompt;
-      await new Promise((resolve) =>
-        prompt.subscribe((value) => value === "success" && resolve())
-      );
-      await tick();
-
+      await sign();
       await broadcast($psbt);
 
       $prompt = Waiting;

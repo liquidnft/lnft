@@ -1,9 +1,8 @@
 <script>
-  import { tick } from "svelte";
   import { asset, prompt, psbt, snack } from "$lib/store";
   import { broadcast, pay, keypair, unblind } from "$lib/wallet";
   import { btc, sats } from "$lib/utils";
-  import { SignaturePrompt } from "$comp";
+  import sign from "$lib/sign";
 
   export let val;
 
@@ -19,27 +18,11 @@
       err(e);
       return;
     }
-    if (!(await sign())) return;
-    await tick();
+    await sign();
     await broadcast($psbt);
     info("Payment sent!");
   };
 
-  let sign = async () => {
-    $prompt = SignaturePrompt;
-    try {
-      await new Promise((resolve, reject) =>
-        prompt.subscribe((value) => {
-          !value && reject();
-          value === "success" && resolve();
-        })
-      );
-
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
 </script>
 
 <style>

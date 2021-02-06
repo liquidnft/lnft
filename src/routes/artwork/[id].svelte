@@ -5,7 +5,6 @@
     Avatar,
     Card,
     ProgressLinear,
-    SignaturePrompt,
   } from "$comp";
   import Sidebar from "./_sidebar";
   import { tick } from "svelte";
@@ -21,6 +20,7 @@
     getArtworkTransactions,
   } from "$queries/transactions";
   import { goto, err, explorer, info, units } from "$lib/utils";
+  import sign from "$lib/sign";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { requirePassword } from "$lib/auth";
   import {
@@ -73,10 +73,7 @@
       return;
     }
 
-    $prompt = SignaturePrompt;
-    await new Promise((resolve) =>
-      prompt.subscribe((value) => value === "success" && resolve())
-    );
+    await sign();
     transaction.psbt = $psbt.toBase64();
     transaction.hash = $psbt.__CACHE.__TX.getId();
     save();

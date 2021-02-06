@@ -6,7 +6,6 @@
   import { getOffers, acceptOffer } from "$queries/transactions";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { broadcast } from "$lib/wallet";
-  import SignaturePrompt from "$components/SignaturePrompt";
   import { goto, val, ticker } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import AcceptOffer from "$components/AcceptOffer";

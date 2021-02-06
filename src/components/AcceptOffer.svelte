@@ -4,8 +4,8 @@
   import { mutation } from "@urql/svelte";
   import { acceptOffer } from "$queries/transactions";
   import { broadcast, requestSignature } from "$lib/wallet";
-  import SignaturePrompt from "$components/SignaturePrompt";
   import { err, info } from "$lib/utils";
+  import sign from "$lib/sign";
   import { requirePassword } from "$lib/auth";
   import { Psbt } from "@asoltys/liquidjs-lib";
 
@@ -14,11 +14,7 @@
     try {
       await requirePassword();
       $psbt = Psbt.fromBase64(base64);
-      $prompt = SignaturePrompt;
-      await new Promise((resolve) =>
-        prompt.subscribe((value) => value === "success" && resolve())
-      );
-      await tick();
+      await sign();
       if (artwork.royalty) {
         $psbt = await requestSignature($psbt);
       }

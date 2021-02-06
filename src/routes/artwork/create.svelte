@@ -4,12 +4,13 @@
   import { electrs } from "$lib/api";
   import { tick, onMount } from "svelte";
   import { psbt, password, prompt, user, token } from "$lib/store";
-  import { Dropzone, SignaturePrompt } from "$comp";
+  import { Dropzone } from "$comp";
   import upload from "$lib/upload";
   import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
   import { goto, sanitize, err } from "$lib/utils";
+  import sign from "$lib/sign";
   import { requireLogin, requirePassword } from "$lib/auth";
   import { createIssuance, broadcast, parseAsset } from "$lib/wallet";
   import reverse from "buffer-reverse";
@@ -25,7 +26,6 @@
   $: hidden = type && !type.includes("video");
 
   let previewFile = (file) => {
-    console.log(file);
     var reader = new FileReader();
 
     reader.onload = async (e) => {
@@ -53,7 +53,7 @@
     artwork.filename = sanitize(file.name);
     ({ type } = file);
     if (file.size < 100000000) previewFile(file);
-    url = preview || `/api/storage/o/public/${file.name}`;
+    url = preview || `/api/storage/o/public/${artwork.filename}`;
 
     upload(file, $token, progress);
   };
@@ -80,11 +80,7 @@
       return;
     }
 
-    $prompt = SignaturePrompt;
-    await new Promise((resolve) =>
-      prompt.subscribe((value) => value === "success" && resolve())
-    );
-    await tick();
+    await sign();
     await broadcast($psbt);
     let tx = $psbt.extractTransaction();
     artwork.asset = parseAsset(tx.outs[3].asset);
