@@ -30,11 +30,6 @@
 </script>
 
 <style>
-  .sidebar{
-    width: 25%;
-    padding:0 5%;
-  }
-
   hr{
     margin: 50px 0;
   }

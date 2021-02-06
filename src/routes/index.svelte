@@ -40,6 +40,8 @@
     width: 170px;
     border: 1px solid white;
     color: white;
+    border-radius: 30px;
+    padding: 0.7rem 1.5rem !important;
   }
 </style>
 

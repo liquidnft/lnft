@@ -205,9 +205,24 @@
     align-items: center;
     justify-content: center;
   }
+
+  .mobileImage {
+    display: none;
+    margin-bottom: 40px;
+  }
+
+  @media only screen and (max-width: 1023px) {
+    .desktopImage {
+      display: none;
+    }
+
+    .mobileImage {
+      display: block;
+    }
+  }
 </style>
 
-<div class="container mx-auto p-10">
+<div class="container mx-auto mt-20">
   {#if artwork && !loading}
     <div class="flex justify-between flex-wrap" bind:this={target}>
       <div class="text-center lg:text-left w-full lg:w-1/3 lg:max-w-xs">
@@ -215,7 +230,9 @@
           {artwork.title || 'Untitled'}
         </h1>
         <div class="mt-4 mb-6">{artwork.editions} Editions</div>
-
+        <span class="mobileImage">
+          <Card {artwork} link={false} columns={1} showDetails={false} />
+        </span>
         <Sidebar bind:artwork />
 
         {#if $user && $user.id === artwork.owner_id}
@@ -311,19 +328,17 @@
       </div>
 
       <div class="w-full lg:w-2/3 lg:px-12">
-        <span on:click={() => (showPopup = !showPopup)}><Card
-            {artwork}
-            link={false}
-            columns={1}
-            showDetails={false} /></span>
-        <span
-          on:click={() => (showPopup = !showPopup)}
-          class:showPopup
-          class="popup"><Card
-            {artwork}
-            link={false}
-            columns={1}
-            showDetails={false} /></span>
+        <div class="desktopImage">
+          <span on:click={() => (showPopup = !showPopup)}>
+            <Card {artwork} link={false} columns={1} showDetails={false} />
+          </span>
+          <span
+            on:click={() => (showPopup = !showPopup)}
+            class:showPopup
+            class="popup">
+            <Card {artwork} link={false} columns={1} showDetails={false} />
+          </span>
+        </div>
         <div class="w-full mt-28">
           <h2 class="text-2xl font-bold primary-color py-10 px-5">
             More by this artist
