@@ -16,7 +16,6 @@
   import { formatISO, addDays } from "date-fns";
   import { btc, goto, err, units, tickers } from "$lib/utils";
   import sign from "$lib/sign";
-
   import ProgressLinear from "$components/ProgressLinear";
   import Select from "svelte-select";
   import Waiting from "$components/Waiting";
@@ -50,28 +49,30 @@
   const updateArtwork$ = mutation(updateArtwork);
 
   const spendPreviousSwap = async () => {
-    if (royalty || parseInt(artwork.list_price || 0) === sats(list_price))
-      return true;
+    try {
+      if (royalty || parseInt(artwork.list_price || 0) === sats(list_price))
+        return true;
 
-    if (artwork.list_price_tx) {
-      try {
+      await requirePassword();
+
+      if (artwork.list_price_tx) {
         $psbt = await cancelSwap(artwork, 500);
-      } catch (e) {
-        err(e);
-        return false;
+
+        await sign();
+        await broadcast($psbt);
+
+        $prompt = Waiting;
+        await new Promise((resolve) =>
+          prompt.subscribe((value) => value === "success" && resolve())
+        );
+        await tick();
       }
 
-      await sign();
-      await broadcast($psbt);
-
-      $prompt = Waiting;
-      await new Promise((resolve) =>
-        prompt.subscribe((value) => value === "success" && resolve())
-      );
-      await tick();
+      return true;
+    } catch (e) {
+      err(e);
+      return false;
     }
-
-    return true;
   };
 
   const setupSwaps = async () => {

@@ -29,6 +29,7 @@ export const requireLogin = async (page) => {
 };
 
 export const requirePassword = async () => {
+  if (get(pw)) return;
   await requireLogin();
   let unsub;
   await new Promise(
