@@ -7,6 +7,7 @@ WORKDIR /app
 COPY . ./
 RUN apk add git
 RUN yarn install
+RUN yarn add nodemon
 
 # CMD ["sleep", "3600"]
 CMD ["yarn", "start"]
