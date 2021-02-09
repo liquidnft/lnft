@@ -1,4 +1,5 @@
 <script>
+  import cid from "$lib/cid";
   import { page } from "$app/stores";
   import { v4 } from "uuid";
   import { electrs } from "$lib/api";
@@ -9,7 +10,7 @@
   import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import { goto, sanitize, err } from "$lib/utils";
+  import { goto, err } from "$lib/utils";
   import sign from "$lib/sign";
   import { requireLogin, requirePassword } from "$lib/auth";
   import { createIssuance, broadcast, parseAsset } from "$lib/wallet";
@@ -48,14 +49,16 @@
   $: width = `width: ${percent}%`;
 
   let url;
-  const uploadFile = ({ detail: file }) => {
+  const uploadFile = async ({ detail: file }) => {
     if (!file) return;
-    artwork.filename = sanitize(file.name);
     ({ type } = file);
-    if (file.size < 100000000) previewFile(file);
-    url = preview || `/api/storage/o/public/${artwork.filename}`;
 
-    upload(file, $token, progress);
+    artwork.filename = await cid(file);
+    file = new File([file], artwork.filename, { type });
+    if (file.size < 100000000) previewFile(file);
+    url = preview || `/api/storage/o/public/${file.name}`;
+
+    upload(file, progress);
   };
 
   let artwork = {

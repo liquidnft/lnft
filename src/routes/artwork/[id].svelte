@@ -43,7 +43,7 @@
   $: if (artwork)
     subscription(
       operationStore(getArtworksByArtist(artwork.artist_id)),
-      (a, b) => (others = b.artworks.filter((a) => a.id !== artwork.id))
+      (a, b) => (others = b.artworks.filter((a) => artwork && a.id !== artwork.id))
     );
 
   let artwork, start_counter, end_counter;

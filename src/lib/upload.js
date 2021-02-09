@@ -1,8 +1,7 @@
-import { sanitize } from "$lib/utils";
+import { get } from "svelte/store";
+import { token } from "$lib/store";
 
-export default (file, token, progress) => {
-  file = new File([file], sanitize(file.name), { type: file.type });
-
+export default async (file, progress) => {
   let url = `/api/storage/o/public/${file.name}`;
   let formData = new FormData();
 
@@ -11,6 +10,6 @@ export default (file, token, progress) => {
   let ajax = new XMLHttpRequest();
   ajax.upload.addEventListener("progress", progress, false);
   ajax.open("POST", url);
-  ajax.setRequestHeader("Authorization", `Bearer ${token}`);
+  ajax.setRequestHeader("Authorization", `Bearer ${get(token)}`);
   ajax.send(formData);
 };

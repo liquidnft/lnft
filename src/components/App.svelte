@@ -9,8 +9,21 @@
   import { operationStore, subscription } from "@urql/svelte";
   import { page } from "$app/stores";
   import { refreshToken } from "$lib/auth";
+  import CID from "cids";
 
-  onMount(() => {
+  onMount(async () => {
+    const multihashing = (await import("multihashing-async")).default;
+    const bytes = new TextEncoder("utf8").encode("OMG!");
+    const hash = await multihashing(bytes, "sha2-256");
+    const cid = new CID(1, "dag-pb", hash);
+
+    console.log(
+      cid.version,
+      cid.codec,
+      cid.code,
+      cid.multibaseName,
+      cid.toString()
+    );
     refreshToken();
     setInterval(refreshToken, 600000);
   });
@@ -37,8 +50,7 @@
       subscription(operationStore(getAssets), (a, b) => {
         $assets = b.artworks;
       });
-
-    } 
+    }
   };
 </script>
 

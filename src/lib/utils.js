@@ -122,8 +122,6 @@ const copy = (v) => {
 const pick = (obj, ...keys) =>
   Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));
 
-const sanitize = (input) => input.replace(/[^\w.]+/g, "_");
-
 const err = (e) => {
   let msg = e.message;
   try {
@@ -148,7 +146,6 @@ export {
   goto,
   info,
   pick,
-  sanitize,
   sats,
   ticker,
   tickers,
