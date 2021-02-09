@@ -162,6 +162,7 @@
   }
 
   let showPopup = false;
+
 </script>
 
 <style>
@@ -183,7 +184,6 @@
   }
 
   .popup {
-    display: none;
     position: fixed;
     z-index: 100;
     width: 100%;
@@ -195,17 +195,32 @@
     right: 0;
     background: #000;
     scroll-behavior: contain;
+    transform: scale(0); 
   }
 
   .showPopup {
     display: flex !important;
     align-items: center;
     justify-content: center;
+    animation: zoom 0.4s ease forwards;
   }
 
   .mobileImage {
     display: none;
     margin-bottom: 40px;
+  }
+
+  .popup :global(video){
+    width: 50%;
+  }
+
+  @keyframes zoom{
+    0% {
+        transform: scale(.6);
+    }
+    100% {
+        transform: scale(1);
+    }
   }
 
   @media only screen and (max-width: 1023px) {

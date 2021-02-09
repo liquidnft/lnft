@@ -24,7 +24,7 @@
   }
 </style>
 
-<div class="px-4 mb-10 lg:w-1/3">
+<div class="flex flex-col px-4 mb-10 lg:w-1/3 justify-between">
     <div class="recentCard flex">
       <div class="mt-2 mr-4"><Avatar src={transaction.user.avatar_url} /></div>
       <div class="flex flex-col">
