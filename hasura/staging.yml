@@ -52,11 +52,11 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
       HASURA_GRAPHQL_ADMIN_SECRET: liquidart
-      HASURA_GRAPHQL_JWT_SECRET: '{"type": "RS256", "jwk_url": "http://hasura-backend-plus:3000/auth/jwks"}'
+      HASURA_GRAPHQL_JWT_SECRET: '{"type": "RS256", "jwk_url": "http://hbp:3000/auth/jwks"}'
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
-  hasura-backend-plus:
-    container_name: hasura-backend-plus
+  hbp:
+    container_name: hbp
     image: nhost/hasura-backend-plus:latest
     depends_on:
       - 'minio'
