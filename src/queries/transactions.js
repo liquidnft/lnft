@@ -31,6 +31,7 @@ const fields = `
     id
     title
     filename
+    filetype
     asking_asset
     royalty
     transferred_at

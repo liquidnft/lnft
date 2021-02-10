@@ -1,16 +1,11 @@
 import { tick } from "svelte";
-import { prompt } from "$lib/store";
-import SignaturePrompt from "$components/SignaturePrompt";
+import { sighash, psbt } from "$lib/store";
+import { get } from "svelte/store";
+import { sign } from "$lib/wallet";
+import { requirePassword } from "$lib/auth";
 
 export default async () => {
-  let unsub;
-  prompt.set(SignaturePrompt);
-  await new Promise(
-    (resolve) =>
-      (unsub = prompt.subscribe((value) => value === "success" && resolve()))
-  );
-
-  unsub();
+  await requirePassword();
+  psbt.set(sign(get(psbt), get(sighash) || 1));
   await tick();
 };
-
