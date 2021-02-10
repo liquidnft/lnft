@@ -188,9 +188,18 @@
       goto(`/artwork/${artwork.id}`);
     });
   };
+
+  let yes = false;
 </script>
 
 <style>
+  .container {
+    background-color:#ECF6F7;
+    width: 100% !important;
+    margin: 0;
+    max-width: 100%;
+  }
+
   input,
   select,
   textarea {
@@ -200,19 +209,66 @@
   label {
     @apply mb-2;
   }
+  .tooltip{cursor: pointer;}
+  .tooltip .tooltip-text {
+    visibility: hidden;
+    padding: 15px;
+    position: absolute;
+    z-index: 100;
+    width: 300px;
+    font-style: normal;
+  }
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+  }
+
+  input[type='checkbox']:checked{
+   appearance: none;
+    border: 5px solid #fff;
+    outline: 2px solid #6ED8E0;
+    background-color: #6ED8E0;
+    padding: 2px;
+    border-radius: 0;
+  }
+
+  input[type='radio']:checked{
+   appearance: none;
+    border: 7px solid #6ED8E0;
+    background-color: #fff;
+    padding: 2px;
+    border-radius: 100%;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .container
+    {
+      background: none;
+    }
+  }
+
+  
 </style>
 
-<div class="container mx-auto px-8">
-  <div class="w-full xl:w-1/3 mx-auto">
-    <h1 class="primary-color title">Listing Settings</h1>
-    <p class="text-xl italic my-4">All fields are optional</p>
+<div class="container mx-auto md:p-20">
+  <div class="w-full xl:w-1/2 mx-auto bg-white md:p-10 rounded-xl">
+    <a class="block mb-6 text-midblue" href="/"><i class="fas fa-chevron-left mr-3"></i>Back</a>
+    <h2>List artwork</h2>
+    <p class="text-xl italic my-10">All fields are optional</p>
 
     {#if artwork}
       <form class="w-full mb-6" on:submit={update} autocomplete="off">
         <div class="flex flex-col mb-4">
           <div>
             <div class="mt-1 relative rounded-md shadow-sm">
-              <label>Asset</label>
+              <p>Asset</p>
+              <div class="flex mt-4">
+                {#each Object.keys(tickers) as asset}
+                <label class="ml-2 mr-6 flex items-center">
+                  <input class="form-radio h-6 w-6 mt-4 mr-2" type="radio" name={asset} value={asset}>
+                  {tickers[asset].ticker}
+                </label>
+                {/each}
+              </div>
               <select
                 placeholder="Currency"
                 bind:value={artwork.asking_asset}
@@ -229,15 +285,15 @@
           </div>
         </div>
         <div class="flex flex-col mb-4">
-          <div class="mt-1 relative rounded-md shadow-sm">
-            <label>Listing Price ("Buy it Now")</label>
-            <input
-              class="form-input block w-full pl-7 pr-12"
-              placeholder={val(0)}
-              bind:value={list_price}
-              bind:this={input} />
-
-            <div class="absolute inset-y-0 right-0 flex items-center mr-2">
+          <div class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm">
+            <label>Price
+              <input
+                class="form-input block w-full pl-7 pr-12"
+                placeholder={val(0)}
+                bind:value={list_price}
+                bind:this={input} />
+            </label>
+            <div class="absolute inset-y-0 right-0 flex items-center mr-2 mt-2">
               {ticker}
             </div>
           </div>
@@ -245,8 +301,8 @@
         {#if $user.id === artwork.artist_id}
           <div class="flex flex-col mb-4">
             <div>
-              <div class="mt-1 relative rounded-md shadow-sm">
-                <label>Royalty Rate (Percentage paid to artist of every sale)</label>
+              <div class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm">
+                <label>Royalty Rate</label>
                 <input
                   class="form-input block w-full pl-7 pr-12"
                   placeholder="0"
@@ -255,66 +311,72 @@
             </div>
           </div>
         {/if}
-        <div class="flex flex-col mb-4">
-          <label>Auction Start Time</label>
-          <input
-            placeholder="Auction Start Time"
-            bind:value={artwork.auction_start} />
+        <div class="auction-toggle">
+          <label  class="inline-flex items-center">
+            <input class="form-checkbox h-6 w-6 mt-3" type="checkbox" bind:checked={yes}>
+            <span class="ml-3 text-xl">Create an auction</span>
+          </label>
         </div>
-        <div class="flex flex-col mb-4">
-          <label>Auction End Time</label>
-          <input
-            placeholder="Auction End Time"
-            bind:value={artwork.auction_end} />
-        </div>
-        <div class="flex flex-col mb-4">
-          <div>
-            <div class="mt-1 relative rounded-md shadow-sm">
-              <label>Reserve Price (Minimum Accepted Offer)</label>
-              <input
-                class="form-input block w-full pl-7 pr-12"
-                placeholder="0"
-                bind:value={artwork.reserve_price} />
-            </div>
+        {#if yes}
+          <div class="aution-container">
+              <p class="italic my-8">By leaving the following fields empty, your auction will be set to the default settings.
+                <span class="tooltip">
+                  <i class="far fa-question-circle ml-3 text-midblue text-xl tooltip"></i>
+                  <span class='tooltip-text bg-gray-100 shadow ml-4 rounded'>
+                    Auction default settings: <br/>By default, your auction will start as soon as it's set and will last for 3 days
+                  </span>
+                </span>
+              </p>
+              <div class="flex auction justify-between flex-wrap">
+                <div class="flex flex-col">
+                  <h4 class="mb-4">Auction start</h4>
+                  <div class="flex justify-between">
+                    <div class="flex flex-col mb-4 mr-6">
+                      <label for="date">Date</label>
+                      <input type="date" name="date">
+                    </div>
+                    <div class="flex flex-col mb-4">
+                      <label for="time">Time</label>
+                      <input type="time" name="time">
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <h4 class="mb-4">Auction end</h4>
+                  <div class="flex justify-between">
+                    <div class="flex flex-col mb-4 mr-6">
+                      <label for="date">Date</label>
+                      <input type="date" name="date">
+                    </div>
+                    <div class="flex flex-col mb-4">
+                      <label for="time">Time</label>
+                      <input type="time" name="time">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col mb-4">
+                <div>
+                  <div class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm">
+                    <label>Reserve price
+                      <span class="tooltip">
+                        <i class="far fa-question-circle ml-3 text-midblue text-xl tooltip"></i>
+                        <span class='tooltip-text bg-gray-100 shadow ml-4 rounded'>
+                          Reserve price is the minimum price that you'll accept for the artwork. Setting one is optional.
+                        </span>
+                      </span>
+                      <input
+                        class="form-input block w-full pl-7 pr-12"
+                        placeholder="0"
+                        bind:value={artwork.reserve_price} />
+                    </label>
+                  </div>
+                </div>
+              </div>
           </div>
-        </div>
-        <div class="flex flex-col mb-4">
-          <div>
-            <div class="mt-1 relative rounded-md shadow-sm">
-              <label>Bid Increment (Bids must be higher than previous bid)</label>
-              <input
-                class="form-input block w-full pl-7 pr-12"
-                placeholder="0"
-                bind:value={artwork.bid_increment} />
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col mb-4">
-          <div>
-            <div class="mt-1 relative rounded-md shadow-sm">
-              <label>Extension Interval (Auction end time gets extended if bid
-                received within this interval)</label>
-              <input
-                class="form-input block w-full pl-7 pr-12"
-                placeholder="0"
-                bind:value={artwork.extension_interval} />
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col mb-4">
-          <div>
-            <div class="mt-1 relative rounded-md shadow-sm">
-              <label>Max Extensions (Number of times the auction can be
-                extended)</label>
-              <input
-                class="form-input block w-full pl-7 pr-12"
-                placeholder="0"
-                bind:value={artwork.max_extensions} />
-            </div>
-          </div>
-        </div>
-        <div class="flex">
-          <button type="submit" class="brand-color">Submit</button>
+        {/if}
+        <div class="flex mt-10">
+          <button type="submit" class="primary-btn">Submit</button>
         </div>
       </form>
     {:else}
