@@ -11,6 +11,8 @@
     "crypto-js": "^4.0.0",
     "fastify": "^3.10.1",
     "fastify-http-proxy": "^4.3.0",
+    "hyperdrive": "^10.20.0",
+    "hyperspace": "^3.18.1",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.12.2",
     "node-fetch": "^2.6.1",
