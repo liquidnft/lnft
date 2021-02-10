@@ -109,6 +109,10 @@
       margin: 0;
       margin-bottom: 20px;
     }
+    select{
+      padding:0;
+      background: none;
+    }
   }
 </style>
 
@@ -119,8 +123,10 @@
     New Artwork</button>
 </div>
 <div class="container mx-auto mt-10">
-  <div class="w-full lg:w-1/3">
-    <Search {tags} />
+  <div class="flex items-center">
+    <input type="search" class="w-full lg:w-1/3 border-0 border-b-2 border-lightblue" 
+      placeholder="What are you looking for?">
+    <i class="fas fa-search text-2xl"></i>
   </div>
 </div>
 <div class="container mx-auto">

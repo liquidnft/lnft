@@ -43,6 +43,12 @@
     border-radius: 30px;
     padding: 0.7rem 1.5rem !important;
   }
+
+  @media only screen and (max-width:500px) {
+    .secondary-header {
+      height:400px;
+    }
+  }
 </style>
 
 <div class="flex mx-auto justify-center">
@@ -74,7 +80,7 @@
 </div>
 
 <div class="container mx-auto px-10 mb-8">
-  <h3 class="primary-color font-bold text-3xl">Recent Activity</h3>
+  <h3>Recent Activity</h3>
 </div>
 <div class="container mx-auto flex overflow-x-auto">
     {#each recent as transaction}
@@ -86,7 +92,7 @@
 </div>
 
 <div class="container mx-auto px-10 mb-8">
-  <h3 class="primary-color font-bold text-3xl">Latest Pieces</h3>
+  <h3>Latest Pieces</h3>
 </div>
 <div class="container mx-auto flex pb-10 overflow-x-auto">
     {#each latest as transaction}
@@ -98,7 +104,7 @@
 </div>
 
 <div class="container mx-auto px-10 mb-10">
-  <h3 class="primary-color font-bold text-3xl">Watch the market move</h3>
+  <h3>Watch the market move</h3>
 </div>
 <div class="container mx-auto flex flex-wrap mb-20">
   <Summary
