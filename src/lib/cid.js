@@ -1,5 +1,6 @@
 import CID from "cids";
 import CryptoJS from "crypto-js";
+import { Buffer } from "buffer";
 
 const readSlice = async (file, start, size) =>
   new Promise((resolve, reject) => {
@@ -46,6 +47,7 @@ const convert = (wordArray) => {
 
 export default async (file) => {
   const dagPB = (await import("ipld-dag-pb")).default;
+  const Hash =  (await import("ipfs-only-hash")).default;
   const DAGNode = dagPB.DAGNode;
   const uint8View = new Uint8Array(await file.arrayBuffer());
   const node1 = new DAGNode(uint8View);
@@ -59,7 +61,12 @@ export default async (file) => {
   a.click();
   console.log((await sha256(file)).toString());
   */
+  const data = Buffer.from("hello world!");
+  const hash = await Hash.of(data);
+  console.log(hash); // QmTp2hEo8eXRp6wg7jXv1BLCMh5a4F3B7buAUZNZUu772j
+
   const bytes = convert(await sha256(file));
-  const hash = multihash.encode(bytes, "sha2-256");
-  return new CID(0, "dag-pb", hash).toString();
+  const encoded = multihash.encode(bytes, "sha2-256");
+  return multihash.toB58String(encoded);
+  //return new CID(0, "dag-pb", hash).toString();
 };

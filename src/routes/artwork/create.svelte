@@ -54,6 +54,7 @@
     ({ type } = file);
 
     artwork.filename = await cid(file);
+    console.log(artwork.filename);
     file = new File([file], artwork.filename, { type });
     if (file.size < 100000000) previewFile(file);
     url = preview || `/api/storage/o/public/${file.name}`;

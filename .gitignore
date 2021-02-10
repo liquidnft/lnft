@@ -14,3 +14,4 @@ hasura/data/raretoshi
 hasura/data/nginx/.lapasswd
 hasura/.env
 hasura/gdk-server/__pycache__
+hasura/ipfs

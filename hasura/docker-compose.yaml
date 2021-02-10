@@ -7,6 +7,7 @@ services:
       HASURA_URL: '${HASURA_ENDPOINT}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       HASURA_JWT: '${HASURA_GRAPHQL_JWT_SECRET}'
+      LIQUID_ESPLORA_URL: '${LIQUID_ESPLORA_URL}'
     ports:
       - '8091:8091'
       - '8092:8092'
@@ -60,6 +61,16 @@ services:
       S3_ACCESS_KEY_ID: '${S3_ACCESS_KEY_ID:-minio_access_key}'
       S3_SECRET_ACCESS_KEY: '${S3_SECRET_ACCESS_KEY:-liquidart}' ## min 8 character
       MAX_REQUESTS: 10000
+  ipfs:
+    container_name: ipfs
+    image: ipfs/go-ipfs
+    ports:
+      - 8081:8080
+      - 4001:4001
+      - 5001:5001
+    volumes:
+      - ${IPFS_DATA}:/data/ipfs
+      - ${STORAGE_DIR}:/export
   minio:
     container_name: minio
     image: minio/minio
