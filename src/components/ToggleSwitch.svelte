@@ -7,24 +7,22 @@
 <style>
   .toggle-checkbox:checked {
     @apply right-0;
-    border: 1px solid #6ED8E0;
+    border: 1px solid #6ed8e0;
     right: 0;
   }
   .toggle-checkbox:checked + .toggle-label {
-    background: #6ED8E0;
+    background: #6ed8e0;
   }
 </style>
 
-<div
-  class="relative inline-block w-10 mr-2 align-middle select-none ease-in">
+<div class="relative inline-block w-10 mr-2 align-middle select-none ease-in">
   <input
     type="checkbox"
     name="toggle"
-    id={id}
-    class="toggle-checkbox absolute p-0 block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none" 
-    bind:checked={checked}
-    on:change
-  />
+    {id}
+    class="toggle-checkbox absolute p-0 block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"
+    bind:checked
+    on:change />
   <label
     for={id}
     class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" />

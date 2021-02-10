@@ -17,24 +17,30 @@
     cursor: pointer;
   }
 
-  @media only screen and (max-width: 1024px){
-    .recentCard{
+  @media only screen and (max-width: 1024px) {
+    .recentCard {
       width: 300px;
     }
   }
 </style>
 
 <div class="flex flex-col px-4 mb-10 lg:w-1/3 justify-between">
-    <div class="recentCard flex">
-      <div class="mt-2 mr-4"><Avatar src={transaction.user.avatar_url} /></div>
-      <div class="flex flex-col">
-        <p class="mt-2 break-words"><TransactionText {transaction} /></p>
-        <p class="text-sm"><TransactionTime {transaction} /></p>
-      </div>
+  <div class="recentCard flex">
+    <div class="mt-2 mr-4">
+      <Avatar src={transaction.user.avatar_url} />
     </div>
-    <div
-      class="mb-5 h-full w-full mt-7 rounded-lg box-shadow thumb"
-      on:click={() => goto(`/artwork/${artwork.id}`)}>
-      <ArtworkMedia {artwork} showDetails={false} />
+    <div class="flex flex-col">
+      <p class="mt-2 break-words">
+        <TransactionText {transaction} />
+      </p>
+      <p class="text-sm">
+        <TransactionTime {transaction} />
+      </p>
     </div>
+  </div>
+  <div
+    class="mb-5 h-full w-full mt-7 rounded-lg box-shadow thumb"
+    on:click={() => goto(`/artwork/${artwork.id}`)}>
+    <ArtworkMedia {artwork} showDetails={false} />
+  </div>
 </div>

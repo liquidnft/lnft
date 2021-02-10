@@ -3,38 +3,41 @@
   export let transaction;
 </script>
 
-
-  <div>
-    <a href={`/user/${transaction.user.id}`} class="secondary-color">@{transaction.user.username}</a>
-    {#if transaction.type === 'bid'}
-      offered
-      {val(transaction.asset, transaction.amount)}
-      {ticker(transaction.asset)}
-      for
-    {:else if transaction.type === 'creation'}
-      created
-    {:else if transaction.type === 'listing'}
-      set a listing price of  
-      {val(transaction.asset, transaction.amount)}
-      {ticker(transaction.asset)}
-      for
-    {:else if transaction.type === 'royalty'}
-      added a {transaction.artwork.royalty}% royalty to
-    {:else if transaction.type === 'purchase'}
-      paid
-      {val(transaction.asset, transaction.amount)}
-      {ticker(transaction.asset)}
-      for
-    {:else if transaction.type === 'accept'}
-      accepted
-      {val(transaction.asset, transaction.amount)}
-      {ticker(transaction.asset)}
-      from
-      <a
-        href={`/user/${transaction.bid.user.id}`} class="secondary-color">@{transaction.bid.user.username}</a>
-      for
-    {/if}
+<div>
+  <a
+    href={`/user/${transaction.user.id}`}
+    class="secondary-color">@{transaction.user.username}</a>
+  {#if transaction.type === 'bid'}
+    offered
+    {val(transaction.asset, transaction.amount)}
+    {ticker(transaction.asset)}
+    for
+  {:else if transaction.type === 'creation'}
+    created
+  {:else if transaction.type === 'listing'}
+    set a listing price of
+    {val(transaction.asset, transaction.amount)}
+    {ticker(transaction.asset)}
+    for
+  {:else if transaction.type === 'royalty'}
+    added a
+    {transaction.artwork.royalty}% royalty to
+  {:else if transaction.type === 'purchase'}
+    paid
+    {val(transaction.asset, transaction.amount)}
+    {ticker(transaction.asset)}
+    for
+  {:else if transaction.type === 'accept'}
+    accepted
+    {val(transaction.asset, transaction.amount)}
+    {ticker(transaction.asset)}
+    from
     <a
-      href={`/artwork/${transaction.artwork.id}`} class="secondary-color">{transaction.artwork.title}</a>
-  </div>
-
+      href={`/user/${transaction.bid.user.id}`}
+      class="secondary-color">@{transaction.bid.user.username}</a>
+    for
+  {/if}
+  <a
+    href={`/artwork/${transaction.artwork.id}`}
+    class="secondary-color">{transaction.artwork.title}</a>
+</div>

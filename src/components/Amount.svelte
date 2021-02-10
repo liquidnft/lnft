@@ -14,13 +14,12 @@
         class="form-input block w-full pl-7"
         placeholder="0"
         bind:value
-        bind:this={amount}
-      />
+        bind:this={amount} />
       {#if unit}
-      <div class="absolute inset-y-0 right-0 flex items-center mr-2">
-        {unit}
-      </div>
-    {/if}
+        <div class="absolute inset-y-0 right-0 flex items-center mr-2">
+          {unit}
+        </div>
+      {/if}
     </div>
   </div>
 </div>

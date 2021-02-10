@@ -1,6 +1,6 @@
 <script>
-	export let item = undefined;
-	export const getOptionLabel = undefined;
+  export let item = undefined;
+  export const getOptionLabel = undefined;
 </script>
 
 <style>

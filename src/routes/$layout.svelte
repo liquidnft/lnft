@@ -13,7 +13,7 @@
   import { show, user, password, token } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import '@fortawesome/fontawesome-free/js/all.js';
+  import "@fortawesome/fontawesome-free/js/all.js";
 
   let open = false;
   let mounted = false;
@@ -26,7 +26,6 @@
 </script>
 
 <style>
-
   :global(.secondary-color) {
     color: #3ba5ac;
   }
@@ -35,7 +34,6 @@
     background: #3ba5ac;
   }
 
-  
   :global(.button-transparent) {
     background-color: none;
     border: 1px solid #133e7c;
@@ -45,7 +43,7 @@
   :global(.button-trans-gray) {
     background-color: none;
     border: 1px solid gray !important;
-    color:white;
+    color: white;
   }
 
   :global(button:focus, select:focus) {
@@ -72,12 +70,12 @@
     color: #05b298;
   }
 
-  :global(body) { 
+  :global(body) {
     font-size: 17px;
     color: #525252;
   }
 
-  :global(.box-shadow) { 
+  :global(.box-shadow) {
     box-shadow: 1px 1px 10px 1px #cbcbcb;
   }
 </style>

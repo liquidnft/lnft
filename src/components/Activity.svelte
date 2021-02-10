@@ -31,6 +31,10 @@
 
 {#if showImage}
   <div class="mb-12">
-    <Card artwork={transaction.artwork} columns={2} showDetails={false} activityPage={true}/>
+    <Card
+      artwork={transaction.artwork}
+      columns={2}
+      showDetails={false}
+      activityPage={true} />
   </div>
 {/if}

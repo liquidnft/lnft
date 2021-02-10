@@ -21,7 +21,7 @@
     try {
       $psbt = sign($psbt, $sighash || 1);
       $prompt = "success";
-    } catch(e) {
+    } catch (e) {
       err(e);
     }
 
@@ -36,7 +36,7 @@
 
 <div class="flex justify-between">
   <h1 class="font-black text-4xl primary-color">Sign transaction</h1>
-  <i class="far fa-times-circle text-4xl"></i>
+  <i class="far fa-times-circle text-4xl" />
 </div>
 <div class="flex my-6">
   <div class="w-1/3 flex flex-col">
@@ -55,11 +55,9 @@
     class="button-transparent"
     on:click={() => copy($psbt.toBase64())}>Copy transaction</button>
 </div>
-<hr class="mb-4">
+<hr class="mb-4" />
 
 <Transaction summary={true} />
 {#if base64}
   <div class="break-all font-mono text-xs mb-2">{$psbt.toBase64()}</div>
 {/if}
-
-

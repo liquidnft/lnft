@@ -3,7 +3,7 @@
 
   export let item = {
     user: {
-      id: '123',
+      id: "123",
       avatar_url: null,
       username: "test",
     },

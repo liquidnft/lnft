@@ -1,6 +1,6 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
-	const dispatch = createEventDispatcher();
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
 
   let fileInput;
   let highlight;
@@ -9,7 +9,7 @@
     stop(e);
     let dt = e.dataTransfer;
     let files = dt.files;
-    dispatch('file', dt.files[0]);
+    dispatch("file", dt.files[0]);
   };
 
   let start = (e) => {
@@ -27,6 +27,38 @@
   };
 </script>
 
+<style>
+  #fileElem {
+    position: fixed;
+    top: -100em;
+  }
+
+  #drop-area {
+    cursor: pointer;
+    border: 2px solid #3ba5ac;
+    border-radius: 10px;
+    width: 70%;
+    height: 70%;
+    max-width: 320px;
+    max-height: 320px;
+    font-family: sans-serif;
+    margin: 100px auto;
+  }
+
+  form {
+    height: 320px;
+  }
+
+  #drop-area.highlight {
+    border-color: teal;
+  }
+
+  #fileElem {
+    position: fixed;
+    top: -100em;
+  }
+</style>
+
 <div
   id="drop-area"
   on:click={open}
@@ -40,7 +72,8 @@
   <form class="text-center">
     <div class="flex justify-center flex-col align-center h-full">
       <span>UPLOAD YOUR ARTWORK</span>
-      <i class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-5xl secondary-color"></i>
+      <i
+        class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-5xl secondary-color" />
     </div>
     <input
       bind:this={fileInput}
@@ -51,35 +84,3 @@
       on:change={(e) => dispatch('file', e.target.files[0])} />
   </form>
 </div>
-
-<style>
-  #fileElem {
-    position: fixed;
-    top: -100em;
-  }
-
-  #drop-area {
-    cursor: pointer;
-    border: 2px solid #3ba5ac;
-    border-radius: 10px;
-    width: 70%;
-    height:70%;
-    max-width: 320px;
-    max-height: 320px;
-    font-family: sans-serif;
-    margin: 100px auto;
-  }
-
-  form{
-    height: 320px;
-  }
-
-  #drop-area.highlight {
-    border-color: teal;
-  }
-
-  #fileElem {
-    position: fixed;
-    top: -100em;
-  }
-</style>

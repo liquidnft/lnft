@@ -11,14 +11,14 @@
 </script>
 
 <style>
-  .thumb{
+  .thumb {
     height: 260px;
     overflow: hidden;
     cursor: pointer;
   }
 
-  @media only screen and (max-width: 1024px){
-    .recentCard{
+  @media only screen and (max-width: 1024px) {
+    .recentCard {
       width: 300px;
     }
   }
@@ -37,11 +37,17 @@
         <p class="text-right pl-5">4 BTC</p>
       </div>
       <div class="flex">
-        <div class="my-auto cursor-pointer" on:click|stopPropagation={() => goto(`/user/${artwork.owner.id}`)}>
+        <div
+          class="my-auto cursor-pointer"
+          on:click|stopPropagation={() => goto(`/user/${artwork.owner.id}`)}>
           <Avatar src={transaction.user.avatar_url} size="large" />
         </div>
         <div class="ml-5 my-auto">
-          <p class="cursor-pointer hover:underline" on:click|stopPropagation={() => goto(`/user/${artwork.owner.id}`)}>{artwork.owner.username}</p>
+          <p
+            class="cursor-pointer hover:underline"
+            on:click|stopPropagation={() => goto(`/user/${artwork.owner.id}`)}>
+            {artwork.owner.username}
+          </p>
           <p class="text-sm text-gray-500">Artist</p>
         </div>
       </div>

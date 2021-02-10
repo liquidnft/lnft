@@ -7,7 +7,7 @@
   export let link = true;
   export let showDetails = true;
   export let shadow = !showDetails;
-  export let activityPage = false
+  export let activityPage = false;
 
   $: [sats, val, ticker] = units(artwork.asking_asset);
 
@@ -38,22 +38,23 @@
     border-radius: 10px 10px 0 0;
   }
 
-  .square{
-    height:450px;
+  .square {
+    height: 450px;
   }
-
-  
 </style>
 
-<div class="{showDetails? 'card': ""} bg-white flex flex-col justify-between" class:link on:click={click}>
-  <div class="flex justify-center {activityPage? 'square' : 'h-3/5'} bg-black">
+<div
+  class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
+  class:link
+  on:click={click}>
+  <div class="flex justify-center {activityPage ? 'square' : 'h-3/5'} bg-black">
     <ArtworkMedia {artwork} {showDetails} />
   </div>
   {#if showDetails}
     <div class="p-6">
       <div class="flex flex-row justify-between">
         <h1 class="font-bold text-2xl">{artwork.title}</h1>
-        <img src='/heart.png' alt="{artwork.filename}" class="w-8 h-8" />
+        <img src="/heart.png" alt={artwork.filename} class="w-8 h-8" />
       </div>
       <div class="flex pt-8">
         <div class="1/2 flex-1">
@@ -75,6 +76,6 @@
         {/if}
       </div>
     </div>
-    <div class="p-4 brand-color rounded-b-lg"> Auction ends in 25 minutes</div>
+    <div class="p-4 brand-color rounded-b-lg">Auction ends in 25 minutes</div>
   {/if}
 </div>

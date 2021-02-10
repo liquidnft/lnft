@@ -44,9 +44,9 @@
     padding: 0.7rem 1.5rem !important;
   }
 
-  @media only screen and (max-width:500px) {
+  @media only screen and (max-width: 500px) {
     .secondary-header {
-      height:400px;
+      height: 400px;
     }
   }
 </style>
@@ -58,12 +58,11 @@
       <br />digital art gallery
     </h1>
     <p class="md:max-w-md mx-auto text-left md:text-center">
-      Upload, collect, and transact rare digital artworks as
-      secure assets in the Liquid Network
+      Upload, collect, and transact rare digital artworks as secure assets in
+      the Liquid Network
     </p>
-    <button
-      class="mt-10 primary-btn"
-      on:click={() => goto('/market')}>Start collecting</button>
+    <button class="mt-10 primary-btn" on:click={() => goto('/market')}>Start
+      collecting</button>
   </div>
 </div>
 
@@ -83,9 +82,9 @@
   <h3>Recent Activity</h3>
 </div>
 <div class="container mx-auto flex overflow-x-auto">
-    {#each recent as transaction}
-      <RecentActivityCard {transaction} />
-    {/each}
+  {#each recent as transaction}
+    <RecentActivityCard {transaction} />
+  {/each}
 </div>
 <div class="mx-auto container text-center px-8 mb-20 pb-10">
   <button class="secondary-btn" on:click={() => goto('/activity')}>View more</button>
@@ -95,9 +94,9 @@
   <h3>Latest Pieces</h3>
 </div>
 <div class="container mx-auto flex pb-10 overflow-x-auto">
-    {#each latest as transaction}
-      <LatestPiecesCard {transaction} />
-    {/each}
+  {#each latest as transaction}
+    <LatestPiecesCard {transaction} />
+  {/each}
 </div>
 <div class="mx-auto container text-center mb-20">
   <button class="secondary-btn" on:click={() => goto('/market')}>View gallery</button>
@@ -118,5 +117,3 @@
     {items}
     link="/top-artists" />
 </div>
-
-

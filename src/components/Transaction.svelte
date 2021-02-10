@@ -37,7 +37,6 @@
       input.txid = txid;
       input.index = index;
 
-
       ins = [...ins, input];
     }
 

@@ -6,7 +6,7 @@
 </script>
 
 <style>
-  .menu{
+  .menu {
     width: 400px;
   }
 
@@ -30,7 +30,7 @@
 
 <div class="flex justify-between items-center menu">
   <a href="/discover" on:click={() => (open = !open)} class="search">
-    <i class="fas fa-search text-2xl"></i>
+    <i class="fas fa-search text-2xl" />
   </a>
   <a href="/market">
     <button on:click={() => (open = !open)}>Market</button>
@@ -43,5 +43,7 @@
         <Avatar src={$user.avatar_url} />
         <div class="my-auto ml-2">{$user.full_name}</div>
       </button></a>
-  {:else}<a href="/login"><button on:click={() => (open = !open)} >Sign In</button></a>{/if}
+  {:else}
+    <a href="/login"><button on:click={() => (open = !open)}>Sign In</button></a>
+  {/if}
 </div>
