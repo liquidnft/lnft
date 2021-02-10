@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
-  import { info, goto, sanitize } from "$lib/utils";
+  import { info, goto } from "$lib/utils";
   import { Avatar } from "$components/index";
   import upload from "$lib/upload";
   import { updateUser } from "$queries/users";
@@ -47,7 +47,7 @@
       upload(file, $token, progress);
       await new Promise(checkProgress);
 
-      form.avatar_url = `/api/storage/o/public/${sanitize(file.name)}`;
+      form.avatar_url = `/api/ipfs/${file.name}`;
     }
 
     update(form);

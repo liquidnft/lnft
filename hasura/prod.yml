@@ -12,6 +12,18 @@ services:
     ports:
       - '8091:8091'
       - '8092:8092'
+    volumes:
+      - ./app-server:/app
+  ipfs:
+    container_name: ipfs
+    image: ipfs/go-ipfs
+    ports:
+      - 8081:8080
+      - 4001:4001
+      - 5001:5001
+    volumes:
+      - ${IPFS_DATA}:/data/ipfs
+      - ${STORAGE_DIR}:/export
   nginx:
     container_name: nginx
     image: nginx:1.15-alpine

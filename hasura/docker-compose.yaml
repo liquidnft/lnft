@@ -11,8 +11,6 @@ services:
     ports:
       - '8091:8091'
       - '8092:8092'
-    volumes:
-      - ./app-server:/app
   postgres:
     container_name: postgres
     image: postgres:12

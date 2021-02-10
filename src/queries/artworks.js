@@ -7,6 +7,7 @@ const fields = `
   artist_id
   owner_id
   filename
+  filetype
   favorited
   list_price
   reserve_price

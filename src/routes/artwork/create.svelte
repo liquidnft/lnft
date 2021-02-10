@@ -1,5 +1,4 @@
 <script>
-  import cid from "$lib/cid";
   import { page } from "$app/stores";
   import { v4 } from "uuid";
   import { electrs } from "$lib/api";
@@ -32,10 +31,7 @@
     reader.onload = async (e) => {
       preview = e.target.result;
       await tick();
-      if (type.includes("video")) {
-        preview = URL.createObjectURL(file);
-        video.parentElement.load();
-      }
+      if (type.includes("video")) preview = URL.createObjectURL(file);
     };
 
     reader.readAsDataURL(file);
@@ -53,13 +49,12 @@
     if (!file) return;
     ({ type } = file);
 
-    artwork.filename = await cid(file);
-    console.log(artwork.filename);
-    file = new File([file], artwork.filename, { type });
     if (file.size < 100000000) previewFile(file);
-    url = preview || `/api/storage/o/public/${file.name}`;
 
-    upload(file, progress);
+    artwork.filename = await upload(file, progress);
+    url = preview || `/api/ipfs/${artwork.filename}`;
+    if (!preview && type.includes("video"))
+      setTimeout(video.parentElement.load, 500);
   };
 
   let artwork = {
@@ -99,6 +94,8 @@
     await issue();
 
     artwork.id = v4();
+    artwork.filetype = type;
+
     let tags = artwork.tags.map(({ tag }) => ({ tag, artwork_id: artwork.id }));
     let artworkSansTags = { ...artwork };
     delete artworkSansTags.tags;

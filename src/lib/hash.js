@@ -1,4 +1,3 @@
-import CID from "cids";
 import CryptoJS from "crypto-js";
 import { Buffer } from "buffer";
 
@@ -46,27 +45,8 @@ const convert = (wordArray) => {
 };
 
 export default async (file) => {
-  const dagPB = (await import("ipld-dag-pb")).default;
-  const Hash =  (await import("ipfs-only-hash")).default;
-  const DAGNode = dagPB.DAGNode;
-  const uint8View = new Uint8Array(await file.arrayBuffer());
-  const node1 = new DAGNode(uint8View);
   const multihash = (await import("multihashes")).default;
-  const cid = await dagPB.util.cid(node1.serialize());
-  /*
-  console.log("node1", node1.toJSON(), cid);
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob(node1.serialize()));
-  a.download='euphoric-shift.bin';
-  a.click();
-  console.log((await sha256(file)).toString());
-  */
-  const data = Buffer.from("hello world!");
-  const hash = await Hash.of(data);
-  console.log(hash); // QmTp2hEo8eXRp6wg7jXv1BLCMh5a4F3B7buAUZNZUu772j
-
-  const bytes = convert(await sha256(file));
-  const encoded = multihash.encode(bytes, "sha2-256");
-  return multihash.toB58String(encoded);
-  //return new CID(0, "dag-pb", hash).toString();
+  return multihash.toB58String(
+    multihash.encode(convert(await sha256(file)), "sha2-256")
+  );
 };

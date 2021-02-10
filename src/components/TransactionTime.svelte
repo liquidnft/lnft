@@ -8,10 +8,11 @@
 </script>
 
 <style>
-  div, a, span{ 
+  div,
+  a,
+  span {
     @apply break-all;
   }
-
 </style>
 
 <AcceptOffer bind:this={comp} />

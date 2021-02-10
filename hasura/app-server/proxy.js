@@ -24,6 +24,12 @@ app.register(proxy, {
 })
 
 app.register(proxy, {
+  upstream: 'http://ipfs:8080',
+  prefix: '/ipfs',
+  rewritePrefix: '/ipfs',
+})
+
+app.register(proxy, {
   upstream: 'http://hbp:3000',
   prefix: '/storage',
   rewritePrefix: '/storage',

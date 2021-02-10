@@ -5,9 +5,8 @@ ENV NODE_ENV $NODE_ENV
 WORKDIR /app
 
 COPY . ./
-RUN apk add git libtool build-base python3 autoconf automake libsodium
+RUN apk add git
 RUN yarn install
-RUN yarn add nodemon
 
 # CMD ["sleep", "3600"]
 CMD ["yarn", "start"]

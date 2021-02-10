@@ -75,6 +75,13 @@
   <div class="text-sm text-gray-600">{artwork.description}</div>
 
   <div class="text-sm text-gray-600 break-all mb-6">
+    IPFS:
+    <a
+      href={`https://ipfs.io/ipfs/${artwork.filename}`}
+      class="secondary-color">{artwork.filename}</a>
+  </div>
+
+  <div class="text-sm text-gray-600 break-all mb-6">
     Asset Id:
     <a
       href={`${explorer}/asset/${artwork.asset}`}

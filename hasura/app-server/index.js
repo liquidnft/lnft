@@ -7,6 +7,7 @@ app = require("fastify")({
 require("./proxy");
 require("./monitor");
 require("./signing");
+require("./upload");
 
 app.listen(8091, "0.0.0.0", function (err, address) {
   if (err) {
