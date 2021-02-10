@@ -20,13 +20,13 @@
     getArtworkTransactions,
   } from "$queries/transactions";
   import { goto, err, explorer, info, units } from "$lib/utils";
-  import sign from "$lib/sign";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { requirePassword } from "$lib/auth";
   import {
     createOffer,
     executeSwap,
     requestSignature,
+    sign,
     broadcast,
   } from "$lib/wallet";
   import { Psbt } from "@asoltys/liquidjs-lib";
@@ -125,13 +125,7 @@
       transaction.type = "purchase";
 
       $psbt = await executeSwap(artwork, 500);
-
-      $prompt = SignaturePrompt;
-
-      $prompt = SignaturePrompt;
-      await new Promise((resolve) =>
-        prompt.subscribe((value) => value === "success" && resolve())
-      );
+      await sign();
 
       if (artwork.royalty) {
         $psbt = await requestSignature($psbt);
@@ -139,6 +133,7 @@
 
       await tick();
       await broadcast($psbt);
+
       let tx = $psbt.extractTransaction();
       transaction.hash = tx.getId();
       transaction.psbt = $psbt.toBase64();

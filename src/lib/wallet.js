@@ -1,3 +1,4 @@
+import { tick } from "svelte";
 import { get } from "svelte/store";
 import { api, electrs } from "$lib/api";
 import { mnemonicToSeedSync } from "bip39";
@@ -14,7 +15,7 @@ import {
 } from "@asoltys/liquidjs-lib";
 import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
-import { password, snack, user, token } from "$lib/store";
+import { password, snack, user, psbt, sighash, token } from "$lib/store";
 import cryptojs from "crypto-js";
 import { btc } from "$lib/utils";
 import { fromSeed as slip77 } from "slip77";
@@ -152,7 +153,7 @@ const fund = async (
   let total = 0;
 
   while (total < amount) {
-    if (i >= utxos.length) throw new Error("Insufficient funds", total, amount);
+    if (i >= utxos.length) throw new Error("Insufficient funds");
     total += utxos[i].value;
     i++;
   }
@@ -238,25 +239,40 @@ export const cancelSwap = async ({ royalty, asset }, fee) => {
   return swap;
 };
 
-export const sign = (psbt, sighash = 1) => {
+export const sign = (sighash = 1) => {
+  let $psbt = get(psbt);
+
+  console.log($psbt.toBase64());
+
   let { privkey } = keypair();
 
-  psbt.data.inputs.map((_, i) => {
+  $psbt.data.inputs.map((_, i) => {
     try {
-      psbt = psbt
-        .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
-        .finalizeInput(i);
-    } catch (e) {}
+      psbt.set(
+        $psbt
+          .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
+          .finalizeInput(i)
+      );
+    } catch (e) {
+      console.log(e.stack);
+      console.log(e.message);
+    }
   });
 
-  return psbt;
+  return $psbt;
 };
 
-export const broadcast = async (psbt) => {
-  let tx = psbt.extractTransaction();
+export const broadcast = async () => {
+  let tx = get(psbt).extractTransaction();
   let hex = tx.toHex();
 
   return electrs.url("/tx").body(hex).post().text();
+};
+
+export const signAndBroadcast = async () => {
+  await sign();
+  await tick();
+  await broadcast();
 };
 
 export const executeSwap = async (artwork, fee) => {
@@ -350,7 +366,14 @@ export const createSwap = async ({ asset, asking_asset, royalty }, amount) => {
     value: amount,
   });
 
-  await fund(swap, royalty ? multisig() : singlesig(), asset, 1, singleAnyoneCanPay, !!royalty);
+  await fund(
+    swap,
+    royalty ? multisig() : singlesig(),
+    asset,
+    1,
+    singleAnyoneCanPay,
+    !!royalty
+  );
 
   return swap;
 };

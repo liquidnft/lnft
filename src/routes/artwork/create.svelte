@@ -10,9 +10,8 @@
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
   import { goto, err } from "$lib/utils";
-  import sign from "$lib/sign";
   import { requireLogin, requirePassword } from "$lib/auth";
-  import { createIssuance, broadcast, parseAsset } from "$lib/wallet";
+  import { createIssuance, signAndBroadcast, parseAsset } from "$lib/wallet";
   import reverse from "buffer-reverse";
 
   $: requireLogin($page);
@@ -72,15 +71,9 @@
   const issue = async () => {
     await requirePassword();
 
-    try {
       $psbt = await createIssuance(artwork.editions, 1000);
-    } catch (e) {
-      err(e);
-      return;
-    }
 
-    await sign();
-    await broadcast($psbt);
+    await signAndBroadcast();
     let tx = $psbt.extractTransaction();
     artwork.asset = parseAsset(tx.outs[3].asset);
 
@@ -88,24 +81,33 @@
   };
 
   let submit = async (e) => {
-    e.preventDefault();
-    await requireLogin();
+    try {
+      e.preventDefault();
+      await requireLogin();
 
-    await issue();
+      await issue();
 
-    artwork.id = v4();
-    artwork.filetype = type;
+      artwork.id = v4();
+      artwork.filetype = type;
 
-    let tags = artwork.tags.map(({ tag }) => ({ tag, artwork_id: artwork.id }));
-    let artworkSansTags = { ...artwork };
-    delete artworkSansTags.tags;
+      let tags = artwork.tags.map(({ tag }) => ({
+        tag,
+        artwork_id: artwork.id,
+      }));
+      let artworkSansTags = { ...artwork };
+      delete artworkSansTags.tags;
 
-    createArtwork({
-      artwork: artworkSansTags,
-      id: artwork.id,
-      hash,
-      tags,
-    }).then(() => goto(`/artwork/${artwork.id}`));
+      await createArtwork({
+        artwork: artworkSansTags,
+        id: artwork.id,
+        hash,
+        tags,
+      });
+
+      goto(`/artwork/${artwork.id}`);
+    } catch (e) {
+      err(e);
+    }
   };
 </script>
 
