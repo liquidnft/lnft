@@ -36,9 +36,17 @@
   label{
     @apply mb-4;
   }
+
+  form {
+    width: 100%;
+    max-width: 450px;
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+  }
 </style>
 
-<form class="flex gap-5 flex-col w-full mb-6" on:submit autocomplete="off">
+<form class="flex gap-5 flex-col w-full mb-6 shadow mt-20" on:submit autocomplete="off">
   <div class="flex flex-col mb-4">
     <input
       class="border-0 border-b-2 rounded-none"
@@ -70,9 +78,9 @@
       {selectedValue}
       isCreatable={true} />
   </div>
-  <div class="flex">
+  <div class="flex justify-end">
     <button
       type="submit"
-      class="brand-color">Submit</button>
+      class="primary-btn">Submit</button>
   </div>
 </form>
