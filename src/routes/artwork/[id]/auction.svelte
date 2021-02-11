@@ -167,6 +167,7 @@
   .container {
     background-color: #ecf6f7;
     width: 100% !important;
+    min-height: 100vh;
     margin: 0;
     max-width: 100%;
   }

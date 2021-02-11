@@ -52,7 +52,7 @@
 <div class="flex justify-between items-center my-6">
   <span class="secondary-color">View details</span>
   <button
-    class="button-transparent"
+    class="secondary-btn"
     on:click={() => copy($psbt.toBase64())}>Copy transaction</button>
 </div>
 <hr class="mb-4" />

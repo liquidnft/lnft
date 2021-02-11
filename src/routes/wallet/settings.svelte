@@ -20,9 +20,9 @@
   }
 </style>
 
-<h1>Wallet Settings</h1>
+<h3>Wallet Settings</h3>
 
-<button on:click={displayMnemonic}>Display Mnemonic</button>
+<button on:click={displayMnemonic} class="secondary-btn">Display Mnemonic</button>
 
 {#if show}
   <div class="text-xl">{mnemonic}</div>
