@@ -1,5 +1,6 @@
 <script>
   import ArtworkMedia from "$components/ArtworkMedia";
+  import countdown from "$lib/countdown";
   import { goto, units } from "$lib/utils";
 
   export let artwork;
@@ -20,6 +21,15 @@
   if (columns > 1) {
     width = "1/" + columns;
   }
+
+  let start_counter, end_counter;
+  let count = () => {
+    if (!artwork) return;
+    start_counter = countdown(new Date(artwork.auction_start));
+    end_counter = countdown(new Date(artwork.auction_end));
+    setTimeout(count, 1000);
+  };
+  count();
 </script>
 
 <style>
@@ -76,6 +86,11 @@
         {/if}
       </div>
     </div>
-    <div class="p-4 brand-color rounded-b-lg">Auction ends in 25 minutes</div>
+    {#if Date.parse(artwork.auction_end) > new Date()}
+      <div class="p-4 brand-color rounded-b-lg">
+        Auction ends in
+        {end_counter}
+      </div>
+    {/if}
   {/if}
 </div>

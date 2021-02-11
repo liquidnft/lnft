@@ -50,7 +50,7 @@ export const getBalances = () => {
     assets.set(
       utxos
         .map(({ asset: a }) => ({ name: assetLabel(a), asset: a }))
-        .sort((a, b) => a.name && b.name && a.name.localeCompare(b.name))
+        .sort((a, b) => a.name.localeCompare(b.name))
         .filter(
           (item, pos, ary) => item && (!pos || item.asset != ary[pos - 1].asset)
         )

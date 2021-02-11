@@ -34,7 +34,7 @@ const assetLabel = (asset) => {
 
   let r = $assets && $assets.find((u) => u.asset === asset);
 
-  return r ? r.title : ticker(asset);
+  return r ? (r.title || r.name) : ticker(asset);
 };
 
 const tickers = {
