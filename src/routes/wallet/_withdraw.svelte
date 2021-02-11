@@ -1,6 +1,6 @@
 <script>
   import { asset, prompt, psbt, snack } from "$lib/store";
-  import { broadcast, pay, keypair, unblind } from "$lib/wallet";
+  import { broadcast, pay, keypair } from "$lib/wallet";
   import { btc, sats } from "$lib/utils";
   import sign from "$lib/sign";
 

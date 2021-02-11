@@ -15,10 +15,20 @@ import {
 } from "@asoltys/liquidjs-lib";
 import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
-import { password, snack, user, psbt, sighash, token } from "$lib/store";
+import {
+  assets,
+  balances,
+  pending,
+  password,
+  snack,
+  user,
+  poll,
+  psbt,
+  sighash,
+  token,
+} from "$lib/store";
 import cryptojs from "crypto-js";
-import { btc } from "$lib/utils";
-import { fromSeed as slip77 } from "slip77";
+import { btc, assetLabel } from "$lib/utils";
 
 const signingKey = Buffer.from(
   "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b",
@@ -30,6 +40,41 @@ const singleAnyoneCanPay =
 
 export const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 export const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
+
+export const getBalances = () => {
+  poll.set(setInterval(() => getUtxos(get(user).address), 5000));
+
+  let getUtxos = async (address) => {
+    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+
+    assets.set(
+      utxos
+        .map(({ asset: a }) => ({ name: assetLabel(a), asset: a }))
+        .sort((a, b) => a.name && b.name && a.name.localeCompare(b.name))
+        .filter(
+          (item, pos, ary) => item && (!pos || item.asset != ary[pos - 1].asset)
+        )
+    );
+
+    let b = {};
+    let p = {};
+
+    utxos.map((u) => {
+      if (u.status.confirmed) {
+        if (b[u.asset]) b[u.asset] += u.value;
+        else b[u.asset] = u.value;
+      } else {
+        if (p[u.asset]) p[u.asset] += u.value;
+        else p[u.asset] = u.value;
+      }
+    });
+
+    balances.set(b);
+    pending.set(p);
+  };
+
+  return getUtxos(get(user).address);
+};
 
 const getHex = async (txid) => {
   return electrs.url(`/tx/${txid}/hex`).get().text();
@@ -60,29 +105,7 @@ export const keypair = (mnemonic, pass) => {
   return { pubkey, privkey, seed, base58 };
 };
 
-export const unblind = (hex, vout) => {
-  return;
-  let { pubkey, seed } = keypair();
-
-  let redeem = payments.p2wpkh({
-    pubkey,
-    network,
-  });
-
-  let blindingKey = slip77(seed).derive(redeem.output);
-  let output = Transaction.fromHex(hex).outs[vout];
-  let unblinded = confidential.unblindOutput(
-    output.nonce,
-    blindingKey.privateKey,
-    output.rangeProof,
-    output.value,
-    output.asset,
-    output.script
-  );
-  return unblinded;
-};
-
-export const singlesig = (key, blind = false) => {
+export const singlesig = (key) => {
   if (!key) key = keypair();
   let { pubkey, seed } = key;
 
@@ -92,10 +115,6 @@ export const singlesig = (key, blind = false) => {
   });
 
   let params = { redeem, network };
-
-  if (blind) {
-    params.blindkey = slip77(seed).derive(redeem.output).publicKey;
-  }
 
   return payments.p2sh(params);
 };
@@ -153,7 +172,8 @@ const fund = async (
   let total = 0;
 
   while (total < amount) {
-    if (i >= utxos.length) throw { message: "Insufficient funds", amount, asset, total }
+    if (i >= utxos.length)
+      throw { message: "Insufficient funds", amount, asset, total };
     total += utxos[i].value;
     i++;
   }
@@ -241,8 +261,6 @@ export const cancelSwap = async ({ royalty, asset }, fee) => {
 
 export const sign = (sighash = 1) => {
   let $psbt = get(psbt);
-
-  console.log($psbt.toBase64());
 
   let { privkey } = keypair();
 

@@ -2,14 +2,14 @@
   import { page } from "$app/stores";
   import { electrs } from "$lib/api";
   import { onMount, tick } from "svelte";
-  import { asset, poll, password, user } from "$lib/store";
+  import { asset, assets, balances, pending, password, user } from "$lib/store";
   import { ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
   import { btc, sats, units, tickers } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
-  import { unblind } from "$lib/wallet";
+  import { getBalances } from "$lib/wallet";
 
   import Fund from "./_fund";
   import Withdraw from "./_withdraw";
@@ -41,70 +41,21 @@
         user.subscribe((value) => value && resolve())
       );
       artworks = data.artworks.filter((a) => a.owner_id === $user.id);
-      if ($user.address) getUtxos($user.address);
+      getBalances();
+      loading = false;
     });
 
   $: [_, val, _] = units($asset);
-
-  let init = async () => {
-    $poll = setInterval(() => getUtxos($user.address), 5000);
-  };
-
-  $: if ($user && loading) init();
-
-  let utxos = [];
-  let assets = [];
-  let unblinded = {};
-
-  let getUtxos = async (address) => {
-    utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-    await requirePassword();
-
-    for (let i = 0; i < utxos.length; i++) {
-      if (utxos[i].asset) break;
-      let { txid, vout } = utxos[i];
-      if (!unblinded[txid]) {
-        let hex = await electrs.url(`/tx/${txid}/hex`).get().text();
-        unblinded[txid] = unblind(hex, vout);
-      }
-      utxos[i] = unblinded[txid];
-    }
-
-    assets = utxos
-      .map(({ asset: a }) => ({ name: name(a), asset: a }))
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .sort((a, b) => (a.name.length === 12 ? 1 : -1))
-      .filter(
-        (item, pos, ary) => item && (!pos || item.asset != ary[pos - 1].asset)
-      );
-
-    loading = false;
-  };
-
-  let balances, pending;
-  $: {
-    balances = {};
-    pending = {};
-    utxos.map((u) => {
-      if (u.status.confirmed) {
-        if (balances[u.asset]) balances[u.asset] += u.value;
-        else balances[u.asset] = u.value;
-      } else {
-        if (pending[u.asset]) pending[u.asset] += u.value;
-        else pending[u.asset] = u.value;
-      }
-    });
-  }
 </script>
 
 {#if loading}
   <div class="absolute top-0 w-full left-0">
     <ProgressLinear />
   </div>
-{:else}
+{:else if $balances}
   <div class="w-3/4">
     <div class="mb-5">
-      <a class="secondary-color" href="/wallet/asset">{assets.length}
+      <a class="secondary-color" href="/wallet/asset">{$assets.length}
         assets available in this wallet
         <i class="fas fa-chevron-right ml-3" /></a>
     </div>
@@ -118,14 +69,14 @@
       <div class="m-6">
         <div class="text-sm text-gray-400">Balance</div>
         <div class="flex gap-2 mt-3">
-          <span class="text-4xl text-white">{val(balances[$asset] || 0)}</span>
+          <span class="text-4xl text-white">{val($balances[$asset] || 0)}</span>
           <span class="text-gray-400 mt-3.5">{ticker($asset)}</span>
         </div>
       </div>
       <div class="m-6">
         <div class="text-sm text-gray-400">Pending</div>
         <div class="flex gap-2 mt-3">
-          <span class="text-gray-400">{val(pending[$asset] || 0)}</span>
+          <span class="text-gray-400">{val($pending[$asset] || 0)}</span>
           <span class="text-gray-400">{ticker($asset)}</span>
         </div>
       </div>

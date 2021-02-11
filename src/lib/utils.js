@@ -65,7 +65,7 @@ const ticker = (asset) => {
   return asset
     ? tickers[asset]
       ? tickers[asset].ticker
-      : asset.substr(0, 4)
+      : asset.substr(0, 5)
     : "";
 };
 

@@ -4,7 +4,7 @@
   import { electrs } from "$lib/api";
   import { tick, onMount } from "svelte";
   import { psbt, password, prompt, user, token } from "$lib/store";
-  import { Dropzone } from "$comp";
+  import { Dropzone, ProgressLinear } from "$comp";
   import upload from "$lib/upload";
   import Form from "./_form";
   import { create } from "$queries/artworks";
@@ -21,6 +21,7 @@
   let type;
   let video;
   let hidden;
+  let loading;
 
   $: hidden = type && !type.includes("video");
 
@@ -71,7 +72,7 @@
   const issue = async () => {
     await requirePassword();
 
-      $psbt = await createIssuance(artwork.editions, 1000);
+    $psbt = await createIssuance(artwork.editions, 1000);
 
     await signAndBroadcast();
     let tx = $psbt.extractTransaction();
@@ -81,6 +82,8 @@
   };
 
   let submit = async (e) => {
+    loading = true;
+
     try {
       e.preventDefault();
       await requireLogin();
@@ -108,6 +111,8 @@
     } catch (e) {
       err(e);
     }
+
+    loading = false;
   };
 </script>
 
@@ -125,7 +130,11 @@
   {#if percent}
     <div class="flex flex-wrap">
       <div class="w-1/2 max-w-sm">
-        <Form bind:artwork on:submit={submit} />
+        {#if loading}
+          <ProgressLinear />
+        {:else}
+          <Form bind:artwork on:submit={submit} />
+        {/if}
       </div>
       <div class="ml-2 flex-1 flex">
         <div class="mx-auto">
