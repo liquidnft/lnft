@@ -83,6 +83,7 @@
 
   let submit = async (e) => {
     loading = true;
+   
 
     try {
       e.preventDefault();
@@ -99,7 +100,7 @@
       }));
       let artworkSansTags = { ...artwork };
       delete artworkSansTags.tags;
-
+      
       await createArtwork({
         artwork: artworkSansTags,
         id: artwork.id,
@@ -127,7 +128,7 @@
     <h1 class="title primary-color">Submit Artwork</h1>
   </div>
 
-  {#if percent}
+ 
     <div class="flex flex-wrap">
       <div class="w-1/2 max-w-sm">
         {#if loading}
@@ -136,6 +137,7 @@
           <Form bind:artwork on:submit={submit} />
         {/if}
       </div>
+      {#if percent }
       <div class="ml-2 flex-1 flex">
         <div class="mx-auto">
           {#if type.includes('image')}
@@ -154,8 +156,8 @@
           </div>
         </div>
       </div>
+      {:else}
+      <Dropzone on:file={uploadFile} />
+      {/if}
     </div>
-  {:else}
-    <Dropzone on:file={uploadFile} />
-  {/if}
 </div>

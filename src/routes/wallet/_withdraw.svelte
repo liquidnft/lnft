@@ -49,5 +49,5 @@
     <label>Recipient Address</label>
     <input placeholder="Address" bind:value={to} />
   </div>
-  <button type="submit" class="brand-color w-full">Complete withdraw</button>
+  <button type="submit" class="primary-btn w-full">Complete withdraw</button>
 </form>

@@ -9,7 +9,7 @@
   }
 </style>
 
-<div class="w-3/4">
+<div class="w-full xl:w-3/4">
   <p class="mb-6 text-2xl">Welcome! Choose your option to get started</p>
   <div class="text-center flex flex-col gap-2">
     <button on:click={() => goto('/wallet/create')} class="primary-btn">Create New Wallet</button>
