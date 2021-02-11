@@ -29,8 +29,8 @@ export const requireLogin = async (page) => {
 };
 
 export const requirePassword = async () => {
-  if (get(pw)) return;
   await requireLogin();
+  if (get(pw)) return;
   let unsub;
   await new Promise(
     (resolve) =>
@@ -39,7 +39,9 @@ export const requirePassword = async () => {
       ))
   );
   unsub();
+  await tick();
 };
+
 export const refreshToken = async () => {
   try {
     let { jwt_token } = await api.url("/auth/token/refresh").get().json();

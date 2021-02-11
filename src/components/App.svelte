@@ -1,7 +1,15 @@
 <script>
   import { onMount } from "svelte";
   import decode from "jwt-decode";
-  import { poll, user, addresses, assets, token } from "$lib/store";
+  import {
+    error,
+    poll,
+    user,
+    addresses,
+    assets,
+    prompt,
+    token,
+  } from "$lib/store";
   import { fade } from "svelte/transition";
   import { getUser, getAddresses, updateUser } from "$queries/users";
   import { getAssets } from "$queries/artworks";
@@ -9,11 +17,15 @@
   import { operationStore, subscription } from "@urql/svelte";
   import { page } from "$app/stores";
   import { refreshToken } from "$lib/auth";
+  import InsufficientFunds from "$components/InsufficientFunds";
 
   onMount(async () => {
     refreshToken();
     setInterval(refreshToken, 600000);
   });
+
+  $: if ($error && $error.message.includes("Insufficient"))
+    prompt.set(InsufficientFunds);
 
   let pageChange = (p) => clearInterval($poll);
   $: pageChange($page);

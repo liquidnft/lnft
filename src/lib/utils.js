@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { assets, addresses, snack } from "$lib/store";
+import { assets, addresses, error, prompt, snack } from "$lib/store";
 import { goto as go } from "$app/navigation";
 import { tick } from "svelte";
 
@@ -113,12 +113,14 @@ const pick = (obj, ...keys) =>
   Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));
 
 const err = (e) => {
+  error.set(e);
   let msg = e.message;
   try {
     msg = JSON.parse(msg).message;
   } catch {}
   if (!msg) msg = "An error occurred";
   snack.set({ msg, type: "error" });
+  if (e.stack) console.log(e.stack);
 };
 
 const info = (msg) => {
