@@ -8,5 +8,6 @@ const hasura = wretch()
   .headers({ "x-hasura-admin-secret": HASURA_SECRET });
 
 const electrs = wretch().url("http://electrs-liquid:3002");
+const registry = wretch().url("https://assets.blockstream.info/");
 
-module.exports = { hasura, electrs };
+module.exports = { hasura, electrs, registry };

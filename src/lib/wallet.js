@@ -344,7 +344,7 @@ export const executeSwap = async (artwork, fee) => {
   return swap;
 };
 
-export const createIssuance = async (editions, fee) => {
+export const createIssuance = async (artwork, contract, fee) => {
   let out = singlesig();
 
   let swap = new Psbt()
@@ -366,11 +366,12 @@ export const createIssuance = async (editions, fee) => {
   await fund(swap, out, btc, fee);
 
   swap.addIssuance({
-    assetAmount: editions,
+    assetAmount: artwork.editions,
     assetAddress: out.address,
     tokenAmount: 0,
     precision: 0,
     net: network,
+    contract,
   });
 
   return swap;

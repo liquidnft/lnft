@@ -27,6 +27,8 @@ const setConfirmed = `
       user_id
       artwork_id
       type
+      asset
+      contract
       bid {
         id
         user_id
@@ -82,6 +84,7 @@ setInterval(
                       data: { update_transactions_by_pk: transaction },
                     }) => {
                       let owner_id;
+                      console.log(transaction);
 
                       if (transaction.type === "accept")
                         owner_id = transaction.bid.user_id;
@@ -91,7 +94,7 @@ setInterval(
 
                       try {
                         if (transaction.type === "creation")
-                          await registerAsset();
+                          await registerAsset(transaction);
                       } catch (e) {
                         console.log(e.message);
                       }
@@ -114,11 +117,12 @@ setInterval(
   2000
 );
 
-const registerAsset = async () => {
+const registerAsset = async ({ asset: asset_id, contract }) => {
+  console.log(asset_id, contract);
   const { data } = await registry
     .post({
-      asset_id: asset,
-      contract: account.contract,
+      asset_id,
+      contract,
     })
     .json();
 

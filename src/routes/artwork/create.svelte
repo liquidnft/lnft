@@ -11,7 +11,12 @@
   import { mutation } from "@urql/svelte";
   import { goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
-  import { createIssuance, signAndBroadcast, parseAsset } from "$lib/wallet";
+  import {
+    createIssuance,
+    signAndBroadcast,
+    parseAsset,
+    singlesig,
+  } from "$lib/wallet";
   import reverse from "buffer-reverse";
 
   $: requireLogin($page);
@@ -69,10 +74,19 @@
   const createArtwork = mutation(create);
 
   let hash;
+  let contract;
   const issue = async () => {
     await requirePassword();
+    contract = {
+      entity: { domain: `${$user.username}.${window.location.hostname}` },
+      issuer_pubkey: singlesig().publicKey,
+      name: artwork.title,
+      precision: 0,
+      ticker: artwork.ticker,
+      version: 0,
+    };
 
-    $psbt = await createIssuance(artwork.editions, 1000);
+    $psbt = await createIssuance(artwork, contract, 1000);
 
     await signAndBroadcast();
     let tx = $psbt.extractTransaction();
@@ -102,17 +116,23 @@
 
       await createArtwork({
         artwork: artworkSansTags,
-        id: artwork.id,
-        hash,
+        transaction: {
+          artwork_id: artwork.id,
+          type: "creation",
+          hash,
+          contract: JSON.stringify(contract),
+          asset: artwork.asset,
+          amount: 0,
+          psbt: $psbt.toBase64(),
+        },
         tags,
       });
 
       goto(`/artwork/${artwork.id}`);
     } catch (e) {
       err(e);
+      loading = false;
     }
-
-    loading = false;
   };
 </script>
 

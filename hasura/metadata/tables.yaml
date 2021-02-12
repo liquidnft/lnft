@@ -570,6 +570,7 @@
       - artwork_id
       - asset
       - bid_id
+      - contract
       - hash
       - id
       - psbt
@@ -599,6 +600,7 @@
       - asset
       - bid_id
       - confirmed
+      - contract
       - created_at
       - hash
       - id

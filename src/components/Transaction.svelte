@@ -69,7 +69,7 @@
   <div class="w-full mx-auto" style="max-width: 600px">
     <div class="font-bold text-xs">Transaction ID</div>
     <div class="mb-4 break-all text-wrap">
-      <a href={`${explorer}/tx/${tx.getId()}`} class="text-green-400">
+      <a href={`${explorer}/tx/${tx.getId()}`} class="text-green-400" target="_blank">
         {tx.getId()}
       </a>
     </div>
