@@ -9,10 +9,10 @@ httpProxy
   .listen(8092);
 */
 
-const { LIQUID_ESPLORA_URL } = process.env;
+const { LIQUID_ELECTRS_URL } = process.env;
 
 app.register(proxy, {
-  upstream: LIQUID_ESPLORA_URL,
+  upstream: LIQUID_ELECTRS_URL,
   prefix: '/el',
   rewritePrefix: '',
 })

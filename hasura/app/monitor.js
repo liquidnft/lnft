@@ -1,4 +1,4 @@
-const { hasura, electrs } = require("./api");
+const { hasura, electrs, registry } = require("./api");
 
 const query = `
   query transactions {
@@ -74,12 +74,13 @@ setInterval(
             .url(`/tx/${tx.hash}/status`)
             .get()
             .json(({ confirmed }) => {
-              console.log(tx.id, confirmed);
               confirmed &&
                 hasura
                   .post({ query: setConfirmed, variables: { id: tx.id } })
                   .json(
-                    ({ data: { update_transactions_by_pk: transaction } }) => {
+                    async ({
+                      data: { update_transactions_by_pk: transaction },
+                    }) => {
                       let owner_id;
 
                       if (transaction.type === "accept")
@@ -87,6 +88,13 @@ setInterval(
 
                       if (transaction.type === "purchase")
                         owner_id = transaction.user_id;
+
+                      try {
+                        if (transaction.type === "creation")
+                          await registerAsset();
+                      } catch (e) {
+                        console.log(e.message);
+                      }
 
                       hasura.post({
                         query: updateArtwork,
@@ -105,3 +113,14 @@ setInterval(
       .catch(console.log),
   2000
 );
+
+const registerAsset = async () => {
+  const { data } = await registry
+    .post({
+      asset_id: asset,
+      contract: account.contract,
+    })
+    .json();
+
+  console.log(data);
+};
