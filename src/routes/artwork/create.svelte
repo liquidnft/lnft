@@ -100,7 +100,6 @@
       }));
       let artworkSansTags = { ...artwork };
       delete artworkSansTags.tags;
-      
       await createArtwork({
         artwork: artworkSansTags,
         id: artwork.id,
@@ -115,49 +114,70 @@
 
     loading = false;
   };
+
 </script>
 
 <style>
+
+  .container {
+    background-color: #ecf6f7;
+    width: 100% !important;
+    min-height: 100vh;
+    margin: 0;
+    max-width: 100%;
+  }
+
   button {
     @apply block bg-green-400 hover:bg-green-600 text-white uppercase text-lg mx-auto p-4 rounded flex-1;
   }
+
+  @media only screen and (max-width: 1023px){
+    .submitArtwork{
+      box-shadow: none;
+    }
+
+    .container{
+      background: none;
+    }
+  }
 </style>
 
-<div class="container mx-auto mt-20">
-  <div class="flex flex-1">
-    <h1 class="title primary-color">Submit Artwork</h1>
-  </div>
-
- 
-    <div class="flex flex-wrap">
-      <div class="w-1/2 max-w-sm">
-        {#if loading}
-          <ProgressLinear />
-        {:else}
-          <Form bind:artwork on:submit={submit} />
-        {/if}
-      </div>
-      {#if percent }
-      <div class="ml-2 flex-1 flex">
-        <div class="mx-auto">
-          {#if type.includes('image')}
-            <img alt="preview" src={url} class="w-full" />
+<div class="container mx-auto py-20">
+    <div class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork box-shadow">
+      <a class="block mb-6 text-midblue" href="/">
+        <i class="fas fa-chevron-left mr-3"/>Back
+      </a>
+      <h2>Submit artwork</h2>
+      <div class="flex flex-wrap flex-col-reverse lg:flex-row">
+        <div class="w-full lg:w-1/2 lg:pr-10">
+          {#if loading}
+            <ProgressLinear />
+          {:else}
+            <Form bind:artwork on:submit={submit} />
           {/if}
-          <video controls class:hidden muted autoplay loop class="w-full">
-            <source src={url} bind:this={video} />
-            Your browser does not support HTML5 video.
-          </video>
-          <div class="w-full bg-grey-light p-8">
-            <div
-              class="bg-green-200 font-bold rounded-full p-4 mx-auto max-w-xs text-center"
-              style={width}>
-              {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
+        </div>
+        {#if percent }
+        <div class="ml-2 flex-1 flex">
+          <div class="mx-auto">
+            {#if type.includes('image')}
+              <img alt="preview" src={url} class="w-full" />
+            {/if}
+            <video controls class:hidden muted autoplay loop class="w-full">
+              <source src={url} bind:this={video} />
+              Your browser does not support HTML5 video.
+            </video>
+            <div class="w-full bg-grey-light p-8">
+              <div
+                class="bg-green-200 font-bold rounded-full p-4 mx-auto max-w-xs text-center"
+                style={width}>
+                {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
+              </div>
             </div>
           </div>
         </div>
+        {:else}
+        <Dropzone on:file={uploadFile} />
+        {/if}
       </div>
-      {:else}
-      <Dropzone on:file={uploadFile} />
-      {/if}
     </div>
 </div>
