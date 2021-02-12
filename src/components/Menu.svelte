@@ -37,6 +37,8 @@
   </a>
   <a href="/activity"><button
       on:click={() => (open = !open)}>Activity</button></a>
+  <a href="/blog"><button
+      on:click={() => (open = !open)}>Blog</button></a>
   {#if $user}
     <a href={`/user/${$user.id}`}>
       <button on:click={() => (open = !open)} class="flex">
