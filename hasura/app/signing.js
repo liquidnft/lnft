@@ -53,17 +53,15 @@ app.post("/sign", auth, async (req, res) => {
       data: { artworks },
     } = await hasura.post({ query, variables }).json();
 
-
     let {
       data: { currentuser },
     } = await userapi.post({ query: userQuery }).json();
     let user = currentuser[0];
 
-    artworks.map((artwork) => {
-      let outs = outputs.filter((o) => o.asset === artwork.asking_asset);
-      let { royalty, artist, owner } = artwork;
-      if (artist.id === owner.id) return;
+    artworks.map(({ royalty, artist, owner, asking_asset, auction_start: start, auction_end: end }) => {
+      if (end && isWithinInterval(new Date(), { start, end })) throw new Error("Auction underway");
 
+          let outs = outputs.filter((o) => o.asset === asking_asset);
       let toArtist = outs
         .filter(
           (o) => o.address === artist.address || o.address === artist.multisig
@@ -78,7 +76,8 @@ app.post("/sign", auth, async (req, res) => {
 
       if (toOwner && royalty) {
         let amountDue = Math.round((toOwner * royalty) / 100);
-        if (toArtist < amountDue) throw new Error("Royalty not paid");
+        if (toArtist < amountDue && artist.id !== owner.id)
+          throw new Error("Royalty not paid");
       }
     });
 
