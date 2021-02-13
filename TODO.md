@@ -1,4 +1,5 @@
 top priorities
+pr to epslora to group assets by domain and subdomain
 search mega menu
 blog
 create liquidjs fork with no secp256/blech/confidential deps
