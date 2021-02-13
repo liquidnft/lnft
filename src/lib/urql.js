@@ -6,6 +6,8 @@ import {
   subscriptionExchange,
 } from "@urql/svelte";
 import { SubscriptionClient } from "subscriptions-transport-ws";
+import { get } from "svelte/store";
+import { role } from "$lib/store";
 
 let url, wsUrl;
 if (import.meta && import.meta.env && import.meta.env !== "production") {
@@ -14,7 +16,7 @@ if (import.meta && import.meta.env && import.meta.env !== "production") {
 } else {
   url = "https://raretoshi.com/v1/graphql";
   wsUrl = "wss://raretoshi.com/v1/graphql";
-} 
+}
 
 export const setupUrql = (token) => {
   if (token && decode(token).exp * 1000 < Date.now()) token = undefined;
@@ -37,7 +39,12 @@ export const setupUrql = (token) => {
     ],
     fetchOptions: () => {
       return {
-        headers: token ? { authorization: `Bearer ${token}` } : undefined,
+        headers: token
+          ? {
+              authorization: `Bearer ${token}`,
+              ["X-Hasura-Role"]: get(role),
+            }
+          : undefined,
       };
     },
   });

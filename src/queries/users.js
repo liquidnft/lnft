@@ -2,12 +2,19 @@ import decode from "jwt-decode";
 import { operationStore, query } from "@urql/svelte";
 
 let fields =
-  "id, username, location, bio, email, full_name, website, avatar_url, address, multisig, mnemonic, pubkey";
+  "id, username, location, bio, email, full_name, website, avatar_url, address, multisig, mnemonic, pubkey, is_artist, is_admin";
 
 let computed = "followed, num_follows, num_followers";
 
 export const getUser = (id) => `subscription {
   users_by_pk(id: "${id}") { 
+    ${fields} 
+    ${computed}
+  }
+}`;
+
+export const getUsers = `subscription {
+  users {
     ${fields} 
     ${computed}
   }

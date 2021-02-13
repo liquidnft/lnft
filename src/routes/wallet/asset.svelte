@@ -69,20 +69,18 @@
         (item, pos, ary) => item && (!pos || item.asset != ary[pos - 1].asset)
       );
 
+    if (!assets.length) assets.push({ name: name(btc), asset: btc, color: color(btc) });
+
     loading = false;
   };
 
-  let balances, pending;
+  let balances;
   $: {
-    balances = {};
-    pending = {};
+    balances = { [btc]: 0 };
     utxos.map((u) => {
       if (u.status.confirmed) {
         if (balances[u.asset]) balances[u.asset] += u.value;
         else balances[u.asset] = u.value;
-      } else {
-        if (pending[u.asset]) pending[u.asset] += u.value;
-        else pending[u.asset] = u.value;
       }
     });
   }

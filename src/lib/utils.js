@@ -5,7 +5,6 @@ import { tick } from "svelte";
 
 let cad, btc, usd;
 
-
 /*
 btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 cad = "1e31485c787e7432c7d09a4e38d893982cebfdafcf70ec5c82bf632363fdc90f";
@@ -35,7 +34,7 @@ const assetLabel = (asset) => {
 
   let r = $assets && $assets.find((u) => u.asset === asset);
 
-  return r ? (r.title || r.name) : ticker(asset);
+  return r ? r.title || r.name : ticker(asset);
 };
 
 const tickers = {
@@ -116,6 +115,9 @@ const pick = (obj, ...keys) =>
 const err = (e) => {
   error.set(e);
   let msg = e.message;
+  try {
+    msg = JSON.parse(msg).message;
+  } catch {}
   try {
     msg = JSON.parse(msg).message;
   } catch {}

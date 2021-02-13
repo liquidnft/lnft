@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import Card from "$components/Card";
-  import { addresses, show, token } from "$lib/store";
+  import { addresses, show, user } from "$lib/store";
   import ToggleSwitch from "$components/ToggleSwitch";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
@@ -119,8 +119,11 @@
 <div
   class="container mx-auto flex flex-wrap justify-center sm:justify-between mt-20">
   <h2 class="mb-10 md:mb-0">Market</h2>
+
+  {#if $user && $user.is_artist}
   <button on:click={() => goto('/artwork/create')} class="primary-btn">Submit a
     New Artwork</button>
+{/if}
 </div>
 <div class="container mx-auto mt-10">
   <div class="flex items-center">

@@ -15,7 +15,7 @@
 .pagination{
   color:lightgray;
 }
-.pagination:focus{
+.active {
   color: #6aced5;
 }
 </style>
@@ -39,8 +39,8 @@
   {/each}
 
   <div class="flex justify-center text-center mt-5">
-    <button on:click={() => (offset = 0)} class="pagination"><i class="fas fa-circle"></i></button>
-    <button on:click={() => (offset = 12)} class="pagination"><i class="fas fa-circle"></i></button>
+    <button on:click={() => (offset = 0)} class="pagination" class:active={offset === 0}><i class="fas fa-circle"></i></button>
+    <button on:click={() => (offset = 12)} class="pagination" class:active={offset === 12}><i class="fas fa-circle"></i></button>
   </div>
   <div class="flex justify-center gap-6 text-center mt-5">
     <button on:click={() => (offset = 0)} class="w-2/4 secondary-btn">Back</button>

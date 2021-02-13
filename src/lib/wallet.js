@@ -41,6 +41,23 @@ const singleAnyoneCanPay =
 export const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 export const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
+export const create = (mnemonic) => {
+  mnemonic =
+    mnemonic || cryptojs.AES.encrypt(generateMnemonic(), password).toString();
+
+  let key = keypair(mnemonic, get(password));
+
+  api
+    .url("/wallet")
+    .post({
+      mnemonic,
+      pubkey: key.base58,
+      address: singlesig(key).address,
+      multisig: multisig(key).address,
+    })
+    .json();
+};
+
 export const getBalances = () => {
   poll.set(setInterval(() => getUtxos(get(user).address), 5000));
 

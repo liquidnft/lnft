@@ -7,7 +7,6 @@ import PasswordPrompt from "$components/PasswordPrompt";
 import { goto, err } from "$lib/utils";
 import cryptojs from "crypto-js";
 import { generateMnemonic } from "bip39";
-import { keypair, singlesig, multisig } from "$lib/wallet";
 
 export const requireLogin = async (page) => {
   await tick();
@@ -64,8 +63,6 @@ export const logout = () => {
 };
 
 export const register = (username, password) => {
-  let mnemonic = cryptojs.AES.encrypt(generateMnemonic(), password).toString();
-  let key = keypair(mnemonic, password);
 
   api
     .url("/register")
@@ -75,16 +72,13 @@ export const register = (username, password) => {
       user_data: {
         username,
         full_name: username,
-        address: singlesig(key).address,
-        pubkey: key.base58,
-        mnemonic,
-        multisig: multisig(key).address,
       },
     })
     .badRequest(err)
     .res(() => {
       login(username, password);
-    });
+    })
+    .catch(err);
 };
 
 export const login = (username, password) => {

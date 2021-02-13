@@ -705,6 +705,35 @@
       - num_followers
       - num_follows
       filter: {}
+  - role: approver
+    permission:
+      columns:
+      - is_admin
+      - is_artist
+      - address_index
+      - amp_user_id
+      - address
+      - amp_mnemonic
+      - avatar_url
+      - bio
+      - display_name
+      - email
+      - full_name
+      - gaid
+      - location
+      - mnemonic
+      - multisig
+      - pubkey
+      - username
+      - website
+      - created_at
+      - updated_at
+      - id
+      computed_fields:
+      - followed
+      - num_followers
+      - num_follows
+      filter: {}
   - role: user
     permission:
       columns:
@@ -712,14 +741,16 @@
       - address_index
       - avatar_url
       - bio
-      - multisig
       - created_at
       - display_name
       - email
       - full_name
       - id
+      - is_admin
+      - is_artist
       - location
       - mnemonic
+      - multisig
       - pubkey
       - updated_at
       - username
@@ -730,6 +761,12 @@
       - num_follows
       filter: {}
   update_permissions:
+  - role: approver
+    permission:
+      columns:
+      - is_artist
+      filter: {}
+      check: null
   - role: user
     permission:
       columns:
