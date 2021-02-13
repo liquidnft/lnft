@@ -1,19 +1,19 @@
 version: '3.6'
 services:
-  app-server:
-    container_name: app-server
-    build:
-      context: ./app-server
+  app:
+    container_name: app
+    image: asoltys/app-server
     environment:
       HASURA_URL: '${HASURA_ENDPOINT}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       HASURA_JWT: '${HASURA_GRAPHQL_JWT_SECRET}'
-      LIQUID_ESPLORA_URL: '${LIQUID_ESPLORA_URL}'
+      LIQUID_ELECTRS_URL: '${LIQUID_ELECTRS_URL}'
+      CLOUDFLARE_TOKEN: '${CLOUDFLARE_TOKEN}'
+      CLOUDFLARE_ZONE: '${CLOUDFLARE_ZONE}'
+      DOMAIN: '${DOMAIN}'
     ports:
       - '8091:8091'
       - '8092:8092'
-    volumes:
-      - ./app-server:/app
   ipfs:
     container_name: ipfs
     image: ipfs/go-ipfs
