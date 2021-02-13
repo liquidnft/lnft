@@ -68,7 +68,7 @@ export const register = (username, password) => {
   let key = keypair(mnemonic, password);
 
   api
-    .url("/auth/register")
+    .url("/register")
     .post({
       email: `${username}@liquidart.com`,
       password,

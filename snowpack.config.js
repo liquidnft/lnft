@@ -23,6 +23,16 @@ module.exports = {
       },
     },
   },
+  proxy: {
+    "/.well-known": {
+      target: "http://localhost:8091",
+      on: {
+        proxyReq: (p, req, res) => {
+          p.path = req.url.replace("/.well-known", "/proof");
+        },
+      },
+    },
+  },
   mount: {
     "src/components": "/_components",
     "src/lib": "/_app/lib",

@@ -29,6 +29,9 @@ const setConfirmed = `
       type
       asset
       contract
+      user {
+        username
+      } 
       bid {
         id
         user_id
@@ -84,7 +87,6 @@ setInterval(
                       data: { update_transactions_by_pk: transaction },
                     }) => {
                       let owner_id;
-                      console.log(transaction);
 
                       if (transaction.type === "accept")
                         owner_id = transaction.bid.user_id;
@@ -117,14 +119,26 @@ setInterval(
   2000
 );
 
-const registerAsset = async ({ asset: asset_id, contract }) => {
-  console.log(asset_id, contract);
+proofs = {};
+const registerAsset = async ({ asset: asset_id, contract, user }) => {
+  proofs[user.username] = asset_id;
+  /*
   const { data } = await registry
     .post({
       asset_id,
       contract,
     })
     .json();
-
-  console.log(data);
+    */
 };
+
+app.get("/proof", (req, res) => {
+  let {
+    headers: { host },
+  } = req;
+  host = host.replace(/:.*/, "");
+  let username = host.split(".")[0];
+  res.send(
+    `Authorize linking the domain name ${host} to the Liquid asset ${proofs[username]}`
+  );
+});

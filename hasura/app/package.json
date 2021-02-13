@@ -15,6 +15,7 @@
     "fastify": "^3.10.1",
     "fastify-http-proxy": "^4.3.0",
     "fastify-multipart": "^4.0.0",
+    "http-proxy": "^1.18.1",
     "ipfs-http-client": "^49.0.2",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.12.2",

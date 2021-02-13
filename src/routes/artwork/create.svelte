@@ -15,7 +15,7 @@
     createIssuance,
     signAndBroadcast,
     parseAsset,
-    singlesig,
+    keypair,
   } from "$lib/wallet";
   import reverse from "buffer-reverse";
 
@@ -79,14 +79,14 @@
     await requirePassword();
     contract = {
       entity: { domain: `${$user.username}.${window.location.hostname}` },
-      issuer_pubkey: singlesig().publicKey,
+      issuer_pubkey: keypair().pubkey.toString('hex'),
       name: artwork.title,
       precision: 0,
       ticker: artwork.ticker,
       version: 0,
     };
 
-    $psbt = await createIssuance(artwork, contract, 1000);
+    $psbt = await createIssuance(artwork, contract, 100);
 
     await signAndBroadcast();
     let tx = $psbt.extractTransaction();

@@ -2,12 +2,10 @@
   import { addresses, psbt } from "$lib/store";
   import Check from "$icons/check";
   import reverse from "buffer-reverse";
-  import { address as Address, script, networks } from "@asoltys/liquidjs-lib";
   import { electrs } from "$lib/api";
-  import { parseVal, parseAsset } from "$lib/wallet";
+  import { getAddress, parseVal, parseAsset } from "$lib/wallet";
   import { explorer, addressLabel, assetLabel, ticker } from "$lib/utils";
 
-  const network = networks.regtest;
 
   export let summary = false;
 
@@ -45,7 +43,7 @@
         let address;
 
         try {
-          address = Address.fromOutputScript(out.script, network);
+          address = getAddress(out)
         } catch (e) {
           if (!out.script.length) address = "Fee";
           else return;
@@ -78,7 +76,7 @@
       <div class="w-1/6">Value</div>
       <div class="mr-2">Asset</div>
     </div>
-    {#each ins as input (input.txid + input.index)}
+    {#each ins as input (`${input.txid}:${input.index}`)}
       <div class="flex break-all mb-2 text-sm">
         <div class="w-1/6">{input.value}</div>
         <div class="mr-2">{assetLabel(input.asset)}</div>

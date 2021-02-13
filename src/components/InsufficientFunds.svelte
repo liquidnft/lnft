@@ -19,8 +19,8 @@
     console.log($balances);
   });
 
-  $: current = $balances && $balances[$error.asset];
-  $: incoming = $pending && $pending[$error.asset];
+  $: current = $balances && $balances[$error.asset] || 0;
+  $: incoming = $pending && $pending[$error.asset] || 0;
 
   export let submit = (e) => {
     if (e) e.preventDefault();

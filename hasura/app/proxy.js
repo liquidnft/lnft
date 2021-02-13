@@ -1,18 +1,21 @@
 const proxy = require("fastify-http-proxy");
+const httpProxy = require("http-proxy");
 
-/*
-httpProxy
+let p = httpProxy
   .createProxyServer({
     target: "https://blockstream.info/liquid/api",
     changeOrigin: true,
   })
   .listen(8092);
-*/
+
+p.on('proxyReq', (pr, req, res) => {
+  pr.setHeader('Content-Type', 'application/json');
+}); 
 
 const { LIQUID_ELECTRS_URL } = process.env;
 
 app.register(proxy, {
-  upstream: LIQUID_ELECTRS_URL,
+  upstream: 'http://localhost:8092',
   prefix: '/el',
   rewritePrefix: '',
 })
