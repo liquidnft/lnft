@@ -107,24 +107,25 @@
     </div>
   {:else}
     <div class="mb-5">
-      <a href="/wallet" class="secondary-color"><i
+      <a href="/wallet" class="text-midblue"><i
           class="fas fa-chevron-left mr-2" />
         Back</a>
     </div>
-
-    {#each assets as a}
-      <div
-        class="flex mb-2 cursor-pointer"
-        on:click={() => {
-          $asset = a.asset;
-          goto('/wallet');
-        }}>
-        <div class={`${a.color} py-2 w-3 brand-color`} />
-        <div class="flex dark flex-grow">
-          <div class="flex-grow">{a.name}</div>
-          <div>{balances[a.asset]}</div>
+    <div class="bg-black p-4 rounded-lg">
+      {#each assets as a}
+        <div
+          class="flex mb-2 cursor-pointer"
+          on:click={() => {
+            $asset = a.asset;
+            goto('/wallet');
+          }}>
+          <div class={`${a.color} py-2 w-3 bg-lightblue rounded-l-lg`} />
+          <div class="flex bg-gray-600 text-white rounded-r-lg p-4 flex-grow">
+            <div class="flex-grow">{a.name}</div>
+            <div>{balances[a.asset]}</div>
+          </div>
         </div>
-      </div>
-    {/each}
+      {/each}
+    </div>
   {/if}
 </div>

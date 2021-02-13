@@ -43,7 +43,7 @@
     <button on:click={() => (offset = 12)} class="pagination"><i class="fas fa-circle"></i></button>
   </div>
   <div class="flex justify-center gap-6 text-center mt-5">
-    <button on:click={() => (offset = 0)} class="w-2/4 button-transparent">Back</button>
-    <button on:click={() => (offset = 12)} class="w-2/4 button-transparent">Next</button>
+    <button on:click={() => (offset = 0)} class="w-2/4 secondary-btn">Back</button>
+    <button on:click={() => (offset = 12)} class="w-2/4 secondary-btn">Next</button>
   </div>
 </div>

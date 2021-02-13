@@ -53,7 +53,7 @@
     <ProgressLinear />
   </div>
 {:else if $balances}
-  <div class="w-3/4">
+  <div class="w-full xl:w-3/4">
     <div class="mb-5">
       <a class="secondary-color" href="/wallet/asset">{$assets.length}
         assets available in this wallet
@@ -62,7 +62,7 @@
 
     <div class="bg-black mb-2 pt-1 rounded-lg">
       <div
-        class="brand-color text-center p-3 text-black text-xl font-bold w-1/2 rounded-r-full mt-5">
+        class="border-l-8 border-green-700 bg-green-100 bg-opacity-10 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5">
         {name($asset)}
       </div>
 
@@ -80,13 +80,13 @@
           <span class="text-gray-400">{ticker($asset)}</span>
         </div>
       </div>
-      <div class="flex gap-10 p-6 pt-2">
+      <div class="flex justify-between p-6 pt-2">
         <button
           on:click={() => (funding = !funding)}
-          class="button-trans-gray w-full">Fund</button>
+          class="button-trans-gray w-full mr-2">Fund</button>
         <button
           on:click={() => (withdrawing = !withdrawing)}
-          class="button-trans-gray w-full">Withdraw</button>
+          class="button-trans-gray w-full ml-2">Withdraw</button>
       </div>
     </div>
     <div>

@@ -35,12 +35,11 @@
 
   #drop-area {
     cursor: pointer;
-    border: 2px solid #3ba5ac;
+    border: 2px solid #6ED8E0;
     border-radius: 10px;
-    width: 70%;
-    height: 70%;
-    max-width: 320px;
-    max-height: 320px;
+    width: 80%;
+    max-width: 350px;
+    max-height: 350px;
     font-family: sans-serif;
     margin: 100px auto;
   }
@@ -50,7 +49,7 @@
   }
 
   #drop-area.highlight {
-    border-color: teal;
+    border-color: #6ED8E0;
   }
 
   #fileElem {
@@ -73,7 +72,7 @@
     <div class="flex justify-center flex-col align-center h-full">
       <span>UPLOAD YOUR ARTWORK</span>
       <i
-        class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-5xl secondary-color" />
+        class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-5xl text-lightblue" />
     </div>
     <input
       bind:this={fileInput}

@@ -12,7 +12,7 @@
 
 <div class="dark mb-2 rounded-lg">
   <div class="flex justify-between place-items-center text-gray-400">
-    <h1>Fund Wallet</h1>
+    <p>Fund Wallet</p>
     <button class="text-gray-400 text-xl"><i class="fas fa-times"></i></button>
   </div>
   <div class="mb-2 flex justify-center flex-col">

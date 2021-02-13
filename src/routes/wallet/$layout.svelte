@@ -13,10 +13,10 @@
   }
 </style>
 
-<div class="container mx-auto flex justify-between px-8">
+<div class="container mx-auto flex flex-wrap justify-between py-20">
   <Nav />
-  <div class="ml-10 flex-grow">
-    <div class="w-full lg:w-1/2">
+  <div class="xl:ml-10 flex-grow">
+    <div class="w-full xl:w-1/2">
       <slot />
     </div>
   </div>
