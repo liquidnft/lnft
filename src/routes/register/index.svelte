@@ -2,8 +2,9 @@
   import { page } from "$app/stores";
   import { register } from "$lib/auth";
 
-  let username = "anon";
-  let password = "liquidart";
+  let username;
+  let password;
+  let email;
 
   let ref;
   let pageChange = () => setTimeout(() => ref.select(), 50);
@@ -54,22 +55,34 @@
 <div class="form-container bg-lightblue">
   <form
     class="mb-6"
-    on:submit|preventDefault={() => register(username, password)}
+    on:submit|preventDefault={() => register(email, username, password)}
     autocomplete="off">
     <h2 class="mb-8">Sign up</h2>
     <div class="flex flex-col mb-4">
-      <label class="mb-2 font-medium text-gray-600" for="first_name">Email or
-        username</label>
-      <input placeholder="username" bind:value={username} bind:this={ref} />
+      <label
+        class="mb-2 font-medium text-gray-600"
+        for="first_name">Email</label>
+      <input placeholder="Email" bind:value={email} bind:this={ref} />
+    </div>
+    <div class="flex flex-col mb-4">
+      <label
+        class="mb-2 font-medium text-gray-600"
+        for="first_name">Username</label>
+      <input placeholder="Username" bind:value={username} bind:this={ref} />
     </div>
     <div class="flex flex-col mb-4">
       <label
         class="mb-2 font-medium text-gray-600"
         for="last_name">Password</label>
-      <input placeholder="At least 8 characters." type="password" bind:value={password} />
+      <input
+        placeholder="At least 8 characters."
+        type="password"
+        bind:value={password} />
     </div>
-    <span
-      class="block w-full">By signing up, you agree to the <a href="/terms-and-conditions" class="text-midblue">Terms and Conditions</a> and <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
+    <span class="block w-full">By signing up, you agree to the
+      <a href="/terms-and-conditions" class="text-midblue">Terms and Conditions</a>
+      and
+      <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
     <div class="flex my-5 justify-end">
       <button class="primary-btn w-1/2" type="submit">Register</button>
     </div>

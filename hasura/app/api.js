@@ -22,4 +22,6 @@ const cf = wretch()
   )
   .auth(`Bearer ${CLOUDFLARE_TOKEN}`);
 
-module.exports = { hasura, electrs, registry, cf };
+const hbp = wretch().url("http://hbp:3000");
+
+module.exports = { hasura, electrs, registry, cf, hbp };

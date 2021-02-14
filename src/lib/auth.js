@@ -62,34 +62,30 @@ export const logout = () => {
     });
 };
 
-export const register = (username, password) => {
-
+export const register = (email, username, password) => {
   api
     .url("/register")
     .post({
-      email: `${username}@liquidart.com`,
+      email,
       password,
-      user_data: {
-        username,
-        full_name: username,
-      },
+      username,
     })
     .badRequest(err)
     .res(() => {
-      login(username, password);
+      login(email, password);
     })
     .catch(err);
 };
 
-export const login = (username, password) => {
+export const login = (email, password) => {
   api
-    .url("/auth/login")
+    .url("/login")
     .post({
-      email: `${username}@liquidart.com`,
+      email,
       password,
     })
+    .unauthorized(err)
     .badRequest(err)
-    .unauthorized((e) => err("Login failed"))
     .json(({ jwt_token: t }) => {
       token.set(t);
       window.sessionStorage.setItem("token", t);

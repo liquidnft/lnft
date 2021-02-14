@@ -24,7 +24,7 @@
     setInterval(refreshToken, 600000);
   });
 
-  $: if ($error && $error.message.includes("Insufficient"))
+  $: if ($error && $error.message && $error.message.includes("Insufficient"))
     prompt.set(InsufficientFunds);
 
   let pageChange = (p) => clearInterval($poll);
