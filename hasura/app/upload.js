@@ -1,8 +1,4 @@
 const fs = require("fs");
-const util = require("util");
-const path = require("path");
-const { pipeline } = require("stream");
-const pump = util.promisify(pipeline);
 const ipfsClient = require("ipfs-http-client");
 
 app.register(require("fastify-multipart"));

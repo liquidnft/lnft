@@ -37,17 +37,9 @@
     percent = Math.round((event.loaded / event.total) * 100);
   };
 
-  let checkProgress = (resolve) => {
-    if (percent === 100) resolve();
-    else setTimeout(() => checkProgress(resolve), 500);
-  };
-
   let submit = async () => {
     if (file) {
-      upload(file, $token, progress);
-      await new Promise(checkProgress);
-
-      form.avatar_url = `/api/ipfs/${file.name}`;
+      form.avatar_url = await upload(file, progress);
     }
 
     update(form);
@@ -56,7 +48,7 @@
   let updateUser$ = mutation(updateUser);
 
   let update = (form) => {
-    let { num_followers, num_follows, followed, id, balance, ...user } = form;
+    let { is_artist, is_admin, num_followers, num_follows, followed, id, balance, ...user } = form;
     updateUser$({ user, id }).then((r) => {
       info("Profile updated");
       goto(`/user/${id}`);

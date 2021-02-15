@@ -35,10 +35,12 @@
   $: tokenUpdated($token);
 
   let tokenUpdated = async (t) => {
+    console.log("tokenupdated", t);
     if (t) {
       id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
       setupUrql(t);
       subscription(operationStore(getUser(id)), (_, data) => {
+        console.log("squeeee", data);
         $user = data.users_by_pk;
       });
 

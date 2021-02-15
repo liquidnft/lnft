@@ -786,7 +786,7 @@
       filter:
         id:
           _eq: X-Hasura-User-Id
-      check: null
+      check: {}
 - table:
     schema: public
     name: utxos

@@ -21,9 +21,11 @@
 <div class={`${size} my-auto`}>
   <div
     class={`relative ${size} group rounded-full overflow-hidden shadow-inner text-center bg-purple table cursor-pointer`}>
-    <img
-      src={src || 'https://pickaface.net/gallery/avatar/unr_random_180410_1905_z1exb.png'}
-      alt="lovely avatar"
-      class="absolute w-full h-full object-cover object-center visible group-hover:hidden overflow-hidden" />
+    {#if src}
+      <img
+        src={src.startsWith('data') ? src : `/api/ipfs/${src}`}
+        alt="lovely avatar"
+        class="absolute w-full h-full object-cover object-center visible group-hover:hidden overflow-hidden" />
+    {/if}
   </div>
 </div>

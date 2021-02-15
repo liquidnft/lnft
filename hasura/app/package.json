@@ -7,6 +7,7 @@
     "@asoltys/liquidjs-lib": "^5.1.21",
     "bip32": "^2.0.6",
     "bip39": "^3.0.3",
+    "blob-to-buffer": "^1.2.9",
     "buffer-reverse": "^1.0.1",
     "build-core": "^0.0.6",
     "crypto-js": "^4.0.0",

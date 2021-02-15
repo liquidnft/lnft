@@ -1,5 +1,9 @@
+const toBuffer = require("blob-to-buffer");
+const fs = require("fs");
 const { cf, hasura, hbp } = require("./api");
 const wretch = require("wretch");
+const ipfsClient = require("ipfs-http-client");
+const { globSource } = ipfsClient;
 
 auth = require("./auth");
 
@@ -35,10 +39,35 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  let data = await wretch()
-    .url(`https://unavatar.now.sh/${req.body.display_name}`)
-    .get()
-    .blob();
+  let { email, password, username } = req.body;
+  try {
+    let response = await hbp
+      .url("/auth/register")
+      .post({ email, password })
+      .res();
+
+    response = await wretch()
+      .url(`https://unavatar.now.sh/${email}?fallback=https://icotar.com/avatar/${email}`)
+      .get()
+      .res();
+
+    const ipfs = ipfsClient("http://ipfs:5001");
+    let { cid } = await ipfs.add(response.body);
+    let avatar = cid.toString();
+
+    let query = `mutation ($email: String!, $avatar: String!, $username: String!) {
+    update_users(where: {display_name: {_eq: $email}}, _set: { full_name: $username, username: $username, avatar_url: $avatar }) {
+      affected_rows 
+    }
+  }`;
+
+    await hasura.post({ query, variables: { email, username, avatar } }).json();
+
+    res.send("Registered!");
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
+  }
 });
 
 app.post("/approve", auth, async (req, res) => {

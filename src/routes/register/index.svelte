@@ -2,9 +2,9 @@
   import { page } from "$app/stores";
   import { register } from "$lib/auth";
 
-  let username;
-  let password;
-  let email;
+  let username = 'anon';
+  let password = 'liquidart';
+  let email = 'asoltys@gmail.com';
 
   let ref;
   let pageChange = () => setTimeout(() => ref.select(), 50);
