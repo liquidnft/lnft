@@ -58,28 +58,38 @@ app.post("/sign", auth, async (req, res) => {
     } = await userapi.post({ query: userQuery }).json();
     let user = currentuser[0];
 
-    artworks.map(({ royalty, artist, owner, asking_asset, auction_start: start, auction_end: end }) => {
-      if (end && isWithinInterval(new Date(), { start, end })) throw new Error("Auction underway");
+    artworks.map(
+      ({
+        royalty,
+        artist,
+        owner,
+        asking_asset,
+        auction_start: start,
+        auction_end: end,
+      }) => {
+        if (end && isWithinInterval(new Date(), { start, end }))
+          throw new Error("Auction underway");
 
-          let outs = outputs.filter((o) => o.asset === asking_asset);
-      let toArtist = outs
-        .filter(
-          (o) => o.address === artist.address || o.address === artist.multisig
-        )
-        .reduce((a, b) => (a += b.value), 0);
+        let outs = outputs.filter((o) => o.asset === asking_asset);
+        let toArtist = outs
+          .filter(
+            (o) => o.address === artist.address || o.address === artist.multisig
+          )
+          .reduce((a, b) => (a += b.value), 0);
 
-      let toOwner = outs
-        .filter(
-          (o) => o.address === owner.address || o.address === owner.multisig
-        )
-        .reduce((a, b) => (a += b.value), 0);
+        let toOwner = outs
+          .filter(
+            (o) => o.address === owner.address || o.address === owner.multisig
+          )
+          .reduce((a, b) => (a += b.value), 0);
 
-      if (toOwner && royalty) {
-        let amountDue = Math.round((toOwner * royalty) / 100);
-        if (toArtist < amountDue && artist.id !== owner.id)
-          throw new Error("Royalty not paid");
+        if (toOwner && royalty) {
+          let amountDue = Math.round((toOwner * royalty) / 100);
+          if (toArtist < amountDue && artist.id !== owner.id)
+            throw new Error("Royalty not paid");
+        }
       }
-    });
+    );
 
     res.send({ base64: sign(psbt).toBase64() });
   } catch (e) {

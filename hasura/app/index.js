@@ -47,7 +47,9 @@ app.post("/register", async (req, res) => {
       .res();
 
     response = await wretch()
-      .url(`https://unavatar.now.sh/${email}?fallback=https://icotar.com/avatar/${email}`)
+      .url(
+        `https://unavatar.now.sh/${email}?fallback=https://icotar.com/avatar/${email}`
+      )
       .get()
       .res();
 

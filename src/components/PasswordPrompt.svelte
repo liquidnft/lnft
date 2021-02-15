@@ -14,9 +14,9 @@
     if (e) e.preventDefault();
 
     api
-      .url("/auth/login")
+      .url("/login")
       .post({
-        email: `${$user.username}@liquidart.com`,
+        email: $user.email,
         password: attempt,
       })
       .badRequest(err)
