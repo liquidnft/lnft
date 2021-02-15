@@ -2,7 +2,8 @@ version: '3.6'
 services:
   app:
     container_name: app
-    image: asoltys/app-server
+    build:
+      context: ./app
     environment:
       HASURA_URL: '${HASURA_ENDPOINT}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
@@ -81,7 +82,7 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: liquidart
       REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address,multisig
       JWT_ALGORITHM: RS256
-      AUTO_MIGRATE: "false"
+      AUTO_MIGRATE: "true"
       STORAGE_ENABLE: "true"
       S3_ENDPOINT: http://minio:9000
       S3_SSL_ENABLED: "false"
