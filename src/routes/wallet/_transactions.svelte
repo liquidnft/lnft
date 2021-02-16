@@ -32,27 +32,31 @@
   ];
 </script>
 
-<div class="my-7 flex">
-  <div class="flex-1">Show all history</div>
-  <ToggleSwitch
-    id="toggle"
-    label={`Show only ${assetLabel($asset)}`}
-    on:change={(e) => {(show = !show)}} />
-</div>
+{#if $transactions.length}
+  <div class="my-7 flex">
+    <div class="flex-1">Show all history</div>
+    <ToggleSwitch
+      id="toggle"
+      label={`Show only ${assetLabel($asset)}`}
+      on:change={(e) => {
+        show = !show;
+      }} />
+  </div>
 
-{#each $transactions as tx}
-  {#each txAssets(tx) as a}
-    {#if value(tx, a)}
-      <div class="w-full mb-4">
-        <div class="flex">
-          <div class="flex-grow text-sm text-gray-500">
-            {tx.status.block_time ? format(new Date(1000 * tx.status.block_time), 'MMM do, yyyy') : 'Pending'}
+  {#each $transactions as tx}
+    {#each txAssets(tx) as a}
+      {#if value(tx, a)}
+        <div class="w-full mb-4">
+          <div class="flex">
+            <div class="flex-grow text-sm text-gray-500">
+              {tx.status.block_time ? format(new Date(1000 * tx.status.block_time), 'MMM do, yyyy') : 'Pending'}
+            </div>
+            <div class="text-green-700">+{value(tx, a)}</div>
           </div>
-          <div class="text-green-700">+{value(tx, a)}</div>
-        </div>
 
-        <div class="">{assetLabel(a)} Deposit</div>
-      </div>
-    {/if}
+          <div class="">{assetLabel(a)} Deposit</div>
+        </div>
+      {/if}
+    {/each}
   {/each}
-{/each}
+{/if}

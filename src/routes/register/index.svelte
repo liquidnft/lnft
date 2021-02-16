@@ -1,14 +1,24 @@
 <script>
   import { page } from "$app/stores";
+  import { error } from "$lib/store";
   import { register } from "$lib/auth";
+  import ProgressLinear from "$components/ProgressLinear";
 
-  let username = 'anon';
-  let password = 'liquidart';
-  let email = 'asoltys@gmail.com';
+  let username = "anon";
+  let password = "liquidart";
+  let email = "asoltys@gmail.com";
 
   let ref;
   let pageChange = () => setTimeout(() => ref.select(), 50);
   $: if (ref) pageChange($page);
+
+  let loading;
+  let submit = async () => {
+    loading = true;
+    await register(email, username, password);
+  };
+
+  $: if ($error) loading = false;
 </script>
 
 <style>
@@ -53,38 +63,41 @@
 </style>
 
 <div class="form-container bg-lightblue">
-  <form
-    class="mb-6"
-    on:submit|preventDefault={() => register(email, username, password)}
-    autocomplete="off">
-    <h2 class="mb-8">Sign up</h2>
-    <div class="flex flex-col mb-4">
-      <label
-        class="mb-2 font-medium text-gray-600"
-        for="first_name">Email</label>
-      <input placeholder="Email" bind:value={email} bind:this={ref} />
-    </div>
-    <div class="flex flex-col mb-4">
-      <label
-        class="mb-2 font-medium text-gray-600"
-        for="first_name">Username</label>
-      <input placeholder="Username" bind:value={username} bind:this={ref} />
-    </div>
-    <div class="flex flex-col mb-4">
-      <label
-        class="mb-2 font-medium text-gray-600"
-        for="last_name">Password</label>
-      <input
-        placeholder="At least 8 characters."
-        type="password"
-        bind:value={password} />
-    </div>
-    <span class="block w-full">By signing up, you agree to the
-      <a href="/terms-and-conditions" class="text-midblue">Terms and Conditions</a>
-      and
-      <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
-    <div class="flex my-5 justify-end">
-      <button class="primary-btn w-1/2" type="submit">Register</button>
-    </div>
+  <form class="mb-6" on:submit|preventDefault={submit} autocomplete="off">
+    {#if loading}
+      <ProgressLinear />
+    {:else}
+      <h2 class="mb-8">Sign up</h2>
+
+      <div class="flex flex-col mb-4">
+        <label
+          class="mb-2 font-medium text-gray-600"
+          for="first_name">Email</label>
+        <input placeholder="Email" bind:value={email} bind:this={ref} />
+      </div>
+      <div class="flex flex-col mb-4">
+        <label
+          class="mb-2 font-medium text-gray-600"
+          for="first_name">Username</label>
+        <input placeholder="Username" bind:value={username} bind:this={ref} />
+      </div>
+      <div class="flex flex-col mb-4">
+        <label
+          class="mb-2 font-medium text-gray-600"
+          for="last_name">Password</label>
+        <input
+          placeholder="At least 8 characters."
+          type="password"
+          bind:value={password} />
+      </div>
+      <span class="block w-full">By signing up, you agree to the
+        <a href="/terms-and-conditions" class="text-midblue">Terms and
+          Conditions</a>
+        and
+        <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
+      <div class="flex my-5 justify-end">
+        <button class="primary-btn w-1/2" type="submit">Register</button>
+      </div>
+    {/if}
   </form>
 </div>

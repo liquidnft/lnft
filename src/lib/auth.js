@@ -5,9 +5,7 @@ import { get } from "svelte/store";
 import { password as pw, poll, prompt, user, token } from "$lib/store";
 import PasswordPrompt from "$components/PasswordPrompt";
 import { goto, err } from "$lib/utils";
-import cryptojs from "crypto-js";
-import { generateMnemonic } from "bip39";
-import { keypair, singlesig, multisig } from "$lib/wallet";
+import { createWallet } from "$lib/wallet";
 
 export const requireLogin = async (page) => {
   await tick();
@@ -65,26 +63,25 @@ export const logout = () => {
     });
 };
 
-export const register = (email, username, password) => {
-  let mnemonic = cryptojs.AES.encrypt(generateMnemonic(256), password).toString();
-  let key = keypair(mnemonic, password);
+let justRegistered;
+export const register = async (email, username, password) => {
+  try {
+    await api
+      .url("/register")
+      .post({
+        email,
+        password,
+        username,
+        ...createWallet(password),
+      })
+      .badRequest(err)
+      .res();
 
-  api
-    .url("/register")
-    .post({
-      email,
-      password,
-      username,
-      address: singlesig(key).address,
-      pubkey: key.base58,
-      mnemonic,
-      multisig: multisig(key).address,
-    })
-    .badRequest(err)
-    .res(() => {
-      login(email, password);
-    })
-    .catch(err);
+    justRegistered = true;
+    login(email, password);
+  } catch (e) {
+    err(e);
+  }
 };
 
 export const login = (email, password) => {
@@ -101,6 +98,6 @@ export const login = (email, password) => {
       window.sessionStorage.setItem("token", t);
       pw.set(password);
       prompt.set(false);
-      goto("/market");
+      justRegistered ? goto("/wallet/create") : goto("/market");
     });
 };

@@ -3,10 +3,47 @@
   import { onMount, tick } from "svelte";
   import bip39 from "bip39";
   import ToggleSwitch from "$components/ToggleSwitch";
+  import { password, user } from "$lib/store";
+  import { err, goto, info } from "$lib/utils";
+  import { requirePassword } from "$lib/auth";
+  import { createWallet } from "$lib/wallet";
+  import { updateUser } from "$queries/users";
+  import { mutation } from "@urql/svelte";
+
+  let update = mutation(updateUser);
+  let importWallet = async () => {
+    try {
+      await update({ id: $user.id, user: createWallet(mnemonic) });
+      info("Wallet updated");
+      setTimeout(() => goto("/wallet"), 50);
+    } catch (e) {
+      err(e);
+    }
+  };
+
+  export let mnemonic;
+
+  $: mnemonic = words.filter((w) => w).join(" ");
+  let typed;
+
+  let toggle = () => {
+    bulk = !bulk;
+    tick().then(() => {
+      if (bulk) typed = mnemonic;
+      else if (typed)
+        words = [
+          ...typed.split(" "),
+          ...new Array(24 - typed.split(" ").length),
+        ];
+      curr = words.findIndex((w) => !w);
+      if (curr < 12) offset = 0;
+      else offset = 12;
+      if (inputs[curr]) inputs[curr].select();
+    });
+  };
 
   $: init($page);
   let init = () => tick().then(() => inputs[0].focus());
-
 
   let words = new Array(24);
   let inputs = new Array(24);
@@ -27,15 +64,22 @@
     if (curr === 12) {
       offset = 12;
     }
+
     await tick();
-    inputs[curr - offset].focus();
-    inputs[curr - offset].select();
+
+    if (curr === 12) {
+      inputs[0].select();
+    } else if (curr < 24) {
+      inputs[curr - offset].select();
+    }
     suggestions = [];
   };
 
   let keyup = (i, e) => {
+    curr = i;
     if (e.key === "Tab" && !e.shiftKey) e.preventDefault();
-    if (e.key === "Enter" || (e.key === "Tab" && !e.shiftKey)) return suggestions[0] && take(suggestions[0]);
+    if (e.key === "Enter" || (e.key === "Tab" && !e.shiftKey))
+      return suggestions[0] && take(suggestions[0]);
   };
 </script>
 
@@ -76,6 +120,7 @@
 
 {#if bulk}
   <textarea
+    bind:value={typed}
     placeholder="Type or paste your seed here."
     class="my-4 w-full"
     autofocus />
@@ -145,10 +190,10 @@
 
 <p class="my-4">
   {#if bulk}
-    <a class="secondary-color" href="" on:click={() => (bulk = false)}>I want to
-      enter my seed one word at a time</a>
+    <a class="secondary-color" href="" on:click={toggle}>I want to enter my seed
+      one word at a time</a>
   {:else}
-    <a class="secondary-color" href="" on:click={() => (bulk = true)}>I want to
-      enter my seed all at once</a>
+    <a class="secondary-color" href="" on:click={toggle}>I want to enter my seed
+      all at once</a>
   {/if}
 </p>

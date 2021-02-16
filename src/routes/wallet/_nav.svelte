@@ -1,5 +1,5 @@
 <script>
-  import { user } from "$lib/store";
+  import { assets, user } from "$lib/store";
   import { goto } from "$lib/utils";
 </script>
 
@@ -58,10 +58,12 @@
       <i class="fas fa-chevron-left"></i>
       <span>Back to Profile</span>
     </a>
+    {#if $assets.length > 1}
     <a href="/wallet/asset">
       <i class="fas fa-dollar-sign"></i>
       <span>Change Asset</span>
     </a>
+  {/if}
     <a href="/wallet/setup">
       <i class="fas fa-cog"></i>
       <span>Wallet Settings</span>

@@ -64,4 +64,8 @@
       on:click={() => (offset === 18 ? goto('/wallet/create/step3') : (offset += 6))}
       class="w-2/4 primary-btn">Next</button>
   </div>
+
+  <p class="my-4">
+    <a class="secondary-color" href="" on:click={() => copy(mnemonic)}>Copy mnemonic to clipboard</a>
+  </p>
 {/if}

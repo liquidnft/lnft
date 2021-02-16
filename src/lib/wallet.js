@@ -1,7 +1,7 @@
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { api, electrs } from "$lib/api";
-import { mnemonicToSeedSync } from "bip39";
+import { generateMnemonic, mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
 import {
@@ -60,20 +60,23 @@ export const create = (mnemonic) => {
 };
 
 export const getTransactions = () => {
-  poll.set([...get(poll), setInterval(() => getTransactions(get(user).address), 5000)]);
+  poll.set([
+    ...get(poll),
+    setInterval(() => getTransactions(get(user).address), 5000),
+  ]);
 
   let getTransactions = async (address) => {
-    transactions.set(await electrs
-      .url(`/address/${address}/txs`)
-      .get()
-      .json());
+    transactions.set(await electrs.url(`/address/${address}/txs`).get().json());
   };
 
   return getTransactions(get(user).address);
 };
 
 export const getBalances = () => {
-  poll.set([...get(poll), setInterval(() => getUtxos(get(user).address), 5000)]);
+  poll.set([
+    ...get(poll),
+    setInterval(() => getUtxos(get(user).address), 5000),
+  ]);
 
   let getUtxos = async (address) => {
     let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
@@ -117,6 +120,25 @@ export const getTx = async (txid) => {
 
 const DUST = 800;
 
+export const createWallet = (mnemonic) => {
+  try {
+    if (!mnemonic) mnemonic = generateMnemonic(256);
+    mnemonic = cryptojs.AES.encrypt(mnemonic, get(password)).toString();
+
+    const key = keypair(mnemonic);
+
+    return {
+      address: singlesig(key).address,
+      pubkey: key.base58,
+      mnemonic,
+      multisig: multisig(key).address,
+    };
+  } catch (e) {
+    console.log(e);
+    throw new Error("Failed to create wallet from mnemonic");
+  }
+};
+
 export const getMnemonic = (mnemonic, pass) => {
   if (!mnemonic) mnemonic = get(user).mnemonic;
   if (!pass) pass = get(password);
@@ -128,12 +150,17 @@ export const getMnemonic = (mnemonic, pass) => {
 
 export const keypair = (mnemonic, pass) => {
   mnemonic = getMnemonic(mnemonic, pass);
-  let seed = mnemonicToSeedSync(mnemonic);
-  let key = fromSeed(seed, network).derivePath("m/84'/0'/0'/0/0");
-  let { publicKey: pubkey, privateKey: privkey } = key;
-  let base58 = key.neutered().toBase58();
 
-  return { pubkey, privkey, seed, base58 };
+  try {
+    let seed = mnemonicToSeedSync(mnemonic);
+    let key = fromSeed(seed, network).derivePath("m/84'/0'/0'/0/0");
+    let { publicKey: pubkey, privateKey: privkey } = key;
+    let base58 = key.neutered().toBase58();
+
+    return { pubkey, privkey, seed, base58 };
+  } catch (e) {
+    throw new Error("Failed to generated keys with mnemonic");
+  }
 };
 
 export const singlesig = (key) => {
