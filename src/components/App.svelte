@@ -35,7 +35,6 @@
   $: tokenUpdated($token);
 
   let tokenUpdated = async (t) => {
-    console.log("tokenupdated", t);
     if (t) {
       id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
       setupUrql(t);

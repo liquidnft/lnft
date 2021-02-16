@@ -62,7 +62,7 @@
       <i class="fas fa-dollar-sign"></i>
       <span>Change Asset</span>
     </a>
-    <a href="/wallet/settings">
+    <a href="/wallet/setup">
       <i class="fas fa-cog"></i>
       <span>Wallet Settings</span>
     </a>

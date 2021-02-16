@@ -77,6 +77,8 @@
   let contract;
   const issue = async () => {
     await requirePassword();
+    await tick();
+
     contract = {
       entity: { domain: `${$user.username}.${window.location.hostname}` },
       issuer_pubkey: keypair().pubkey.toString('hex'),

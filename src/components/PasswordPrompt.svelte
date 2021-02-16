@@ -16,7 +16,7 @@
     api
       .url("/login")
       .post({
-        email: $user.email,
+        email: $user.username,
         password: attempt,
       })
       .badRequest(err)

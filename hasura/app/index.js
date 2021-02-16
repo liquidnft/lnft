@@ -24,8 +24,8 @@ app.post("/login", async (req, res) => {
     }
   }`;
 
-  email = (await hasura.post({ query, variables: { email } }).json()).data
-    .users[0].display_name;
+  let users = await hasura.post({ query, variables: { email } }).json();
+  email = users.data.users[0].display_name;
 
   try {
     let response = await hbp.url("/auth/login").post({ email, password }).res();
@@ -39,7 +39,16 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  let { email, password, username } = req.body;
+  let {
+    address,
+    pubkey,
+    mnemonic,
+    multisig,
+    email,
+    password,
+    username,
+  } = req.body;
+
   try {
     let response = await hbp
       .url("/auth/register")
@@ -55,15 +64,32 @@ app.post("/register", async (req, res) => {
 
     const ipfs = ipfsClient("http://ipfs:5001");
     let { cid } = await ipfs.add(response.body);
-    let avatar = cid.toString();
 
-    let query = `mutation ($email: String!, $avatar: String!, $username: String!) {
-    update_users(where: {display_name: {_eq: $email}}, _set: { full_name: $username, username: $username, avatar_url: $avatar }) {
-      affected_rows 
-    }
-  }`;
+    let query = `mutation ($user: users_set_input!, $email: String!) {
+      update_users(where: {display_name: {_eq: $email}}, _set: $user) {
+        affected_rows 
+      }
+    }`;
 
-    await hasura.post({ query, variables: { email, username, avatar } }).json();
+    response = await hasura
+      .post({
+        query,
+        variables: {
+          email,
+          user: {
+            full_name: username,
+            username,
+            address,
+            pubkey,
+            mnemonic,
+            multisig,
+            avatar_url: cid.toString(),
+          },
+        },
+      })
+      .json()
+      .catch(console.log);
+    console.log("response", response);
 
     res.send("Registered!");
   } catch (e) {
