@@ -1,9 +1,11 @@
 <script>
   import ToggleSwitch from "$components/ToggleSwitch";
+  import { getTransactions } from "$lib/wallet";
+  import { asset, transactions, user } from "$lib/store";
+  import { val, units, ticker } from "$lib/utils";
 
-  export let asset;
   let show = false;
-  let transactions = new Array(6);
+  $: if ($user) getTransactions();
 </script>
 
 <div class="my-7 flex">
@@ -14,13 +16,13 @@
     on:change={(e) => (show = e.target.checked)} />
 </div>
 
-{#each transactions as tx}
+{#each $transactions as tx}
   <div class="w-full mb-4">
     <div class="flex">
       <div class="flex-grow text-sm text-gray-500">Jan 13th, 2021</div>
-      <div class="text-green-700">+5 assets</div>
+      <div class="text-green-700">+{val($asset, tx.vout.reduce((a, b) => b.value ? a + b.value : a, 0))}</div>
     </div>
 
-    <div class="">{asset} Deposit</div>
+    <div class="">{ticker($asset)} Deposit</div>
   </div>
 {/each}

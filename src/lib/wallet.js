@@ -25,6 +25,7 @@ import {
   poll,
   psbt,
   sighash,
+  transactions,
   token,
 } from "$lib/store";
 import cryptojs from "crypto-js";
@@ -56,6 +57,19 @@ export const create = (mnemonic) => {
       multisig: multisig(key).address,
     })
     .json();
+};
+
+export const getTransactions = () => {
+  poll.set(setInterval(() => getTransactions(get(user).address), 5000));
+
+  let getTransactions = async (address) => {
+    transactions.set(await electrs
+      .url(`/address/${address}/txs`)
+      .get()
+      .json());
+  };
+
+  return getTransactions(get(user).address);
 };
 
 export const getBalances = () => {

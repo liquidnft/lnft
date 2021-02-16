@@ -98,7 +98,7 @@
         <Withdraw {val} />
       {/if}
 
-      <Transactions asset={ticker($asset)} />
+      <Transactions />
     </div>
   </div>
 {/if}
