@@ -2,7 +2,7 @@ import { api } from "$lib/api";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { password as pw, prompt, user, token } from "$lib/store";
+import { password as pw, poll, prompt, user, token } from "$lib/store";
 import PasswordPrompt from "$components/PasswordPrompt";
 import { goto, err } from "$lib/utils";
 import cryptojs from "crypto-js";
@@ -51,6 +51,8 @@ export const refreshToken = async () => {
 };
 
 export const logout = () => {
+  clearInterval(get(poll));
+
   api
     .url("/auth/logout")
     .post()

@@ -89,7 +89,20 @@ app.post("/register", async (req, res) => {
       })
       .json()
       .catch(console.log);
-    console.log("response", response);
+
+    if (response.errors) {
+      let deleteQuery = `mutation { 
+        delete_users(where: { account: { email: { _eq: "${email}" } } }) 
+        { 
+          affected_rows 
+        } 
+      }`;
+
+      await hasura.post({ query: deleteQuery }).json();
+      if (response.errors.find((e) => e.message.includes("Unique")))
+        throw new Error("Username taken");
+      throw new Error("There was an error during registration");
+    }
 
     res.send("Registered!");
   } catch (e) {
