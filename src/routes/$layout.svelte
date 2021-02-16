@@ -34,12 +34,6 @@
     background: #3ba5ac;
   }
 
-  :global(.button-transparent) {
-    background-color: none;
-    border: 1px solid #133e7c;
-    color: #133e7c;
-  }
-
   :global(.button-trans-gray) {
     background-color: none;
     border: 1px solid gray !important;

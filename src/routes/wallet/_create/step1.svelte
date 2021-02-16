@@ -2,7 +2,7 @@
   export let next;
 </script>
 
-<div class="w-3/4">
+<div class="lg:w-3/4">
   <p class="text-xl mb-10">
     You'll need to know your backup phrase to start. Some things to have in
     mind:
