@@ -7,7 +7,7 @@
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import reverse from "buffer-reverse";
-  import { btc, sats, units, tickers } from "$lib/utils";
+  import { assetLabel, btc, sats, units, tickers } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import { getBalances } from "$lib/wallet";
 
@@ -63,21 +63,21 @@
     <div class="bg-black mb-2 pt-1 rounded-lg">
       <div
         class="border-l-8 border-green-700 bg-green-100 bg-opacity-10 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5">
-        {name($asset)}
+        {assetLabel($asset)}
       </div>
 
       <div class="m-6">
         <div class="text-sm text-gray-400">Balance</div>
         <div class="flex gap-2 mt-3">
           <span class="text-4xl text-white">{val($balances[$asset] || 0)}</span>
-          <span class="text-gray-400 mt-3.5">{ticker($asset)}</span>
+          <span class="text-gray-400 mt-3.5">{assetLabel($asset)}</span>
         </div>
       </div>
       <div class="m-6">
         <div class="text-sm text-gray-400">Pending</div>
         <div class="flex gap-2 mt-3">
           <span class="text-gray-400">{val($pending[$asset] || 0)}</span>
-          <span class="text-gray-400">{ticker($asset)}</span>
+          <span class="text-gray-400">{assetLabel($asset)}</span>
         </div>
       </div>
       <div class="flex justify-between p-6 pt-2">
@@ -90,14 +90,8 @@
       </div>
     </div>
     <div>
-      {#if funding}
-        <Fund />
-      {/if}
-
-      {#if withdrawing}
-        <Withdraw {val} />
-      {/if}
-
+        <Fund bind:funding />
+        <Withdraw {val} bind:withdrawing />
       <Transactions />
     </div>
   </div>

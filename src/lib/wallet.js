@@ -60,7 +60,7 @@ export const create = (mnemonic) => {
 };
 
 export const getTransactions = () => {
-  poll.set(setInterval(() => getTransactions(get(user).address), 5000));
+  poll.set([...get(poll), setInterval(() => getTransactions(get(user).address), 5000)]);
 
   let getTransactions = async (address) => {
     transactions.set(await electrs
@@ -73,7 +73,7 @@ export const getTransactions = () => {
 };
 
 export const getBalances = () => {
-  poll.set(setInterval(() => getUtxos(get(user).address), 5000));
+  poll.set([...get(poll), setInterval(() => getUtxos(get(user).address), 5000)]);
 
   let getUtxos = async (address) => {
     let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
@@ -115,7 +115,7 @@ export const getTx = async (txid) => {
   return Transaction.fromHex(await getHex(txid));
 };
 
-const DUST = 1000;
+const DUST = 800;
 
 export const getMnemonic = (mnemonic, pass) => {
   if (!mnemonic) mnemonic = get(user).mnemonic;

@@ -27,6 +27,7 @@
   let video;
   let hidden;
   let loading;
+  let focus;
 
   $: hidden = type && !type.includes("video");
 
@@ -43,8 +44,14 @@
   };
 
   let percent;
-  let progress = (event) => {
+  let progress = async (event) => {
     percent = Math.round((event.loaded / event.total) * 100);
+
+    console.log(percent, focus.toString());
+    if (percent >= 100) {
+      await tick();
+      focus(true);
+    } 
   };
 
   $: width = `width: ${percent}%`;
@@ -81,7 +88,7 @@
 
     contract = {
       entity: { domain: `${$user.username}.${window.location.hostname}` },
-      issuer_pubkey: keypair().pubkey.toString('hex'),
+      issuer_pubkey: keypair().pubkey.toString("hex"),
       name: artwork.title,
       precision: 0,
       ticker: artwork.ticker,
@@ -99,7 +106,6 @@
 
   let submit = async (e) => {
     loading = true;
-   
 
     try {
       e.preventDefault();
@@ -136,11 +142,9 @@
       loading = false;
     }
   };
-
 </script>
 
 <style>
-
   .container {
     background-color: #ecf6f7;
     width: 100% !important;
@@ -153,32 +157,33 @@
     @apply block bg-green-400 hover:bg-green-600 text-white uppercase text-lg mx-auto p-4 rounded flex-1;
   }
 
-  @media only screen and (max-width: 1023px){
-    .submitArtwork{
+  @media only screen and (max-width: 1023px) {
+    .submitArtwork {
       box-shadow: none;
     }
 
-    .container{
+    .container {
       background: none;
     }
   }
 </style>
 
 <div class="container mx-auto py-20">
-    <div class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork box-shadow">
-      <a class="block mb-6 text-midblue" href="/">
-        <i class="fas fa-chevron-left mr-3"/>Back
-      </a>
-      <h2>Submit artwork</h2>
-      <div class="flex flex-wrap flex-col-reverse lg:flex-row">
-        <div class="w-full lg:w-1/2 lg:pr-10">
-          {#if loading}
-            <ProgressLinear />
-          {:else}
-            <Form bind:artwork on:submit={submit} />
-          {/if}
-        </div>
-        {#if percent }
+  <div
+    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork box-shadow">
+    <a class="block mb-6 text-midblue" href="/">
+      <i class="fas fa-chevron-left mr-3" />Back
+    </a>
+    <h2>Submit artwork</h2>
+    <div class="flex flex-wrap flex-col-reverse lg:flex-row">
+      <div class="w-full lg:w-1/2 lg:pr-10">
+        {#if loading}
+          <ProgressLinear />
+        {:else}
+          <Form bind:artwork bind:focus on:submit={submit} />
+        {/if}
+      </div>
+      {#if percent}
         <div class="ml-2 flex-1 flex">
           <div class="mx-auto">
             {#if type.includes('image')}
@@ -197,9 +202,9 @@
             </div>
           </div>
         </div>
-        {:else}
+      {:else}
         <Dropzone on:file={uploadFile} />
-        {/if}
-      </div>
+      {/if}
     </div>
+  </div>
 </div>

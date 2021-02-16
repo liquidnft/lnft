@@ -51,7 +51,7 @@ export const refreshToken = async () => {
 };
 
 export const logout = () => {
-  clearInterval(get(poll));
+  get(poll).map(clearInterval);
 
   api
     .url("/auth/logout")

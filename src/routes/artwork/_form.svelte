@@ -9,7 +9,7 @@
   let items;
 
   $: focus($page);
-  let focus = (p) => p && tick().then(() => input.select());
+  export let focus = (p) => p && tick().then(() => input.select());
 
   $: selectedValue = artwork.tags.map(({ tag }) => ({
     value: tag,
