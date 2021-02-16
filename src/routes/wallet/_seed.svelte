@@ -11,7 +11,14 @@
   import { mutation } from "@urql/svelte";
 
   let update = mutation(updateUser);
-  let importWallet = async () => {
+
+  export let mnemonic;
+
+  $: mnemonic = words.filter((w) => w).join(" ");
+
+  export let importWallet = async (mnemonic) => {
+    await requirePassword();
+
     try {
       await update({ id: $user.id, user: createWallet(mnemonic) });
       info("Wallet updated");
@@ -21,10 +28,8 @@
     }
   };
 
-  export let mnemonic;
-
-  $: mnemonic = words.filter((w) => w).join(" ");
   let typed;
+  let setMnemonic = () => (mnemonic = typed);
 
   let toggle = () => {
     bulk = !bulk;
@@ -123,6 +128,7 @@
     bind:value={typed}
     placeholder="Type or paste your seed here."
     class="my-4 w-full"
+    on:blur={setMnemonic}
     autofocus />
 {:else}
   <div class="flex flex-wrap mb-2">

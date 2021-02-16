@@ -1,7 +1,7 @@
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { api, electrs } from "$lib/api";
-import { generateMnemonic, mnemonicToSeedSync } from "bip39";
+import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
 import {
@@ -41,23 +41,6 @@ const singleAnyoneCanPay =
 
 export const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 export const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
-
-export const create = (mnemonic) => {
-  mnemonic =
-    mnemonic || cryptojs.AES.encrypt(generateMnemonic(), password).toString();
-
-  let key = keypair(mnemonic, get(password));
-
-  api
-    .url("/wallet")
-    .post({
-      mnemonic,
-      pubkey: key.base58,
-      address: singlesig(key).address,
-      multisig: multisig(key).address,
-    })
-    .json();
-};
 
 export const getTransactions = () => {
   poll.set([
@@ -120,12 +103,12 @@ export const getTx = async (txid) => {
 
 const DUST = 800;
 
-export const createWallet = (mnemonic) => {
+export const createWallet = (mnemonic, pass) => {
   try {
-    if (!mnemonic) mnemonic = generateMnemonic(256);
-    mnemonic = cryptojs.AES.encrypt(mnemonic, get(password)).toString();
+    if (!pass) pass = get(password);
+    mnemonic = cryptojs.AES.encrypt(mnemonic, pass).toString();
 
-    const key = keypair(mnemonic);
+    const key = keypair(mnemonic, pass);
 
     return {
       address: singlesig(key).address,

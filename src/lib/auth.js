@@ -1,4 +1,5 @@
 import { api } from "$lib/api";
+import { generateMnemonic } from "bip39";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
@@ -72,7 +73,7 @@ export const register = async (email, username, password) => {
         email,
         password,
         username,
-        ...createWallet(password),
+        ...createWallet(generateMnemonic(256), password),
       })
       .badRequest(err)
       .res();
