@@ -121,22 +121,25 @@ setInterval(
 
 proofs = {};
 const registerAsset = async ({ asset: asset_id, contract, user }) => {
-  proofs[user.username] = asset_id;
+  proofs[asset_id] = true;
   const { data } = await registry
     .post({
       asset_id,
-      contract,
+      contract: JSON.parse(contract),
     })
     .json();
 };
 
-app.get("/proof", (req, res) => {
+app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
   let {
     headers: { host },
+    params: { asset },
   } = req;
+
   host = host.replace(/:.*/, "");
-  let username = host.split(".")[0];
-  res.send(
-    `Authorize linking the domain name ${host} to the Liquid asset ${proofs[username]}`
-  );
+  if (proofs[asset])
+    res.send(
+      `Authorize linking the domain name ${host} to the Liquid asset ${asset}`
+    );
+  else res.code(500).send("Unrecognized asset");
 });
