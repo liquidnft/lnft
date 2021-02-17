@@ -26,7 +26,7 @@
 <div class="container mx-auto mt-20">
   <div class="px-8">
     <h2>Discover</h2>
-    <div class="border-b mb-8 mt-10">
+    <div class="border-b pb-8 mt-10">
       <Search />
     </div>
 

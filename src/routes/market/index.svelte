@@ -127,9 +127,7 @@
 </div>
 <div class="container mx-auto mt-10">
   <div class="flex items-center">
-    <input type="search" class="w-full lg:w-1/3 border-0 border-b-2 border-lightblue" 
-      placeholder="What are you looking for?">
-    <i class="fas fa-search text-2xl"></i>
+    <Search />
   </div>
 </div>
 <div class="container mx-auto">

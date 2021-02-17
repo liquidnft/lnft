@@ -55,8 +55,13 @@
   };
 </script>
 
-<div class="relative">
-  <input on:input={({ target: { value } }) => debounce(value)} />
+<div class="relative w-full">
+  <input
+    type="search"
+    class="lg:w-1/3 border-0 border-b-2 border-lightblue"
+    placeholder="What are you looking for?"
+    on:input={({ target: { value } }) => debounce(value)} />
+  <i class="fas fa-search text-2xl" />
 
   {#await search(text) then r}
     {#if r.tag || r.artwork || r.user}
