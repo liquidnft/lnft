@@ -31,8 +31,18 @@
     return tickers[a] ? tickers[a].ticker : a.substr(0, 5);
   };
 
-  let funding = false;
-  let withdrawing = false;
+  let funding;
+  let withdrawing;
+
+  let toggleFunding = () => {
+    funding = !funding;
+    withdrawing = false;
+  };
+
+  let toggleWithdrawing = () => {
+    withdrawing = !withdrawing;
+    funding = false;
+  };
 
   let artworks = [];
   $: if ($user)
@@ -84,10 +94,10 @@
       </div>
       <div class="flex justify-between p-6 pt-2">
         <button
-          on:click={() => (funding = !funding)}
+          on:click={toggleFunding}
           class="button-trans-gray w-full mr-2">Fund</button>
         <button
-          on:click={() => (withdrawing = !withdrawing)}
+          on:click={toggleWithdrawing}
           class="button-trans-gray w-full ml-2">Withdraw</button>
       </div>
     </div>
