@@ -197,7 +197,7 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
-    animation: zoom 0.4s ease forwards;
+    animation: zoom 0.3s ease forwards;
   }
 
   .mobileImage {

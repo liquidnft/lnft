@@ -130,7 +130,7 @@
     background: linear-gradient(90deg, rgba(143,238,245,1) 0%, rgba(127,228,235,1) 50%, rgba(110,216,224,1) 100%);
   }
   
-  .secondary-btn{
+  .secondary-btn, .button-transparent{
     border-radius: 30px;
     padding: 0.7rem 1.5rem !important;
     color: #133E7C;

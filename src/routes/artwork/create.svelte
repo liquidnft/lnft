@@ -170,7 +170,7 @@
 
 <div class="container mx-auto py-20">
   <div
-    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork box-shadow">
+    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow">
     <a class="block mb-6 text-midblue" href="/">
       <i class="fas fa-chevron-left mr-3" />Back
     </a>
@@ -180,7 +180,7 @@
         {#if loading}
           <ProgressLinear />
         {:else}
-          <Form bind:artwork bind:focus on:submit={submit} />
+          <Form bind:artwork on:submit={submit} />
         {/if}
       </div>
       {#if percent}

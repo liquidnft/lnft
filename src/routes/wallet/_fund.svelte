@@ -20,7 +20,7 @@
     <div class="flex justify-between place-items-center text-gray-400">
       <p>Fund Wallet</p>
       <button
-        class="text-gray-400 text-xl"
+        class="text-gray-400 text-xl w-auto"
         on:click={() => (funding = false)}><i class="fas fa-times" /></button>
     </div>
     <div class="mb-2 flex justify-center flex-col">

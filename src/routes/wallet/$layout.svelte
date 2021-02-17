@@ -15,8 +15,8 @@
 
 <div class="container mx-auto flex flex-wrap justify-between py-20">
   <Nav />
-  <div class="xl:ml-10 flex-grow">
-    <div class="w-full xl:w-3/5">
+  <div class="w-full lg:w-3/4">
+    <div class="w-full xl:w-1/2">
       <slot />
     </div>
   </div>
