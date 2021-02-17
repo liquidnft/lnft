@@ -2,6 +2,7 @@
   import { mutation, operationStore, subscription } from "@urql/svelte";
   import { getUsers, updateUser } from "$queries/users";
   import { role } from "$lib/store";
+  import { api } from "$lib/api";
 
   let users = [];
   subscription(operationStore(getUsers), (a, b) => {
@@ -13,6 +14,7 @@
     $role = "approver";
     user.is_artist = true;
     updateUser$({ id: user.id, user: { is_artist: true } });
+    api.url("/approve").post({ username: user.username });
     $role = "user";
     users = users;
   };
