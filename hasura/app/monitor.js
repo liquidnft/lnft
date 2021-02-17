@@ -122,14 +122,12 @@ setInterval(
 proofs = {};
 const registerAsset = async ({ asset: asset_id, contract, user }) => {
   proofs[user.username] = asset_id;
-  /*
   const { data } = await registry
     .post({
       asset_id,
       contract,
     })
     .json();
-    */
 };
 
 app.get("/proof", (req, res) => {

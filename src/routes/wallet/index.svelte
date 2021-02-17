@@ -55,12 +55,12 @@
 {:else if $balances}
   <div class="w-full xl:w-3/4">
     {#if assets.length}
-    <div class="mb-5">
-      <a class="secondary-color" href="/wallet/asset">{$assets.length}
-        assets available in this wallet
-        <i class="fas fa-chevron-right ml-3" /></a>
-    </div>
-  {/if}
+      <div class="mb-5">
+        <a class="secondary-color" href="/wallet/asset">{$assets.length}
+          assets available in this wallet
+          <i class="fas fa-chevron-right ml-3" /></a>
+      </div>
+    {/if}
 
     <div class="bg-black mb-2 pt-1 rounded-lg">
       <div
@@ -92,8 +92,8 @@
       </div>
     </div>
     <div>
-        <Fund bind:funding />
-        <Withdraw {val} bind:withdrawing />
+      <Fund bind:funding />
+      <Withdraw {val} bind:withdrawing />
       <Transactions />
     </div>
   </div>
