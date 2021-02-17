@@ -122,6 +122,10 @@ setInterval(
 proofs = {};
 const registerAsset = async ({ asset: asset_id, contract, user }) => {
   proofs[asset_id] = true;
+
+  // Wait 30s for propagation
+  await new Promise((r) => setTimeout(r, 30000));
+
   const { data } = await registry
     .post({
       asset_id,
