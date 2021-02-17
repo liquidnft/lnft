@@ -183,6 +183,7 @@
     z-index: 100;
     width: 100%;
     height: 100vh;
+    padding: 20%;
     text-align: center;
     top: 0;
     left: 0;
@@ -197,7 +198,7 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
-    animation: zoom 0.3s ease forwards;
+    animation: zoom 0.2s ease forwards;
   }
 
   .mobileImage {
