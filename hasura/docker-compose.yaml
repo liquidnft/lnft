@@ -2,7 +2,8 @@ version: '3.6'
 services:
   app:
     container_name: app
-    image: asoltys/app-server
+    build:
+      context: ./app
     environment:
       HASURA_URL: '${HASURA_ENDPOINT}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
