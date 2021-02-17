@@ -47,11 +47,10 @@
   let progress = async (event) => {
     percent = Math.round((event.loaded / event.total) * 100);
 
-    console.log(percent, focus.toString());
     if (percent >= 100) {
       await tick();
       focus(true);
-    } 
+    }
   };
 
   $: width = `width: ${percent}%`;
@@ -65,6 +64,7 @@
 
     artwork.filename = await upload(file, progress);
     url = preview || `/api/ipfs/${artwork.filename}`;
+    await tick();
     if (!preview && type.includes("video"))
       setTimeout(video.parentElement.load, 500);
   };

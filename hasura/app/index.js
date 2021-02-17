@@ -112,7 +112,6 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/approve", auth, async (req, res) => {
-  console.log(req.token);
   cf.post({
     type: "A",
     name: `${req.body.username}.${process.env.DOMAIN}`,
