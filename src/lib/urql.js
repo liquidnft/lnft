@@ -20,6 +20,7 @@ if (import.meta && import.meta.env && import.meta.env !== "production") {
 
 export const setupUrql = (token) => {
   if (token && decode(token).exp * 1000 < Date.now()) token = undefined;
+  console.log("setting up", token);
   initClient({
     url,
     exchanges: [

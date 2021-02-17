@@ -41,13 +41,19 @@ export const requirePassword = async () => {
   await tick();
 };
 
-export const refreshToken = async () => {
-  try {
-    let { jwt_token } = await api.url("/auth/token/refresh").get().json();
-    token.set(jwt_token);
-    window.sessionStorage.setItem("token", jwt_token);
-  } catch (e) {}
-};
+export const refreshToken = () =>
+  api
+    .url("/auth/token/refresh")
+    .get()
+    .unauthorized(() => {
+      console.log("unauthorized!");
+      token.set(undefined);
+      window.sessionStorage.removeItem("token");
+    })
+    .json(({ jwt_token }) => {
+      token.set(jwt_token);
+      window.sessionStorage.setItem("token", jwt_token);
+    });
 
 export const logout = () => {
   get(poll).map(clearInterval);

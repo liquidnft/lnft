@@ -27,7 +27,7 @@
   <div class="px-8">
     <h2>Discover</h2>
     <div class="border-b mb-8 mt-10">
-      <Search {tags} />
+      <Search />
     </div>
 
     <div class="w-full text-center my-10">
