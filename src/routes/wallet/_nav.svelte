@@ -66,7 +66,7 @@
   {/if}
     <a href="/wallet/setup">
       <i class="fas fa-cog"></i>
-      <span>Wallet Settings</span>
+      <span>Settings</span>
     </a>
   </div>
 </div>

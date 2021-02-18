@@ -91,6 +91,8 @@
 <style>
   input {
     @apply border-0 border-b-2 pb-1;
+    width: 75%;
+    margin-left: 20px;
   }
 
   .button-transparent:focus {
@@ -109,12 +111,21 @@
   .active {
     color: #6aced5;
   }
+
+  @media only screen and (max-width: 640px) {
+    .suggestions {
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 100vw;
+    }
+  }
 </style>
 
-<div class="flex flex-col gap-6">
+<div class="flex flex-col">
   <p>Enter your backup phrase in the correct order:</p>
 
-  <div class="text-right">
+  <div class="text-right mt-5">
     <ToggleSwitch
       id="list-price"
       label="Show words"
@@ -132,7 +143,7 @@
     autofocus />
 {:else}
   <div class="flex flex-wrap mb-2">
-    <div class="mr-2 flex-grow">
+    <div class="mr-2 sm:mr-0 flex-grow w-1/4 sm:w-1/2">
       {#each words.slice(offset, offset + 6) as word, i (i)}
         <div class="flex">
           <div class="my-auto w-1/12">{i + offset + 1}.</div>
@@ -153,7 +164,7 @@
         </div>
       {/each}
     </div>
-    <div class="flex-grow">
+    <div class="flex-grow w-1/4 sm:w-1/2">
       {#each words.slice(offset + 6, offset + 12) as word, i (i)}
         <div class="flex">
           <div class="my-auto w-1/12">{i + offset + 6 + 1}.</div>
@@ -175,31 +186,31 @@
       {/each}
     </div>
   </div>
-
-  {#each suggestions as suggestion}
-    <button
-      class="primary-btn border mr-1"
-      on:click={() => take(suggestion)}>{suggestion}</button>
-  {/each}
-
+  <div class="suggestions mt-8 flex flex-wrap justify-center">
+    {#each suggestions as suggestion}
+      <button
+        class="primary-btn w-auto border m-1"
+        on:click={() => take(suggestion)}>{suggestion}</button>
+    {/each}
+  </div>
   <div class="flex justify-center text-center mt-5">
     <button
       on:click={() => (offset = 0)}
-      class="pagination"
+      class="pagination w-auto"
       class:active={offset === 0}><i class="fas fa-circle" /></button>
     <button
       on:click={() => (offset = 12)}
-      class="pagination"
+      class="pagination w-auto"
       class:active={offset === 12}><i class="fas fa-circle" /></button>
   </div>
 {/if}
 
 <p class="my-4">
   {#if bulk}
-    <a class="secondary-color" href="" on:click={toggle}>I want to enter my seed
+    <a class="secondary-color m-2" href="" on:click={toggle}>I want to enter my seed
       one word at a time</a>
   {:else}
-    <a class="secondary-color" href="" on:click={toggle}>I want to enter my seed
+    <a class="secondary-color m-2" href="" on:click={toggle}>I want to enter my seed
       all at once</a>
   {/if}
 </p>

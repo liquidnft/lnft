@@ -210,6 +210,15 @@
     width: 50%;
   }
 
+  .popup :global(div) {
+    background: black;
+  }
+
+  .desktopImage :global(img, video){
+    max-height: 50vh;
+    width: auto;
+  }
+
   @keyframes zoom{
     0% {
         transform: scale(.6);

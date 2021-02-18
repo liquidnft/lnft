@@ -57,7 +57,7 @@
   class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
   class:link
   on:click={click}>
-  <div class="flex justify-center {activityPage ? 'square' : 'h-3/5'} bg-black">
+  <div class="flex justify-center {activityPage ? 'square' : 'h-3/5'}">
     <ArtworkMedia {artwork} {showDetails} />
   </div>
   {#if showDetails}
