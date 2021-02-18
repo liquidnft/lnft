@@ -29,9 +29,9 @@ app.post("/login", async (req, res) => {
 
   try {
     let response = await hbp.url("/auth/login").post({ email, password }).res();
-    for (let [k, v] of Object.entries(response.headers)) {
-      res.header(k, v);
-    }
+    Array.from(response.headers.entries()).forEach(([k, v]) =>
+      res.header(k, v)
+    );
     res.send(await response.json());
   } catch (e) {
     res.code(401).send("Login failed");
