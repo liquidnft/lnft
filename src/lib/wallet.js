@@ -35,7 +35,8 @@ const signingKey = Buffer.from(
   "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b",
   "hex"
 );
-const network = networks.liquid;
+//const network = networks.liquid;
+const network = networks.regtest;
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
 
@@ -329,6 +330,7 @@ export const broadcast = async () => {
 };
 
 export const signAndBroadcast = async () => {
+  await tick();
   await sign();
   await tick();
   await broadcast();

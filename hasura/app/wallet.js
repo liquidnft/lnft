@@ -10,7 +10,8 @@ const {
 const { electrs } = require("./api");
 const reverse = require("buffer-reverse");
 
-const network = networks.liquid;
+// const network = networks.liquid;
+const network = networks.regtest;
 
 const mnemonic =
   "actor plate kit job awful guilt myself reunion praise twenty exact firm";

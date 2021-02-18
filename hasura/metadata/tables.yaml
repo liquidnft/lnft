@@ -696,6 +696,7 @@
       - id
       - location
       - mnemonic
+      - multisig
       - pubkey
       - updated_at
       - username

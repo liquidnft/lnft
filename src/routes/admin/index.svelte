@@ -14,7 +14,7 @@
     $role = "approver";
     user.is_artist = true;
     updateUser$({ id: user.id, user: { is_artist: true } });
-    api.url("/approve").post({ username: user.username });
+    // api.url("/approve").post({ username: user.username });
     $role = "user";
     users = users;
   };

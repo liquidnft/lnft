@@ -45,11 +45,7 @@ export const refreshToken = () =>
   api
     .url("/auth/token/refresh")
     .get()
-    .unauthorized(() => {
-      console.log("unauthorized!");
-      token.set(undefined);
-      window.sessionStorage.removeItem("token");
-    })
+    .unauthorized(logout)
     .json(({ jwt_token }) => {
       token.set(jwt_token);
       window.sessionStorage.setItem("token", jwt_token);

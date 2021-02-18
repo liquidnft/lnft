@@ -14,8 +14,26 @@
     signAndBroadcast,
     sendToMultisig,
   } from "$lib/wallet";
-  import { formatISO, addDays } from "date-fns";
-  import { btc, goto, err, info, units, tickers } from "$lib/utils";
+  import {
+    format,
+    formatISO,
+    addDays,
+    compareAsc,
+    isWithinInterval,
+    parse,
+    parseISO,
+  } from "date-fns";
+  import {
+    btc,
+    goto,
+    err,
+    info,
+    units,
+    sats,
+    val,
+    tickers,
+    assetLabel,
+  } from "$lib/utils";
   import ProgressLinear from "$components/ProgressLinear";
   import Select from "svelte-select";
 
@@ -28,52 +46,73 @@
   $: focus(initialized);
 
   let loading = true;
-  let artwork, list_price, sats, val, ticker, royalty;
+  let artwork, list_price, royalty;
   subscription(operationStore(getArtwork(id)), (a, b) => {
     artwork = {
       ...b.artworks_by_pk,
     };
 
     if (!artwork.asking_asset) artwork.asking_asset = btc;
-    if (!artwork.auction_start) artwork.auction_start = formatISO(new Date());
-    if (!artwork.auction_end)
-      artwork.auction_end = formatISO(addDays(new Date(), 3));
+    auction_enabled =
+      compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
 
-    [sats, val, ticker] = units(artwork.asking_asset);
-    if (!list_price) list_price = val(artwork.list_price);
+    auction_underway = auction_enabled && isWithinInterval(new Date(), {
+      start: parseISO(artwork.auction_start),
+      end: parseISO(artwork.auction_end),
+    });
+
+    if (!list_price && artwork.list_price) list_price = val(artwork.asking_asset, artwork.list_price);
     if (!royalty) royalty = artwork.royalty;
+
     initialized = true;
     loading = false;
   });
-  $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
 
   const updateArtwork$ = mutation(updateArtwork);
 
   const spendPreviousSwap = async () => {
-    if (royalty || parseInt(artwork.list_price || 0) === sats(list_price))
+    if (
+      !list_price ||
+      royalty ||
+      parseInt(artwork.list_price || 0) ===
+        sats(artwork.asking_asset, list_price)
+    )
       return true;
 
     await requirePassword();
 
     if (artwork.list_price_tx) {
       $psbt = await cancelSwap(artwork, 500);
-
-      await signAndBroadcast();
+      console.log($psbt);
+      try {
+        await signAndBroadcast();
+      } catch (e) {
+        if (e.message.includes("already"))
+          throw new Error(
+            "Please wait a block before changing the listing price"
+          );
+      }
     }
   };
 
   const setupSwaps = async () => {
-    if (parseInt(artwork.list_price || 0) === sats(list_price)) return true;
+    if (
+      !list_price ||
+      parseInt(artwork.list_price || 0) ===
+        sats(artwork.asking_asset, list_price)
+    )
+      return true;
+
     await requirePassword();
 
-    $psbt = await createSwap(artwork, sats(list_price));
+    $psbt = await createSwap(artwork, sats(artwork.asking_asset, list_price));
 
     await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
 
     await createTransaction$({
       transaction: {
-        amount: sats(list_price),
+        amount: sats(artwork.asking_asset, list_price),
         artwork_id: artwork.id,
         asset: artwork.asking_asset,
         hash: $psbt.__CACHE.__TX.getId(),
@@ -140,11 +179,20 @@
 
       await updateArtwork$({
         artwork: {
-          list_price: sats(list_price),
+          list_price: sats(artwork.asking_asset, list_price),
           list_price_tx,
           reserve_price,
           auction_start,
-          auction_end,
+          auction_start: parse(
+            `${start_date} ${start_time}`,
+            "yyyy-MM-dd HH:mm",
+            new Date()
+          ),
+          auction_end: parse(
+            `${end_date} ${end_time}`,
+            "yyyy-MM-dd HH:mm",
+            new Date()
+          ),
           asking_asset,
           bid_increment,
           max_extensions,
@@ -160,7 +208,21 @@
     loading = false;
   };
 
-  let yes = false;
+  let clearPrice = () => (list_price = undefined);
+
+  let start_date, end_date, start_time, end_time;
+  let auction_enabled, auction_underway;
+  $: setupAuction(auction_enabled);
+  let setupAuction = () => {
+    if (!start_date) {
+      start_date = format(new Date(), "yyyy-MM-dd");
+      start_time = format(new Date(), "HH:mm");
+    }
+    if (!end_date) {
+      end_date = format(addDays(new Date(), 3), "yyyy-MM-dd");
+      end_time = format(addDays(new Date(), 3), "HH:mm");
+    }
+  };
 </script>
 
 <style>
@@ -176,6 +238,9 @@
   select,
   textarea {
     @apply rounded-lg mb-4;
+    &:disabled {
+      @apply bg-gray-100;
+    } 
   }
 
   label {
@@ -227,101 +292,82 @@
     <h2>List artwork</h2>
 
     {#if !loading}
-      <p class="text-xl italic my-10">All fields are optional</p>
       <form class="w-full mb-6" on:submit={update} autocomplete="off">
-        <div class="flex flex-col mb-4">
-          <div>
-            <div class="mt-1 relative rounded-md shadow-sm">
-              <p>Asset</p>
-              <div class="flex mt-4">
-                {#each Object.keys(tickers) as asset}
-                  <label class="ml-2 mr-6 flex items-center">
-                    <input
-                      class="form-radio h-6 w-6 mt-4 mr-2"
-                      type="radio"
-                      name={asset}
-                      value={asset} />
-                    {tickers[asset].ticker}
-                  </label>
-                {/each}
-              </div>
-              <select
-                placeholder="Currency"
-                bind:value={artwork.asking_asset}
-                class="form-input block w-full pl-7 pr-12">
-                {#each Object.keys(tickers) as asset}
-                  <option value={asset}>{tickers[asset].ticker}</option>
-                {/each}
-              </select>
-              <input
-                class="form-input block w-full pl-7 pr-12"
-                placeholder="0"
-                bind:value={artwork.asking_asset} />
-            </div>
+        <div class="flex flex-col mt-4">
+          <p>Asset</p>
+          <div class="flex">
+            {#each Object.keys(tickers) as asset}
+              <label class="ml-2 mr-6 flex items-center">
+                <input
+                  class="form-radio h-6 w-6 mt-4 mr-2"
+                  type="radio"
+                  name={asset}
+                  value={asset}
+                  bind:group={artwork.asking_asset}
+                  on:change={clearPrice} />
+                {assetLabel(asset)}
+              </label>
+            {/each}
           </div>
         </div>
-        <div class="flex flex-col mb-4">
-          <div class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm">
+        <div class="flex w-3/4 mb-4">
+          <div class="relative mt-1 rounded-md w-2/3 mr-2">
             <label>Price
               <input
                 class="form-input block w-full pl-7 pr-12"
-                placeholder={val(0)}
+                placeholder={val(artwork.asking_asset, 0)}
                 bind:value={list_price}
                 bind:this={input} />
             </label>
             <div class="absolute inset-y-0 right-0 flex items-center mr-2 mt-2">
-              {ticker}
+              {assetLabel(artwork.asking_asset)}
             </div>
           </div>
-        </div>
-        {#if $user.id === artwork.artist_id}
-          <div class="flex flex-col mb-4">
-            <div>
-              <div class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm">
-                <label>Royalty Rate</label>
-                <input
-                  class="form-input block w-full pl-7 pr-12"
-                  placeholder="0"
-                  bind:value={royalty} />
+          {#if $user.id === artwork.artist_id}
+            <div class="relative mt-1 rounded-md">
+              <label>Royalty Rate
+              
+                    <span class="tooltip">
+                      <i
+                        class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
+                      <span
+                        class="tooltip-text bg-gray-100 shadow ml-4 rounded">
+                        Setting a royalty will cause the artwork to be transferred to a 2-of-2 multisig address with our server. The server will only co-sign transactions if they pay an appropriate royalty amount to the original artist.
+                      </span>
+              </label>
+              <input
+                class="form-input block w-full pl-7 pr-12"
+                placeholder="0"
+                bind:value={royalty} />
+              <div
+                class="absolute inset-y-0 right-0 flex items-center mr-2 mt-2">
+                %
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
+        </div>
         <div class="auction-toggle">
           <label class="inline-flex items-center">
             <input
               class="form-checkbox h-6 w-6 mt-3"
               type="checkbox"
-              bind:checked={yes} />
+              bind:checked={auction_enabled} />
             <span class="ml-3 text-xl">Create an auction</span>
           </label>
         </div>
-        {#if yes}
+        {#if auction_enabled}
           <div class="aution-container">
-            <p class="italic my-8">
-              By leaving the following fields empty, your auction will be set to
-              the default settings.
-              <span class="tooltip">
-                <i
-                  class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
-                <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                  Auction default settings:
-                  <br />By default, your auction will start as soon as it's set
-                  and will last for 3 days
-                </span>
-              </span>
-            </p>
             <div class="flex auction justify-between flex-wrap">
               <div class="flex flex-col">
                 <h4 class="mb-4">Auction start</h4>
                 <div class="flex justify-between">
                   <div class="flex flex-col mb-4 mr-6">
                     <label for="date">Date</label>
-                    <input type="date" name="date" />
+                    <input type="date" name="date" bind:value={start_date} disabled={auction_underway} />
                   </div>
                   <div class="flex flex-col mb-4">
                     <label for="time">Time</label>
-                    <input type="time" name="time" />
+                    <input type="time" name="time" bind:value={start_time} disabled={auction_underway} />
                   </div>
                 </div>
               </div>
@@ -330,11 +376,19 @@
                 <div class="flex justify-between">
                   <div class="flex flex-col mb-4 mr-6">
                     <label for="date">Date</label>
-                    <input type="date" name="date" />
+                    <input
+                      type="date"
+                      name="date"
+                      bind:value={end_date}
+                      disabled={auction_underway} />
                   </div>
                   <div class="flex flex-col mb-4">
                     <label for="time">Time</label>
-                    <input type="time" name="time" />
+                    <input
+                      type="time"
+                      name="time"
+                      bind:value={end_time}
+                      disabled={auction_underway} />
                   </div>
                 </div>
               </div>
@@ -355,7 +409,7 @@
                     <input
                       class="form-input block w-full pl-7 pr-12"
                       placeholder="0"
-                      bind:value={artwork.reserve_price} />
+                      bind:value={artwork.reserve_price} disabled={auction_underway} />
                   </label>
                 </div>
               </div>
