@@ -52,7 +52,7 @@
 </style>
 
 <div class="flex mx-auto justify-center">
-  <div class="header mt-20 text-center">
+  <div class="header mt-10 md:mt-20 text-center">
     <h1 class="mb-10 text-left md:text-center w-2/3 md:w-full">
       The Raretoshi
       <br />digital art gallery

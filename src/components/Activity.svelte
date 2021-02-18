@@ -21,9 +21,9 @@
   }
 </style>
 
-<div class="flex gap-2 mb-4 text-left">
+<div class="flex mb-4 text-left">
   <Avatar src={transaction.user.avatar_url} />
-  <div>
+  <div class="ml-3">
     <TransactionText {transaction} />
     <TransactionTime {transaction} />
   </div>

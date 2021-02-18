@@ -357,12 +357,12 @@
           </span>
         </div>
         <div class="w-full mt-28">
-          <h2 class="text-2xl font-bold primary-color py-10 px-5">
+          <h2 class="text-2xl font-bold primary-color py-10 px-0 md:px-5">
             More by this artist
           </h2>
           <div class="w-full flex flex-wrap">
             {#each others as artwork (artwork.id)}
-              <div class="w-full lg:w-full xl:w-1/2 px-5 mb-20">
+              <div class="w-full lg:w-full xl:w-1/2 px-0 md:px-5 mb-20">
                 <Card {artwork} />
               </div>
             {:else}

@@ -56,33 +56,33 @@
     }
   }
 </style>
-<div class="container">
-  <div class="form-container bg-lightblue">
-    <form
-      class="mb-6"
-      on:submit|preventDefault={() => login(username, password)}
-      autocomplete="off">
-      <h2 class="mb-8">Sign In</h2>
-      <div class="flex flex-col mb-4">
-        <label class="mb-2 font-medium text-gray-600" for="first_name">Email or
-          username</label>
-        <input
-          placeholder="username"
-          bind:value={username}
-          bind:this={usernameInput} />
-      </div>
-      <div class="flex flex-col mb-4">
-        <label
-          class="mb-2 font-medium text-gray-600"
-          for="last_name">Password</label>
-        <input placeholder="Password" type="password" bind:value={password} />
-      </div>
-      <a href="/forgot-password" class="block w-full text-midblue">Forgot
-        password?</a>
-      <div class="flex my-5 justify-end">
-        <button class="primary-btn w-1/2" type="submit">Sign In</button>
-      </div>
-      <a href="/register" class="text-midblue">Don't have an account? Sign up</a>
-    </form>
-  </div>
+
+<div class="form-container bg-lightblue px-4">
+  <form
+    class="mb-6"
+    on:submit|preventDefault={() => login(username, password)}
+    autocomplete="off">
+    <h2 class="mb-8">Sign In</h2>
+    <div class="flex flex-col mb-4">
+      <label class="mb-2 font-medium text-gray-600" for="first_name">Email or
+        username</label>
+      <input
+        placeholder="username"
+        bind:value={username}
+        bind:this={usernameInput} />
+    </div>
+    <div class="flex flex-col mb-4">
+      <label
+        class="mb-2 font-medium text-gray-600"
+        for="last_name">Password</label>
+      <input placeholder="Password" type="password" bind:value={password} />
+    </div>
+    <a href="/forgot-password" class="block w-full text-midblue">Forgot
+      password?</a>
+    <div class="flex my-5 justify-end">
+      <button class="primary-btn w-1/2" type="submit">Sign In</button>
+    </div>
+    <a href="/register" class="text-midblue">Don't have an account? Sign up</a>
+  </form>
 </div>
+

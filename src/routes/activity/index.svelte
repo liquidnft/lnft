@@ -31,7 +31,7 @@
 </style>
 
 
-<div class="container mx-auto my-20">
+<div class="container mx-auto my-10 md:my-20">
   <h2>Activity</h2>
   <div class="flex flex-wrap justify-between mt-10 lg:mt-20">
     <div class="tabs flex w-full justify-center border-b-2 mb-8">

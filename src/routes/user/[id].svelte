@@ -73,7 +73,7 @@
   }
 
   .tabs div {
-    @apply mb-auto h-10 mx-4;
+    @apply mb-auto h-10 mx-2 md:mx-4;
     &:hover {
       @apply hover;
     }
@@ -84,7 +84,7 @@
   {#if $user && subject}
     <div class="flex justify-between flex-wrap" in:fade>
       <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
-        <div class="gap-10">
+        <div>
           <div class="flex flex-col">
             <div class="flex items-center">
               <Avatar size="large" src={subject.avatar_url} />
@@ -95,8 +95,8 @@
               </div>
             </div>
 
-            <div class="flex gap-7 mt-5">
-              <div>Followers: {subject.num_followers}</div>
+            <div class="flex mt-5">
+              <div class="mr-8">Followers: {subject.num_followers}</div>
               <div>Following: {subject.num_follows}</div>
             </div>
           </div>
@@ -168,7 +168,7 @@
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">
               {#each favorites as artwork (artwork.id)}
-                <div class="w-full lg:w-1/2 px-5 mb-10">
+                <div class="w-full lg:w-1/2 px-0 md:px-5 mb-10">
                   <Card {artwork} showDetails={false} />
                 </div>
               {:else}
