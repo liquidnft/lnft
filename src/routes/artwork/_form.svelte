@@ -37,9 +37,13 @@
     @apply mb-4;
   }
 
+  div{
+    margin-bottom: 30px;
+  }
+
 </style>
 
-<form class="flex gap-5 flex-col w-full mb-6 mt-20" on:submit autocomplete="off">
+<form class="flex flex-col w-full mb-6 mt-20" on:submit autocomplete="off">
   <div class="flex flex-col mb-4">
     <input
       class="border-0 border-b-2 rounded-none"

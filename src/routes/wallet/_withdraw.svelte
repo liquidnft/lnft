@@ -27,32 +27,33 @@
 
 <style>
   input {
-    @apply rounded-lg;
+    @apply rounded-lg p-2;
+    margin-top: 10px;
   }
 </style>
 
 {#if $user && withdrawing}
   <form
-    class="dark w-full flex flex-col gap-5"
+    class="dark w-full flex flex-col"
     on:submit={send}
     autocomplete="off">
-    <div class="flex flex-col mb-4 gap-2">
+    <div class="flex flex-col mb-4">
       <label>Amount</label>
       <div class="flex justify-between">
         <input placeholder={val(0)} bind:value={amount} />
-        <select class="rounded-full bg-gray-200">
+        <select class="rounded-full bg-gray-200 appearance-none py-0">
           <option value="active">L-BTC</option>
         </select>
       </div>
     </div>
-    <div class="flex flex-col mb-4 gap-2">
+    <div class="flex flex-col mb-4">
       <label>Fee</label>
       <input placeholder="Fee" bind:value={fee} />
     </div>
-    <div class="flex flex-col mb-4 gap-2">
+    <div class="flex flex-col mb-4">
       <label>Recipient Address</label>
       <input placeholder="Address" bind:value={to} />
     </div>
-    <button type="submit" class="primary-btn w-full">Complete withdraw</button>
+    <button type="submit" class="primary-btn w-full mt-5">Complete withdraw</button>
   </form>
 {/if}

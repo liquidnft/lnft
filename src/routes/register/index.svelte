@@ -61,8 +61,8 @@
     }
   }
 </style>
-<div class="container">
-  <div class="form-container bg-lightblue">
+
+  <div class="form-container bg-lightblue px-4">
     <form class="mb-6" on:submit|preventDefault={submit} autocomplete="off">
       {#if loading}
         <ProgressLinear />
@@ -101,4 +101,3 @@
       {/if}
     </form>
   </div>
-</div>

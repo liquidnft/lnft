@@ -82,6 +82,13 @@
   }
 
   @media only screen and (max-width: 1023px) {
+
+    .search :global(input) {
+      width: 90%;
+      appearance: none;
+      border: 0;
+      border-bottom: 1px solid #6ED8E0;
+    }
    
     .switch-container {
       flex-direction: column;
@@ -108,10 +115,6 @@
 
   @media only screen and (max-width: 500px) {
 
-    .search :global(input) {
-      width: 90%;
-    }
-
     .sort-container {
       margin: 0;
       margin-bottom: 20px;
@@ -124,7 +127,7 @@
 </style>
 
 <div
-  class="container mx-auto flex flex-wrap justify-center sm:justify-between mt-20">
+  class="container mx-auto flex flex-wrap sm:justify-between mt-10 md:mt-20">
   <h2 class="mb-10 md:mb-0">Market</h2>
 
   {#if $user && $user.is_artist}
