@@ -17,6 +17,7 @@ export default async (file, progress) => {
     });
     ajax.upload.addEventListener("progress", progress, false);
     ajax.open("POST", url);
+    ajax.setRequestHeader('Content-Type', file.type);
     ajax.setRequestHeader("Authorization", `Bearer ${get(token)}`);
     ajax.send(formData);
   });

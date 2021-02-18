@@ -65,8 +65,13 @@
     artwork.filename = await upload(file, progress);
     url = preview || `/api/ipfs/${artwork.filename}`;
     await tick();
-    if (!preview && type.includes("video"))
-      setTimeout(video.parentElement.load, 500);
+    if (type.includes("video")) {
+      let source = document.createElement('source');
+      source.setAttribute('src', url);
+      video.appendChild(source);
+      video.load();
+      video.play();
+    }
   };
 
   let artwork = {
@@ -180,7 +185,7 @@
         {#if loading}
           <ProgressLinear />
         {:else}
-          <Form bind:artwork on:submit={submit} />
+          <Form bind:artwork bind:focus on:submit={submit} />
         {/if}
       </div>
       {#if percent}
@@ -189,8 +194,7 @@
             {#if type.includes('image')}
               <img alt="preview" src={url} class="w-full" />
             {/if}
-            <video controls class:hidden muted autoplay loop class="w-full">
-              <source src={url} bind:this={video} />
+            <video controls class:hidden muted autoplay loop class="w-full" bind:this={video}>
               Your browser does not support HTML5 video.
             </video>
             <div class="w-full bg-grey-light p-8">
