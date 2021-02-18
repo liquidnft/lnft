@@ -78,6 +78,6 @@
   <div class="flex justify-center gap-6 text-center mt-5">
     <button
       on:click={() => importWallet(mnemonic)}
-      class="w-2/4 primary-btn">Next</button>
+      class="w-2/4 m-2 primary-btn">Next</button>
   </div>
 </div>

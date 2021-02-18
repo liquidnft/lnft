@@ -55,11 +55,11 @@
   };
 </script>
 
-<div class="relative w-full">
+<div class="relative w-full search">
   <input
     type="search"
-    class="lg:w-1/3 border-0 border-b-2 border-lightblue"
-    placeholder="What are you looking for?"
+    class="lg:w-1/3 border-0 border-b-2 rounded-none border-lightblue"
+    placeholder="Search..."
     on:input={({ target: { value } }) => debounce(value)} />
   <i class="fas fa-search text-2xl" />
 

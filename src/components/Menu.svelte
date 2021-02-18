@@ -1,5 +1,6 @@
 <script>
   import Avatar from "$components/Avatar";
+  import Search from "$components/Search";
   import { show, user, token } from "$lib/store";
   import { logout } from "$lib/auth";
 
@@ -12,9 +13,41 @@
 </script>
 
 <style>
-  .menu {
-    width: 400px;
+  .menu button {
+   width: auto;
+   text-align: left;
+   padding: 0 20px;
   }
+
+  .menu .signin{
+    width: 120px;
+  }
+
+  .menu :global(.search) {
+    border: 1px solid lightgray;
+    border-radius: 30px;
+    margin-right: 15px;
+    width: 200px;
+  }
+
+  .menu :global(input) {
+   width:auto;
+   width: 80%;
+   border: none;
+   background: none;
+   padding: 0.5rem 1.2rem;
+  }
+
+  .menu :global(.fa-search) {
+    font-size: 1.2rem ;
+  }
+
+  @media only screen and (max-width: 1023px) {
+    .menu :global(.search) {
+      display: none;
+    }
+  }
+
 
   @media only screen and (max-width: 640px) {
     .menu {
@@ -34,10 +67,8 @@
   }
 </style>
 
-<div class="flex justify-between items-center menu relative">
-  <a href="/discover" on:click={toggle} class="search">
-    <i class="fas fa-search text-2xl" />
-  </a>
+<div class="flex justify-between items-center menu">
+  <Search nav="true" />
   <a href="/market"><button on:click={toggle}>Market</button></a>
   <a href="/activity"><button on:click={toggle}>Activity</button></a>
   <a href="/blog"><button on:click={toggle}>Blog</button></a>
@@ -50,16 +81,5 @@
         <Avatar src={$user.avatar_url} />
         <div class="my-auto ml-2">{$user.full_name}</div>
       </button></a>
-    <div class="absolute right-0 top-8 text-right" class:hidden={!hovering} on:mouseenter={enter} on:mouseleave={leave}>
-      <div>
-        <a href={`/user/${$user.id}`}><button on:click={toggle}>Profile</button></a>
-    </div>
-      <div>
-      <a href="/wallet"><button on:click={toggle}>Wallet</button></a>
-    </div>
-    <div>
-      <a href="/logout" on:click|preventDefault={logout}><button on:click={toggle}>Sign Out</button></a>
-    </div>
-    </div>
-  {:else}<a href="/login"><button on:click={toggle}>Sign In</button></a>{/if}
+  {:else}<a href="/login"><button class="signin" on:click={toggle}>Sign In</button></a>{/if}
 </div>
