@@ -13,7 +13,7 @@
   }
 </style>
 
-<div class="container mx-auto flex flex-wrap justify-between py-20">
+<div class="container mx-auto flex flex-wrap justify-between py-10 md:py-20">
   <Nav />
   <div class="w-full lg:w-3/4">
     <div class="w-full xl:w-1/2">

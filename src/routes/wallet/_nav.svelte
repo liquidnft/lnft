@@ -26,6 +26,7 @@
       position: fixed;
       bottom: 0;
       left: 0;
+      z-index: 10;
       background: white;
       box-shadow: 1px 1px 3px rgb(0 0 0 / 100%);
     }
