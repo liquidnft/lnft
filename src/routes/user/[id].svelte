@@ -80,7 +80,7 @@
   }
 </style>
 
-<div class="container mx-auto lg:px-16 mt-20">
+<div class="container mx-auto lg:px-16 mt-5 md:mt-20">
   {#if $user && subject}
     <div class="flex justify-between flex-wrap" in:fade>
       <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
@@ -88,19 +88,16 @@
           <div class="flex flex-col">
             <div class="flex items-center">
               <Avatar size="large" src={subject.avatar_url} />
-
               <div class="ml-12">
                 <h3>{subject.full_name}</h3>
                 <div class="text-gray-600">@{subject.username}</div>
               </div>
             </div>
-
             <div class="flex mt-5">
               <div class="mr-8">Followers: {subject.num_followers}</div>
               <div>Following: {subject.num_follows}</div>
             </div>
           </div>
-
           <div>
             {#if $user.id === id}
               <Menu />

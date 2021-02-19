@@ -8,7 +8,7 @@
   <Seed bind:importWallet bind:mnemonic />
 
 <div class="block">
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col">
     <p class="mb-2">Enter your backup phrase in the correct order:</p>
 
     <div class="text-right">
@@ -75,7 +75,7 @@
     <button on:click={() => (offset = 0)} class="pagination w-auto"><i class="fas fa-circle"></i></button>
     <button on:click={() => (offset = 12)} class="pagination w-auto"><i class="fas fa-circle"></i></button>
   </div>
-  <div class="flex justify-center gap-6 text-center mt-5">
+  <div class="flex justify-center text-center mt-5">
     <button
       on:click={() => importWallet(mnemonic)}
       class="w-2/4 m-2 primary-btn">Next</button>

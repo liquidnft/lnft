@@ -114,8 +114,8 @@
 
   @media only screen and (max-width: 640px) {
     .suggestions {
-      position: absolute;
-      top: 70px;
+      position: fixed;
+      bottom: 80px;
       left: 0;
       width: 100vw;
     }

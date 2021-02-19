@@ -63,7 +63,7 @@
     <ProgressLinear />
   </div>
 {:else if $balances}
-  <div class="w-full xl:w-3/4">
+  <div class="w-full xl:w-3/4 max-w-lg">
     {#if assets.length}
       <div class="mb-5">
         <a class="secondary-color" href="/wallet/asset">{$assets.length}
@@ -80,15 +80,15 @@
 
       <div class="m-6">
         <div class="text-sm text-gray-400">Balance</div>
-        <div class="flex gap-2 mt-3">
-          <span class="text-4xl text-white">{val($balances[$asset] || 0)}</span>
+        <div class="flex mt-3">
+          <span class="text-4xl text-white mr-3">{val($balances[$asset] || 0)}</span>
           <span class="text-gray-400 mt-3.5">{assetLabel($asset)}</span>
         </div>
       </div>
       <div class="m-6">
         <div class="text-sm text-gray-400">Pending</div>
-        <div class="flex gap-2 mt-3">
-          <span class="text-gray-400">{val($pending[$asset] || 0)}</span>
+        <div class="flex mt-3">
+          <span class="text-gray-400 mr-3">{val($pending[$asset] || 0)}</span>
           <span class="text-gray-400">{assetLabel($asset)}</span>
         </div>
       </div>
