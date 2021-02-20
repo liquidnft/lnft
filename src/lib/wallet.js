@@ -495,7 +495,11 @@ export const createOffer = async (artwork, amount, fee) => {
     });
   }
 
-  await fund(swap, ownerOut, artwork.asset, 1, 1, !!royalty);
+  try {
+    await fund(swap, ownerOut, artwork.asset, 1, 1, !!royalty);
+  } catch (e) {
+    throw new Error("Unable to construct offer, the asset could not be found in the owner's wallet");
+  } 
 
   if (asset === btc) {
     total += fee;
