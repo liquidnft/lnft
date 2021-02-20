@@ -1,22 +1,21 @@
 top priorities
-pr to epslora to group assets by domain and subdomain
-search mega menu
-blog
-create liquidjs fork with no secp256/blech/confidential deps
-get purgecss working for tailwind build
-per-artist subdomains and asset registration
-mnemonic/private key import/export
-monitor bid utxos on blockchain for spends/cancellations
-file hash (dat hash?) in asset contract
-image/video processing (svelte-image, ffmpeg?)
-market page infinite scroll and pagination
-email verification
 auction multisig encumberance
 multisig server check that recipient is also 2of2
 auction extension if bid received in last 10 minutes
 server-side filtering / limits
-graphcache, optimistic updates - waiting on upstream svelte bugfix
 coinos for lightning/on-chain btc <-> lbtc deposit/exchange?
+email verification
+forgot password reset
+per-artist subdomains and asset registration
+top artists/collectors stats
+monitor bid utxos on blockchain for spends/cancellations
+file hash (dat hash?) in asset contract
+image/video processing (svelte-image, ffmpeg?)
+market page infinite scroll and pagination
+graphcache, optimistic updates - waiting on upstream svelte bugfix
+pr to epslora to group assets by domain and subdomain
+create liquidjs fork with no secp256/blech/confidential deps
+get purgecss working for tailwind build
 
 
 later
@@ -44,3 +43,6 @@ prompt for funds deposit when necessary
 fuzzy search
 tag search
 setup ipfs for storage
+blog
+search mega menu
+mnemonic/private key import/export
