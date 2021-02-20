@@ -29,7 +29,7 @@
 </script>
 
 <svelte:options accessors={true} />
-<div class="dark mb-2 rounded-lg">
+<div class="mb-2 rounded-lg">
   <div class="flex justify-between place-items-center text-gray-400">
     <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
       Add Funds
