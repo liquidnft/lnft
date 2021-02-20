@@ -1,9 +1,14 @@
 <script>
   import Avatar from "$components/Avatar";
   import { show, user, token } from "$lib/store";
+  import { logout } from "$lib/auth";
 
   export let open = false;
   let toggle = () => (open = !open);
+
+  let hovering;
+  let enter = () => hovering = true;
+  let leave = () => hovering = false;
 </script>
 
 <style>
@@ -29,7 +34,7 @@
   }
 </style>
 
-<div class="flex justify-between items-center menu">
+<div class="flex justify-between items-center menu relative">
   <a href="/discover" on:click={toggle} class="search">
     <i class="fas fa-search text-2xl" />
   </a>
@@ -38,12 +43,23 @@
   <a href="/blog"><button on:click={toggle}>Blog</button></a>
   {#if $user}
     {#if $user.is_admin}
-    <a href="/admin"><button on:click={toggle}>Admin</button></a>
-  {/if}
-    <a href={`/user/${$user.id}`}>
+      <a href="/admin"><button on:click={toggle}>Admin</button></a>
+    {/if}
+    <a href={`/user/${$user.id}`} on:mouseenter={enter} on:mouseleave={leave}>
       <button on:click={toggle} class="flex">
         <Avatar src={$user.avatar_url} />
         <div class="my-auto ml-2">{$user.full_name}</div>
       </button></a>
+    <div class="absolute right-0 top-8 text-right" class:hidden={!hovering} on:mouseenter={enter} on:mouseleave={leave}>
+      <div>
+        <a href={`/user/${$user.id}`}><button on:click={toggle}>Profile</button></a>
+    </div>
+      <div>
+      <a href="/wallet"><button on:click={toggle}>Wallet</button></a>
+    </div>
+    <div>
+      <a href="/logout" on:click|preventDefault={logout}><button on:click={toggle}>Sign Out</button></a>
+    </div>
+    </div>
   {:else}<a href="/login"><button on:click={toggle}>Sign In</button></a>{/if}
 </div>
