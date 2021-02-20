@@ -1,31 +1,56 @@
 <script>
   import { onMount, tick } from "svelte";
   import qrcode from "qrcode-generator-es6";
-  import { balances, pending, prompt, error, user } from "$lib/store";
+  import { balances, pending, prompt, error, user, token } from "$lib/store";
   import { assetLabel, copy, val } from "$lib/utils";
   import { getBalances } from "$lib/wallet";
+  import { api } from "$lib/api";
 
   let amount = val($error.asset, $error.amount);
   let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
-  let qr = new qrcode(0, "H");
-  qr.addData(url);
-  qr.make();
+  let img;
 
-  let img = qr.createSvgTag({});
+  $: updateAddress(address);
+
+  let updateAddress = (address) => {
+    const qr = new qrcode(0, "H");
+    qr.addData(address);
+    qr.make();
+    img = qr.createSvgTag({});
+  };
+
   onMount(async () => {
     await getBalances();
     await tick();
-    console.log($balances);
   });
 
-  $: current = $balances && $balances[$error.asset] || 0;
-  $: incoming = $pending && $pending[$error.asset] || 0;
+  $: current = ($balances && $balances[$error.asset]) || 0;
+  $: incoming = ($pending && $pending[$error.asset]) || 0;
 
   export let submit = (e) => {
     if (e) e.preventDefault();
     $prompt = undefined;
   };
+
+  let btc = () => {
+    address = "123";
+  };
+
+  let liquid = () => {
+    address = $user.address;
+  };
+
+  let lightning = async () => {
+    address = await api
+      .url("/lightning")
+      .auth(`Bearer ${$token}`)
+      .post({ amount: $error.amount, liquidAddress: $user.address })
+      .text();
+  };
+
+  let address;
+  $: if ($user) address = $user.address;
 </script>
 
 <svelte:options accessors={true} />
@@ -54,10 +79,25 @@
         {@html img}
       </div>
     </div>
-    <div class="text-center text-sm text-gray-500">{$user.address}</div>
+    <div class="text-center text-sm text-gray-500 break-all">{address}</div>
     <button
-      on:click={() => copy($user.address)}
+      on:click={() => copy(address)}
       class="center font-medium secondary-color">COPY ADDRESS
       <i class="far fa-clone ml-2" /></button>
+
+    <div class="flex justify-center text-center">
+      <button
+        on:click={btc}
+        class="mr-2 center font-medium secondary-color">Bitcoin
+      </button>
+      <button
+        on:click={liquid}
+        class="mr-2 center font-medium secondary-color">Liquid
+      </button>
+      <button
+        on:click={lightning}
+        class="center font-medium secondary-color">Lightning
+      </button>
+    </div>
   </div>
 </div>

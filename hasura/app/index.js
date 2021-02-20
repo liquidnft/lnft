@@ -1,6 +1,6 @@
 const toBuffer = require("blob-to-buffer");
 const fs = require("fs");
-const { cf, hasura, hbp } = require("./api");
+const { cf, coinos, hasura, hbp } = require("./api");
 const wretch = require("wretch");
 const ipfsClient = require("ipfs-http-client");
 const { globSource } = ipfsClient;
@@ -62,7 +62,7 @@ app.post("/register", async (req, res) => {
       .get()
       .res();
 
-    const ipfs = ipfsClient("http://ipfs:5001");
+    const ipfs = ipfsClient(process.env.IPFS_URL);
     let { cid } = await ipfs.add(response.body);
 
     let query = `mutation ($user: users_set_input!, $email: String!) {
@@ -120,6 +120,25 @@ app.post("/approve", auth, async (req, res) => {
     priority: 10,
     proxied: true,
   });
+});
+
+app.post("/lightning", auth, async (req, res) => {
+  let { liquidAddress, amount } = req.body;
+  let text = await coinos.url("/lightning/invoice").post({ amount }).text();
+
+  await coinos
+    .url("/invoice")
+    .post({
+      liquidAddress,
+      invoice: {
+        network: "lightning",
+        text,
+        amount,
+      },
+    })
+    .json();
+
+  res.send(text);
 });
 
 app.listen(8091, "0.0.0.0", function (err, address) {

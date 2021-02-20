@@ -40,21 +40,21 @@ const assetLabel = (asset) => {
 const tickers = {
   [btc]: {
     name: "Liquid Bitcoin",
-    ticker: "L-BTC",
+    ticker: "BTC",
     precision: 8,
     decimals: 8,
     color: "orange-500",
   },
   [cad]: {
     name: "Liquid CAD",
-    ticker: "L-CAD",
+    ticker: "CAD",
     precision: 8,
     decimals: 2,
     color: "red-500",
   },
   [usd]: {
     name: "Liquid USDt",
-    ticker: "L-USDt",
+    ticker: "USDt",
     precision: 8,
     decimals: 2,
     color: "green-400",
@@ -123,6 +123,7 @@ const err = (e) => {
     msg = JSON.parse(msg).message;
   } catch {}
   if (!msg) msg = "An error occurred";
+  if (msg.includes("Insufficient")) return;
   snack.set({ msg, type: "error" });
   if (e.stack) console.log(e.stack);
 };

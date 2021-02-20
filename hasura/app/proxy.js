@@ -1,7 +1,7 @@
 const proxy = require("fastify-http-proxy");
 const httpProxy = require("http-proxy");
 
-const { LIQUID_ELECTRS_URL } = process.env;
+const { LIQUID_ELECTRS_URL, HBP_URL, IPFS_WEB_URL, HASURA_URL } = process.env;
 
 let p = httpProxy
   .createProxyServer({
@@ -21,25 +21,25 @@ app.register(proxy, {
 });
 
 app.register(proxy, {
-  upstream: "http://hasura:8080",
+  upstream: HASURA_URL,
   prefix: "/v1",
   rewritePrefix: "/v1",
 });
 
 app.register(proxy, {
-  upstream: "http://ipfs:8080",
+  upstream: IPFS_WEB_URL,
   prefix: "/ipfs",
   rewritePrefix: "/ipfs",
 });
 
 app.register(proxy, {
-  upstream: "http://hbp:3000",
+  upstream: HBP_URL,
   prefix: "/storage",
   rewritePrefix: "/storage",
 });
 
 app.register(proxy, {
-  upstream: "http://hbp:3000",
+  upstream: HBP_URL,
   prefix: "/auth",
   rewritePrefix: "/auth",
 });

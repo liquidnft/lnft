@@ -74,12 +74,13 @@ setInterval(
     hasura
       .post({ query })
       .json(({ data: { transactions } }) =>
-        transactions.map((tx) => {
+        transactions.map((tx) =>
           electrs
             .url(`/tx/${tx.hash}/status`)
             .get()
-            .json(({ confirmed }) => {
-              confirmed &&
+            .json(
+              ({ confirmed }) =>
+                confirmed ||
                 hasura
                   .post({ query: setConfirmed, variables: { id: tx.id } })
                   .json(
@@ -110,10 +111,10 @@ setInterval(
                       });
                     }
                   )
-                  .catch(console.log);
-            })
-            .catch(console.log);
-        })
+                  .catch(console.log)
+            )
+            .catch(console.log)
+        )
       )
       .catch(console.log),
   2000
