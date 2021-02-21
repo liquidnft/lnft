@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { assets, addresses, error, prompt, snack } from "$lib/store";
+import { assets, addresses, error, full, prompt, snack } from "$lib/store";
 import { goto as go } from "$app/navigation";
 import { tick } from "svelte";
 
@@ -132,6 +132,34 @@ const info = (msg) => {
   snack.set({ msg, type: "info" });
 };
 
+const fullscreen = (elem) => {
+  if (get(full)) {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+    full.set(false);
+    return;
+  }
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+  } else if (elem.mozRequestFullScreen) {
+    elem.mozRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  }
+
+  full.set(true);
+};
+
 export {
   addressLabel,
   assetLabel,
@@ -140,6 +168,7 @@ export {
   copy,
   err,
   explorer,
+  fullscreen,
   goto,
   info,
   pick,

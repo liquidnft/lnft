@@ -5,6 +5,7 @@ export const addresses = writable();
 export const asset = writable();
 export const assets = writable([]);
 export const balances = writable();
+export const full = writable();
 export const pending = writable();
 export const loading = writable();
 export const password = writable();

@@ -1,12 +1,15 @@
 <script>
+  import ProgressLinear from "$components/ProgressLinear";
   import { onMount, tick } from "svelte";
   import qrcode from "qrcode-generator-es6";
   import { balances, pending, prompt, error, user, token } from "$lib/store";
-  import { assetLabel, copy, val } from "$lib/utils";
+  import { assetLabel, copy, fullscreen, val } from "$lib/utils";
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
 
-  let amount = val($error.asset, $error.amount);
+  let loading;
+  let amount;
+  $: amount = val($error.asset, $error.amount + fee);
   let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
   let img;
@@ -14,7 +17,10 @@
   $: updateAddress(address);
 
   let updateAddress = (address) => {
+    if (!address) return;
     const qr = new qrcode(0, "H");
+    if (address.startsWith("bc"))
+      address = `bitcoin:${address}?amount=${amount}`;
     qr.addData(address);
     qr.make();
     img = qr.createSvgTag({});
@@ -33,20 +39,33 @@
     $prompt = undefined;
   };
 
-  let btc = () => {
-    address = "123";
+  let fee = 0;
+  let btc = async () => {
+    fee = 0;
+    loading = true;
+    ({ address, fee } = await api
+      .url("/bitcoin")
+      .auth(`Bearer ${$token}`)
+      .post({ amount: $error.amount, liquidAddress: $user.address })
+      .json());
+    loading = false;
   };
 
   let liquid = () => {
+    fee = 0;
     address = $user.address;
   };
 
   let lightning = async () => {
-    address = await api
+    fee = 0;
+    loading = true;
+    ({ address, fee } = await api
       .url("/lightning")
       .auth(`Bearer ${$token}`)
       .post({ amount: $error.amount, liquidAddress: $user.address })
-      .text();
+      .json());
+
+    loading = false;
   };
 
   let address;
@@ -74,16 +93,22 @@
     {assetLabel($error.asset)}
   </div>
   <div class="mb-2 flex justify-center flex-col">
-    <div class="flex mb-2">
-      <div class="mx-auto w-1/2 qr mt-6 mb-3">
-        {@html img}
-      </div>
+    <div class="flex mb-2 mx-auto w-4/5" class:invisible={loading}>
+      {@html img}
     </div>
-    <div class="text-center text-sm text-gray-500 break-all">{address}</div>
-    <button
-      on:click={() => copy(address)}
-      class="center font-medium secondary-color">COPY ADDRESS
-      <i class="far fa-clone ml-2" /></button>
+    {#if loading}
+      <ProgressLinear />
+    {:else}
+      <div
+        class="text-center text-sm text-gray-500 break-all"
+        class:invisible={loading}>
+        {address}
+      </div>
+      <button
+        on:click={() => copy(address)}
+        class="center font-medium secondary-color">COPY ADDRESS
+        <i class="far fa-clone ml-2" /></button>
+    {/if}
 
     <div class="flex justify-center text-center">
       <button
