@@ -6,14 +6,15 @@
   import { createFavorite, deleteFavorite } from "$queries/favorites";
   import { mutation } from "@urql/svelte";
   import { explorer, goto } from "$lib/utils";
+  import { requireLogin } from "$lib/auth";
 
   export let artwork;
 
   let createFavorite$ = mutation(createFavorite);
   let deleteFavorite$ = mutation(deleteFavorite);
 
-  let favorite = () => {
-    if (!$user) return goto("/login");
+  let favorite = async () => {
+    await requireLogin();
     let { id: artwork_id } = artwork;
     let { id: user_id } = $user;
 

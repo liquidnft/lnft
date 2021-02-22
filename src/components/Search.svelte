@@ -17,7 +17,7 @@
   async function search(filterText) {
     filterText = filterText ? filterText.replace(" ", "_") : "";
     if (!filterText) return {};
-    console.log("token", $token);
+
     return new Promise((resolve) =>
       hasura
         .headers($token ? { authorization: `Bearer ${$token}` } : undefined)
