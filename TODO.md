@@ -1,4 +1,6 @@
 top priorities
+default withdraw asset to current asset
+use asset colors from design
 auction multisig encumberance
 multisig server check that recipient is also 2of2
 auction extension if bid received in last 10 minutes

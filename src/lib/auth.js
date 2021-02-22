@@ -52,7 +52,7 @@ export const refreshToken = () =>
     });
 
 export const logout = () => {
-  get(poll).map(clearInterval);
+  get(poll).map(p => clearInterval(p.interval));
 
   api
     .url("/auth/logout")

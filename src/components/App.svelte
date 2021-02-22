@@ -27,7 +27,7 @@
   $: if ($error && $error.message && $error.message.includes("Insufficient")) $prompt = InsufficientFunds;
 
 
-  let pageChange = (p) => $poll.map(clearInterval);
+  let pageChange = (p) => $poll.map(p => clearInterval(p.interval));
   $: pageChange($page);
 
   let id;

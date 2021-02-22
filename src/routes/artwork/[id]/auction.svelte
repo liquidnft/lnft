@@ -56,12 +56,15 @@
     auction_enabled =
       compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
 
-    auction_underway = auction_enabled && isWithinInterval(new Date(), {
-      start: parseISO(artwork.auction_start),
-      end: parseISO(artwork.auction_end),
-    });
+    auction_underway =
+      auction_enabled &&
+      isWithinInterval(new Date(), {
+        start: parseISO(artwork.auction_start),
+        end: parseISO(artwork.auction_end),
+      });
 
-    if (!list_price && artwork.list_price) list_price = val(artwork.asking_asset, artwork.list_price);
+    if (!list_price && artwork.list_price)
+      list_price = val(artwork.asking_asset, artwork.list_price);
     if (!royalty) royalty = artwork.royalty;
 
     initialized = true;
@@ -86,6 +89,16 @@
       console.log($psbt);
       try {
         await signAndBroadcast();
+        await createTransaction$({
+          transaction: {
+            amount: artwork.list_price,
+            artwork_id: artwork.id,
+            asset: artwork.asking_asset,
+            hash: $psbt.extractTransaction().getId(),
+            psbt: $psbt.toBase64(),
+            type: "cancel",
+          },
+        });
       } catch (e) {
         if (e.message.includes("already"))
           throw new Error(
@@ -240,7 +253,7 @@
     @apply rounded-lg mb-4;
     &:disabled {
       @apply bg-gray-100;
-    } 
+    }
   }
 
   label {
@@ -326,15 +339,16 @@
           {#if $user.id === artwork.artist_id}
             <div class="relative mt-1 rounded-md">
               <label>Royalty Rate
-              
-                    <span class="tooltip">
-                      <i
-                        class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
-                      <span
-                        class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                        Setting a royalty will cause the artwork to be transferred to a 2-of-2 multisig address with our server. The server will only co-sign transactions if they pay an appropriate royalty amount to the original artist.
-                      </span>
-              </label>
+                <span class="tooltip">
+                  <i
+                    class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
+                  <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
+                    Setting a royalty will cause the artwork to be transferred
+                    to a 2-of-2 multisig address with our server. The server
+                    will only co-sign transactions if they pay an appropriate
+                    royalty amount to the original artist.
+                  </span>
+                </span></label>
               <input
                 class="form-input block w-full pl-7 pr-12"
                 placeholder="0"
@@ -363,11 +377,19 @@
                 <div class="flex justify-between">
                   <div class="flex flex-col mb-4 mr-6">
                     <label for="date">Date</label>
-                    <input type="date" name="date" bind:value={start_date} disabled={auction_underway} />
+                    <input
+                      type="date"
+                      name="date"
+                      bind:value={start_date}
+                      disabled={auction_underway} />
                   </div>
                   <div class="flex flex-col mb-4">
                     <label for="time">Time</label>
-                    <input type="time" name="time" bind:value={start_time} disabled={auction_underway} />
+                    <input
+                      type="time"
+                      name="time"
+                      bind:value={start_time}
+                      disabled={auction_underway} />
                   </div>
                 </div>
               </div>
@@ -409,7 +431,8 @@
                     <input
                       class="form-input block w-full pl-7 pr-12"
                       placeholder="0"
-                      bind:value={artwork.reserve_price} disabled={auction_underway} />
+                      bind:value={artwork.reserve_price}
+                      disabled={auction_underway} />
                   </label>
                 </div>
               </div>

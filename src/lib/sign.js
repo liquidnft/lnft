@@ -6,6 +6,6 @@ import { requirePassword } from "$lib/auth";
 
 export default async () => {
   await requirePassword();
-  psbt.set(sign(get(psbt), get(sighash) || 1));
+  psbt.set(sign(get(sighash) || 1));
   await tick();
 };

@@ -44,23 +44,31 @@ export const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 export const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 export const getTransactions = () => {
-  poll.set([
-    ...get(poll),
-    setInterval(() => getTransactions(get(user).address), 5000),
-  ]);
+  if (!get(poll).find((p) => p.name === "txns"))
+    poll.set([
+      ...get(poll),
+      {
+        name: "txns",
+        interval: setInterval(() => txns(get(user).address), 5000),
+      },
+    ]);
 
-  let getTransactions = async (address) => {
+  let txns = async (address) => {
     transactions.set(await electrs.url(`/address/${address}/txs`).get().json());
   };
 
-  return getTransactions(get(user).address);
+  return txns(get(user).address);
 };
 
 export const getBalances = () => {
-  poll.set([
-    ...get(poll),
-    setInterval(() => getUtxos(get(user).address), 5000),
-  ]);
+  if (!get(poll).find((p) => p.name === "balances"))
+    poll.set([
+      ...get(poll),
+      {
+        name: "balances",
+        interval: setInterval(() => getUtxos(get(user).address), 5000),
+      },
+    ]);
 
   let getUtxos = async (address) => {
     let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
@@ -498,8 +506,10 @@ export const createOffer = async (artwork, amount, fee) => {
   try {
     await fund(swap, ownerOut, artwork.asset, 1, 1, !!royalty);
   } catch (e) {
-    throw new Error("Unable to construct offer, the asset could not be found in the owner's wallet");
-  } 
+    throw new Error(
+      "Unable to construct offer, the asset could not be found in the owner's wallet"
+    );
+  }
 
   if (asset === btc) {
     total += fee;

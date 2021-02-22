@@ -135,7 +135,7 @@
           hash,
           contract: JSON.stringify(contract),
           asset: artwork.asset,
-          amount: 0,
+          amount: artwork.editions,
           psbt: $psbt.toBase64(),
         },
         tags,

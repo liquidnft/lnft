@@ -1,20 +1,32 @@
 <script>
-  import { format } from "date-fns";
+  import { onMount, onDestroy } from "svelte";
+  import { format, parseISO } from "date-fns";
+  import { api } from "$lib/api";
   import ToggleSwitch from "$components/ToggleSwitch";
-  import { getTransactions } from "$lib/wallet";
-  import { asset, transactions, user } from "$lib/store";
+  import { asset, user, token } from "$lib/store";
   import { assetLabel, val, units } from "$lib/utils";
   import { subscription, operationStore } from "@urql/svelte";
   import { getUserTransactions } from "$queries/transactions";
 
   let show = false;
-  $: if ($user) getTransactions();
 
-  let userTransactions = [];
-  subscription(
-    operationStore(getUserTransactions($user.id)),
-    (a, b) => (userTransactions = b.transactions)
-  );
+  let poll;
+  onMount(() => {
+    poll = setInterval(
+      () => $token && api.auth(`Bearer ${$token}`).url("/transactions").get(),
+      5000
+    );
+  });
+
+  onDestroy(() => clearInterval(poll));
+
+  let txns = [];
+  $: if ($user) {
+    subscription(
+      operationStore(getUserTransactions($user.id)),
+      (a, b) => (txns = b.transactions)
+    );
+  }
 
   let value = (tx, a) => {
     let outs = tx.vout.filter(
@@ -32,7 +44,7 @@
   ];
 </script>
 
-{#if $transactions.length}
+{#if txns.length}
   <div class="my-7 flex">
     <div class="flex-1">Show all history</div>
     <ToggleSwitch
@@ -43,20 +55,22 @@
       }} />
   </div>
 
-  {#each $transactions as tx}
-    {#each txAssets(tx) as a}
-      {#if value(tx, a)}
-        <div class="w-full mb-4">
-          <div class="flex">
-            <div class="flex-grow text-sm text-gray-500">
-              {tx.status.block_time ? format(new Date(1000 * tx.status.block_time), 'MMM do, yyyy') : 'Pending'}
-            </div>
-            <div class="text-green-700">+{value(tx, a)}</div>
-          </div>
-
-          <div class="">{assetLabel(a)} Deposit</div>
+  {#each txns as tx}
+    {#if !show || tx.asset === $asset}
+    <div class="w-full mb-4">
+      <div class="flex">
+        <div class="flex-grow text-sm text-gray-500">
+          {format(parseISO(tx.created_at), 'MMM do, yyyy')}
         </div>
-      {/if}
-    {/each}
+        <div
+          class:text-green-700={tx.amount > 0}
+          class:text-red-500={tx.amount < 0}>
+          {val(tx.asset, tx.amount)}
+        </div>
+      </div>
+
+      <div class="">{assetLabel(tx.asset)}</div>
+    </div>
+  {/if}
   {/each}
 {/if}
