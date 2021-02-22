@@ -1,7 +1,7 @@
 <script>
   import { asset, psbt, user } from "$lib/store";
   import { broadcast, pay, keypair } from "$lib/wallet";
-  import { btc, sats } from "$lib/utils";
+  import { btc, info, sats } from "$lib/utils";
   import sign from "$lib/sign";
 
   export let val;

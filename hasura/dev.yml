@@ -22,7 +22,7 @@ services:
     volumes:
       - ./app:/app
       - ${STORAGE_DIR}:/export
-    network_mode: host
+        # network_mode: host
   postgres:
     container_name: postgres
     image: postgres:12
