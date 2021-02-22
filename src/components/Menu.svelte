@@ -67,7 +67,7 @@
   }
 </style>
 
-<div class="flex justify-between items-center menu">
+<div class="flex justify-between items-center menu relative">
   <Search nav="true" />
   <a href="/market"><button on:click={toggle}>Market</button></a>
   <a href="/activity"><button on:click={toggle}>Activity</button></a>
@@ -81,5 +81,20 @@
         <Avatar src={$user.avatar_url} />
         <div class="my-auto ml-2">{$user.full_name}</div>
       </button></a>
-  {:else}<a href="/login"><button class="signin" on:click={toggle}>Sign In</button></a>{/if}
+    <div
+      class="absolute right-0 top-8 text-right"
+      class:hidden={!hovering}
+      on:mouseenter={enter}
+      on:mouseleave={leave}>
+      <div>
+        <a href={`/user/${$user.id}`}><button
+            on:click={toggle}>Profile</button></a>
+      </div>
+      <div><a href="/wallet"><button on:click={toggle}>Wallet</button></a></div>
+      <div>
+        <a href="/logout" on:click|preventDefault={logout}><button
+            on:click={toggle}>Sign Out</button></a>
+      </div>
+    </div>
+  {:else}<a href="/login"><button on:click={toggle}>Sign In</button></a>{/if}
 </div>
