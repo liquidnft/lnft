@@ -30,7 +30,7 @@ export const updateUser = {
 };
 
 export const getCollectors = `subscription {
-  collectors { ${fields}, num_artworks }
+  collectors { id, username, location, bio, email, full_name, website, avatar_url, num_artworks }
 }`;
 
 export const getAddresses = `subscription {

@@ -69,7 +69,7 @@ export const getTransaction = (id) => `subscription {
 }`;
 
 export const getTransactions = `subscription {
-  transactions(order_by: {created_at: desc}) {
+  transactions(where: {artwork_id: {_is_null: false}}, order_by: {created_at: desc}) {
     ${fields}
   }
 }`;

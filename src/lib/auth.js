@@ -22,6 +22,7 @@ export const requireLogin = async (page) => {
   $token = get(token);
 
   if (!$token || decode($token).exp * 1000 < Date.now()) {
+    console.log("UHUHUH");
     goto("/login");
     throw new Error("Login required");
   }
@@ -45,7 +46,6 @@ export const refreshToken = () =>
   api
     .url("/auth/token/refresh")
     .get()
-    .unauthorized(logout)
     .json(({ jwt_token }) => {
       token.set(jwt_token);
       window.sessionStorage.setItem("token", jwt_token);
