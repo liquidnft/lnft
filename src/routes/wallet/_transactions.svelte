@@ -63,8 +63,9 @@
           {format(parseISO(tx.created_at), 'MMM do, yyyy')}
         </div>
         <div
-          class:text-green-700={tx.amount > 0}
+          class:text-green-500={tx.amount > 0}
           class:text-red-500={tx.amount < 0}>
+          {tx.amount > 0 ? "+" : "-"}
           {val(tx.asset, tx.amount)}
         </div>
       </div>

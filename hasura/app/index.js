@@ -268,7 +268,7 @@ app.get("/transactions", auth, async (req, res) => {
     }
   }
 
-  res.end();
+  res.send({});
 });
 
 app.listen(8091, "0.0.0.0", function (err, address) {
