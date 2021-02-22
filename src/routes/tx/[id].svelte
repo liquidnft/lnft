@@ -30,14 +30,13 @@
   });
 </script>
 
-<div class="container mx-auto px-10">
+<div class="container mx-auto px-10 mt-16 max-w-xl">
+  <div class="mb-5">
+    <a on:click={() => window.history.back()} href="/" class="text-midblue"><i
+        class="fas fa-chevron-left mr-2" />Back</a>
+    <h3 class="py-4">Transaction details</h3>
+  </div>
   {#if $psbt}
     <Transaction />
   {:else}Transaction not found{/if}
-
-  <div class="flex">
-    <button
-      class="border my-4 mx-auto"
-      on:click={() => window.history.back()}>Back</button>
-  </div>
 </div>
