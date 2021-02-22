@@ -9,10 +9,12 @@ hasura/liquidregtest/liquid-config/liquidregtest/
 hasura/db
 hasura/storage
 hasura/.env
+hasura/.env.regtest
+hasura/.env.hostnet
+hasura/.env.mainnet
 hasura/data/certbot
 hasura/data/raretoshi
 hasura/data/nginx/.lapasswd
-hasura/.env
 hasura/gdk-server/__pycache__
 hasura/ipfs
 hasura/ghost-data

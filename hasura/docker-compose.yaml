@@ -5,13 +5,18 @@ services:
     build:
       context: ./app
     environment:
-      HASURA_URL: '${HASURA_ENDPOINT}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
-      HASURA_JWT: '${HASURA_GRAPHQL_JWT_SECRET}'
-      LIQUID_ELECTRS_URL: '${LIQUID_ELECTRS_URL}'
       CLOUDFLARE_TOKEN: '${CLOUDFLARE_TOKEN}'
       CLOUDFLARE_ZONE: '${CLOUDFLARE_ZONE}'
       DOMAIN: '${DOMAIN}'
+      COINOS_URL: '${COINOS_URL}'
+      COINOS_TOKEN: '${COINOS_TOKEN}'
+      HASURA_URL: '${HASURA_URL}'
+      HASURA_JWT: '${HASURA_GRAPHQL_JWT_SECRET}'
+      LIQUID_ELECTRS_URL: '${LIQUID_ELECTRS_URL}'
+      HBP_URL: '${HBP_URL}'
+      IPFS_URL: '${IPFS_URL}'
+      IPFS_WEB_URL: '${IPFS_WEB_URL}'
     ports:
       - '8091:8091'
       - '8092:8092'
@@ -51,7 +56,7 @@ services:
     ports:
       - '3400:3000'
     environment:
-      HASURA_ENDPOINT: '${HASURA_ENDPOINT}'
+      HASURA_ENDPOINT: '${HASURA_URL}/v1/graphql'
       HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       JWT_ALGORITHM: RS256
       AUTO_MIGRATE: "true"

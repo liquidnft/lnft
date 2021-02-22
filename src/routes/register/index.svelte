@@ -6,7 +6,7 @@
 
   let username = "anon";
   let password = "liquidart";
-  let email = "asoltys@gmail.com";
+  let email = "anon@raretoshi.com";
 
   let ref;
   let pageChange = () => setTimeout(() => ref.select(), 50);
