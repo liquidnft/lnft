@@ -2,6 +2,7 @@ top priorities
 default withdraw asset to current asset
 use asset colors from design
 auction multisig encumberance
+allow users to customize fee rates for txns, calculate/estimate tx size
 multisig server check that recipient is also 2of2
 auction extension if bid received in last 10 minutes
 server-side filtering / limits

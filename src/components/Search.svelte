@@ -65,7 +65,7 @@
 
   {#await search(text) then r}
     {#if r.tag || r.artwork || r.user}
-      <div class="absolute w-1/3 bg-white shadow">
+      <div class="absolute w-1/3 bg-white shadow z-10">
         <div class="flex p-4">
           {#each r.tag || [] as o}
             <div

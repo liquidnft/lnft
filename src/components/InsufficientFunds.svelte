@@ -43,11 +43,15 @@
   let btc = async () => {
     fee = 0;
     loading = true;
-    ({ address, fee } = await api
-      .url("/bitcoin")
-      .auth(`Bearer ${$token}`)
-      .post({ amount: $error.amount, liquidAddress: $user.address })
-      .json());
+    try {
+      ({ address, fee } = await api
+        .url("/bitcoin")
+        .auth(`Bearer ${$token}`)
+        .post({ amount: $error.amount, liquidAddress: $user.address })
+        .json());
+    } catch (e) {
+      err(e);
+    }
     loading = false;
   };
 
@@ -59,11 +63,15 @@
   let lightning = async () => {
     fee = 0;
     loading = true;
-    ({ address, fee } = await api
-      .url("/lightning")
-      .auth(`Bearer ${$token}`)
-      .post({ amount: $error.amount, liquidAddress: $user.address })
-      .json());
+    try {
+      ({ address, fee } = await api
+        .url("/lightning")
+        .auth(`Bearer ${$token}`)
+        .post({ amount: $error.amount, liquidAddress: $user.address })
+        .json());
+    } catch (e) {
+      err(e);
+    }
 
     loading = false;
   };

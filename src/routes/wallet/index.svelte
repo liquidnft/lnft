@@ -103,7 +103,7 @@
     </div>
     <div>
       <Fund bind:funding />
-      <Withdraw {val} bind:withdrawing />
+      <Withdraw bind:withdrawing />
       <Transactions />
     </div>
   </div>
