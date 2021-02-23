@@ -37,12 +37,12 @@
   <div class="table-container">
   <table class="w-full table-auto">
     <tr class="border-gray-200 border-b">
-      <th>COLLECTOR</th>
-      <th>WORKS COLLECTED</th>
-      <th>WORKS OWNED</th>
-      <th>AVG. PURCHASE PRICE</th>
-      <th>TOTAL PURCHASES</th>
-      <th>BIGGEST PURCHASE</th>
+      <th>Collector</th>
+      <th>Works collected</th>
+      <th>Works owned</th>
+      <th>Avg. purchase price</th>
+      <th>Total purchases</th>
+      <th>Work resold</th>
       <th>WORKS RESOLD</th>
       <th>AVG. RESALE PRICE</th>
       <th>TOTAL RESALES</th>

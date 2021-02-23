@@ -696,12 +696,15 @@
       - email
       - full_name
       - id
+      - is_admin
+      - is_artist
       - location
       - mnemonic
       - multisig
       - pubkey
       - updated_at
       - username
+      - wallet_initialized
       - website
       computed_fields:
       - followed
@@ -757,6 +760,7 @@
       - pubkey
       - updated_at
       - username
+      - wallet_initialized
       - website
       computed_fields:
       - followed
@@ -777,14 +781,15 @@
       - address_index
       - avatar_url
       - bio
-      - multisig
       - display_name
       - email
       - full_name
       - location
       - mnemonic
+      - multisig
       - pubkey
       - username
+      - wallet_initialized
       - website
       filter:
         id:

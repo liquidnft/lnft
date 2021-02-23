@@ -1,4 +1,5 @@
 <script>
+  import { goto } from "$lib/utils";
   import Seed from "../_seed.svelte";
   let importWallet;
   let mnemonic;

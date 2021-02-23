@@ -12,6 +12,7 @@ hasura/.env
 hasura/.env.regtest
 hasura/.env.hostnet
 hasura/.env.mainnet
+hasura/.env.prod
 hasura/data/certbot
 hasura/data/raretoshi
 hasura/data/nginx/.lapasswd

@@ -20,7 +20,7 @@
     await requirePassword();
 
     try {
-      await update({ id: $user.id, user: createWallet(mnemonic) });
+      await update({ id: $user.id, user: { ...createWallet(mnemonic), wallet_initialized: true } });
       info("Wallet updated");
       setTimeout(() => goto("/wallet"), 50);
     } catch (e) {
