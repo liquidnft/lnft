@@ -220,6 +220,7 @@
       - ticker
       - title
       - transferred_at
+      - views
       computed_fields:
       - favorited
       - last_active
@@ -250,6 +251,7 @@
       - ticker
       - title
       - transferred_at
+      - views
       computed_fields:
       - favorited
       - last_active

@@ -21,6 +21,7 @@ const fields = `
   extension_interval
   max_extensions
   royalty
+  views
   bid {
     user {
       id

@@ -7,6 +7,7 @@ app = require("fastify")({
 });
 
 require("./auth");
+require("./artworks");
 require("./coinos");
 require("./proxy");
 require("./monitor");

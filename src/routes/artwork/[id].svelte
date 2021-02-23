@@ -25,8 +25,12 @@
     broadcast,
   } from "$lib/wallet";
   import { Psbt } from "@asoltys/liquidjs-lib";
+  import { api } from "$lib/api";
 
   let { id } = $page.params;
+
+  $: pageChange($page);
+  let pageChange = () => api.url("/viewed").post({ id });
 
   let transactions = [];
   subscription(

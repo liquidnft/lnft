@@ -1,4 +1,5 @@
 top priorities
+title slug urls for artworks and users
 default withdraw asset to current asset
 use asset colors from design
 auction multisig encumberance

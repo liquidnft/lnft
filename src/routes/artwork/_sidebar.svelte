@@ -117,7 +117,7 @@
       </div>
     </div>
     <div class="w-2/3">
-      <div>6</div>
+      <div>{artwork.views}</div>
       <div class="text-xs text-gray-600">Views</div>
     </div>
   </div>
