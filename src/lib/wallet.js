@@ -322,8 +322,8 @@ export const sign = (sighash = 1) => {
           .finalizeInput(i)
       );
     } catch (e) {
-      console.log(e.stack);
-      console.log(e.message);
+      // console.log(e.stack);
+      // console.log(e.message);
     }
   });
 

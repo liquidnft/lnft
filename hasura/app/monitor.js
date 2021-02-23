@@ -26,9 +26,16 @@ const setConfirmed = `
       id
       user_id
       artwork_id
+      hash
+      psbt
       type
       asset
       contract
+      artwork {
+        owner_id
+        editions
+        asset
+      }
       user {
         username
       } 
@@ -53,21 +60,12 @@ const updateArtwork = `
   }
 `;
 
-const acceptOffer = {
-  query: `mutation accept_offer($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!) {
-    insert_transactions_one(object: {
-      artwork_id: $id,
-      asset: $asset,
-      type: "accept",
-      amount: $amount,
-      hash: $hash,
-      psbt: $psbt,
-    }) {
-      id,
-      artwork_id
-    } 
-  }`,
-};
+const insertTransaction = `mutation ($transaction: transactions_insert_input!) {
+  insert_transactions_one(object: $transaction) {
+    id,
+    artwork_id
+  } 
+}`;
 
 setInterval(
   async () =>
@@ -92,8 +90,33 @@ setInterval(
                       if (transaction.type === "accept")
                         owner_id = transaction.bid.user_id;
 
-                      if (transaction.type === "purchase")
+                      if (transaction.type === "purchase") {
                         owner_id = transaction.user_id;
+
+                        let {
+                          artwork_id,
+                          hash,
+                          psbt,
+                          artwork: { editions: amount, asset },
+                        } = transaction;
+
+                          await hasura
+                            .post({
+                              query: insertTransaction,
+                              variables: {
+                                transaction: {
+                                  type: "receipt",
+                                  user_id: transaction.artwork.owner_id,
+                                  artwork_id,
+                                  hash,
+                                  psbt,
+                                  amount,
+                                  asset,
+                                },
+                              },
+                            })
+                            .json();
+                      }
 
                       try {
                         if (transaction.type === "creation")

@@ -22,13 +22,14 @@
     loading = true;
     try {
       $psbt = await pay($asset, to, sats($asset, amount), sats(btc, fee));
+      await sign();
+      await broadcast($psbt);
+      info("Payment sent!");
+      withdrawing = false;
     } catch (e) {
       err(e);
       return;
     }
-    await sign();
-    await broadcast($psbt);
-    info("Payment sent!");
     loading = false;
   };
 </script>

@@ -29,7 +29,7 @@
     {transaction.artwork.royalty}% royalty to
   {:else if transaction.type === 'purchase'}
     paid
-    {val(transaction.asset, transaction.amount)}
+    {val(transaction.asset, Math.abs(transaction.amount))}
     {ticker(transaction.asset)}
     for
   {:else if transaction.type === 'accept'}

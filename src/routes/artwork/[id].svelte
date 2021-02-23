@@ -91,14 +91,13 @@
     count();
   });
 
-  let save = (e) => {
+  let save = async (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-    createTransaction$({ transaction }).then(() => {
+    await createTransaction$({ transaction })
       if (transaction.type === "purchase") info("Sold! Congratulations!");
       if (transaction.type === "bid") info("Bid placed!");
       bidding = false;
-    });
   };
 
   let bidding, amountInput;
@@ -121,7 +120,7 @@
       await requirePassword();
       loading = true;
 
-      transaction.amount = artwork.list_price;
+      transaction.amount = -artwork.list_price;
       transaction.type = "purchase";
 
       $psbt = await executeSwap(artwork, 500);
