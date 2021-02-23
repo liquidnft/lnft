@@ -27,6 +27,7 @@ const fields = `
     username
     avatar_url
   } 
+  artwork_id
   artwork {
     id
     title
@@ -35,9 +36,15 @@ const fields = `
     asking_asset
     royalty
     transferred_at
+    artist {
+      id
+      username
+      avatar_url
+    } 
     owner {
       id
       username
+      avatar_url
     } 
     bid {
       id
@@ -69,7 +76,7 @@ export const getTransaction = (id) => `subscription {
 }`;
 
 export const getTransactions = `subscription {
-  transactions(where: {artwork_id: {_is_null: false}}, order_by: {created_at: desc}) {
+  transactions(where: {artwork_id: {_is_null: false}, type: {_neq: "receipt"}}, order_by: {created_at: desc}) {
     ${fields}
   }
 }`;

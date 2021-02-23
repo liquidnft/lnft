@@ -40,16 +40,11 @@
   .card {
     border-radius: 10px;
     box-shadow: 1px 1px 10px 1px #cbcbcb;
-    height: 600px;
   }
 
   .card img,
   .card video {
     border-radius: 10px 10px 0 0;
-  }
-
-  .square {
-    height: 450px;
   }
 </style>
 
@@ -57,7 +52,7 @@
   class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
   class:link
   on:click={click}>
-  <div class="flex justify-center {activityPage ? 'square' : 'h-3/5'}">
+  <div class="flex justify-center">
     <ArtworkMedia {artwork} {showDetails} />
   </div>
   {#if showDetails}

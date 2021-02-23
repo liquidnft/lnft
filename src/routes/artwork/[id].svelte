@@ -1,11 +1,6 @@
 <script>
   import { page } from "$app/stores";
-  import {
-    Activity,
-    Avatar,
-    Card,
-    ProgressLinear,
-  } from "$comp";
+  import { Activity, Avatar, Card, ProgressLinear } from "$comp";
   import Sidebar from "./_sidebar";
   import { tick } from "svelte";
   import { prompt, password, user, token, psbt } from "$lib/store";
@@ -43,7 +38,8 @@
   $: if (artwork)
     subscription(
       operationStore(getArtworksByArtist(artwork.artist_id)),
-      (a, b) => (others = b.artworks.filter((a) => artwork && a.id !== artwork.id))
+      (a, b) =>
+        (others = b.artworks.filter((a) => artwork && a.id !== artwork.id))
     );
 
   let artwork, start_counter, end_counter;
@@ -76,7 +72,7 @@
     await sign();
     transaction.psbt = $psbt.toBase64();
     transaction.hash = $psbt.__CACHE.__TX.getId();
-    save();
+    await save();
   };
 
   subscription(operationStore(getArtwork(id)), (a, b) => {
@@ -94,10 +90,10 @@
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-    await createTransaction$({ transaction })
-      if (transaction.type === "purchase") info("Sold! Congratulations!");
-      if (transaction.type === "bid") info("Bid placed!");
-      bidding = false;
+    await createTransaction$({ transaction });
+    if (transaction.type === "purchase") info("Sold! Congratulations!");
+    if (transaction.type === "bid") info("Bid placed!");
+    bidding = false;
   };
 
   let bidding, amountInput;
@@ -137,7 +133,11 @@
       transaction.hash = tx.getId();
       transaction.psbt = $psbt.toBase64();
 
-      save();
+      await save();
+
+      transaction.amount = artwork.editions;
+      transaction.asset = artwork.asset;
+      transaction.user
     } catch (e) {
       err(e);
     }
@@ -156,7 +156,6 @@
   }
 
   let showPopup = false;
-
 </script>
 
 <style>
@@ -190,7 +189,7 @@
     right: 0;
     background: #000;
     scroll-behavior: contain;
-    transform: scale(0); 
+    transform: scale(0);
   }
 
   .showPopup {
@@ -205,7 +204,7 @@
     margin-bottom: 40px;
   }
 
-  .popup :global(video){
+  .popup :global(video) {
     width: 50%;
   }
 
@@ -213,17 +212,16 @@
     background: black;
   }
 
-  .desktopImage :global(img, video){
-    max-height: 50vh;
-    width: auto;
+  .desktopImage :global(img, video) {
+    max-height: 70vh;
   }
 
-  @keyframes zoom{
+  @keyframes zoom {
     0% {
-        transform: scale(.6);
+      transform: scale(0.6);
     }
     100% {
-        transform: scale(1);
+      transform: scale(1);
     }
   }
 

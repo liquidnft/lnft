@@ -12,7 +12,6 @@
 
 <style>
   .thumb {
-    height: 260px;
     overflow: hidden;
     cursor: pointer;
   }
@@ -24,8 +23,8 @@
   }
 </style>
 
-<div class="flex flex-col px-4 mb-10 lg:w-1/3 justify-between">
-  <div class="recentCard flex">
+<div class="flex flex-col px-4 mb-10 lg:w-1/3">
+  <div class="recentCard flex mb-10">
     <div class="mt-2 mr-4">
       <Avatar src={transaction.user.avatar_url} />
     </div>
@@ -39,7 +38,7 @@
     </div>
   </div>
   <div
-    class="mb-5 h-full w-full mt-7 rounded-lg box-shadow thumb"
+    class="mb-5 w-full rounded-lg box-shadow thumb"
     on:click={() => goto(`/artwork/${artwork.id}`)}>
     <ArtworkMedia {artwork} showDetails={false} />
   </div>

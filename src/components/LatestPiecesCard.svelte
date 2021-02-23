@@ -12,7 +12,6 @@
 
 <style>
   .thumb {
-    height: 260px;
     overflow: hidden;
     cursor: pointer;
   }
@@ -39,14 +38,14 @@
       <div class="flex">
         <div
           class="my-auto cursor-pointer"
-          on:click|stopPropagation={() => goto(`/user/${artwork.owner.id}`)}>
-          <Avatar src={transaction.user.avatar_url} size="large" />
+          on:click|stopPropagation={() => goto(`/user/${artwork.artist.id}`)}>
+          <Avatar src={transaction.artwork.artist.avatar_url} size="large" />
         </div>
         <div class="ml-5 my-auto">
           <p
             class="cursor-pointer hover:underline"
-            on:click|stopPropagation={() => goto(`/user/${artwork.owner.id}`)}>
-            {artwork.owner.username}
+            on:click|stopPropagation={() => goto(`/user/${artwork.artist.id}`)}>
+            {artwork.artist.username}
           </p>
           <p class="text-sm text-gray-500">Artist</p>
         </div>

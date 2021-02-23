@@ -20,7 +20,14 @@
   let recent = [];
   let latest = [];
   subscription(operationStore(getTransactions), (a, b) => {
-    recent = b.transactions.slice(0, 3);
+    recent = [];
+
+    let i = 0;
+    while (recent.length < 3 && i < b.transactions.length) {
+      let t = b.transactions[i];
+      recent.find((r) => (r.artwork_id === t.artwork_id)) || recent.push(t);
+      i++;
+    }
     latest = b.transactions.filter((t) => t.type === "creation").slice(0, 3);
   });
 </script>

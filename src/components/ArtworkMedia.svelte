@@ -6,7 +6,7 @@
 {#if artwork.filetype && artwork.filetype.includes('video')}
   <video
     controls
-    class="w-full h-full object-cover {showDetails ? 'rounded-t-lg' : 'rounded-lg'}"
+    class="w-full object-contain {showDetails ? 'rounded-t-lg' : 'rounded-lg'}"
     autoplay
     muted
     loop>
@@ -17,5 +17,5 @@
   <img
     src={`/api/ipfs/${artwork.filename}`}
     alt={artwork.filename}
-    class="w-full h-full rounded-t-lg object-cover {showDetails ? 'rounded-t-lg' : 'rounded-lg'}" />
+    class="w-full object-contain rounded-t-lg {showDetails ? 'rounded-t-lg' : 'rounded-lg'}" />
 {/if}
