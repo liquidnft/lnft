@@ -40,12 +40,9 @@
       <th>Collector</th>
       <th>Works collected</th>
       <th>Works owned</th>
+      <th>Works resold</th>
       <th>Avg. purchase price</th>
-      <th>Total purchases</th>
-      <th>Work resold</th>
-      <th>WORKS RESOLD</th>
-      <th>AVG. RESALE PRICE</th>
-      <th>TOTAL RESALES</th>
+      <th>Total price paid</th>
     </tr>
     {#each collectors as item}
       <tr class="border-b">
@@ -57,14 +54,11 @@
             </div>
           </div>
         </td>
-        <td>12</td>
-        <td>425</td>
-        <td>$2,137</td>
-        <td>$25,654</td>
-        <td>$4,961</td>
-        <td>0</td>
-        <td>-</td>
-        <td>-</td>
+        <td>{item.collected}</td>
+        <td>{item.owned}</td>
+        <td>{item.resold}</td>
+        <td>{item.avg_price ? item.avg_price : '-'}</td>
+        <td>{item.total_price ? item.total_price : '-'}</td>
       </tr>
     {/each}
   </table>

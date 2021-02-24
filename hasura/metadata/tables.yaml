@@ -295,32 +295,26 @@
     permission:
       columns:
       - id
-      - created_at
-      - updated_at
       - username
       - avatar_url
-      - display_name
-      - location
-      - bio
-      - website
-      - email
-      - full_name
-      - num_artworks
+      - owned
+      - collected
+      - resold
+      - avg_price
+      - total_price
+      - address
       filter: {}
   - role: user
     permission:
       columns:
-      - num_artworks
+      - collected
+      - owned
+      - resold
+      - avg_price
+      - total_price
+      - address
       - avatar_url
-      - bio
-      - display_name
-      - email
-      - full_name
-      - location
       - username
-      - website
-      - created_at
-      - updated_at
       - id
       filter: {}
 - table:

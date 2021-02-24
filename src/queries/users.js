@@ -30,7 +30,15 @@ export const updateUser = {
 };
 
 export const getCollectors = `subscription {
-  collectors { id, username, location, bio, email, full_name, website, avatar_url, num_artworks }
+  collectors { 
+    username
+    avatar_url
+    owned
+    collected
+    resold
+    avg_price	
+    total_price
+  }
 }`;
 
 export const getAddresses = `subscription {
