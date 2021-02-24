@@ -16,6 +16,14 @@ Hasura CLI: https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cl
     hasura migrate apply
     hasura metadata apply
 
+## Building Static Files
+
+    git clone https://gogs.coinos.io/adam/liquidart
+    yarn 
+    rm -rf build
+    yarn build
+    yarn adapt
+
 ## Regtest Mining
 
 Mine some blocks to get the electrs API server started and send some funds:
