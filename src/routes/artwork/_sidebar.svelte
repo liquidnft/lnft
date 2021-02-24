@@ -102,7 +102,7 @@
 
 <div class="flex flex-wrap justify-between mb-10">
   <div class="flex">
-    <div class="w-1/3 flex mr-5">
+    <div class="w-1/3 flex mr-4">
       <Heart on:click={favorite} favorited={artwork.favorited} />
     </div>
     <div class="w-2/3">
@@ -111,7 +111,7 @@
     </div>
   </div>
   <div class="flex">
-    <div class="w-1/3 flex mr-5">
+    <div class="w-1/3 flex mr-4">
       <div class="my-auto mt-3">
         <Eye />
       </div>

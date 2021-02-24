@@ -40,7 +40,6 @@
     width: 80%;
     max-width: 350px;
     max-height: 350px;
-    font-family: sans-serif;
     margin: 100px auto;
   }
 
@@ -55,6 +54,15 @@
   #fileElem {
     position: fixed;
     top: -100em;
+  }
+
+  @media only screen and (max-width: 500px) {
+    #drop-area{
+      width: 100%;
+      max-width:100%;
+      margin: 0;
+      margin-top: 50px;
+    }
   }
 </style>
 

@@ -239,10 +239,10 @@
   }
 </style>
 
-<div class="container mx-auto mt-20">
+<div class="container mx-auto mt-10 md:mt-20">
   {#if artwork && !loading}
     <div class="flex justify-between flex-wrap" bind:this={target}>
-      <div class="text-center lg:text-left w-full lg:w-1/3 lg:max-w-xs">
+      <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || 'Untitled'}
         </h1>

@@ -250,15 +250,12 @@
   input,
   select,
   textarea {
-    @apply rounded-lg mb-4;
+    @apply rounded-lg mb-4 mt-2;
     &:disabled {
       @apply bg-gray-100;
     }
   }
 
-  label {
-    @apply mb-2;
-  }
   .tooltip {
     cursor: pointer;
   }
@@ -295,17 +292,22 @@
     .container {
       background: none;
     }
+    .tooltip .tooltip-text{
+      width: 100%;
+      left: 0px;
+      top: 30px;
+    }
   }
 </style>
 
 <div class="container mx-auto md:p-20">
-  <div class="w-full xl:w-1/2 mx-auto bg-white md:p-10 rounded-xl">
+  <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
     <a class="block mb-6 text-midblue" href="/"><i
         class="fas fa-chevron-left mr-3" />Back</a>
     <h2>List artwork</h2>
 
     {#if !loading}
-      <form class="w-full mb-6" on:submit={update} autocomplete="off">
+      <form class="w-full mb-6 mt-12" on:submit={update} autocomplete="off">
         <div class="flex flex-col mt-4">
           <p>Asset</p>
           <div class="flex">
@@ -318,12 +320,12 @@
                   value={asset}
                   bind:group={artwork.asking_asset}
                   on:change={clearPrice} />
-                {assetLabel(asset)}
+                <p class="mb-2">{assetLabel(asset)}</p>
               </label>
             {/each}
           </div>
         </div>
-        <div class="flex w-3/4 mb-4">
+        <div class="flex w-full sm:w-3/4 mb-4">
           <div class="relative mt-1 rounded-md w-2/3 mr-2">
             <label>Price
               <input
@@ -332,7 +334,7 @@
                 bind:value={list_price}
                 bind:this={input} />
             </label>
-            <div class="absolute inset-y-0 right-0 flex items-center mr-2 mt-2">
+            <div class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4">
               {assetLabel(artwork.asking_asset)}
             </div>
           </div>

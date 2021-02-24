@@ -75,7 +75,7 @@
       {selectedValue}
       isCreatable={true} />
   </div>
-  <div class="flex justify-end">
+  <div class="flex">
     <button
       type="submit"
       class="primary-btn">Submit</button>
