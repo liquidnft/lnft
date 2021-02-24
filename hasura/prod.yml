@@ -81,7 +81,7 @@ services:
       HASURA_ENDPOINT: http://hasura:8080/v1/graphql
       HASURA_GRAPHQL_ADMIN_SECRET: liquidart
       REGISTRATION_CUSTOM_FIELDS: username,full_name,pubkey,mnemonic,address,multisig
-      JWT_ALGORITHM: RS256
+      JWT_ALGORITHM: '${JWT_ALGORITHM}'
       AUTO_MIGRATE: "true"
       STORAGE_ENABLE: "true"
       S3_ENDPOINT: http://minio:9000

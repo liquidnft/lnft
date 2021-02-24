@@ -4,6 +4,8 @@ const btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
 app.post("/bitcoin", auth, async (req, res) => {
   let network = "bitcoin";
   let { liquidAddress, amount } = req.body;
+
+  try {
   let { address } = await coinos
     .url("/address")
     .query({ network, type: "bech32" })
@@ -31,6 +33,9 @@ app.post("/bitcoin", auth, async (req, res) => {
       },
     })
     .json();
+  } catch (e) {
+    console.log(e.message);
+  } 
 
   res.send({ address, fee });
 });

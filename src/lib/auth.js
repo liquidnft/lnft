@@ -22,7 +22,6 @@ export const requireLogin = async (page) => {
   $token = get(token);
 
   if (!$token || decode($token).exp * 1000 < Date.now()) {
-    console.log("UHUHUH");
     goto("/login");
     throw new Error("Login required");
   }
