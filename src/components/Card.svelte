@@ -82,7 +82,7 @@
       </div>
     </div>
     {#if Date.parse(artwork.auction_end) > new Date()}
-      <div class="p-4 brand-color rounded-b-lg">
+      <div class="p-4 lightblue-grad rounded-b-lg">
         Auction ends in
         {end_counter}
       </div>
