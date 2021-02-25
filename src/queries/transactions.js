@@ -58,7 +58,7 @@ const fields = `
 `;
 
 export const getArtworkTransactions = (id) => `subscription {
-  transactions(order_by: {created_at: desc}, where: {artwork_id: {_eq: "${id}"}}, limit: 3) {
+  transactions(order_by: {created_at: desc}, where: {_and: {artwork_id: {_eq: "${id}"}, type: {_neq: "receipt"}}}, limit: 3) {
     ${fields}
   }
 }`;

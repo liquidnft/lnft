@@ -1,17 +1,16 @@
 <script>
   import { Avatar } from "$comp";
   import { operationStore, subscription } from "@urql/svelte";
-  import { getCollectors } from "$queries/users";
+  import { topArtists } from "$queries/users";
 
   export let title;
   export let stat;
-  export let link = "/top-collectors";
 
-  let collectors = [];
-  let getCollectors$ = operationStore(getCollectors);
-  subscription(getCollectors$, (a, b) => (collectors = b.collectors));
+  let artists = [];
+  let topArtists$ = operationStore(topArtists);
+  subscription(topArtists$, (a, b) => (artists = b.artists));
 
-  $: items = collectors
+  $: items = artists
     .map((u) => ({ user: u, value: u.num_artworks }))
     .splice(0, 3);
 </script>
@@ -21,32 +20,30 @@
     @apply text-xs text-gray-600 uppercase font-thin text-left;
   }
 
-  @media only screen and (max-width: 800px){
-    .table-container{
+  @media only screen and (max-width: 800px) {
+    .table-container {
       overflow-x: scroll;
     }
-    .table-auto{
+    .table-auto {
       min-width: 800px;
       overflow-x: scroll;
     }
   }
 </style>
-<div class="container mx-auto py-20">
+
+<div class="container mx-auto mt-20">
   <h1 class="title">Top Artists</h1>
   <div class="table-container">
     <table class="w-full table-auto">
       <tr class="border-gray-200 border-b">
-        <th>COLLECTOR</th>
-        <th>WORKS COLLECTED</th>
-        <th>WORKS OWNED</th>
-        <th>AVG. PURCHASE PRICE</th>
-        <th>TOTAL PURCHASES</th>
-        <th>BIGGEST PURCHASE</th>
-        <th>WORKS RESOLD</th>
-        <th>AVG. RESALE PRICE</th>
-        <th>TOTAL RESALES</th>
+        <th>Artist</th>
+        <th>Total sales</th>
+        <th>Works created</th>
+        <th>Works sold</th>
+        <th>Avg. sale price</th>
+        <th>Highest sale price</th>
       </tr>
-      {#each collectors as item}
+      {#each artists as item}
         <tr class="border-b">
           <td class="py-4">
             <div class="flex">
@@ -56,14 +53,11 @@
               </div>
             </div>
           </td>
-          <td>12</td>
-          <td>425</td>
-          <td>$2,137</td>
-          <td>$25,654</td>
-          <td>$4,961</td>
-          <td>0</td>
-          <td>-</td>
-          <td>-</td>
+          <td>{item.total_sales ? item.total_sales : '-'}</td>
+          <td>{item.creations}</td>
+          <td>{item.sold}</td>
+          <td>{item.avg_sale ? item.avg_sale : '-'}</td>
+          <td>{item.highest_sale ? item.highest_sale : '-'}</td>
         </tr>
       {/each}
     </table>

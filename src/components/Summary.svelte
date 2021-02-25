@@ -14,7 +14,7 @@
   </div>
   <div class="py-4">
     {#each items as item}
-      <Row {item} />
+      <Row {item} {link} />
     {/each}
   </div>
   <a class="block text-right text-sm text-midblue primary-color" href={link}>See

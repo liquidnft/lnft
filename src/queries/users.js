@@ -29,8 +29,9 @@ export const updateUser = {
   }`,
 };
 
-export const getCollectors = `subscription {
+export const topCollectors = `subscription {
   collectors { 
+    id
     username
     avatar_url
     owned
@@ -38,6 +39,19 @@ export const getCollectors = `subscription {
     resold
     avg_price	
     total_price
+  }
+}`;
+
+export const topArtists = `subscription {
+  artists { 
+    id
+    username
+    avatar_url
+    creations
+    total_sales
+    highest_sale
+    avg_sale
+    sold
   }
 }`;
 

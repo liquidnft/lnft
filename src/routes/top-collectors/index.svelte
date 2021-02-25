@@ -1,15 +1,15 @@
 <script>
   import { Avatar } from "$comp";
   import { operationStore, subscription } from "@urql/svelte";
-  import { getCollectors } from "$queries/users";
+  import { topCollectors } from "$queries/users";
 
   export let title;
   export let stat;
   export let link = "/top-collectors";
 
   let collectors = [];
-  let getCollectors$ = operationStore(getCollectors);
-  subscription(getCollectors$, (a, b) => (collectors = b.collectors));
+  let topCollectors$ = operationStore(topCollectors);
+  subscription(topCollectors$, (a, b) => (collectors = b.collectors));
 
   $: items = collectors
     .map((u) => ({ user: u, value: u.num_artworks }))

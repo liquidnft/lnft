@@ -1,17 +1,14 @@
 <script>
+  import { goto } from "$lib/utils";
   import Avatar from "$components/Avatar";
 
-  export let item = {
-    user: {
-      id: "123",
-      avatar_url: null,
-      username: "test",
-    },
-    value: 42,
-  };
+  export let item;
+  export let link;
 </script>
 
-<div class="flex flex-wrap mb-4 border-b pb-4">
+<div
+  on:click={() => goto(link)}
+  class="flex flex-wrap mb-4 border-b pb-4 cursor-pointer">
   <Avatar src={item.user.avatar_url} />
   <div class="ml-2 my-auto">
     <a href={`/user/${item.user.id}`}>@{item.user.username}</a>

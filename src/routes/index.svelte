@@ -1,20 +1,31 @@
 <script>
   import { Summary } from "$comp";
   import { operationStore, subscription } from "@urql/svelte";
-  import { getCollectors } from "$queries/users";
+  import { topCollectors, topArtists } from "$queries/users";
   import Activity from "$components/Activity";
   import RecentActivityCard from "$components/RecentActivityCard";
   import LatestPiecesCard from "$components/LatestPiecesCard";
   import { goto } from "$lib/utils";
   import { getTransactions } from "$queries/transactions";
 
+  let artists = [];
   let collectors = [];
-  let getCollectors$ = operationStore(getCollectors);
-  subscription(getCollectors$, (a, b) => (collectors = b.collectors));
 
-  $: items = collectors
-    .map((u) => ({ user: u, value: u.num_artworks }))
-    .splice(0, 3);
+  subscription(
+    operationStore(topArtists),
+    (a, b) =>
+      (artists = b.artists
+        .map((u) => ({ user: u, value: u.sold }))
+        .splice(0, 3))
+  );
+
+  subscription(
+    operationStore(topCollectors),
+    (a, b) =>
+      (collectors = b.collectors
+        .map((u) => ({ user: u, value: u.owned }))
+        .splice(0, 3))
+  );
 
   let featuredArtworkId = "40585b78-ec02-401f-8ef3-1474d2aaf783";
   let recent = [];
@@ -25,7 +36,7 @@
     let i = 0;
     while (recent.length < 3 && i < b.transactions.length) {
       let t = b.transactions[i];
-      recent.find((r) => (r.artwork_id === t.artwork_id)) || recent.push(t);
+      recent.find((r) => r.artwork_id === t.artwork_id) || recent.push(t);
       i++;
     }
     latest = b.transactions.filter((t) => t.type === "creation").slice(0, 3);
@@ -115,12 +126,12 @@
 <div class="container mx-auto flex flex-wrap mb-20">
   <Summary
     title="Top Collectors"
-    stat="Recently Collected"
-    {items}
+    stat="Collected"
+    items={collectors}
     link="/top-collectors" />
   <Summary
     title="Top Artists"
-    stat="Recent Sales"
-    {items}
+    stat="Sales"
+    items={artists}
     link="/top-artists" />
 </div>

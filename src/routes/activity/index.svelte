@@ -2,12 +2,12 @@
   import { user } from "$lib/store";
   import { Activity, Avatar } from "$comp";
   import { getTransactions } from "$queries/transactions";
-  import { getCollectors } from "$queries/users";
+  import { topCollectors } from "$queries/users";
   import { mutation, subscription, operationStore } from "@urql/svelte";
 
   let collectors = [];
-  let getCollectors$ = operationStore(getCollectors);
-  subscription(getCollectors$, (a, b) => (collectors = b.collectors));
+  let topCollectors$ = operationStore(topCollectors);
+  subscription(topCollectors$, (a, b) => (collectors = b.collectors));
 
   let transactions = [];
   subscription(
