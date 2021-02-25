@@ -2,6 +2,8 @@
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
+  export let title = "Upload Your Artwork";
+
   let fileInput;
   let highlight;
 
@@ -78,7 +80,7 @@
   class:highlight>
   <form class="text-center">
     <div class="flex justify-center flex-col align-center h-full">
-      <span>UPLOAD YOUR ARTWORK</span>
+      <span class="uppercase">{title}</span>
       <i
         class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-5xl text-lightblue" />
     </div>

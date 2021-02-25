@@ -2,8 +2,7 @@ version: '3.6'
 services:
   app:
     container_name: app
-    build:
-      context: ./app
+    image: asoltys/app-server
     environment:
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       CLOUDFLARE_TOKEN: '${CLOUDFLARE_TOKEN}'
@@ -20,6 +19,10 @@ services:
     ports:
       - '8091:8091'
       - '8092:8092'
+    volumes:
+      - ./app:/app
+      - ${STORAGE_DIR}:/export
+    network_mode: host
   postgres:
     container_name: postgres
     image: postgres:12
@@ -58,7 +61,8 @@ services:
     environment:
       HASURA_ENDPOINT: '${HASURA_URL}/v1/graphql'
       HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
-      JWT_ALGORITHM: RS256
+      JWT_ALGORITHM: '${JWT_ALGORITHM}'
+      JWT_KEY: '${JWT_KEY}'
       AUTO_MIGRATE: "true"
       STORAGE_ENABLE: "true"
       S3_ENDPOINT: http://minio:9000
@@ -174,4 +178,3 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: '${HASURA_GRAPHQL_ADMIN_SECRET}'
-
