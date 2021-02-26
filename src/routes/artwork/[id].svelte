@@ -1,6 +1,6 @@
 <script>
   import { page } from "$app/stores";
-  import { compareAsc, parseISO } from "date-fns";
+  import { compareAsc, format, parseISO } from "date-fns";
   import { Activity, Avatar, Card, ProgressLinear } from "$comp";
   import Sidebar from "./_sidebar";
   import { tick } from "svelte";
@@ -80,14 +80,18 @@
     await save();
   };
 
+  let now, timeout;
+
   subscription(operationStore(getArtwork(id)), (a, b) => {
     artwork = b.artworks_by_pk;
 
     let count = () => {
+      clearTimeout(timeout);
+      now = new Date();
       if (!artwork) return;
       start_counter = countdown(parseISO(artwork.auction_start));
       end_counter = countdown(parseISO(artwork.auction_end));
-      setTimeout(count, 1000);
+      timeout = setTimeout(count, 1000);
     };
     count();
   });
@@ -317,14 +321,14 @@
           {/if}
         </div>
 
-        {#if compareAsc(new Date(), parseISO(artwork.auction_start))}
+        {#if compareAsc(parseISO(artwork.auction_start), now) === 1}
           <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
             <div class="mt-auto text-sm">Auction starts in</div>
             <div class="mt-1">{start_counter}</div>
           </div>
         {/if}
 
-        {#if compareAsc(new Date(), parseISO(artwork.auction_end))}
+        {#if compareAsc(parseISO(artwork.auction_end), now) === 1}
           <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
             <div class="mt-auto text-sm">Auction closes in</div>
             <div class="mt-1">{end_counter}</div>

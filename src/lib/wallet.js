@@ -454,7 +454,7 @@ export const createOffer = async (artwork, amount, fee) => {
   amount = parseInt(amount);
   fee = parseInt(fee);
 
-  let { asking_asset: asset, artist_id, owner_id, royalty } = artwork;
+  let { asking_asset: asset, artist_id, owner_id, auction_end, royalty } = artwork;
   let out = singlesig();
 
   let swap = new Psbt()
@@ -475,7 +475,7 @@ export const createOffer = async (artwork, amount, fee) => {
   let pubkey = fromBase58(artwork.owner.pubkey, network).publicKey;
   let ownerOut;
 
-  if (royalty && artist_id !== owner_id) {
+  if (auction_end || royalty && artist_id !== owner_id) {
     let value = Math.round((total * royalty) / 100);
     total += value;
 
@@ -506,7 +506,7 @@ export const createOffer = async (artwork, amount, fee) => {
   }
 
   try {
-    await fund(swap, ownerOut, artwork.asset, 1, 1, !!royalty);
+    await fund(swap, ownerOut, artwork.asset, 1, 1, !!(auction_end || royalty));
   } catch (e) {
     throw new Error(
       "Unable to construct offer, the asset could not be found in the owner's wallet"
