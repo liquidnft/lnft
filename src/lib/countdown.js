@@ -19,12 +19,15 @@ export default (d) => {
   d = subMinutes(d, minutes);
   let seconds = differenceInSeconds(d, now);
 
-  hours = ("0" + hours).slice(-2);
   minutes = ("0" + minutes).slice(-2);
   seconds = ("0" + seconds).slice(-2);
 
-  return `
+  return days > 1 ? `
   ${days ? days + (days === 1 ? " day" : " days") : ""} 
+  ${hours ? hours + (hours === 1 ? " hour" : " hours") : ""} 
+  ${minutes ? minutes + (minutes === 1 ? ' minute' : ' minutes') : ''}
+  ` : `
+  ${hours ? hours + (hours === 1 ? " hour" : " hours") : ""} 
   ${minutes ? minutes + (minutes === 1 ? ' minute' : ' minutes') : ''}
   ${seconds ? seconds + (seconds === 1 ? ' second' : ' seconds') : ''}
   `;

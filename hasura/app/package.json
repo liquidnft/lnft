@@ -18,7 +18,6 @@
     "http-proxy": "^1.18.1",
     "ipfs-http-client": "^49.0.2",
     "jsonwebtoken": "^8.5.1",
-    "jwks-rsa": "^1.12.2",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.7",
     "wretch": "^1.7.4"

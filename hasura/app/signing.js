@@ -1,5 +1,6 @@
 const { keypair, parse, sign } = require("./wallet");
 const { hasura } = require("./api");
+const { parseISO, isWithinInterval } = require("date-fns");
 
 const wretch = require("wretch");
 const fetch = require("node-fetch");
@@ -42,7 +43,7 @@ app.get("/pubkey", async (req, res) => {
 });
 
 app.post("/sign", auth, async (req, res) => {
-  const userapi = wretch().url(HASURA_URL).headers(req.headers);
+  const userapi = wretch().url(`${HASURA_URL}/v1/graphql`).headers(req.headers);
 
   try {
     const { psbt } = req.body;
@@ -64,9 +65,12 @@ app.post("/sign", auth, async (req, res) => {
         artist,
         owner,
         asking_asset,
-        auction_start: start,
-        auction_end: end,
+        auction_start,
+        auction_end,
       }) => {
+        let start = parseISO(auction_start);
+        let end = parseISO(auction_end);
+
         if (end && isWithinInterval(new Date(), { start, end }))
           throw new Error("Auction underway");
 
@@ -93,6 +97,7 @@ app.post("/sign", auth, async (req, res) => {
 
     res.send({ base64: sign(psbt).toBase64() });
   } catch (e) {
+    console.log(e);
     res.status(500).send(e.message);
   }
 });

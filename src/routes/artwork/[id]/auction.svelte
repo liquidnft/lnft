@@ -13,10 +13,10 @@
     sign,
     signAndBroadcast,
     sendToMultisig,
+    requestSignature,
   } from "$lib/wallet";
   import {
     format,
-    formatISO,
     addDays,
     compareAsc,
     isWithinInterval,
@@ -56,11 +56,24 @@
     auction_enabled =
       compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
 
+    let start, end;
+    if (artwork.auction_start) {
+      start = parseISO(artwork.auction_start);
+      start_date = format(start, "yyyy-MM-dd");
+      start_time = format(start, "HH:mm");
+    }
+
+    if (artwork.auction_end) {
+      end = parseISO(artwork.auction_end);
+      end_date = format(end, "yyyy-MM-dd");
+      end_time = format(end, "HH:mm");
+    }
+
     auction_underway =
       auction_enabled &&
       isWithinInterval(new Date(), {
-        start: parseISO(artwork.auction_start),
-        end: parseISO(artwork.auction_end),
+        start,
+        end,
       });
 
     if (!list_price && artwork.list_price)
@@ -86,7 +99,10 @@
 
     if (artwork.list_price_tx) {
       $psbt = await cancelSwap(artwork, 500);
-      console.log($psbt);
+
+      if (artwork.royalty || artwork.auction_end) {
+        $psbt = await requestSignature($psbt);
+      }
       try {
         await signAndBroadcast();
         await createTransaction$({
@@ -104,6 +120,7 @@
           throw new Error(
             "Please wait a block before changing the listing price"
           );
+        else throw e;
       }
     }
   };
@@ -139,8 +156,24 @@
 
   let createTransaction$ = mutation(createTransaction);
   let setupAuction = async () => {
+    let start = parse(
+      `${start_date} ${start_time}`,
+      "yyyy-MM-dd HH:mm",
+      new Date()
+    );
+
+    let end = parse(`${end_date} ${end_time}`, "yyyy-MM-dd HH:mm", new Date());
+
+    if (compareAsc(start, new Date()) < 1)
+      throw new Error("Start date can't be in the past");
+
+    if (compareAsc(start, end) === 1)
+      throw new Error("Start date must precede end date");
+
+    artwork.auction_start = start;
+    artwork.auction_end = end;
+
     if (artwork.auction_end || !auction_enabled) return true;
-    console.log("setting up auction");
 
     await requirePassword();
 
@@ -219,16 +252,7 @@
           list_price_tx,
           reserve_price,
           auction_start,
-          auction_start: parse(
-            `${start_date} ${start_time}`,
-            "yyyy-MM-dd HH:mm",
-            new Date()
-          ),
-          auction_end: parse(
-            `${end_date} ${end_time}`,
-            "yyyy-MM-dd HH:mm",
-            new Date()
-          ),
+          auction_end,
           asking_asset,
           bid_increment,
           max_extensions,
@@ -315,7 +339,7 @@
     .container {
       background: none;
     }
-    .tooltip .tooltip-text{
+    .tooltip .tooltip-text {
       width: 100%;
       left: 0px;
       top: 30px;
@@ -329,7 +353,15 @@
         class="fas fa-chevron-left mr-3" />Back</a>
     <h2>List artwork</h2>
 
-    {#if !loading}
+    {#if loading}
+      <ProgressLinear />
+    {:else}
+      {#if auction_underway}
+        <h4 class="mt-12">
+          Listing cannot be updated while auction is underway
+        </h4>
+      {/if}
+
       <form class="w-full mb-6 mt-12" on:submit={update} autocomplete="off">
         <div class="flex flex-col mt-4">
           <p>Asset</p>
@@ -342,7 +374,8 @@
                   name={asset}
                   value={asset}
                   bind:group={artwork.asking_asset}
-                  on:change={clearPrice} />
+                  on:change={clearPrice}
+                  disabled={auction_underway} />
                 <p class="mb-2">{assetLabel(asset)}</p>
               </label>
             {/each}
@@ -355,7 +388,8 @@
                 class="form-input block w-full pl-7 pr-12"
                 placeholder={val(artwork.asking_asset, 0)}
                 bind:value={list_price}
-                bind:this={input} />
+                bind:this={input}
+                disabled={auction_underway} />
             </label>
             <div class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4">
               {assetLabel(artwork.asking_asset)}
@@ -368,17 +402,19 @@
                   <i
                     class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
                   <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                    Setting a royalty involves transferring the artwork to 
-                    a 2-of-2 multisig address with Raretoshi. Our server
-                    will co-sign transactions so long as they pay the specified royalty
-                    to the original artist. Collectors will not be able to transfer the NFT
-                    to an external wallet outside the Raretoshi platform.
+                    Setting a royalty involves transferring the artwork to a
+                    2-of-2 multisig address with Raretoshi. Our server will
+                    co-sign transactions so long as they pay the specified
+                    royalty to the original artist. Collectors will not be able
+                    to transfer the NFT to an external wallet outside the
+                    Raretoshi platform.
                   </span>
                 </span></label>
               <input
                 class="form-input block w-full pl-7 pr-12"
                 placeholder="0"
-                bind:value={royalty} />
+                bind:value={royalty}
+                disabled={auction_underway} />
               <div
                 class="absolute inset-y-0 right-0 flex items-center mr-2 mt-2">
                 %
@@ -391,7 +427,8 @@
             <input
               class="form-checkbox h-6 w-6 mt-3"
               type="checkbox"
-              bind:checked={auction_enabled} />
+              bind:checked={auction_enabled}
+              disabled={auction_underway} />
             <span class="ml-3 text-xl">Create an auction</span>
           </label>
         </div>
@@ -469,8 +506,6 @@
           <button type="submit" class="primary-btn">Submit</button>
         </div>
       </form>
-    {:else}
-      <ProgressLinear />
     {/if}
   </div>
 </div>

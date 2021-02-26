@@ -1,5 +1,6 @@
 <script>
   import { page } from "$app/stores";
+  import { compareAsc, parseISO } from "date-fns";
   import { Activity, Avatar, Card, ProgressLinear } from "$comp";
   import Sidebar from "./_sidebar";
   import { tick } from "svelte";
@@ -84,8 +85,8 @@
 
     let count = () => {
       if (!artwork) return;
-      start_counter = countdown(new Date(artwork.auction_start));
-      end_counter = countdown(new Date(artwork.auction_end));
+      start_counter = countdown(parseISO(artwork.auction_start));
+      end_counter = countdown(parseISO(artwork.auction_end));
       setTimeout(count, 1000);
     };
     count();
@@ -316,14 +317,14 @@
           {/if}
         </div>
 
-        {#if Date.parse(artwork.auction_start) > new Date()}
+        {#if compareAsc(new Date(), parseISO(artwork.auction_start))}
           <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
             <div class="mt-auto text-sm">Auction starts in</div>
             <div class="mt-1">{start_counter}</div>
           </div>
         {/if}
 
-        {#if Date.parse(artwork.auction_end) > new Date()}
+        {#if compareAsc(new Date(), parseISO(artwork.auction_end))}
           <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
             <div class="mt-auto text-sm">Auction closes in</div>
             <div class="mt-1">{end_counter}</div>
@@ -331,7 +332,7 @@
         {:else if artwork.auction_end}
           <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
             <div class="mt-auto text-sm">Auction ended at</div>
-            <div class="mt-1">{artwork.auction_end}</div>
+            <div class="mt-1">{format(parseISO(artwork.auction_end), "yyyy-MM-dd HH:mm")}</div>
           </div>
         {/if}
 

@@ -286,8 +286,9 @@ export const pay = async (asset, to, amount, fee) => {
   return swap;
 };
 
-export const cancelSwap = async ({ royalty, asset }, fee) => {
-  let out = royalty ? multisig() : singlesig();
+export const cancelSwap = async ({ auction_end, royalty, asset }, fee) => {
+  let ms = royalty || auction_end;
+  let out = ms ? multisig() : singlesig();
 
   let swap = new Psbt()
     .addOutput({
@@ -379,7 +380,6 @@ export const executeSwap = async (artwork, fee) => {
     let value = Math.round((total * royalty) / 100);
     total += value;
 
-    console.log("artist address", address);
     swap.addOutput({
       asset: asking_asset,
       value,
@@ -428,7 +428,7 @@ export const createIssuance = async (artwork, contract, fee) => {
   return swap;
 };
 
-export const createSwap = async ({ asset, asking_asset, royalty }, amount) => {
+export const createSwap = async ({ asset, asking_asset, auction_end, royalty }, amount) => {
   let swap = new Psbt().addOutput({
     asset: asking_asset,
     nonce: Buffer.alloc(1),
@@ -436,13 +436,15 @@ export const createSwap = async ({ asset, asking_asset, royalty }, amount) => {
     value: amount,
   });
 
+  let ms = royalty || auction_end
+
   await fund(
     swap,
-    royalty ? multisig() : singlesig(),
+    ms ? multisig() : singlesig(),
     asset,
     1,
     singleAnyoneCanPay,
-    !!royalty
+    ms
   );
 
   return swap;
