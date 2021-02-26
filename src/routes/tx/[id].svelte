@@ -30,7 +30,7 @@
   });
 </script>
 
-<div class="container mx-auto px-10 mt-16 max-w-xl">
+<div class="container mx-auto px-10 mt-16 max-w-4xl">
   <div class="mb-5">
     <a on:click={() => window.history.back()} href="/" class="text-midblue"><i
         class="fas fa-chevron-left mr-2" />Back</a>

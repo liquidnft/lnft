@@ -117,7 +117,6 @@ const pick = (obj, ...keys) =>
 
 const err = (e) => {
   if (typeof e === "string") e = { message: e };
-  console.log(e);
   error.set(e);
   let msg = e.message;
   try {

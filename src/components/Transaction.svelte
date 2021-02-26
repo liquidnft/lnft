@@ -91,16 +91,16 @@
 
 {#if tx}
   <div class="w-full mx-auto">
-    <div class="flex gap-8">
-      <div class="w-1/2">
+    <div class="flex flex-wrap">
+      <div class="w-full sm:w-1/2">
         <h4 class="mb-2">Sending</h4>
         {#each Object.keys(totals) as user}
           {#if senders[user] && user !== 'Fee'}
-            <div class="flex">
+            <div class="flex mb-2">
               <div class="mb-auto">
                 <Avatar src={users[user].avatar_url} />
               </div>
-              <div class="flex ml-1 flex-grow">
+              <div class="flex ml-1 flex-grow sm:pr-8">
                 <div>
                   <a href={`/user/${users[user].id}`} class="secondary-color">
                     {user}
@@ -124,11 +124,11 @@
         {/each}
       </div>
 
-      <div class="w-1/2">
+      <div class="w-full sm:w-1/2">
         <h4 class="mb-2">Receiving</h4>
         {#each Object.keys(totals) as user}
           {#if recipients[user] && user !== 'Fee'}
-            <div class="flex">
+            <div class="flex mb-2">
               <div class="mb-auto">
                 <Avatar src={users[user].avatar_url} />
               </div>

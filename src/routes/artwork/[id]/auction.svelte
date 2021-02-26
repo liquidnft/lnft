@@ -42,7 +42,7 @@
 
   let input;
   let initialized;
-  let focus = (i) => i && tick().then(() => input.focus());
+  let focus = (i) => i && tick().then(() => input && input.focus());
   $: focus(initialized);
 
   let loading = true;
@@ -139,7 +139,8 @@
 
   let createTransaction$ = mutation(createTransaction);
   let setupAuction = async () => {
-    if (artwork.auction_end || !end_date) return true;
+    if (artwork.auction_end || !auction_enabled) return true;
+    console.log("setting up auction");
 
     await requirePassword();
 
