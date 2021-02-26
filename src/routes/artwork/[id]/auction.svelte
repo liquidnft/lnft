@@ -138,6 +138,27 @@
   };
 
   let createTransaction$ = mutation(createTransaction);
+  let setupAuction = async () => {
+    if (artwork.auction_end || !end_date) return true;
+
+    await requirePassword();
+
+    $psbt = await sendToMultisig(artwork, 10000);
+
+    await signAndBroadcast();
+
+    await createTransaction$({
+      transaction: {
+        amount: artwork.editions,
+        artwork_id: artwork.id,
+        asset: artwork.asking_asset,
+        hash: $psbt.extractTransaction().getId(),
+        psbt: $psbt.toBase64(),
+        type: "auction",
+      },
+    });
+  };
+
   let setupRoyalty = async () => {
     if (artwork.royalty || !royalty) return true;
 
@@ -168,6 +189,7 @@
     try {
       e.preventDefault();
 
+      await setupAuction();
       await spendPreviousSwap();
       await setupRoyalty();
       await setupSwaps();
@@ -225,8 +247,8 @@
 
   let start_date, end_date, start_time, end_time;
   let auction_enabled, auction_underway;
-  $: setupAuction(auction_enabled);
-  let setupAuction = () => {
+  $: enableAuction(auction_enabled);
+  let enableAuction = () => {
     if (!start_date) {
       start_date = format(new Date(), "yyyy-MM-dd");
       start_time = format(new Date(), "HH:mm");

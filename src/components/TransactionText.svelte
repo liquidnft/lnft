@@ -24,6 +24,8 @@
     {val(transaction.asset, transaction.amount)}
     {ticker(transaction.asset)}
     for
+  {:else if transaction.type === 'auction'}
+    setup an auction for
   {:else if transaction.type === 'royalty'}
     added a
     {transaction.artwork.royalty}% royalty to
