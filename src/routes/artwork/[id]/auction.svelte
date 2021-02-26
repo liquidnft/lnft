@@ -22,6 +22,7 @@
     isWithinInterval,
     parse,
     parseISO,
+    addMinutes,
   } from "date-fns";
   import {
     btc,
@@ -170,10 +171,11 @@
     if (compareAsc(start, end) === 1)
       throw new Error("Start date must precede end date");
 
+    let finished = artwork.auction_end || !auction_enabled;
     artwork.auction_start = start;
     artwork.auction_end = end;
 
-    if (artwork.auction_end || !auction_enabled) return true;
+    if (finished) return true;
 
     await requirePassword();
 
@@ -276,11 +278,11 @@
   let enableAuction = () => {
     if (!start_date) {
       start_date = format(new Date(), "yyyy-MM-dd");
-      start_time = format(new Date(), "HH:mm");
+      start_time = format(addMinutes(new Date(), 15), "HH:mm");
     }
     if (!end_date) {
       end_date = format(addDays(new Date(), 3), "yyyy-MM-dd");
-      end_time = format(addDays(new Date(), 3), "HH:mm");
+      end_time = format(addMinutes(addDays(new Date(), 3), 15), "HH:mm");
     }
   };
 </script>

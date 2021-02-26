@@ -24,7 +24,7 @@
   <a href={`/tx/${transaction.id}`} class="text-sm secondary-color">
     [view tx]
   </a>
-  {#if $user && transaction.type === 'bid' && compareAsc(parseISO(transaction.created_at), parseISO(transaction.artwork.transferred_at)) && $user.id === transaction.artwork.owner.id}
+  {#if $user && transaction.type === 'bid' && (!transaction.artwork.transferred_at || compareAsc(parseISO(transaction.created_at), parseISO(transaction.artwork.transferred_at))) && $user.id === transaction.artwork.owner.id}
     <a
       href="#"
       on:click={() => comp.accept(transaction)}
