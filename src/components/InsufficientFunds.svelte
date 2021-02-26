@@ -86,7 +86,9 @@
     <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
       Add Funds
     </h3>
-    <button class="text-gray-400 text-xl"><i class="fas fa-times" /></button>
+    <button
+      class="text-gray-400 text-xl"
+      on:click={() => ($prompt = undefined)}><i class="fas fa-times" /></button>
   </div>
   <div class="text-center text-sm mt-6">Funds Required</div>
   <div class="text-center text-xl">{amount} {assetLabel($error.asset)}</div>

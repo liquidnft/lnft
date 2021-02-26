@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from "svelte";
   export let src;
   export let size = "small";
 </script>

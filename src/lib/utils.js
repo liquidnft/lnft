@@ -14,6 +14,9 @@ cad = "ce091c998b83c78bb71a632313ba3760f1763d9cfcffae02258ffa9865a37bd2";
 usd = "8026fa969633b7b6f504f99dde71335d633b43d18314c501055fcd88b9fcb8de";
 */
 
+const addressUser = (a) =>
+  get(addresses).find((u) => u.address === a || u.multisig === a);
+
 const addressLabel = (address) => {
   let $addresses = get(addresses);
 
@@ -162,6 +165,7 @@ const fullscreen = (elem) => {
 
 export {
   addressLabel,
+  addressUser,
   assetLabel,
   btc,
   cad,

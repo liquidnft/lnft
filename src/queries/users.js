@@ -57,8 +57,10 @@ export const topArtists = `subscription {
 
 export const getAddresses = `subscription {
   users {
+    id
     address
     multisig
     username
+    avatar_url
   }
 }`;

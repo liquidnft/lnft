@@ -1,4 +1,5 @@
 <script>
+  import Avatar from "$components/Avatar";
   import { addresses, psbt } from "$lib/store";
   import Check from "$icons/check";
   import reverse from "buffer-reverse";
@@ -7,15 +8,17 @@
   import {
     explorer,
     addressLabel,
+    addressUser,
     assetLabel,
     ticker,
     val,
     btc,
+    goto,
   } from "$lib/utils";
 
   export let summary = false;
 
-  let ins, outs, totals, senders, recipients, tx, showDetails;
+  let ins, outs, totals, senders, recipients, tx, showDetails, users;
   $: init($psbt);
   let init = async (p) => {
     if (!p) return;
@@ -32,6 +35,7 @@
     totals = {};
     senders = {};
     recipients = {};
+    users = {};
 
     for (let i = 0; i < tx.ins.length; i++) {
       let { hash, index } = tx.ins[i];
@@ -45,8 +49,9 @@
 
       ins = [...ins, input];
 
-      let user = addressLabel(input.scriptpubkey_address);
-      let { asset } = input;
+      let { asset, scriptpubkey_address: address } = input;
+      let user = addressLabel(address);
+      users[user] = addressUser(address);
 
       if (!totals[user]) totals[user] = {};
       if (!totals[user][asset]) totals[user][asset] = 0;
@@ -68,6 +73,8 @@
       let asset = parseAsset(out.asset);
       let value = parseVal(out.value);
 
+      users[user] = addressUser(address);
+
       if (!totals[user]) totals[user] = {};
       if (!totals[user][asset]) totals[user][asset] = 0;
       totals[user][asset] -= value;
@@ -79,53 +86,83 @@
         address,
       };
     });
-
-    console.log(totals);
   };
 </script>
 
 {#if tx}
   <div class="w-full mx-auto">
-    <div class="flex">
-      <div class="flex-grow">
+    <div class="flex gap-8">
+      <div class="w-1/2">
+        <h4 class="mb-2">Sending</h4>
         {#each Object.keys(totals) as user}
           {#if senders[user] && user !== 'Fee'}
-            <div class="font-bold">{user} sends</div>
-            {#each Object.keys(totals[user]) as asset}
-              {#if totals[user][asset] > 0}
-                <div class="flex break-all mb-2 text-sm">
-                  {val(asset, totals[user][asset])}
-                  {assetLabel(asset)}
+            <div class="flex">
+              <div class="mb-auto">
+                <Avatar src={users[user].avatar_url} />
+              </div>
+              <div class="flex ml-1 flex-grow">
+                <div>
+                  <a href={`/user/${users[user].id}`} class="secondary-color">
+                    {user}
+                  </a>
                 </div>
-              {/if}
-            {/each}
+                <div class="ml-auto">
+                  {#each Object.keys(totals[user]) as asset}
+                    {#if totals[user][asset] > 0}
+                      <div class="flex break-all mb-2">
+                        <div class="ml-auto mr-1">
+                          {val(asset, Math.abs(totals[user][asset]))}
+                        </div>
+                        <div>{assetLabel(asset)}</div>
+                      </div>
+                    {/if}
+                  {/each}
+                </div>
+              </div>
+            </div>
           {/if}
         {/each}
       </div>
 
-      <div>
+      <div class="w-1/2">
+        <h4 class="mb-2">Receiving</h4>
         {#each Object.keys(totals) as user}
           {#if recipients[user] && user !== 'Fee'}
-            <div class="font-bold">{user} receives</div>
-            {#each Object.keys(totals[user]) as asset}
-              {#if totals[user][asset] < 0}
-                <div class="flex break-all mb-2 text-sm">
-                  {val(asset, Math.abs(totals[user][asset]))}
-                  {assetLabel(asset)}
+            <div class="flex">
+              <div class="mb-auto">
+                <Avatar src={users[user].avatar_url} />
+              </div>
+              <div class="flex ml-1 flex-grow">
+                <div>
+                  <a href={`/user/${users[user].id}`} class="secondary-color">
+                    {user}
+                  </a>
                 </div>
-              {/if}
-            {/each}
+                <div class="ml-auto">
+                  {#each Object.keys(totals[user]) as asset}
+                    {#if totals[user][asset] < 0}
+                      <div class="flex break-all mb-2">
+                        <div class="mx-auto mr-1">
+                          {val(asset, Math.abs(totals[user][asset]))}
+                        </div>
+                        <div>{assetLabel(asset)}</div>
+                      </div>
+                    {/if}
+                  {/each}
+                </div>
+              </div>
+            </div>
           {/if}
         {/each}
       </div>
     </div>
 
     {#if totals['Fee']}
-    <div>
-      <div class="font-bold">fee</div>
-      <div class="text-sm">{val(btc, Math.abs(totals['Fee'][btc]))} BTC</div>
-    </div>
-  {/if}
+      <div class="flex mt-6">
+        <h4 class="mr-1">Fee</h4>
+        <div>{val(btc, Math.abs(totals['Fee'][btc]))} BTC</div>
+      </div>
+    {/if}
 
     {#if showDetails}
       <div class="font-bold text-xs">Transaction ID</div>
