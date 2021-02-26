@@ -37,7 +37,7 @@ const assetLabel = (asset) => {
 
   let r = $assets && $assets.find((u) => u.asset === asset);
 
-  return r ? r.title || r.name : ticker(asset);
+  return r ? (r.title || r.name || 'Untitled') : ticker(asset);
 };
 
 const tickers = {
@@ -116,7 +116,8 @@ const pick = (obj, ...keys) =>
   Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));
 
 const err = (e) => {
-  if (e instanceof String) e = { message: e };
+  if (typeof e === "string") e = { message: e };
+  console.log(e);
   error.set(e);
   let msg = e.message;
   try {

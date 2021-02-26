@@ -367,10 +367,11 @@
                   <i
                     class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
                   <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                    Setting a royalty will cause the artwork to be transferred
-                    to a 2-of-2 multisig address with our server. The server
-                    will only co-sign transactions if they pay an appropriate
-                    royalty amount to the original artist.
+                    Setting a royalty involves transferring the artwork to 
+                    a 2-of-2 multisig address with Raretoshi. Our server
+                    will co-sign transactions so long as they pay the specified royalty
+                    to the original artist. Collectors will not be able to transfer the NFT
+                    to an external wallet outside the Raretoshi platform.
                   </span>
                 </span></label>
               <input

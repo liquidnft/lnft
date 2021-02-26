@@ -46,5 +46,5 @@
   {/if}
   <a
     href={`/artwork/${transaction.artwork.id}`}
-    class="secondary-color">{transaction.artwork.title}</a>
+    class="secondary-color">{transaction.artwork.title || 'Untitled'}</a>
 </div>

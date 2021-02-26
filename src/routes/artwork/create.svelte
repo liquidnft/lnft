@@ -110,10 +110,13 @@
   };
 
   let submit = async (e) => {
+    e.preventDefault();
+
+    if (!type) return err("Unrecognized file type");
+
     loading = true;
 
     try {
-      e.preventDefault();
       await requireLogin();
 
       await issue();
