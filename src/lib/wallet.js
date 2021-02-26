@@ -564,4 +564,4 @@ export const requestSignature = async (psbt) => {
   return Psbt.fromBase64(base64);
 };
 
-export const getAddress = () => Address.fromOutputScript(out.script, network);
+export const getAddress = (out) => Address.fromOutputScript(out.script, network);

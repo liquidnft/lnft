@@ -21,7 +21,7 @@ const addressLabel = (address) => {
 
   if ($addresses) {
     r = $addresses.find((u) => u.multisig === address);
-    if (r) return r.username + " 2of2";
+    if (r) return r.username + "+raretoshi";
     r = $addresses.find((u) => u.address === address);
     if (r) return r.username;
   }
