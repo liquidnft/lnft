@@ -124,7 +124,7 @@ services:
       database__connection__user: root
       database__connection__password: '${HASURA_GRAPHQL_ADMIN_SECRET}'
       database__connection__database: ghost
-      url: http://localhost:8082
+      url: https://blog.raretoshi.com
       NODE_ENV: development
     volumes:
       - ./ghost-data:/var/lib/ghost/content
