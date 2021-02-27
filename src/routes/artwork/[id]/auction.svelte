@@ -157,6 +157,8 @@
 
   let createTransaction$ = mutation(createTransaction);
   let setupAuction = async () => {
+    if (!auction_enabled) return true;
+
     let start = parse(
       `${start_date} ${start_time}`,
       "yyyy-MM-dd HH:mm",
@@ -171,11 +173,12 @@
     if (compareAsc(start, end) === 1)
       throw new Error("Start date must precede end date");
 
-    let finished = artwork.auction_end || !auction_enabled;
+    let newAuction = !artwork.auction_end;
+
     artwork.auction_start = start;
     artwork.auction_end = end;
 
-    if (finished) return true;
+    if (!newAuction) return true;
 
     await requirePassword();
 
