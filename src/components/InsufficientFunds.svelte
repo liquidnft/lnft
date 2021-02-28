@@ -3,13 +3,13 @@
   import { onMount, tick } from "svelte";
   import qrcode from "qrcode-generator-es6";
   import { balances, pending, prompt, error, user, token } from "$lib/store";
-  import { assetLabel, copy, fullscreen, val } from "$lib/utils";
+  import { assetLabel, copy, err, fullscreen, val } from "$lib/utils";
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
 
   let loading;
   let amount;
-  $: amount = val($error.asset, $error.amount + fee);
+  $: amount = val($error.asset, Math.max($error.amount, 1000) + fee);
   let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
   let img;
@@ -47,7 +47,7 @@
       ({ address, fee } = await api
         .url("/bitcoin")
         .auth(`Bearer ${$token}`)
-        .post({ amount: $error.amount, liquidAddress: $user.address })
+        .post({ amount: Math.max($error.amount, 1000), liquidAddress: $user.address })
         .json());
     } catch (e) {
       err(e);
@@ -67,7 +67,7 @@
       ({ address, fee } = await api
         .url("/lightning")
         .auth(`Bearer ${$token}`)
-        .post({ amount: $error.amount, liquidAddress: $user.address })
+        .post({ amount: Math.max($error.amount, 1000), liquidAddress: $user.address })
         .json());
     } catch (e) {
       err(e);
