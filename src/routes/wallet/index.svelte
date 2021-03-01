@@ -64,7 +64,7 @@
   </div>
 {:else if $balances}
   <div class="w-full xl:w-3/4 max-w-lg">
-    {#if assets.length}
+    {#if $assets.length}
       <div class="mb-5">
         <a class="secondary-color" href="/wallet/asset">{$assets.length}
           assets available in this wallet

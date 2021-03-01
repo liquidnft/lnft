@@ -66,12 +66,16 @@ export const getBalances = () => {
       ...get(poll),
       {
         name: "balances",
-        interval: setInterval(() => getUtxos(get(user).address), 5000),
+        interval: setInterval(
+          () => getUtxos(get(user).address, get(user).multisig),
+          5000
+        ),
       },
     ]);
 
-  let getUtxos = async (address) => {
-    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+  let getUtxos = async (singlesig, multisig) => {
+    let f = (a) => electrs.url(`/address/${a}/utxo`).get().json();
+    let utxos = [...(await f(singlesig)), ...(await f(multisig))];
 
     assets.set(
       utxos
@@ -99,7 +103,7 @@ export const getBalances = () => {
     pending.set(p);
   };
 
-  return getUtxos(get(user).address);
+  return getUtxos(get(user).address, get(user).multisig);
 };
 
 const getHex = async (txid) => {
@@ -276,6 +280,7 @@ export const pay = async (asset, to, amount, fee) => {
       value: fee,
     });
 
+  debugger;
   let out = singlesig();
   if (asset === btc) {
     await fund(swap, out, asset, amount + fee);
@@ -429,7 +434,10 @@ export const createIssuance = async (artwork, contract, fee) => {
   return swap;
 };
 
-export const createSwap = async ({ asset, asking_asset, auction_end, royalty }, amount) => {
+export const createSwap = async (
+  { asset, asking_asset, auction_end, royalty },
+  amount
+) => {
   let swap = new Psbt().addOutput({
     asset: asking_asset,
     nonce: Buffer.alloc(1),
@@ -437,7 +445,7 @@ export const createSwap = async ({ asset, asking_asset, auction_end, royalty }, 
     value: amount,
   });
 
-  let ms = royalty || auction_end
+  let ms = royalty || auction_end;
 
   await fund(
     swap,
@@ -455,7 +463,13 @@ export const createOffer = async (artwork, amount, fee) => {
   amount = parseInt(amount);
   fee = parseInt(fee);
 
-  let { asking_asset: asset, artist_id, owner_id, auction_end, royalty } = artwork;
+  let {
+    asking_asset: asset,
+    artist_id,
+    owner_id,
+    auction_end,
+    royalty,
+  } = artwork;
   let out = singlesig();
 
   let swap = new Psbt()
@@ -476,7 +490,7 @@ export const createOffer = async (artwork, amount, fee) => {
   let pubkey = fromBase58(artwork.owner.pubkey, network).publicKey;
   let ownerOut;
 
-  if (auction_end || royalty && artist_id !== owner_id) {
+  if (auction_end || (royalty && artist_id !== owner_id)) {
     let value = Math.round((total * royalty) / 100);
     total += value;
 
@@ -567,4 +581,5 @@ export const requestSignature = async (psbt) => {
   return Psbt.fromBase64(base64);
 };
 
-export const getAddress = (out) => Address.fromOutputScript(out.script, network);
+export const getAddress = (out) =>
+  Address.fromOutputScript(out.script, network);

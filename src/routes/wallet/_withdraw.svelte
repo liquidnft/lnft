@@ -1,9 +1,10 @@
 <script>
   import { asset, assets, balances, psbt, user } from "$lib/store";
   import { broadcast, pay, keypair } from "$lib/wallet";
-  import { btc, info, sats, val, assetLabel } from "$lib/utils";
+  import { btc, err, info, sats, val, assetLabel } from "$lib/utils";
   import sign from "$lib/sign";
   import { ProgressLinear } from "$comp";
+  import { requirePassword } from "$lib/auth";
 
   export let withdrawing;
 
@@ -19,6 +20,7 @@
 
   let send = async (e) => {
     e.preventDefault();
+    await requirePassword();
     loading = true;
     try {
       $psbt = await pay($asset, to, sats($asset, amount), sats(btc, fee));

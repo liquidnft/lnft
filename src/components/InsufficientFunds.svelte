@@ -3,13 +3,16 @@
   import { onMount, tick } from "svelte";
   import qrcode from "qrcode-generator-es6";
   import { balances, pending, prompt, error, user, token } from "$lib/store";
-  import { assetLabel, copy, err, fullscreen, val } from "$lib/utils";
+  import { assetLabel, btc, copy, err, fullscreen, val } from "$lib/utils";
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
 
   let loading;
   let amount;
-  $: amount = val($error.asset, Math.max($error.amount, 1000) + fee);
+  $: amount = val(
+    $error.asset,
+    $error.asset === btc ? Math.max($error.amount, 1000) + fee : $error.amount
+  );
   let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
   let img;
@@ -40,14 +43,17 @@
   };
 
   let fee = 0;
-  let btc = async () => {
+  let bitcoin = async () => {
     fee = 0;
     loading = true;
     try {
       ({ address, fee } = await api
         .url("/bitcoin")
         .auth(`Bearer ${$token}`)
-        .post({ amount: Math.max($error.amount, 1000), liquidAddress: $user.address })
+        .post({
+          amount: Math.max($error.amount, 1000),
+          liquidAddress: $user.address,
+        })
         .json());
     } catch (e) {
       err(e);
@@ -67,7 +73,10 @@
       ({ address, fee } = await api
         .url("/lightning")
         .auth(`Bearer ${$token}`)
-        .post({ amount: Math.max($error.amount, 1000), liquidAddress: $user.address })
+        .post({
+          amount: Math.max($error.amount, 1000),
+          liquidAddress: $user.address,
+        })
         .json());
     } catch (e) {
       err(e);
@@ -120,19 +129,21 @@
         <i class="far fa-clone ml-2" /></button>
     {/if}
 
-    <div class="flex justify-center text-center">
-      <button
-        on:click={btc}
-        class="mr-2 center font-medium secondary-color">Bitcoin
-      </button>
-      <button
-        on:click={liquid}
-        class="mr-2 center font-medium secondary-color">Liquid
-      </button>
-      <button
-        on:click={lightning}
-        class="center font-medium secondary-color">Lightning
-      </button>
-    </div>
+    {#if $error.asset === btc}
+      <div class="flex justify-center text-center">
+        <button
+          on:click={bitcoin}
+          class="mr-2 center font-medium secondary-color">Bitcoin
+        </button>
+        <button
+          on:click={liquid}
+          class="mr-2 center font-medium secondary-color">Liquid
+        </button>
+        <button
+          on:click={lightning}
+          class="center font-medium secondary-color">Lightning
+        </button>
+      </div>
+    {/if}
   </div>
 </div>
