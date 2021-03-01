@@ -60,7 +60,7 @@
 
   .container{
     background-color:#ECF6F7;
-    height: 100vh;
+    height: auto;
     width: 100% !important;
     margin: 0;
     max-width: 100%;

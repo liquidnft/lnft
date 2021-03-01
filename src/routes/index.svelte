@@ -72,8 +72,8 @@
 <div class="flex mx-auto justify-center">
   <div class="header mt-10 md:mt-20 text-center">
     <h1 class="mb-10 text-left md:text-center w-2/3 md:w-full">
-      The Raretoshi
-      <br />digital art gallery
+      Raretoshi
+      <br />digital art
     </h1>
     <p class="md:max-w-md mx-auto text-left md:text-center">
       Upload, collect, and transact rare digital artworks as secure assets in
