@@ -2,7 +2,8 @@ version: '3.6'
 services:
   app:
     container_name: app
-    image: asoltys/app-server
+    build:
+      context: ./app
     environment:
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       CLOUDFLARE_TOKEN: '${CLOUDFLARE_TOKEN}'
@@ -19,10 +20,6 @@ services:
     ports:
       - '8091:8091'
       - '8092:8092'
-    volumes:
-      - ./app:/app
-      - ${STORAGE_DIR}:/export
-    network_mode: host
   postgres:
     container_name: postgres
     image: postgres:12
@@ -150,7 +147,7 @@ services:
     image: vulpemventures/esplora:latest
     container_name: esplora-liquid
     environment:
-      API_URL: ${LIQUID_ESPLORA_URL}
+      API_URL: ${LIQUID_ELECTRS_URL}
       NATIVE_ASSET_ID: 5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225
       IS_ELEMENTS: 1
     ports:
