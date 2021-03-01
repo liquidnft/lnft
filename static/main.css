@@ -133,10 +133,9 @@
   .secondary-btn, .button-transparent{
     border-radius: 30px;
     padding: 0.7rem 1.5rem !important;
-    color: #133E7C;
     font-weight: bold;
     background: none;
-    border:1px solid #133E7C;
+    border:1px solid #000;
   }
 
   .button-trans-gray{
