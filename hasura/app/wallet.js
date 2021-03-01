@@ -39,7 +39,9 @@ const sign = (psbt, sighash = 1, privkey) => {
       psbt = psbt
         .signInput(i, ECPair.fromPrivateKey(privkey), sighashTypes)
         .finalizeInput(i);
-    } catch (e) {}
+    } catch (e) {
+      // console.log(e.message); 
+    }
   });
 
   return psbt;

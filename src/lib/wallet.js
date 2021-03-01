@@ -230,12 +230,13 @@ const fund = async (
 
   for (var j = 0; j < i; j++) {
     let prevout = utxos[j];
-    let tx = Transaction.fromHex(await getHex(prevout.txid));
+    let hex = await getHex(prevout.txid);
 
     let input = {
       hash: prevout.txid,
       index: prevout.vout,
-      witnessUtxo: tx.outs[prevout.vout],
+      // witnessUtxo: tx.outs[prevout.vout],
+      nonWitnessUtxo: Buffer.from(hex, "hex"),
       redeemScript: redeem.output,
       sighashType,
     };

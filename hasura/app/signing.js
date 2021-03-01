@@ -68,11 +68,14 @@ app.post("/sign", auth, async (req, res) => {
         auction_start,
         auction_end,
       }) => {
-        let start = parseISO(auction_start);
-        let end = parseISO(auction_end);
 
-        if (end && isWithinInterval(new Date(), { start, end }))
-          throw new Error("Auction underway");
+        if (auction_end) {
+          let start = parseISO(auction_start);
+          let end = parseISO(auction_end);
+
+          if (isWithinInterval(new Date(), { start, end }))
+            throw new Error("Auction underway");
+        }
 
         let outs = outputs.filter((o) => o.asset === asking_asset);
         let toArtist = outs

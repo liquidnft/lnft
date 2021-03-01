@@ -1,10 +1,11 @@
 <script>
   import Avatar from "$components/Avatar";
-  import { addresses, psbt } from "$lib/store";
+  import { addresses, psbt, user } from "$lib/store";
   import Check from "$icons/check";
   import reverse from "buffer-reverse";
   import { electrs } from "$lib/api";
   import { getAddress, parseVal, parseAsset } from "$lib/wallet";
+  import { Psbt } from "@asoltys/liquidjs-lib";
   import {
     explorer,
     addressLabel,
@@ -87,7 +88,16 @@
       };
     });
   };
+
+  let base64;
+  $: read(base64);
+  let read = (base64) => base64 && ($psbt = Psbt.fromBase64(base64));
 </script>
+
+{#if $user && $user.is_admin}
+  <textarea class="w-full mb-2" bind:value={base64} placeholder="PSBT Base64" />
+  <button on:click={() => init($psbt)} class="primary-btn mb-6">Parse</button>
+{/if}
 
 {#if tx}
   <div class="w-full mx-auto">
@@ -161,6 +171,15 @@
       <div class="flex mt-6">
         <h4 class="mr-1">Fee</h4>
         <div>{val(btc, Math.abs(totals['Fee'][btc]))} BTC</div>
+      </div>
+    {/if}
+
+    {#if $user && $user.is_admin}
+      <div
+        class="text-xs my-6 cursor-pointer"
+        on:click={() => (showDetails = !showDetails)}>
+        View details
+        <i class="fas fa-chevron-down ml-2" />
       </div>
     {/if}
 
