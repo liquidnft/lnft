@@ -1,6 +1,7 @@
 const toBuffer = require("blob-to-buffer");
 const { formatISO } = require("date-fns");
 const fs = require("fs");
+require('make-promises-safe');
 
 app = require("fastify")({
   logger: true,

@@ -101,22 +101,22 @@ setInterval(
                           artwork: { editions: amount, asset },
                         } = transaction;
 
-                          await hasura
-                            .post({
-                              query: insertTransaction,
-                              variables: {
-                                transaction: {
-                                  type: "receipt",
-                                  user_id: transaction.artwork.owner_id,
-                                  artwork_id,
-                                  hash,
-                                  psbt,
-                                  amount,
-                                  asset,
-                                },
+                        await hasura
+                          .post({
+                            query: insertTransaction,
+                            variables: {
+                              transaction: {
+                                type: "receipt",
+                                user_id: transaction.artwork.owner_id,
+                                artwork_id,
+                                hash,
+                                psbt,
+                                amount,
+                                asset,
                               },
-                            })
-                            .json();
+                            },
+                          })
+                          .json().catch(console.log);
                       }
 
                       try {
@@ -174,7 +174,8 @@ app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
 });
 
 app.get("/transactions", auth, async (req, res) => {
-  let query = `query {
+  try {
+    let query = `query {
     currentuser {
       id
       address
@@ -182,49 +183,49 @@ app.get("/transactions", auth, async (req, res) => {
     } 
   }`;
 
-  let { data } = await api(req.headers).post({ query }).json();
-  let user = data.currentuser[0];
+    let { data } = await api(req.headers).post({ query }).json().catch(console.log);
+    let user = data.currentuser[0];
 
-  let get = (addr) => electrs.url(`/address/${addr}/txs`).get().json();
-  let txns = [...(await get(user.address)), ...(await get(user.multisig))];
+    let get = (addr) => electrs.url(`/address/${addr}/txs`).get().json().catch(console.log);
+    let txns = [...(await get(user.address)), ...(await get(user.multisig))];
 
-  query = `query {
+    query = `query {
     transactions(where: { user_id: {_eq: "${user.id}"}})  {
       hash
     }
   }`;
 
-  let {
-    data: { transactions },
-  } = await hasura.post({ query }).json();
+    let {
+      data: { transactions },
+    } = await hasura.post({ query }).json().catch(console.log);
 
-  let unseen = txns.filter(
-    (tx) => !transactions.find((t) => tx.txid === t.hash)
-  );
-  for (let i = 0; i < unseen.length; i++) {
-    let { txid, vin, vout, status } = unseen[i];
-    let total = {};
-    for (let j = 0; j < vin.length; j++) {
-      let { txid, vout } = vin[j];
-      let tx = await electrs
-        .url(`/tx/${txid}`)
-        .get()
-        .json()
-        .catch(() => {});
-      let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
-      if ([user.address, user.multisig].includes(a))
-        total[asset] ? (total[asset] -= value) : (total[asset] = -value);
-    }
-    vout.map(({ asset, value, scriptpubkey_address: a }) => {
-      if ([user.address, user.multisig].includes(a))
-        total[asset] ? (total[asset] += value) : (total[asset] = value);
-    });
+    let unseen = txns.filter(
+      (tx) => !transactions.find((t) => tx.txid === t.hash)
+    );
+    for (let i = 0; i < unseen.length; i++) {
+      let { txid, vin, vout, status } = unseen[i];
+      let total = {};
+      for (let j = 0; j < vin.length; j++) {
+        let { txid, vout } = vin[j];
+        let tx = await electrs
+          .url(`/tx/${txid}`)
+          .get()
+          .json()
+          .catch(console.log);
+        let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
+        if ([user.address, user.multisig].includes(a))
+          total[asset] ? (total[asset] -= value) : (total[asset] = -value);
+      }
+      vout.map(({ asset, value, scriptpubkey_address: a }) => {
+        if ([user.address, user.multisig].includes(a))
+          total[asset] ? (total[asset] += value) : (total[asset] = value);
+      });
 
-    let assets = Object.keys(total);
-    for (i = 0; i < assets.length; i++) {
-      let asset = assets[i];
-      let type = total[asset] < 0 ? "withdrawal" : "deposit";
-      query = `mutation {
+      let assets = Object.keys(total);
+      for (i = 0; i < assets.length; i++) {
+        let asset = assets[i];
+        let type = total[asset] < 0 ? "withdrawal" : "deposit";
+        query = `mutation {
         insert_transactions_one(object: {
           asset: "${asset}",
           type: "${type}",
@@ -235,9 +236,9 @@ app.get("/transactions", auth, async (req, res) => {
         }
       }`;
 
-      let insert = await api(req.headers).post({ query }).json();
-      if (status.block_time) {
-        query = `mutation {
+        let insert = await api(req.headers).post({ query }).json().catch(console.log);
+        if (status.block_time) {
+          query = `mutation {
           update_transactions_by_pk(
             pk_columns: { id: "${insert.data.insert_transactions_one.id}" }, 
             _set: { created_at: "${formatISO(
@@ -248,10 +249,13 @@ app.get("/transactions", auth, async (req, res) => {
           }
         }`;
 
-        await hasura.post({ query }).json();
+          await hasura.post({ query }).json().catch(console.log);
+        }
       }
     }
-  }
 
-  res.send({});
+    res.send({});
+  } catch (e) {
+    console.log(e);
+  }
 });
