@@ -18,6 +18,7 @@ import reverse from "buffer-reverse";
 import {
   assets,
   balances,
+  fee,
   pending,
   password,
   snack,
@@ -266,9 +267,8 @@ const fund = async (
   }
 };
 
-export const pay = async ({ asset, auction_end, royalty }, to, amount, fee) => {
+export const pay = async ({ asset, auction_end, royalty }, to, amount) => {
   amount = parseInt(amount);
-  fee = parseInt(fee);
 
   let ms = !!(royalty || auction_end);
 
@@ -283,21 +283,21 @@ export const pay = async ({ asset, auction_end, royalty }, to, amount, fee) => {
       asset: btc,
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
-      value: fee,
+      value: get(fee),
     });
 
   let out = ms ? multisig() : singlesig();
   if (asset === btc) {
-    await fund(swap, singlesig(), asset, amount + fee);
+    await fund(swap, singlesig(), asset, amount + get(fee));
   } else {
     await fund(swap, out, asset, amount, 1, ms);
-    await fund(swap, singlesig(), btc, fee);
+    await fund(swap, singlesig(), btc);
   }
 
   return swap;
 };
 
-export const cancelSwap = async ({ auction_end, royalty, asset }, fee) => {
+export const cancelSwap = async ({ auction_end, royalty, asset }) => {
   let ms = royalty || auction_end;
   let out = ms ? multisig() : singlesig();
 
@@ -312,11 +312,11 @@ export const cancelSwap = async ({ auction_end, royalty, asset }, fee) => {
       asset: btc,
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
-      value: fee,
+      value: get(fee),
     });
 
   await fund(swap, out, asset, 1);
-  await fund(swap, singlesig(), btc, fee);
+  await fund(swap, singlesig(), btc);
 
   return swap;
 };
@@ -354,7 +354,7 @@ export const signAndBroadcast = async () => {
   await broadcast();
 };
 
-export const executeSwap = async (artwork, fee) => {
+export const executeSwap = async (artwork) => {
   let {
     editions,
     list_price,
@@ -382,7 +382,7 @@ export const executeSwap = async (artwork, fee) => {
       asset: btc,
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
-      value: fee,
+      value: get(fee),
     });
 
   if (royalty && artist_id !== owner_id) {
@@ -397,14 +397,14 @@ export const executeSwap = async (artwork, fee) => {
     });
   }
 
-  if (asking_asset === btc) total += fee;
-  else await fund(swap, out, btc, fee);
+  if (asking_asset === btc) total += get(fee);
+  else await fund(swap, out, btc);
   await fund(swap, out, asking_asset, total);
 
   return swap;
 };
 
-export const createIssuance = async (artwork, contract, fee) => {
+export const createIssuance = async (artwork, contract) => {
   let out = singlesig();
 
   let swap = new Psbt()
@@ -413,7 +413,7 @@ export const createIssuance = async (artwork, contract, fee) => {
       asset: btc,
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
-      value: fee,
+      value: get(fee),
     })
     // op_return
     .addOutput({
@@ -423,7 +423,7 @@ export const createIssuance = async (artwork, contract, fee) => {
       value: 0,
     });
 
-  await fund(swap, out, btc, fee);
+  await fund(swap, out, btc);
 
   swap.addIssuance({
     assetAmount: artwork.editions,
@@ -462,9 +462,8 @@ export const createSwap = async (
   return swap;
 };
 
-export const createOffer = async (artwork, amount, fee) => {
+export const createOffer = async (artwork, amount) => {
   amount = parseInt(amount);
-  fee = parseInt(fee);
 
   let {
     asking_asset: asset,
@@ -487,7 +486,7 @@ export const createOffer = async (artwork, amount, fee) => {
       asset: btc,
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
-      value: fee,
+      value: get(fee),
     });
 
   let total = parseInt(amount);
@@ -535,9 +534,9 @@ export const createOffer = async (artwork, amount, fee) => {
   }
 
   if (asset === btc) {
-    total += fee;
+    total += get(fee);
   } else {
-    await fund(swap, out, btc, fee);
+    await fund(swap, out, btc);
   }
 
   await fund(swap, out, asset, total);
@@ -545,7 +544,7 @@ export const createOffer = async (artwork, amount, fee) => {
   return swap;
 };
 
-export const sendToMultisig = async (artwork, fee) => {
+export const sendToMultisig = async (artwork) => {
   let out = singlesig();
   let { output: script } = multisig();
   let { asset, editions: value } = artwork;
@@ -561,15 +560,15 @@ export const sendToMultisig = async (artwork, fee) => {
       asset: btc,
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
-      value: fee,
+      value: get(fee),
     });
 
   try {
     if (asset === btc) {
-      await fund(swap, out, btc, value + fee);
+      await fund(swap, out, btc, value + get(fee));
     } else {
       await fund(swap, out, asset, value);
-      await fund(swap, out, btc, fee);
+      await fund(swap, out, btc);
     }
   } catch (e) {
     console.log(e.message);

@@ -4,7 +4,7 @@
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
-  import { password, sighash, prompt, psbt, user, token } from "$lib/store";
+  import { fee, password, sighash, prompt, psbt, user, token } from "$lib/store";
   import { requireLogin, requirePassword } from "$lib/auth";
   import { createTransaction } from "$queries/transactions";
   import {
@@ -127,10 +127,11 @@
   };
 
   const setupSwaps = async () => {
-    if (!stale && ( 
-      !list_price ||
-      parseInt(artwork.list_price || 0) ===
-        sats(artwork.asking_asset, list_price))
+    if (
+      !stale &&
+      (!list_price ||
+        parseInt(artwork.list_price || 0) ===
+          sats(artwork.asking_asset, list_price))
     )
       return true;
 
@@ -182,7 +183,7 @@
 
     await requirePassword();
 
-    $psbt = await sendToMultisig(artwork, 10000);
+    $psbt = await sendToMultisig(artwork);
 
     await signAndBroadcast();
 
@@ -205,7 +206,7 @@
     artwork.royalty = royalty;
     await requirePassword();
 
-    $psbt = await sendToMultisig(artwork, 10000);
+    $psbt = await sendToMultisig(artwork);
 
     await signAndBroadcast();
 
