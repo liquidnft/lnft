@@ -108,7 +108,9 @@ app.post("/sign", auth, async (req, res) => {
           }
 
           if (
-            outputs.find((o) => o.asset === asset && !multisig.includes(o.address))
+            outputs.find(
+              (o) => o.asset === asset && !multisig.includes(o.address)
+            )
           ) {
             throw new Error("Unrecognized recipient address");
           }

@@ -3,9 +3,8 @@
   import { prompt, snack, psbt, user } from "$lib/store";
   import { mutation } from "@urql/svelte";
   import { acceptOffer } from "$queries/transactions";
-  import { broadcast, requestSignature } from "$lib/wallet";
+  import { broadcast, sign, requestSignature } from "$lib/wallet";
   import { err, info } from "$lib/utils";
-  import sign from "$lib/sign";
   import { requirePassword } from "$lib/auth";
   import { Psbt } from "@asoltys/liquidjs-lib";
 
@@ -14,11 +13,11 @@
     try {
       await requirePassword();
       $psbt = Psbt.fromBase64(base64);
-      await sign();
-      if (artwork.royalty) {
+      $psbt = await sign();
+      if (artwork.royalty || artwork.auction_end) {
         $psbt = await requestSignature($psbt);
       }
-      await broadcast($psbt);
+      await broadcast();
       acceptOffer$({
         id: artwork.id,
         owner_id: artwork.bid[0].user.id,

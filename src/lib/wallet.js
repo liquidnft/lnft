@@ -175,7 +175,10 @@ export const multisig = (key) => {
   if (!key) key = keypair();
 
   // let { pubkey } = await api.url("/pubkey").get().json();
-  let pubkey = Buffer.from("02e4520146cb2536acc5431d2e786f89470aa8ed3e2c61afecfc8d1e858e01eaa8", "hex");
+  let pubkey = Buffer.from(
+    "02e4520146cb2536acc5431d2e786f89470aa8ed3e2c61afecfc8d1e858e01eaa8",
+    "hex"
+  );
 
   let redeem = payments.p2ms({
     m: 2,
@@ -326,8 +329,8 @@ export const sign = (sighash = 1) => {
   $psbt.data.inputs.map((_, i) => {
     try {
       $psbt = $psbt
-          .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
-          .finalizeInput(i);
+        .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
+        .finalizeInput(i);
     } catch (e) {
       // console.log(e.message);
     }
@@ -471,6 +474,7 @@ export const createOffer = async (artwork, amount, fee) => {
     royalty,
   } = artwork;
   let out = singlesig();
+  let ms = !!(auction_end || royalty);
 
   let swap = new Psbt()
     .addOutput({
@@ -490,22 +494,24 @@ export const createOffer = async (artwork, amount, fee) => {
   let pubkey = fromBase58(artwork.owner.pubkey, network).publicKey;
   let ownerOut;
 
-  if (auction_end || (royalty && artist_id !== owner_id)) {
-    let value = Math.round((total * royalty) / 100);
-    total += value;
+  if (ms) {
+    if (royalty && artist_id !== owner_id) {
+      let value = Math.round((total * royalty) / 100);
+      total += value;
+
+      swap.addOutput({
+        asset,
+        value,
+        nonce: Buffer.alloc(1),
+        script: Address.toOutputScript(artwork.artist.address, network),
+      });
+    }
 
     swap.addOutput({
       asset: artwork.asset,
       nonce: Buffer.alloc(1),
       script: multisig().output,
       value: 1,
-    });
-
-    swap.addOutput({
-      asset,
-      value,
-      nonce: Buffer.alloc(1),
-      script: Address.toOutputScript(artwork.artist.address, network),
     });
 
     ownerOut = multisig({ pubkey });
@@ -520,7 +526,6 @@ export const createOffer = async (artwork, amount, fee) => {
     });
   }
 
-  let ms = !!(auction_end || royalty);
   try {
     await fund(swap, ownerOut, artwork.asset, artwork.editions, 1, ms);
   } catch (e) {

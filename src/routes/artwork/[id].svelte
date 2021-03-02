@@ -74,7 +74,7 @@
       return;
     }
 
-    await sign();
+    $psbt = await sign();
     transaction.psbt = $psbt.toBase64();
     transaction.hash = $psbt.__CACHE.__TX.getId();
     await save();
