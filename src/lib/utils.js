@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { assets, addresses, error, full, prompt, snack } from "$lib/store";
+import { assets, artworks, addresses, error, full, prompt, snack } from "$lib/store";
 import { goto as go } from "$app/navigation";
 import { tick } from "svelte";
 
@@ -33,9 +33,9 @@ const addressLabel = (address) => {
 };
 
 const assetLabel = (asset) => {
-  let $assets = get(assets);
+  let $artworks = get(artworks);
 
-  let r = $assets && $assets.find((u) => u.asset === asset);
+  let r = $artworks && $artworks.find((u) => u.asset === asset);
 
   return r ? (r.title || r.name || 'Untitled') : ticker(asset);
 };

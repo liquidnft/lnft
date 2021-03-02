@@ -4,6 +4,7 @@ const { cf, hasura, hbp } = require("./api");
 const wretch = require("wretch");
 const ipfsClient = require("ipfs-http-client");
 const { globSource } = ipfsClient;
+const faces = require("./faces");
 
 auth = {
   preValidation(req, res, done) {
@@ -61,9 +62,15 @@ app.post("/register", async (req, res) => {
       .post({ email, password })
       .res();
 
+    function rand(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     response = await wretch()
       .url(
-        `https://unavatar.now.sh/${email}?fallback=https://icotar.com/avatar/${email}`
+        `https://unavatar.now.sh/${email}?fallback=${faces[rand(0, 300)]}`
       )
       .get()
       .res();

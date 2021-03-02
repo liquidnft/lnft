@@ -107,15 +107,21 @@
         {#each Object.keys(totals) as user}
           {#if senders[user] && user !== 'Fee'}
             <div class="flex mb-2">
-              <div class="mb-auto">
-                <Avatar src={users[user].avatar_url} />
-              </div>
-              <div class="flex ml-1 flex-grow sm:pr-8">
-                <div>
-                  <a href={`/user/${users[user].id}`} class="secondary-color">
-                    {user}
-                  </a>
+              {#if users[user]}
+                <div class="mb-auto">
+                  <Avatar src={users[user].avatar_url} />
                 </div>
+              {/if}
+              <div class="flex ml-1 flex-grow sm:pr-8">
+                {#if users[user]}
+                  <div>
+                    <a href={`/user/${users[user].id}`} class="secondary-color">
+                      {user}
+                    </a>
+                  </div>
+                {:else}
+                  <div>{user}</div>
+                {/if}
                 <div class="ml-auto">
                   {#each Object.keys(totals[user]) as asset}
                     {#if totals[user][asset] > 0}
@@ -139,15 +145,21 @@
         {#each Object.keys(totals) as user}
           {#if recipients[user] && user !== 'Fee'}
             <div class="flex mb-2">
-              <div class="mb-auto">
-                <Avatar src={users[user].avatar_url} />
-              </div>
-              <div class="flex ml-1 flex-grow">
-                <div>
-                  <a href={`/user/${users[user].id}`} class="secondary-color">
-                    {user}
-                  </a>
+              {#if users[user]}
+                <div class="mb-auto">
+                  <Avatar src={users[user].avatar_url} />
                 </div>
+              {/if}
+              <div class="flex ml-1 flex-grow">
+                {#if users[user]}
+                  <div>
+                    <a href={`/user/${users[user].id}`} class="secondary-color">
+                      {user}
+                    </a>
+                  </div>
+                {:else}
+                  <div>{user}</div>
+                {/if}
                 <div class="ml-auto">
                   {#each Object.keys(totals[user]) as asset}
                     {#if totals[user][asset] < 0}

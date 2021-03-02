@@ -1,6 +1,7 @@
 <script>
-  import { asset, assets, balances, psbt, user } from "$lib/store";
-  import { broadcast, pay, keypair } from "$lib/wallet";
+  import { tick } from "svelte";
+  import { asset, artworks, assets, balances, psbt, user } from "$lib/store";
+  import { broadcast, pay, keypair, requestSignature } from "$lib/wallet";
   import { btc, err, info, sats, val, assetLabel } from "$lib/utils";
   import sign from "$lib/sign";
   import { ProgressLinear } from "$comp";
@@ -8,10 +9,11 @@
 
   export let withdrawing;
 
-  let amount = 0.0001;
+  let amount;
   let fee = 0.00001;
   let to;
   let loading;
+
 
   $: clearForm($asset);
   let clearForm = () => {
@@ -23,9 +25,15 @@
     await requirePassword();
     loading = true;
     try {
-      $psbt = await pay($asset, to, sats($asset, amount), sats(btc, fee));
+      let artwork = $artworks.find(a => a.asset === $asset);
+      $psbt = await pay(artwork, to, sats($asset, amount), sats(btc, fee));
       await sign();
-      await broadcast($psbt);
+
+      if (artwork.auction_end || artwork.royalty) {
+        $psbt = await requestSignature($psbt);
+      } 
+
+      await broadcast();
       info("Payment sent!");
       withdrawing = false;
     } catch (e) {

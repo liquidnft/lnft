@@ -35,6 +35,8 @@ export const getAssets = `subscription {
  artworks {
    title
    asset
+   auction_end
+   royalty
  }
 }`;
 

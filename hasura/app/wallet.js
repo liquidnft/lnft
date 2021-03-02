@@ -14,7 +14,7 @@ const reverse = require("buffer-reverse");
 const network = networks.regtest;
 
 const mnemonic =
-  "actor plate kit job awful guilt myself reunion praise twenty exact firm";
+  process.env.SIGNING_SERVER_MNEMONIC;
 
 const path = "m/84'/0'/0'/0/0";
 
@@ -40,7 +40,7 @@ const sign = (psbt, sighash = 1, privkey) => {
         .signInput(i, ECPair.fromPrivateKey(privkey), sighashTypes)
         .finalizeInput(i);
     } catch (e) {
-      // console.log(e.message); 
+      console.log("SIGNING ERROR", e.message); 
     }
   });
 

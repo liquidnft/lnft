@@ -31,10 +31,6 @@ import {
 import cryptojs from "crypto-js";
 import { btc, assetLabel } from "$lib/utils";
 
-const signingKey = Buffer.from(
-  "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b",
-  "hex"
-);
 //const network = networks.liquid;
 const network = networks.regtest;
 const singleAnyoneCanPay =
@@ -75,7 +71,9 @@ export const getBalances = () => {
 
   let getUtxos = async (singlesig, multisig) => {
     let f = (a) => electrs.url(`/address/${a}/utxo`).get().json();
-    let utxos = [...(await f(singlesig)), ...(await f(multisig))];
+    let single = (await f(singlesig)).map((u) => ({ ...u, single: true }));
+    let multi = (await f(multisig)).map((u) => ({ ...u, multi: true }));
+    let utxos = [...single, ...multi];
 
     assets.set(
       utxos
@@ -176,9 +174,12 @@ export const singlesig = (key) => {
 export const multisig = (key) => {
   if (!key) key = keypair();
 
+  // let { pubkey } = await api.url("/pubkey").get().json();
+  let pubkey = Buffer.from("02e4520146cb2536acc5431d2e786f89470aa8ed3e2c61afecfc8d1e858e01eaa8", "hex");
+
   let redeem = payments.p2ms({
     m: 2,
-    pubkeys: [key.pubkey, signingKey],
+    pubkeys: [key.pubkey, pubkey],
     network,
   });
 
@@ -262,9 +263,11 @@ const fund = async (
   }
 };
 
-export const pay = async (asset, to, amount, fee) => {
+export const pay = async ({ asset, auction_end, royalty }, to, amount, fee) => {
   amount = parseInt(amount);
   fee = parseInt(fee);
+
+  let ms = !!(royalty || auction_end);
 
   let swap = new Psbt()
     .addOutput({
@@ -280,13 +283,12 @@ export const pay = async (asset, to, amount, fee) => {
       value: fee,
     });
 
-  debugger;
-  let out = singlesig();
+  let out = ms ? multisig() : singlesig();
   if (asset === btc) {
-    await fund(swap, out, asset, amount + fee);
+    await fund(swap, singlesig(), asset, amount + fee);
   } else {
-    await fund(swap, out, asset, amount);
-    await fund(swap, out, btc, fee);
+    await fund(swap, out, asset, amount, 1, ms);
+    await fund(swap, singlesig(), btc, fee);
   }
 
   return swap;
@@ -329,7 +331,6 @@ export const sign = (sighash = 1) => {
           .finalizeInput(i)
       );
     } catch (e) {
-      // console.log(e.stack);
       // console.log(e.message);
     }
   });
@@ -520,8 +521,9 @@ export const createOffer = async (artwork, amount, fee) => {
     });
   }
 
+  let ms = !!(auction_end || royalty);
   try {
-    await fund(swap, ownerOut, artwork.asset, 1, 1, !!(auction_end || royalty));
+    await fund(swap, ownerOut, artwork.asset, artwork.editions, 1, ms);
   } catch (e) {
     throw new Error(
       "Unable to construct offer, the asset could not be found in the owner's wallet"

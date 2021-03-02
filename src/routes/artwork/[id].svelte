@@ -131,11 +131,12 @@
       $psbt = await executeSwap(artwork, 500);
       await sign();
 
-      if (artwork.royalty) {
+      if (artwork.royalty || artwork.auction_end) {
         $psbt = await requestSignature($psbt);
       }
 
       await tick();
+      console.log($psbt.toBase64());
       await broadcast($psbt);
 
       let tx = $psbt.extractTransaction();

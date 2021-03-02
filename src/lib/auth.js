@@ -6,7 +6,7 @@ import { get } from "svelte/store";
 import { password as pw, poll, prompt, user, token } from "$lib/store";
 import PasswordPrompt from "$components/PasswordPrompt";
 import { goto, err } from "$lib/utils";
-import { createWallet } from "$lib/wallet";
+import { createWallet, keypair } from "$lib/wallet";
 
 export const requireLogin = async (page) => {
   await tick();

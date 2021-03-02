@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 
 export const error = writable();
 export const addresses = writable();
+export const artworks = writable([]);
 export const asset = writable();
 export const assets = writable([]);
 export const balances = writable();

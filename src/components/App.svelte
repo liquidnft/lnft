@@ -6,13 +6,13 @@
     poll,
     user,
     addresses,
-    assets,
+    artworks,
     prompt,
     token,
   } from "$lib/store";
   import { fade } from "svelte/transition";
   import { getUser, getAddresses, updateUser } from "$queries/users";
-  import { getAssets } from "$queries/artworks";
+  import { getArtworks } from "$queries/artworks";
   import { setupUrql } from "$lib/urql";
   import { operationStore, subscription } from "@urql/svelte";
   import { page } from "$app/stores";
@@ -46,8 +46,8 @@
         $addresses = b.users;
       });
 
-      subscription(operationStore(getAssets), (a, b) => {
-        $assets = b.artworks;
+      subscription(operationStore(getArtworks), (a, b) => {
+        $artworks = b.artworks;
       });
     }
   };

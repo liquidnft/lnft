@@ -736,27 +736,28 @@
   - role: approver
     permission:
       columns:
-      - is_admin
-      - is_artist
-      - address_index
-      - amp_user_id
       - address
+      - address_index
       - amp_mnemonic
+      - amp_user_id
       - avatar_url
       - bio
+      - created_at
       - display_name
       - email
       - full_name
       - gaid
+      - id
+      - is_admin
+      - is_artist
       - location
       - mnemonic
       - multisig
       - pubkey
-      - username
-      - website
-      - created_at
       - updated_at
-      - id
+      - username
+      - wallet_initialized
+      - website
       computed_fields:
       - followed
       - num_followers
