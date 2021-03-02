@@ -325,16 +325,15 @@ export const sign = (sighash = 1) => {
 
   $psbt.data.inputs.map((_, i) => {
     try {
-      psbt.set(
-        $psbt
+      $psbt = $psbt
           .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
-          .finalizeInput(i)
-      );
+          .finalizeInput(i);
     } catch (e) {
       // console.log(e.message);
     }
   });
 
+  psbt.set($psbt);
   return $psbt;
 };
 

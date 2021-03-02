@@ -11,6 +11,7 @@ const query = `
   query($assets: [String!]) {
     artworks(where: { asset: { _in: $assets }}) {
       id 
+      asset
       asking_asset
       royalty
       auction_start
@@ -37,6 +38,12 @@ const userQuery = `
     } 
   }`;
 
+const allMultisig = `query {
+  users {
+    multisig
+  } 
+}`;
+
 app.get("/pubkey", async (req, res) => {
   const { pubkey } = keypair();
   res.send({ pubkey: pubkey.toString("hex") });
@@ -44,6 +51,9 @@ app.get("/pubkey", async (req, res) => {
 
 app.post("/sign", auth, async (req, res) => {
   const userapi = wretch().url(`${HASURA_URL}/v1/graphql`).headers(req.headers);
+  const multisig = (
+    await hasura.post({ query: allMultisig }).json().catch(console.log)
+  ).data.users.map((u) => u.multisig);
 
   try {
     const { psbt } = req.body;
@@ -61,6 +71,7 @@ app.post("/sign", auth, async (req, res) => {
 
     artworks.map(
       ({
+        asset,
         royalty,
         artist,
         owner,
@@ -68,7 +79,6 @@ app.post("/sign", auth, async (req, res) => {
         auction_start,
         auction_end,
       }) => {
-
         if (auction_end) {
           let start = parseISO(auction_start);
           let end = parseISO(auction_end);
@@ -90,10 +100,18 @@ app.post("/sign", auth, async (req, res) => {
           )
           .reduce((a, b) => (a += b.value), 0);
 
-        if (toOwner && royalty) {
-          let amountDue = Math.round((toOwner * royalty) / 100);
-          if (toArtist < amountDue && artist.id !== owner.id)
-            throw new Error("Royalty not paid");
+        if (royalty) {
+          if (toOwner) {
+            let amountDue = Math.round((toOwner * royalty) / 100);
+            if (toArtist < amountDue && artist.id !== owner.id)
+              throw new Error("Royalty not paid");
+          }
+
+          if (
+            outputs.find((o) => o.asset === asset && !multisig.includes(o.address))
+          ) {
+            throw new Error("Unrecognized recipient address");
+          }
         }
       }
     );

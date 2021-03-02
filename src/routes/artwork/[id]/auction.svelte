@@ -127,10 +127,10 @@
   };
 
   const setupSwaps = async () => {
-    if (
+    if (!stale && ( 
       !list_price ||
       parseInt(artwork.list_price || 0) ===
-        sats(artwork.asking_asset, list_price)
+        sats(artwork.asking_asset, list_price))
     )
       return true;
 
@@ -198,6 +198,7 @@
     });
   };
 
+  let stale;
   let setupRoyalty = async () => {
     if (artwork.royalty || !royalty) return true;
 
@@ -218,6 +219,8 @@
         type: "royalty",
       },
     });
+
+    stale = true;
 
     info("Royalties activated!");
   };

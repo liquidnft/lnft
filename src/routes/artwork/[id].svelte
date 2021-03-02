@@ -129,14 +129,12 @@
       transaction.type = "purchase";
 
       $psbt = await executeSwap(artwork, 500);
-      await sign();
+      $psbt = await sign();
 
       if (artwork.royalty || artwork.auction_end) {
         $psbt = await requestSignature($psbt);
       }
 
-      await tick();
-      console.log($psbt.toBase64());
       await broadcast($psbt);
 
       let tx = $psbt.extractTransaction();
@@ -147,7 +145,7 @@
 
       transaction.amount = artwork.editions;
       transaction.asset = artwork.asset;
-      transaction.user
+      transaction.user;
     } catch (e) {
       err(e);
     }
@@ -362,7 +360,9 @@
         {:else if artwork.auction_end}
           <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
             <div class="mt-auto text-sm">Auction ended at</div>
-            <div class="mt-1">{format(parseISO(artwork.auction_end), "yyyy-MM-dd HH:mm")}</div>
+            <div class="mt-1">
+              {format(parseISO(artwork.auction_end), 'yyyy-MM-dd HH:mm')}
+            </div>
           </div>
         {/if}
 

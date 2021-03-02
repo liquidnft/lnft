@@ -79,7 +79,7 @@ setInterval(
             .get()
             .json(
               ({ confirmed }) =>
-                confirmed ||
+                confirmed &&
                 hasura
                   .post({ query: setConfirmed, variables: { id: tx.id } })
                   .json(

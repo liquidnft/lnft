@@ -94,10 +94,8 @@
   let read = (base64) => base64 && ($psbt = Psbt.fromBase64(base64));
 </script>
 
-{#if $user && $user.is_admin}
   <textarea class="w-full mb-2" bind:value={base64} placeholder="PSBT Base64" />
   <button on:click={() => init($psbt)} class="primary-btn mb-6">Parse</button>
-{/if}
 
 {#if tx}
   <div class="w-full mx-auto">
@@ -186,14 +184,12 @@
       </div>
     {/if}
 
-    {#if $user && $user.is_admin}
       <div
         class="text-xs my-6 cursor-pointer"
         on:click={() => (showDetails = !showDetails)}>
         View details
         <i class="fas fa-chevron-down ml-2" />
       </div>
-    {/if}
 
     {#if showDetails}
       <div class="font-bold text-xs">Transaction ID</div>

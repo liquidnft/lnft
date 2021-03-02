@@ -40,7 +40,7 @@ const sign = (psbt, sighash = 1, privkey) => {
         .signInput(i, ECPair.fromPrivateKey(privkey), sighashTypes)
         .finalizeInput(i);
     } catch (e) {
-      console.log("SIGNING ERROR", e.message); 
+      // console.log("SIGNING ERROR", e.message); 
     }
   });
 
