@@ -52,10 +52,6 @@
       bind:this={input} />
   </div>
   <div class="flex flex-col mb-4">
-    <label>Ticker</label>
-    <input placeholder="Ticker" bind:value={artwork.ticker} />
-  </div>
-  <div class="flex flex-col mb-4">
     <label>Description</label>
     <textarea placeholder="How would you describe it?" bind:value={artwork.description} />
   </div>

@@ -66,8 +66,8 @@
     url = preview || `/api/ipfs/${artwork.filename}`;
     await tick();
     if (type.includes("video")) {
-      let source = document.createElement('source');
-      source.setAttribute('src', url);
+      let source = document.createElement("source");
+      source.setAttribute("src", url);
       video.appendChild(source);
       video.load();
       video.play();
@@ -96,7 +96,13 @@
       issuer_pubkey: keypair().pubkey.toString("hex"),
       name: artwork.title,
       precision: 0,
-      ticker: artwork.ticker,
+      ticker: (artwork.title.split(" ").length > 2
+        ? artwork.title
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+        : artwork.title.substr(0, 4)
+      ).toUpperCase(),
       version: 0,
     };
 
@@ -197,7 +203,14 @@
             {#if type.includes('image')}
               <img alt="preview" src={url} class="w-full" />
             {/if}
-            <video controls class:hidden muted autoplay loop class="w-full" bind:this={video}>
+            <video
+              controls
+              class:hidden
+              muted
+              autoplay
+              loop
+              class="w-full"
+              bind:this={video}>
               Your browser does not support HTML5 video.
             </video>
             <div class="w-full bg-grey-light p-8">
