@@ -8,18 +8,18 @@
   let toggle = () => (open = !open);
 
   let hovering;
-  let enter = () => hovering = true;
-  let leave = () => hovering = false;
+  let enter = () => (hovering = true);
+  let leave = () => (hovering = false);
 </script>
 
 <style>
   .menu button {
-   width: auto;
-   text-align: left;
-   padding: 0 20px;
+    width: auto;
+    text-align: left;
+    padding: 0 20px;
   }
 
-  .menu .signin{
+  .menu .signin {
     width: 120px;
   }
 
@@ -31,15 +31,15 @@
   }
 
   .menu :global(input) {
-   width:auto;
-   width: 80%;
-   border: none;
-   background: none;
-   padding: 0.5rem 1.2rem;
+    width: auto;
+    width: 80%;
+    border: none;
+    background: none;
+    padding: 0.5rem 1.2rem;
   }
 
   .menu :global(.fa-search) {
-    font-size: 1.2rem ;
+    font-size: 1.2rem;
   }
 
   @media only screen and (max-width: 1023px) {
@@ -47,7 +47,6 @@
       display: none;
     }
   }
-
 
   @media only screen and (max-width: 640px) {
     .menu {
@@ -76,11 +75,13 @@
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
     {/if}
-    <a href={`/user/${$user.id}`} on:mouseenter={enter} on:mouseleave={leave}>
+    <!-- <a href={`/user/${$user.id}`} on:mouseenter={enter} on:mouseleave={leave}> -->
+    <a href={`/user/${$user.id}`}>
       <button on:click={toggle} class="flex">
         <Avatar src={$user.avatar_url} />
         <div class="my-auto ml-2">{$user.full_name}</div>
       </button></a>
+    <!--
     <div
       class="absolute right-0 top-8 text-right"
       class:hidden={!hovering}
@@ -96,5 +97,6 @@
             on:click={toggle}>Sign Out</button></a>
       </div>
     </div>
+    -->
   {:else}<a href="/login"><button on:click={toggle}>Sign In</button></a>{/if}
 </div>
