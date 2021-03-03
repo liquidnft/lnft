@@ -4,18 +4,38 @@
   import { logout } from "$lib/auth";
 </script>
 
-<div class="my-10">
+<style>
+    .menu{
+      display: flex;
+      flex-direction: column;
+    }
+    .menu a{
+      margin: 10px 0;
+    }
+    .menu span{
+      margin-left: 8px;
+    }
+</style>
+
+<div class="mt-10 mb-5">
   <button
     class="primary-btn"
     on:click={() => goto(`/user/${$user.id}/edit`)}>Edit Profile</button>
 </div>
 
-<div class="uppercase">
+<div class="menu uppercase">
   {#if !user.is_artist}
-    <div class="mb-2 mt-5"><a href="/become-artist">Become an Artist</a></div>
+    <a href="/become-artist">
+      <i class="far fa-user-circle"></i>
+      <span>Become an Artist</span>
+    </a>
   {/if}
-  <div class="mb-2 mt-5"><a href="/wallet">View Wallet</a></div>
-  <div class="cursor-pointer mt-5">
-    <a href="/login" on:click={logout} class="cursor-pointer">Sign Out</a>
-  </div>
+  <a href="/wallet">
+    <i class="fas fa-wallet"></i>
+    <span>View Wallet</span>
+  </a>
+  <a href="/login" on:click={logout} class="cursor-pointer">
+    <i class="fas fa-sign-out-alt"></i>
+    <span>Sign Out</span>
+  </a>
 </div>

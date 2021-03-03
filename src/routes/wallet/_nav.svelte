@@ -51,7 +51,7 @@
 
 
 {#if $user}
-<div class="text-left w-full lg:w-1/4">
+<div class="text-left w-full lg:w-1/4 uppercase">
   <h2 class="mb-5"><a href="/wallet">Wallet</a></h2>
 
   <div class="wallet-nav flex flex-col">

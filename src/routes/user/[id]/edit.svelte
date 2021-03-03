@@ -61,7 +61,7 @@
   .container{
     background-color:#ECF6F7;
     height: auto;
-    width: 100% !important;
+    min-height: 100vh;
     margin: 0;
     max-width: 100%;
   }
@@ -95,7 +95,7 @@
 
 <div class="container mx-auto py-20">
 {#if form}
-  <div class="mb-4 w-full xl:w-1/2 md:shadow rounded-xl md:p-10 m-auto lg:flex-row bg-white">
+  <div class="mb-4 w-full sm:max-w-3xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row  bg-white">
     <a class="block mb-6 text-midblue" href={`/user/${$user.id}`}><i class="fas fa-chevron-left mr-3"></i>Back</a>
     <h2 class="mb-10">Edit Profile</h2>
     <div class="flex mt-4 m-auto flex-col-reverse lg:flex-row">
@@ -127,7 +127,7 @@
           <label>Bio</label>
           <textarea placeholder="" bind:value={form.bio} />
         </div>
-        <div class="flex justify-end mt-8">
+        <div class="flex mt-8">
           <button
             on:click|preventDefault={submit}
             class="primary-btn ">Save details</button>

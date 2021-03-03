@@ -107,7 +107,7 @@
 <style>
   .container {
     background-color: #ecf6f7;
-    height: 100vh;
+    min-height: 100vh;
     width: 100% !important;
     margin: 0;
     max-width: 100%;

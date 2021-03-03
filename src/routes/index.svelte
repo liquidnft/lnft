@@ -80,7 +80,7 @@
       the Liquid Network
     </p>
     <button class="mt-10 primary-btn" on:click={() => goto('/market')}>Start
-      collecting</button>
+      exploring</button>
   </div>
 </div>
 
@@ -126,12 +126,12 @@
 <div class="container mx-auto flex flex-wrap mb-20">
   <Summary
     title="Top Collectors"
-    stat="Collected"
+    stat="Works collected"
     items={collectors}
     link="/top-collectors" />
   <Summary
-    title="Top Artists"
-    stat="Sales"
+    title="Trending artworks"
+    stat="Total shares"
     items={artists}
     link="/top-artists" />
 </div>

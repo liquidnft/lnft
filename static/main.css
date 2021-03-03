@@ -43,7 +43,7 @@
   
   h1,h2,h3{
     font-family: 'Montserrat', Helvetica, Arial, sans-serif;
-    color: #000;
+    color: #2D2E32;
   }
   /* Mobile Phones */
   h1{
@@ -135,7 +135,7 @@
     padding: 0.7rem 1.5rem !important;
     font-weight: bold;
     background: none;
-    border:1px solid #000;
+    border:1px solid #2D2E32;
   }
 
   .button-trans-gray{

@@ -40,7 +40,7 @@
         alt="logo"
         class="w-36 lg:w-48" /></a>
   </div>
-  <a class="mobileSearch" href="/discover"><i
+  <a class="mobileSearch" href="/market"><i
       class="fas fa-search text-2xl" /></a>
   <nav class="hidden text-bold sm:block">
     <Menu />

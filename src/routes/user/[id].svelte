@@ -78,6 +78,24 @@
       @apply hover;
     }
   }
+
+  .social-details{
+    display: flex;
+    flex-direction: column;
+    margin: 25px 0;
+  }
+  .social-details a{
+    margin-top: 15px;
+  }
+
+  .social-details a:hover, .social-details span:hover{
+    color: gray;
+  }
+
+  .social-details span{
+    margin-left: 8px;
+    color: #0F828A;
+  }
 </style>
 
 <div class="container mx-auto lg:px-16 mt-5 md:mt-20">
@@ -98,6 +116,29 @@
               <div>Following: {subject.num_follows}</div>
             </div>
           </div>
+          <div class="social-details">
+            <a href="/">
+              <i class="fab fa-instagram"></i>
+              <span>@user_art</span>
+            </a>
+            <a href="/">
+              <i class="fab fa-twitter"></i>
+              <span>@username_art</span>
+            </a>
+            <a href="/">
+              <i class="far fa-envelope"></i>
+              <span>artist@email.com</span>
+            </a>
+            <a href="/">
+              <i class="fas fa-link"></i>
+              <span>https://mywebsite.com</span>
+            </a>
+            <a href="/">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Vancouver</span>
+            </a>
+          </div>
+          <p>Artist by nature. Love to play with the encounter of art and technology.</p>
           <div>
             {#if $user.id === id}
               <Menu />
