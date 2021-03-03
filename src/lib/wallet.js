@@ -113,7 +113,7 @@ export const getTx = async (txid) => {
   return Transaction.fromHex(await getHex(txid));
 };
 
-const DUST = 800;
+const DUST = 1000;
 
 export const createWallet = (mnemonic, pass) => {
   try {
