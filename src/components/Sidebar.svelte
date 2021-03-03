@@ -9,10 +9,20 @@
     left: -100%;
     transition: left 0.3s ease-in-out;
     z-index: 10;
+    background-color: white;
+    
+  }
+
+  .menu-container{
+    width: 70%;
+    background-color: white; 
+    position: absolute;
+    height: 100vh;
   }
 
   .open {
     left: 0;
+    animation: changeColor 2s ease forwards;
   }
 
   @media only screen and (min-width: 640px) {
@@ -20,10 +30,18 @@
       display: none;
     }
   }
+
+  @keyframes changeColor {
+    0%   {background-color:white;}
+    100% {background-color:rgba(3, 3, 3, 0.8);}
+  }
+  
 </style>
 
 <aside
-  class="absolute w-2/3 h-full bg-gray-200 border-r-2 shadow-lg sideBar"
+  class="fixed w-full h-full border-r-2 shadow-lg sideBar"
   class:open>
-  <Menu bind:open />
+  <div class="menu-container">
+    <Menu bind:open />
+  </div>
 </aside>

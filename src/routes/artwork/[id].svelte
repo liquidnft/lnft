@@ -196,7 +196,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-    background: #000;
+    background: white;
     scroll-behavior: contain;
     transform: scale(0);
   }
@@ -206,6 +206,17 @@
     align-items: center;
     justify-content: center;
     animation: zoom 0.2s ease forwards;
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background: whitesmoke;
+    padding: 8px 10px;
   }
 
   .mobileImage {
@@ -218,9 +229,7 @@
     margin: 0 auto;
   }
 
-  .popup :global(div) {
-    background: black;
-  }
+
 
   .desktopImage :global(img, video) {
     max-height: 70vh;
@@ -243,6 +252,11 @@
     .mobileImage {
       display: block;
     }
+
+    .closeButton{
+      top: 20px;
+      right: 20px;
+    }
   }
 </style>
 
@@ -254,9 +268,19 @@
           {artwork.title || 'Untitled'}
         </h1>
         <div class="mt-4 mb-6">{artwork.editions} Editions</div>
-        <span class="mobileImage">
-          <Card {artwork} link={false} columns={1} showDetails={false} />
-        </span>
+        <div class="mobileImage">
+          <!-- <Card {artwork} link={false} columns={1} showDetails={false} /> -->
+          <span on:click={() => (showPopup = !showPopup)}>
+            <Card {artwork} link={false} columns={1} showDetails={false} />
+          </span>
+          <span
+            on:click={() => (showPopup = !showPopup)}
+            class:showPopup
+            class="popup">
+            <div class="closeButton"><i class="fas fa-times"></i></div>
+            <Card {artwork} link={false} columns={1} showDetails={false} />
+          </span>
+        </div>
         <Sidebar bind:artwork />
 
         {#if $user && $user.id === artwork.owner_id}
@@ -360,6 +384,7 @@
             on:click={() => (showPopup = !showPopup)}
             class:showPopup
             class="popup">
+            <div class="closeButton"><i class="fas fa-times"></i></div>
             <Card {artwork} link={false} columns={1} showDetails={false} />
           </span>
         </div>
