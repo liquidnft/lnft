@@ -47,10 +47,18 @@ const sign = (psbt, sighash = 1, privkey) => {
   return psbt;
 };
 
+const broadcast = async (psbt) => {
+  let tx = psbt.extractTransaction();
+  let hex = tx.toHex();
+
+  return electrs.url("/tx").body(hex).post().text();
+};
+
 let parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 let parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 module.exports = {
+  broadcast,
   keypair,
 
   parse(psbt) {

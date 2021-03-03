@@ -9,6 +9,7 @@ app = require("fastify")({
 
 require("./auth");
 require("./artworks");
+require("./auctions");
 require("./coinos");
 require("./proxy");
 require("./monitor");

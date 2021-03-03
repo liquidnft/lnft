@@ -4,7 +4,15 @@
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
-  import { fee, password, sighash, prompt, psbt, user, token } from "$lib/store";
+  import {
+    fee,
+    password,
+    sighash,
+    prompt,
+    psbt,
+    user,
+    token,
+  } from "$lib/store";
   import { requireLogin, requirePassword } from "$lib/auth";
   import { createTransaction } from "$queries/transactions";
   import {
@@ -179,10 +187,9 @@
     artwork.auction_start = start;
     artwork.auction_end = end;
 
-    if (!newAuction) return true;
+    if (!newAuction || artwork.royalty) return true;
 
     await requirePassword();
-
     $psbt = await sendToMultisig(artwork);
 
     await signAndBroadcast();
@@ -197,6 +204,9 @@
         type: "auction",
       },
     });
+
+    $psbt = await sign(0x82);
+    artwork.list_price_tx = $psbt.toBase64();
   };
 
   let stale;

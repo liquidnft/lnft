@@ -94,8 +94,8 @@
   let read = (base64) => base64 && ($psbt = Psbt.fromBase64(base64));
 </script>
 
-  <textarea class="w-full mb-2" bind:value={base64} placeholder="PSBT Base64" />
-  <button on:click={() => init($psbt)} class="primary-btn mb-6">Parse</button>
+<textarea class="w-full mb-2" bind:value={base64} placeholder="PSBT Base64" />
+<button on:click={() => init($psbt)} class="primary-btn mb-6">Parse</button>
 
 {#if tx}
   <div class="w-full mx-auto">
@@ -184,12 +184,12 @@
       </div>
     {/if}
 
-      <div
-        class="text-xs my-6 cursor-pointer"
-        on:click={() => (showDetails = !showDetails)}>
-        View details
-        <i class="fas fa-chevron-down ml-2" />
-      </div>
+    <div
+      class="text-xs my-6 cursor-pointer"
+      on:click={() => (showDetails = !showDetails)}>
+      View details
+      <i class="fas fa-chevron-down ml-2" />
+    </div>
 
     {#if showDetails}
       <div class="font-bold text-xs">Transaction ID</div>
@@ -231,11 +231,13 @@
         <div class="text-right flex-grow">Recipient</div>
       </div>
       {#each outs as out}
-        <div class="flex break-all mb-2 text-sm">
-          <div class="w-1/6">{out.value}</div>
-          <div class="mr-2">{assetLabel(out.asset)}</div>
-          <div class="text-right flex-grow">{addressLabel(out.address)}</div>
-        </div>
+        {#if out}
+          <div class="flex break-all mb-2 text-sm">
+            <div class="w-1/6">{out.value}</div>
+            <div class="mr-2">{assetLabel(out.asset)}</div>
+            <div class="text-right flex-grow">{addressLabel(out.address)}</div>
+          </div>
+        {/if}
       {/each}
       {#if !summary}
         <div class="font-bold text-xs">Size</div>
