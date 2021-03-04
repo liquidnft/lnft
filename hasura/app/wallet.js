@@ -4,6 +4,7 @@ const {
   address: Address,
   ECPair,
   Psbt,
+  Transaction,
   payments,
   networks,
 } = require("@asoltys/liquidjs-lib");
@@ -26,6 +27,16 @@ const keypair = () => {
 
   return { pubkey, privkey, seed, base58 };
 };
+
+const combine = (a, b) => {
+  let c = Psbt.fromBase64(b);
+  a = Psbt.fromBase64(a)
+  b = Psbt.fromBase64(b);
+  b.data.inputs[0] = a.data.inputs[0];
+  let d = c.combine(b);
+  d.data.inputs[0].sighashType = undefined;
+  return d.toBase64();
+} 
 
 const sign = (psbt, sighash = 1, privkey) => {
   if (!privkey) ({ privkey } = keypair());
@@ -59,6 +70,7 @@ let parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 module.exports = {
   broadcast,
+  combine,
   keypair,
 
   parse(psbt) {

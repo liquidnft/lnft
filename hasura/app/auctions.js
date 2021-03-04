@@ -1,8 +1,17 @@
 const { api, hasura } = require("./api");
 const { formatISO } = require("date-fns");
-const { sign, broadcast } = require("./wallet");
+const { combine, sign, broadcast } = require("./wallet");
 
-const acceptOffer = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!, $bid_id: uuid) {
+const close = `mutation update_artwork($id: uuid!, $artwork: artworks_set_input!) {
+  update_artworks_by_pk(
+    pk_columns: { id: $id }, 
+    _set: $artwork
+  ) {
+    id
+  }
+}`;
+
+const release = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!, $bid_id: uuid) {
   update_artworks_by_pk(
     pk_columns: { id: $id }, 
     _set: { 
@@ -51,6 +60,7 @@ setInterval(async () => {
       bid {
         id
         amount
+        psbt
         user {
           id
           username
@@ -63,24 +73,41 @@ setInterval(async () => {
   for (let i = 0; i < artworks.length; i++) {
     let artwork = artworks[i];
 
-    let psbt = await sign(artwork.list_price_tx);
     try {
-      await broadcast(psbt);
-    } catch (e) {}
+      if (!artwork.bid[0].psbt) throw new Error();
 
-    await hasura
-      .post({
-        query: acceptOffer,
-        variables: {
-          id: artwork.id,
-          owner_id: artwork.bid[0].user.id,
-          amount: artwork.bid[0].amount,
-          hash: psbt.extractTransaction().getId(),
-          psbt: psbt.toBase64(),
-          asset: artwork.asking_asset,
-          bid_id: artwork.bid[0].id,
-        },
-      })
-      .json()
+      let combined = combine(artwork.list_price_tx, artwork.bid[0].psbt);
+      let psbt = await sign(combined);
+      await broadcast(psbt);
+
+      await hasura
+        .post({
+          query: release,
+          variables: {
+            id: artwork.id,
+            owner_id: artwork.bid[0].user.id,
+            amount: artwork.bid[0].amount,
+            hash: psbt.extractTransaction().getId(),
+            psbt: psbt.toBase64(),
+            asset: artwork.asking_asset,
+            bid_id: artwork.bid[0].id,
+          },
+        })
+        .json();
+    } catch (e) {
+      console.log("Problem completing auction", e);
+      await hasura
+        .post({
+          query: close,
+          variables: {
+            id: artwork.id,
+            artwork: {
+              auction_start: null,
+              auction_end: null,
+            },
+          },
+        })
+        .json();
+    }
   }
 }, 2000);

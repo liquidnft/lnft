@@ -36,6 +36,8 @@ import { btc, assetLabel } from "$lib/utils";
 const network = networks.regtest;
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
+const noneAnyoneCanPay =
+  Transaction.SIGHASH_NONE | Transaction.SIGHASH_ANYONECANPAY;
 
 export const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 export const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
@@ -332,7 +334,7 @@ export const sign = (sighash = 1) => {
         .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
         .finalizeInput(i);
     } catch (e) {
-      // console.log(e.message);
+      console.log(e.message);
     }
   });
 
@@ -435,6 +437,14 @@ export const createIssuance = async (artwork, contract) => {
   });
 
   return swap;
+};
+
+export const signOver = async ({ asset }) => {
+  let p = new Psbt();
+  await fund(p, multisig(), asset, 1, noneAnyoneCanPay, true);
+  psbt.set(p);
+  console.log(p.toBase64());
+  return sign(noneAnyoneCanPay);
 };
 
 export const createSwap = async (

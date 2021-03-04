@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
   import Card from "$components/Card";
   import { addresses, show, user } from "$lib/store";
   import ToggleSwitch from "$components/ToggleSwitch";

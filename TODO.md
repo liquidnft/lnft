@@ -1,4 +1,5 @@
 top priorities
+lock wallet utxos involved in active bids
 email notifications for bids, buys, sales, etc.
 title slug urls for artworks and users
 default withdraw asset to current asset

@@ -89,13 +89,27 @@
     });
   };
 
+  let combined;
+  let combine = () => {
+    combined = $psbt.combine(Psbt.fromBase64(anotherBase64)).toBase64();
+  } 
+
   let base64;
+  let anotherBase64;
   $: read(base64);
   let read = (base64) => base64 && ($psbt = Psbt.fromBase64(base64));
+
+  let debug = () => {
+    let p = $psbt;
+    debugger;
+  } 
 </script>
 
 <textarea class="w-full mb-2" bind:value={base64} placeholder="PSBT Base64" />
+<textarea class="w-full mb-2" bind:value={anotherBase64} placeholder="PSBT Base64" />
 <button on:click={() => init($psbt)} class="primary-btn mb-6">Parse</button>
+<button on:click={debug} class="primary-btn mb-6">Debug</button>
+<button on:click={combine} class="primary-btn mb-6">Combine</button>
 
 {#if tx}
   <div class="w-full mx-auto">
@@ -208,7 +222,7 @@
         <div class="mr-2">Asset</div>
       </div>
 
-      {#each ins as input (`${input.txid}:${input.index}`)}
+      {#each ins as input}
         <div class="flex break-all mb-2 text-sm">
           <div class="w-1/6">{input.value}</div>
           <div class="mr-2">{assetLabel(input.asset)}</div>
@@ -253,6 +267,10 @@
         <div class="font-bold text-xs">PSBT Base64</div>
         <div class="font-mono w-full text-xs text-wrap break-all">
           {$psbt.toBase64()}
+        </div>
+        <div class="font-bold text-xs">Combined</div>
+        <div class="font-mono w-full text-xs text-wrap break-all">
+          {combined}
         </div>
       {/if}
     {/if}

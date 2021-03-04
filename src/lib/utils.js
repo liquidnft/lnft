@@ -1,3 +1,4 @@
+import { fade as svelteFade } from "svelte/transition";
 import { get } from "svelte/store";
 import { assets, artworks, addresses, error, full, prompt, snack } from "$lib/store";
 import { goto as go } from "$app/navigation";
@@ -13,6 +14,8 @@ btc = "6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d";
 cad = "ce091c998b83c78bb71a632313ba3760f1763d9cfcffae02258ffa9865a37bd2";
 usd = "8026fa969633b7b6f504f99dde71335d633b43d18314c501055fcd88b9fcb8de";
 */
+
+const fade = (n, o) => svelteFade(n, { ...o, duration: 100 })
 
 const addressUser = (a) =>
   get(addresses) && get(addresses).find((u) => u.address === a || u.multisig === a);
@@ -172,6 +175,7 @@ export {
   copy,
   err,
   explorer,
+  fade,
   fullscreen,
   goto,
   info,

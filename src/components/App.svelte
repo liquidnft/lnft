@@ -2,13 +2,13 @@
   import { onMount } from "svelte";
   import decode from "jwt-decode";
   import {
-    error,
-    poll,
-    user,
     addresses,
     artworks,
+    error,
+    poll,
     prompt,
     token,
+    user,
   } from "$lib/store";
   import { fade } from "svelte/transition";
   import { getUser, getAddresses, updateUser } from "$queries/users";
@@ -24,10 +24,10 @@
     setInterval(refreshToken, 600000);
   });
 
-  $: if ($error && $error.message && $error.message.includes("Insufficient")) $prompt = InsufficientFunds;
+  $: if ($error && $error.message && $error.message.includes("Insufficient"))
+    $prompt = InsufficientFunds;
 
-
-  let pageChange = (p) => $poll.map(p => clearInterval(p.interval));
+  let pageChange = (p) => $poll.map((p) => clearInterval(p.interval));
   $: pageChange($page);
 
   let id;
@@ -39,6 +39,7 @@
       id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
       setupUrql(t);
       subscription(operationStore(getUser(id)), (_, data) => {
+        window.sessionStorage.setItem("user", JSON.stringify($user));
         $user = data.users_by_pk;
       });
 

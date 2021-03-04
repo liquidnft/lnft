@@ -1,4 +1,6 @@
 <script>
+  import { Psbt } from "@asoltys/liquidjs-lib";
+  import { Buffer } from "buffer";
   import { tick } from "svelte";
   import { page } from "$app/stores";
   import { getArtwork } from "$queries/artworks";
@@ -20,6 +22,7 @@
     cancelSwap,
     sign,
     signAndBroadcast,
+    signOver,
     sendToMultisig,
     requestSignature,
   } from "$lib/wallet";
@@ -187,26 +190,30 @@
     artwork.auction_start = start;
     artwork.auction_end = end;
 
-    if (!newAuction || artwork.royalty) return true;
+    if (newAuction) {
+      await requirePassword();
+      $psbt = await sendToMultisig(artwork);
 
-    await requirePassword();
-    $psbt = await sendToMultisig(artwork);
+      await signAndBroadcast();
+      let tx = $psbt.extractTransaction();
 
-    await signAndBroadcast();
+      await createTransaction$({
+        transaction: {
+          amount: artwork.editions,
+          artwork_id: artwork.id,
+          asset: artwork.asking_asset,
+          hash: tx.getId(),
+          psbt: $psbt.toBase64(),
+          type: "auction",
+        },
+      });
 
-    await createTransaction$({
-      transaction: {
-        amount: artwork.editions,
-        artwork_id: artwork.id,
-        asset: artwork.asking_asset,
-        hash: $psbt.extractTransaction().getId(),
-        psbt: $psbt.toBase64(),
-        type: "auction",
-      },
-    });
+      await signOver(artwork);
+      await tick();
+      console.log($psbt.toBase64());
 
-    $psbt = await sign(0x82);
-    artwork.list_price_tx = $psbt.toBase64();
+      artwork.list_price_tx = $psbt.toBase64();
+    }
   };
 
   let stale;

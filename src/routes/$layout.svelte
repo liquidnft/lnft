@@ -16,12 +16,16 @@
   import "@fortawesome/fontawesome-free/js/all.js";
 
   let open = false;
-  let mounted = false;
+  let ready;
 
   onMount(async () => {
+    ready = true;
+    try {
+      $user = JSON.parse(window.sessionStorage.getItem("user"));
+    } catch (e) {}
+
     if (!$password) $password = window.sessionStorage.getItem("password");
     if (!$token) $token = window.sessionStorage.getItem("token");
-    mounted = true;
   });
 </script>
 
@@ -76,9 +80,11 @@
 
 <Snack />
 
-{#if mounted}
+{#if ready}
   <Sidebar bind:open />
-  <Navbar bind:sidebar={open} />
+  <div in:fade>
+    <Navbar bind:sidebar={open} />
+  </div>
   <Dialog />
 
   <main>
@@ -89,8 +95,4 @@
     </div>
   </main>
   <Footer />
-{:else}
-  <div class="absolute top-0 w-full left-0">
-    <ProgressLinear />
-  </div>
 {/if}

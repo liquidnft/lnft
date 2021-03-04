@@ -1,7 +1,7 @@
 <script>
   import ArtworkMedia from "$components/ArtworkMedia";
   import countdown from "$lib/countdown";
-  import { goto, units } from "$lib/utils";
+  import { fade, goto, units } from "$lib/utils";
 
   export let artwork;
   export let columns = 3;
@@ -51,8 +51,10 @@
 <div
   class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
   class:link
-  on:click={click}>
-  <div class="justify-center">
+  on:click={click}
+  in:fade
+>
+  <div class="flex justify-center">
     <ArtworkMedia {artwork} {showDetails} />
   </div>
   {#if showDetails}

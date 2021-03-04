@@ -137,12 +137,14 @@ const registerAsset = async ({ asset: asset_id, contract, user }) => {
 
   await new Promise((r) => setTimeout(r, 30000));
 
-  const { data } = await registry
-    .post({
-      asset_id,
-      contract: JSON.parse(contract),
-    })
-    .json();
+  try {
+    await registry
+      .post({
+        asset_id,
+        contract: JSON.parse(contract),
+      })
+      .json();
+  } catch(e) {}
 };
 
 app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
