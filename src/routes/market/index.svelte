@@ -1,6 +1,5 @@
 <script>
-  import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
+  import { tick, onMount } from "svelte";
   import Card from "$components/Card";
   import { addresses, show, user } from "$lib/store";
   import ToggleSwitch from "$components/ToggleSwitch";
@@ -28,29 +27,47 @@
     tags = reduced;
   });
 
+  let artworks;
+  subscription(operationStore(getArtworks), (a, b) => (artworks = b.artworks));
+
   let filtered = [];
-  subscription(operationStore(getArtworks), (a, b) => {
-    filtered = b.artworks
-      .filter(
-        (a) =>
-          (!listPrice || a.list_price) &&
-          (!openBid || a.bid[0].amount) &&
-          (!ownedByCreator || a.artist_id === a.owner_id) &&
-          (!hasSold || a.artist_id !== a.owner_id)
-      )
-      .sort(
-        (a, b) =>
-          ({
-            active:
-              new Date(b.last_active) - new Date(a.last_active) ||
-              new Date(b.created_at) - new Date(a.created_at),
-            lowest: a.list_price - b.list_price,
-            highest: b.list_price - a.list_price,
-            newest: new Date(b.created_at) - new Date(a.created_at),
-            oldest: new Date(a.created_at) - new Date(b.created_at),
-          }[sort])
-      );
-  });
+  $: {
+    filtered = artworks
+      ? artworks
+          .filter(
+            (a) =>
+              (!listPrice || a.list_price) &&
+              (!openBid || a.bid[0].amount) &&
+              (!ownedByCreator || a.artist_id === a.owner_id) &&
+              (!hasSold || a.artist_id !== a.owner_id)
+          )
+          .sort(
+            (a, b) =>
+              ({
+                active:
+                  new Date(b.last_active) - new Date(a.last_active) ||
+                  new Date(b.created_at) - new Date(a.created_at),
+                lowest: a.list_price - b.list_price,
+                highest: b.list_price - a.list_price,
+                newest: new Date(b.created_at) - new Date(a.created_at),
+                oldest: new Date(a.created_at) - new Date(b.created_at),
+              }[sort])
+          )
+          .slice(start, end)
+      : [];
+
+    const observer = new IntersectionObserver((entries) => {
+      const firstEntry = entries[0];
+      if (firstEntry.isIntersecting) {
+        end += 6;
+      }
+    });
+    tick().then(() => lastCard && observer.observe(lastCard));
+  }
+
+  let lastCard;
+  let start = 0;
+  let end = 3;
 
   let listPrice, openBid, ownedByCreator, hasSold, sort;
 
@@ -83,14 +100,13 @@
   }
 
   @media only screen and (max-width: 1023px) {
-
     .search :global(input) {
       width: 90%;
       appearance: none;
       border: 0;
-      border-bottom: 1px solid #6ED8E0;
+      border-bottom: 1px solid #6ed8e0;
     }
-   
+
     .switch-container {
       flex-direction: column;
       display: none;
@@ -115,26 +131,24 @@
   }
 
   @media only screen and (max-width: 500px) {
-
     .sort-container {
       margin: 0;
       margin-bottom: 20px;
     }
-    select{
-      padding:0;
+    select {
+      padding: 0;
       background: none;
     }
   }
 </style>
 
-<div
-  class="container mx-auto flex flex-wrap sm:justify-between mt-10 md:mt-20">
+<div class="container mx-auto flex flex-wrap sm:justify-between mt-10 md:mt-20">
   <h2 class="mb-10 md:mb-0">Market</h2>
 
   {#if $user && $user.is_artist}
-  <button on:click={() => goto('/artwork/create')} class="primary-btn">Submit a
-    New Artwork</button>
-{/if}
+    <button on:click={() => goto('/artwork/create')} class="primary-btn">Submit
+      a New Artwork</button>
+  {/if}
 </div>
 <div class="container mx-auto mt-10">
   <div class="flex items-center search">
@@ -143,7 +157,8 @@
 </div>
 <div class="container mx-auto">
   <div class="flex flex-wrap justify-between items-center md:flex-row-reverse">
-    <div class="w-full lg:w-auto mb-3 flex filter-container justify-between pt-10 xl:py-10 xl:pb-30 mt-50">
+    <div
+      class="w-full lg:w-auto mb-3 flex filter-container justify-between pt-10 xl:py-10 xl:pb-30 mt-50">
       <div class="switch">
         <p
           class="filters mb-8 font-bold"
@@ -193,12 +208,12 @@
       </div>
     </div>
   </div>
-   
-  
 
   <div class="flex flex-wrap">
     {#each filtered as artwork (artwork.id)}
-      <div class="w-full lg:w-1/3 lg:px-5 xl:px-8 mb-20">
+      <div
+        class="w-full lg:w-1/3 lg:px-5 xl:px-8 mb-20"
+        bind:this={lastCard}>
         <Card {artwork} />
       </div>
     {/each}
