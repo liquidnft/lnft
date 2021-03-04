@@ -27,11 +27,12 @@
     tags = reduced;
   });
 
-  let artworks;
+  let artworks = [];
   subscription(operationStore(getArtworks), (a, b) => (artworks = b.artworks));
 
   let filtered = [];
   $: {
+    refs = {};
     filtered = artworks
       ? artworks
           .filter(
@@ -52,26 +53,41 @@
                 newest: new Date(b.created_at) - new Date(a.created_at),
                 oldest: new Date(a.created_at) - new Date(b.created_at),
               }[sort])
-          )
-          .slice(start, end)
-      : [];
+          ).slice(0, 11)
+      : 
+        [];
 
-    const observer = new IntersectionObserver((entries) => {
-      const firstEntry = entries[0];
-      if (firstEntry.isIntersecting) {
-        end += 6;
-      }
+    tick().then(() => {
+      let visible = {};
+      let observers = {};
+      let observe = (s) => {
+        console.log("obs", s, observers, visible, hidden);
+        let el = document.querySelector(s);
+        if (observers[s]) observers[s].unobserve();
+        observers[s] = new IntersectionObserver((e) => {
+          visible[s] = e[0].isIntersecting;
+          hidden = visible[".controls"] || visible[".footer"];
+        });
+        if (el) observers[s].observe(el);
+      };
+
+      observe(".controls");
+      observe(".footer");
     });
-    tick().then(() => lastCard && observer.observe(lastCard));
   }
-
-  let lastCard;
-  let start = 0;
-  let end = 3;
 
   let listPrice, openBid, ownedByCreator, hasSold, sort;
 
   let showFilters = false;
+  let hidden;
+  let maxPages = 8;
+  $: offset = filtered.length / maxPages - ((filtered.length / maxPages) % 3) + 3;
+
+  let jump = async (i) => {
+    document.getElementById(`artwork-${i * offset}`).scrollIntoView();
+  };
+
+  let refs = {};
 </script>
 
 <style>
@@ -156,7 +172,8 @@
   </div>
 </div>
 <div class="container mx-auto">
-  <div class="flex flex-wrap justify-between items-center md:flex-row-reverse">
+  <div
+    class="flex flex-wrap justify-between items-center md:flex-row-reverse controls">
     <div
       class="w-full lg:w-auto mb-3 flex filter-container justify-between pt-10 xl:py-10 xl:pb-30 mt-50">
       <div class="switch">
@@ -210,12 +227,25 @@
   </div>
 
   <div class="flex flex-wrap">
-    {#each filtered as artwork (artwork.id)}
-      <div
-        class="w-full lg:w-1/3 lg:px-5 xl:px-8 mb-20"
-        bind:this={lastCard}>
+    {#each filtered as artwork, i (artwork.id)}
+      {#if i % offset === 0}
+        <div class="w-full flex" class:invisible={i === 0} class:h-0={i === 0}>
+          <h4 class="mx-auto mb-12" id={`artwork-${i}`}>{i / offset + 1}</h4>
+        </div>
+      {/if}
+      <div class="w-full lg:w-1/3 lg:px-5 xl:px-8 mb-20" bind:this={refs[i]}>
         <Card {artwork} />
       </div>
+    {/each}
+  </div>
+</div>
+
+<div class="fixed bottom-0 flex w-full bg-white p-4" class:hidden>
+  <div class="mx-auto">
+    {#each new Array(Math.ceil(filtered.length / offset)) as _, i}
+      <button
+        class="rounded-full bg-red w-12 h-12"
+        on:click={() => jump(i)}>{i + 1}</button>
     {/each}
   </div>
 </div>
