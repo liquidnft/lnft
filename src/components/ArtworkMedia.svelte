@@ -3,6 +3,9 @@
   export let artwork;
   export let showDetails;
 
+  $: cover = !showDetails;
+  $: contain = showDetails;
+
   onMount(() => {
     var lazyVideos = [].slice.call(document.querySelectorAll("video.lazy"));
 
@@ -37,6 +40,22 @@
   });
 </script>
 
+<style>
+  .contain {
+    @apply relative w-full;
+    padding-bottom: 100%;
+  } 
+
+  .contain * {
+    @apply h-full absolute object-cover rounded-t-lg;
+  } 
+
+  .cover * {
+    @apply w-full object-contain rounded-t-lg
+  } 
+</style>
+
+  <div class:cover class:contain>
 {#if artwork.filetype && artwork.filetype.includes('video')}
   <video
     controls
@@ -49,9 +68,11 @@
     Your browser does not support HTML5 video.
   </video>
 {:else}
+
   <img
     src={`/api/ipfs/${artwork.filename}`}
     alt={artwork.filename}
     loading="lazy"
-    class="w-full object-contain rounded-t-lg {showDetails ? 'rounded-t-lg' : 'rounded-lg'}" />
+    class="" />
 {/if}
+</div>

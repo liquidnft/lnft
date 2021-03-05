@@ -1,34 +1,11 @@
 <script>
-  import { user, token } from "$lib/store";
   import Avatar from "$components/Avatar";
   import Eye from "$components/Eye";
   import Heart from "$components/Heart";
-  import { createFavorite, deleteFavorite } from "$queries/favorites";
-  import { mutation } from "@urql/svelte";
   import { explorer, goto } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
 
   export let artwork;
-
-  let createFavorite$ = mutation(createFavorite);
-  let deleteFavorite$ = mutation(deleteFavorite);
-
-  let favorite = async () => {
-    await requireLogin();
-    let { id: artwork_id } = artwork;
-    let { id: user_id } = $user;
-
-    if (artwork.favorited) {
-      deleteFavorite$({ artwork_id, user_id });
-      artwork.num_favorites--;
-      artwork.favorited = false;
-    } else {
-      createFavorite$({ artwork_id });
-      artwork.num_favorites++;
-      artwork.favorited = true;
-    }
-  };
-
   let showDetails = false;
 </script>
 
@@ -103,7 +80,7 @@
 <div class="flex flex-wrap justify-between mb-10">
   <div class="flex">
     <div class="w-1/3 flex mr-4">
-      <Heart on:click={favorite} favorited={artwork.favorited} />
+      <Heart {artwork} />
     </div>
     <div class="w-2/3">
       <div>{artwork.num_favorites}</div>

@@ -1,5 +1,6 @@
 <script>
   import ArtworkMedia from "$components/ArtworkMedia";
+  import Heart from "$components/Heart";
   import countdown from "$lib/countdown";
   import { fade, goto, units } from "$lib/utils";
 
@@ -39,7 +40,7 @@
 
   .card {
     border-radius: 10px;
-    box-shadow: 1px 1px 10px 1px #cbcbcb;
+    @apply shadow-md;
   }
 
   .card img,
@@ -54,14 +55,15 @@
   on:click={click}
   in:fade
 >
-  <div class="flex justify-center">
+  <div class="flex justify-center w-full">
     <ArtworkMedia {artwork} {showDetails} />
   </div>
   {#if showDetails}
     <div class="p-6">
       <div class="flex flex-row justify-between">
         <h1 class="font-bold text-2xl">{artwork.title}</h1>
-        <img src="/heart.png" alt={artwork.filename} class="w-8 h-8" />
+        
+        <Heart {artwork} />
       </div>
       <div class="flex pt-8">
         <div class="1/2 flex-1">
