@@ -75,18 +75,21 @@
         {/if}
       </div>
 
-      <a href={`/user/${artwork.artist_id}`}>
-        <div class="flex">
-          <Avatar user={artwork.artist} />
-          <div class="ml-2">
-            <div>@{artwork.artist.username}</div>
-            <div class="text-xs text-gray-600">Artist</div>
+        <a href={`/user/${artwork.artist_id}`}>
+          <div class="flex">
+            <Avatar user={artwork.artist} />
+            <div class="ml-2">
+              <div>@{artwork.artist.username}</div>
+              <div class="text-xs text-gray-600">Artist</div>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
     </div>
     {#if Date.parse(artwork.auction_end) > new Date()}
-      <div class="p-3 rounded-b-lg lightblue-grad text-black">Time left: {end_counter}</div>
+      <div class="p-3 rounded-b-lg lightblue-grad text-black">
+        Time left:
+        {end_counter}
+      </div>
     {:else}
       <div class="p-3 rounded-b-lg">&nbsp;</div>
     {/if}

@@ -347,35 +347,6 @@
       filter: {}
 - table:
     schema: public
-    name: currentuser
-  select_permissions:
-  - role: user
-    permission:
-      columns:
-      - id
-      - created_at
-      - updated_at
-      - display_name
-      - avatar_url
-      - username
-      - location
-      - bio
-      - website
-      - email
-      - full_name
-      - address_index
-      - pubkey
-      - mnemonic
-      - address
-      - gaid
-      - amp_mnemonic
-      - multisig
-      - amp_user_id
-      filter:
-        id:
-          _eq: X-Hasura-User-Id
-- table:
-    schema: public
     name: favorites
   object_relationships:
   - name: artwork
@@ -710,21 +681,18 @@
     permission:
       columns:
       - address
-      - address_index
       - avatar_url
       - bio
-      - created_at
-      - display_name
       - email
       - full_name
       - id
+      - instagram
       - is_admin
       - is_artist
       - location
-      - mnemonic
       - multisig
       - pubkey
-      - updated_at
+      - twitter
       - username
       - wallet_initialized
       - website
@@ -737,16 +705,12 @@
     permission:
       columns:
       - address
-      - address_index
-      - amp_mnemonic
-      - amp_user_id
       - avatar_url
       - bio
       - created_at
       - display_name
       - email
       - full_name
-      - gaid
       - id
       - is_admin
       - is_artist
@@ -767,7 +731,6 @@
     permission:
       columns:
       - address
-      - address_index
       - avatar_url
       - bio
       - created_at
@@ -775,12 +738,14 @@
       - email
       - full_name
       - id
+      - instagram
       - is_admin
       - is_artist
       - location
       - mnemonic
       - multisig
       - pubkey
+      - twitter
       - updated_at
       - username
       - wallet_initialized
@@ -801,16 +766,17 @@
     permission:
       columns:
       - address
-      - address_index
       - avatar_url
       - bio
       - display_name
       - email
       - full_name
+      - instagram
       - location
       - mnemonic
       - multisig
       - pubkey
+      - twitter
       - username
       - wallet_initialized
       - website

@@ -79,22 +79,23 @@
     }
   }
 
-  .social-details{
+  .social-details {
     display: flex;
     flex-direction: column;
     margin: 25px 0;
   }
-  .social-details a{
+  .social-details a {
     margin-top: 15px;
   }
 
-  .social-details a:hover, .social-details span:hover{
+  .social-details a:hover,
+  .social-details span:hover {
     color: gray;
   }
 
-  .social-details span{
+  .social-details span {
     margin-left: 8px;
-    color: #0F828A;
+    color: #0f828a;
   }
 </style>
 
@@ -117,28 +118,40 @@
             </div>
           </div>
           <div class="social-details">
-            <a href="/">
-              <i class="fab fa-instagram"></i>
-              <span>@user_art</span>
-            </a>
-            <a href="/">
-              <i class="fab fa-twitter"></i>
-              <span>@username_art</span>
-            </a>
-            <a href="/">
-              <i class="far fa-envelope"></i>
-              <span>artist@email.com</span>
-            </a>
-            <a href="/">
-              <i class="fas fa-link"></i>
-              <span>https://mywebsite.com</span>
-            </a>
-            <a href="/">
-              <i class="fas fa-map-marker-alt"></i>
-              <span>Vancouver</span>
-            </a>
+            {#if $user.instagram}
+              <a href={`https://instagram.com/${$user.instagram}`}>
+                <i class="fab fa-instagram" />
+                <span>@{$user.instagram}</span>
+              </a>
+            {/if}
+            {#if $user.twitter}
+              <a href={`https://twitter.com/${$user.twitter}`}>
+                <i class="fab fa-twitter" />
+                <span>@{$user.twitter}</span>
+              </a>
+            {/if}
+            {#if $user.email}
+              <a href={`mailto:${$user.email}`}>
+                <i class="far fa-envelope" />
+                <span>{$user.email}</span>
+              </a>
+            {/if}
+            {#if $user.website}
+              <a href={`https://${$user.website}`}>
+                <i class="fas fa-link" />
+                <span>{$user.website}</span>
+              </a>
+            {/if}
+            {#if $user.location}
+              <a href="#">
+                <i class="fas fa-map-marker-alt" />
+                <span>{$user.location}</span>
+              </a>
+            {/if}
           </div>
-          <p>Artist by nature. Love to play with the encounter of art and technology.</p>
+          {#if $user.bio}
+            <p>{$user.bio}</p>
+          {/if}
           <div>
             {#if $user.id === id}
               <Menu />
