@@ -120,13 +120,11 @@
           {#if senders[user] && user !== 'Fee'}
             <div class="flex mb-2">
               {#if users[user]}
-                <div class="mb-auto">
-                  <Avatar user={users[user]} />
-                </div>
+                <Avatar user={users[user]} />
               {/if}
-              <div class="flex ml-1 flex-grow sm:pr-8">
+              <div class="flex ml-2 flex-grow sm:pr-8">
                 {#if users[user]}
-                  <div>
+                  <div class="my-auto">
                     <a href={`/user/${users[user].id}`} class="secondary-color">
                       {user}
                     </a>
@@ -162,9 +160,9 @@
                   <Avatar user={users[user]} />
                 </div>
               {/if}
-              <div class="flex ml-1 flex-grow">
+              <div class="flex ml-2 flex-grow">
                 {#if users[user]}
-                  <div>
+                  <div class="my-auto">
                     <a href={`/user/${users[user].id}`} class="secondary-color">
                       {user}
                     </a>

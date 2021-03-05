@@ -690,6 +690,7 @@
       - is_admin
       - is_artist
       - location
+      - mnemonic
       - multisig
       - pubkey
       - twitter

@@ -287,7 +287,7 @@
             class="secondary-btn">List</button>
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
-            <button on:click={buyNow} class="secondary-btn">Buy Now</button>
+            <button on:click={buyNow} class="secondary-btn">Buy now</button>
           {/if}
           {#if bidding}
             <form on:submit={makeOffer}>
@@ -310,7 +310,7 @@
               <button type="submit" class="secondary-btn">Submit</button>
             </form>
           {:else}
-            <button on:click={startBidding} class="secondary-btn">Make an Offer</button>
+            <button on:click={startBidding} class="secondary-btn">Make an offer</button>
           {/if}
         {/if}
         {#if $user && $user.is_admin}

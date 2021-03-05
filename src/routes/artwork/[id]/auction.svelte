@@ -390,7 +390,7 @@
 
       <form class="w-full mb-6 mt-12" on:submit={update} autocomplete="off">
         <div class="flex flex-col mt-4">
-          <p>Asset</p>
+          <p>Listing currency</p>
           <div class="flex">
             {#each Object.keys(tickers) as asset}
               <label class="ml-2 mr-6 flex items-center">
@@ -410,13 +410,27 @@
         <div class="flex w-full sm:w-3/4 mb-4">
           <div class="relative mt-1 rounded-md w-2/3 mr-2">
             <label>Price
-              <input
-                class="form-input block w-full pl-7 pr-12"
-                placeholder={val(artwork.asking_asset, 0)}
-                bind:value={list_price}
-                bind:this={input}
-                disabled={auction_underway} />
-            </label>
+              <span class="tooltip">
+                <i
+                  class="far fa-question-circle text-midblue text-xl tooltip" />
+                <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
+                  Setting a listing price is optional. If you choose to set one,
+                  a pre-signed swap transaction will be generated from your
+                  wallet, giving potential collectors the ability to immediately
+                  purchase the artwork.
+                  <br /><br />
+                  Take note: Updating the listing price involves sending an
+                  on-chain cancellation transaction to invalidate the previous
+                  swap and there will be a small network transaction fee in that
+                  case.
+                </span>
+              </span></label>
+            <input
+              class="form-input block w-full pl-7 pr-12"
+              placeholder={val(artwork.asking_asset, 0)}
+              bind:value={list_price}
+              bind:this={input}
+              disabled={auction_underway} />
             <div class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4">
               {assetLabel(artwork.asking_asset)}
             </div>

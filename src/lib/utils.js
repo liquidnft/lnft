@@ -81,7 +81,7 @@ const units = (asset) => {
   if (tickers[asset]) ({ decimals, precision } = tickers[asset]);
   return [
     (val) => Math.round(val * 10 ** precision),
-    (sats) => format(sats, decimals),
+    (sats) => format(sats, precision),
     ticker(asset),
   ];
 };
