@@ -9,7 +9,7 @@
 <div
   on:click={() => goto(link)}
   class="flex flex-wrap mb-4 border-b pb-4 cursor-pointer">
-  <Avatar src={item.user.avatar_url} />
+  <Avatar user={item.user} />
   <div class="ml-2 my-auto">
     <a href={`/user/${item.user.id}`}>@{item.user.username}</a>
   </div>

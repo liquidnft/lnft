@@ -47,7 +47,7 @@
         <tr class="border-b">
           <td class="py-4">
             <div class="flex">
-              <Avatar src={item.avatar_url} />
+              <Avatar user={item} />
               <div class="ml-2 my-auto font-bold">
                 <a href={`/user/${item.id}`}>@{item.username}</a>
               </div>

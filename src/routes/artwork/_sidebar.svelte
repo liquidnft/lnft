@@ -25,7 +25,7 @@
 <div class="flex flex-wrap justify-between text-left">
   <a href={`/user/${artwork.artist_id}`}>
     <div class="flex mb-6">
-      <Avatar src={artwork.artist.avatar_url} />
+      <Avatar user={artwork.artist} />
       <div class="ml-2 secondary-color">
         <div>@{artwork.artist.username}</div>
         <div class="text-xs text-gray-600">Artist</div>
@@ -34,7 +34,7 @@
   </a>
   <a href={`/user/${artwork.owner_id}`}>
     <div class="flex mb-6 secondary-color">
-      <Avatar src={artwork.owner.avatar_url} />
+      <Avatar user={artwork.owner} />
       <div class="ml-2">
         <div>@{artwork.owner.username}</div>
         <div class="text-xs text-gray-600">Owner</div>
@@ -79,10 +79,8 @@
 
 <div class="flex flex-wrap justify-between mb-10">
   <div class="flex">
-    <div class="w-1/3 flex mr-4">
-      <Heart {artwork} />
-    </div>
-    <div class="w-2/3">
+    <Heart {artwork} />
+    <div class="w-2/3 ml-4">
       <div>{artwork.num_favorites}</div>
       <div class="text-xs text-gray-600">Favorites</div>
     </div>

@@ -121,7 +121,7 @@
             <div class="flex mb-2">
               {#if users[user]}
                 <div class="mb-auto">
-                  <Avatar src={users[user].avatar_url} />
+                  <Avatar user={users[user]} />
                 </div>
               {/if}
               <div class="flex ml-1 flex-grow sm:pr-8">
@@ -159,7 +159,7 @@
             <div class="flex mb-2">
               {#if users[user]}
                 <div class="mb-auto">
-                  <Avatar src={users[user].avatar_url} />
+                  <Avatar user={users[user]} />
                 </div>
               {/if}
               <div class="flex ml-1 flex-grow">

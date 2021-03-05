@@ -78,7 +78,7 @@
     <!-- <a href={`/user/${$user.id}`} on:mouseenter={enter} on:mouseleave={leave}> -->
     <a href={`/user/${$user.id}`}>
       <button on:click={toggle} class="flex">
-        <Avatar src={$user.avatar_url} />
+        <Avatar user={$user} />
         <div class="my-auto ml-2">{$user.full_name}</div>
       </button></a>
     <!--

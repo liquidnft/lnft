@@ -39,7 +39,7 @@
         <div
           class="my-auto cursor-pointer"
           on:click|stopPropagation={() => goto(`/user/${artwork.artist.id}`)}>
-          <Avatar src={transaction.artwork.artist.avatar_url} size="large" />
+          <Avatar user={transaction.artwork.artist} size="large" />
         </div>
         <div class="ml-5 my-auto">
           <p

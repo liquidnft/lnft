@@ -22,6 +22,17 @@ const fields = `
   max_extensions
   royalty
   views
+    owner {
+      username
+      avatar_url
+      address
+      pubkey
+    },
+    artist {
+      address
+      username
+      avatar_url
+    },
   bid {
     user {
       id

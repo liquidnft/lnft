@@ -1,11 +1,14 @@
 <script>
+  export let user;
   export let src;
   export let size = "small";
+
+  $: if (user && !src) src = user.avatar_url;
 </script>
 
 <style>
   .small {
-    @apply w-10 h-10;
+    @apply w-12 h-12;
   }
 
   .large {
@@ -23,7 +26,7 @@
     {#if src}
       <img
         src={src.startsWith('data') ? src : `/api/ipfs/${src}`}
-        alt="lovely avatar"
+        alt={user ? user.username : 'lovely avatar'}
         class="absolute w-full h-full object-cover object-center visible group-hover:hidden overflow-hidden" />
     {/if}
   </div>

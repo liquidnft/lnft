@@ -44,7 +44,9 @@
     subscription(
       operationStore(getArtworksByArtist(artwork.artist_id)),
       (a, b) =>
-      (others = b.artworks.filter((a) => artwork && a.id !== artwork.id).slice(0, 4))
+        (others = b.artworks
+          .filter((a) => artwork && a.id !== artwork.id)
+          .slice(0, 4))
     );
 
   let artwork, start_counter, end_counter;
@@ -228,8 +230,6 @@
     margin: 0 auto;
   }
 
-
-
   .desktopImage :global(img, video) {
     max-height: 70vh;
   }
@@ -252,7 +252,7 @@
       display: block;
     }
 
-    .closeButton{
+    .closeButton {
       top: 20px;
       right: 20px;
     }
@@ -268,16 +268,15 @@
         </h1>
         <div class="mt-4 mb-6">{artwork.editions} Editions</div>
         <div class="mobileImage">
-          <!-- <Card {artwork} link={false} columns={1} showDetails={false} /> -->
           <span on:click={() => (showPopup = !showPopup)}>
-            <Card {artwork} link={false} columns={1} showDetails={false} />
+            <Card {artwork} columns={1} showDetails={false} />
           </span>
           <span
             on:click={() => (showPopup = !showPopup)}
             class:showPopup
             class="popup">
-            <div class="closeButton"><i class="fas fa-times"></i></div>
-            <Card {artwork} link={false} columns={1} showDetails={false} />
+            <div class="closeButton"><i class="fas fa-times" /></div>
+            <Card {artwork} columns={1} showDetails={false} />
           </span>
         </div>
         <Sidebar bind:artwork />
@@ -286,12 +285,6 @@
           <button
             on:click={() => goto(`/artwork/${id}/auction`)}
             class="secondary-btn">List</button>
-          <button
-            on:click={() => goto(`/artwork/${id}/edit`)}
-            class="secondary-btn">Edit</button>
-          <button
-            on:click={destroy}
-            class="dangerous secondary-btn">Destroy</button>
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
             <button on:click={buyNow} class="secondary-btn">Buy Now</button>
@@ -319,6 +312,14 @@
           {:else}
             <button on:click={startBidding} class="secondary-btn">Make an Offer</button>
           {/if}
+        {/if}
+        {#if $user && $user.is_admin}
+          <button
+            on:click={() => goto(`/artwork/${id}/edit`)}
+            class="secondary-btn">Edit</button>
+          <button
+            on:click={destroy}
+            class="dangerous secondary-btn">Destroy</button>
         {/if}
 
         <div class="flex justify-between">
@@ -379,14 +380,14 @@
       <div class="w-full lg:w-2/3 lg:px-12">
         <div class="desktopImage">
           <span on:click={() => (showPopup = !showPopup)}>
-            <Card {artwork} link={false} columns={1} showDetails={false} />
+            <Card {artwork} columns={1} showDetails={false} />
           </span>
           <span
             on:click={() => (showPopup = !showPopup)}
             class:showPopup
             class="popup">
-            <div class="closeButton"><i class="fas fa-times"></i></div>
-            <Card {artwork} link={false} columns={1} showDetails={false} />
+            <div class="closeButton"><i class="fas fa-times" /></div>
+            <Card {artwork} columns={1} showDetails={false} />
           </span>
         </div>
         <div class="w-full mt-28">
@@ -395,12 +396,14 @@
           </h2>
           <div class="w-full flex flex-wrap">
             {#if others.length}
-            {#each others as artwork (artwork.id)}
-              <div class="w-full lg:w-full xl:w-1/2 px-0 md:px-5 mb-20">
-                <Card {artwork} />
-              </div>
-            {/each}
-            <a class="primary-btn mx-auto mb-12" href={`/artist/${artwork.artist.username}`}>View Gallery</a>
+              {#each others as artwork (artwork.id)}
+                <div class="w-full lg:w-full xl:w-1/2 px-0 md:px-5 mb-20">
+                  <Card {artwork} />
+                </div>
+              {/each}
+              <a
+                class="primary-btn mx-auto mb-12"
+                href={`/artist/${artwork.artist.username}`}>View Gallery</a>
             {:else}
               <div class="mx-auto">No other artworks</div>
             {/if}

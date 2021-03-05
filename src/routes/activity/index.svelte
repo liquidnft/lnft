@@ -50,7 +50,7 @@
         <div class="mb-4 top-collectors">
           {#each collectors as collector}
             <div class="flex my-4">
-              <Avatar src={collector.avatar_url} />
+              <Avatar user={collector} />
               <div class="ml-2 my-auto font-bold">
                 <a href={`/user/${collector.id}`}>@{collector.username}</a>
               </div>
@@ -65,7 +65,7 @@
         <div class="mb-4">
           {#each collectors as collector}
             <div class="flex my-4">
-              <Avatar src={collector.avatar_url} />
+              <Avatar user={collector} />
               <div class="ml-2 my-auto font-bold">
                 <a href={`/user/${collector.id}`}>@{collector.username}</a>
               </div>

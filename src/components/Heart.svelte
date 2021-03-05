@@ -44,4 +44,4 @@
   };
 </script>
 
-<img src="/heart.png" class="w-8 h-8" alt={artwork.title} on:click={favorite} />
+<img src="/heart.png" class="w-8 h-8 cursor-pointer" alt={artwork.title} on:click={favorite} />
