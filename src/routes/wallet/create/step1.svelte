@@ -30,5 +30,5 @@
     </li>
   </ul>
 
-  <button on:click={() => goto('/wallet/create/step2')} class="primary-btn w-full">I'm ready to start</button>
+  <a href="/wallet/create/step2" class="primary-btn w-full">I'm ready to start</a>
 </div>

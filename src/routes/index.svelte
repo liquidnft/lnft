@@ -79,8 +79,9 @@
       Upload, collect, and transact rare digital artworks as secure assets in
       the Liquid Network
     </p>
-    <button class="mt-10 primary-btn" on:click={() => goto('/market')}>Start
-      exploring</button>
+    <div class="mt-10">
+      <a class="primary-btn" href={`/market`}>Start exploring</a>
+    </div>
   </div>
 </div>
 
@@ -105,7 +106,7 @@
   {/each}
 </div>
 <div class="mx-auto container text-center px-8 mb-20 pb-10">
-  <button class="secondary-btn" on:click={() => goto('/activity')}>View more</button>
+  <a class="secondary-btn" href={'/activity'}>View more</a>
 </div>
 
 <div class="container mx-auto px-10 mb-8">
@@ -117,7 +118,7 @@
   {/each}
 </div>
 <div class="mx-auto container text-center mb-20">
-  <button class="secondary-btn" on:click={() => goto('/market')}>View gallery</button>
+  <a class="secondary-btn" href={'/market'}>View gallery</a>
 </div>
 
 <div class="container mx-auto px-10 mb-10">

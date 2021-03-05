@@ -56,5 +56,4 @@
   We'll send a recovery link in the email associated with your account.
 </p>
 
-<button class="primary-btn w-full" on:click={() => goto('/')}>Continue to
-  Raretoshi</button>
+<a class="primary-btn w-full" href="/">Continue to Raretoshi</a>

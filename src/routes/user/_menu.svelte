@@ -18,9 +18,9 @@
 </style>
 
 <div class="mt-10 mb-5">
-  <button
+  <a
     class="primary-btn"
-    on:click={() => goto(`/user/${$user.id}/edit`)}>Edit Profile</button>
+    href={`/user/${$user.id}/edit`}>Edit Profile</a>
 </div>
 
 <div class="menu uppercase">
