@@ -53,16 +53,14 @@
   class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
   class:link
   on:click={click}
-  in:fade
->
-  <div class="flex justify-center w-full">
+  in:fade>
+  <div class="flex justify-center">
     <ArtworkMedia {artwork} {showDetails} />
   </div>
   {#if showDetails}
     <div class="p-6">
       <div class="flex flex-row justify-between">
-        <h1 class="font-bold text-2xl">{artwork.title}</h1>
-        
+        <h1 class="font-bold text-2xl">{artwork.title || 'Untitled'}</h1>
         <Heart {artwork} />
       </div>
       <div class="flex pt-8">
