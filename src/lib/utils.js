@@ -43,6 +43,12 @@ const assetLabel = (asset) => {
   return r ? (r.title || r.name || 'Untitled') : ticker(asset);
 };
 
+const artworkId = (asset) => {
+  let $artworks = get(artworks);
+  let r = $artworks && $artworks.find((u) => u.asset === asset);
+  return r && r.id;
+};
+
 const tickers = {
   [btc]: {
     name: "Liquid Bitcoin",
@@ -194,6 +200,7 @@ function format(n, p) {
 export {
   addressLabel,
   addressUser,
+  artworkId,
   assetLabel,
   btc,
   cad,

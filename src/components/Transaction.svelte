@@ -1,7 +1,6 @@
 <script>
   import Avatar from "$components/Avatar";
   import { addresses, psbt, user } from "$lib/store";
-  import Check from "$icons/check";
   import reverse from "buffer-reverse";
   import { electrs } from "$lib/api";
   import { getAddress, parseVal, parseAsset } from "$lib/wallet";
@@ -10,7 +9,9 @@
     explorer,
     addressLabel,
     addressUser,
+    artworkId,
     assetLabel,
+    copy,
     ticker,
     val,
     btc,
@@ -89,27 +90,10 @@
     });
   };
 
-  let combined;
-  let combine = () => {
-    combined = $psbt.combine(Psbt.fromBase64(anotherBase64)).toBase64();
-  } 
-
   let base64;
-  let anotherBase64;
   $: read(base64);
   let read = (base64) => base64 && ($psbt = Psbt.fromBase64(base64));
-
-  let debug = () => {
-    let p = $psbt;
-    debugger;
-  } 
 </script>
-
-<textarea class="w-full mb-2" bind:value={base64} placeholder="PSBT Base64" />
-<textarea class="w-full mb-2" bind:value={anotherBase64} placeholder="PSBT Base64" />
-<button on:click={() => init($psbt)} class="primary-btn mb-6">Parse</button>
-<button on:click={debug} class="primary-btn mb-6">Debug</button>
-<button on:click={combine} class="primary-btn mb-6">Combine</button>
 
 {#if tx}
   <div class="w-full mx-auto">
@@ -204,73 +188,92 @@
     </div>
 
     {#if showDetails}
-      <div class="font-bold text-xs">Transaction ID</div>
-      <div class="mb-4 break-all text-wrap">
-        <a
-          href={`${explorer}/tx/${tx.getId()}`}
-          class="text-green-400"
-          target="_blank">
-          {tx.getId()}
-        </a>
-      </div>
+      <div class="text-sm">
+        <div class="font-bold text-xs">Transaction ID</div>
+        <div class="mb-4 break-all text-wrap p-4">
+          {#if ins.find((i) => !i.signed || i.pSig)}
+            {tx.getId()}
+          {:else}
+            <a
+              href={`${explorer}/tx/${tx.getId()}`}
+              class="secondary-color"
+              target="_blank">
+              {tx.getId()}
+            </a>
+          {/if}
+        </div>
 
-      <div class="font-bold text-xs">Inputs</div>
-      <div class="flex break-all mb-2 text-sm">
-        <div class="w-1/6">Value</div>
-        <div class="mr-2">Asset</div>
-      </div>
-
-      {#each ins as input}
-        <div class="flex break-all mb-2 text-sm">
-          <div class="w-1/6">{input.value}</div>
-          <div class="mr-2">{assetLabel(input.asset)}</div>
-          <div class="text-right flex-grow">
-            {addressLabel(input.scriptpubkey_address)}
+        <div class="flex mb-2">
+          <div class="w-1/2">
+            <div class="font-bold text-xs">Size</div>
+            <div class="p-4">{tx.virtualSize()} bytes</div>
           </div>
-          <div class="text-right flex-grow">
-            {#if input.signed}
-              <div class="ml-auto" style="max-width: 20px">
-                <Check color={input.pSig ? 'orange' : '#32c671'} />
+          <div class="w-1/2">
+            <div class="font-bold text-xs">Weight</div>
+            <div class="p-4">{tx.weight()} vbytes</div>
+          </div>
+        </div>
+
+        <div class="md:flex">
+          <div class="w-1/2">
+            <div class="font-bold text-xs">Inputs</div>
+
+            {#each ins as input, i}
+              <div class="break-all mb-2 p-4">
+                {#if i > 0}
+                  <hr />
+                {/if}
+                <div class="mb-2">Index: {i}</div>
+                <div class="mb-2">
+                  Status:
+                  {input.signed ? (input.pSig ? 'Partially signed' : 'Fully signed') : 'Unsigned'}
+                </div>
+
+                <div class="mb-2">
+                  {input.value}
+                  <a
+                    href={`${explorer}/asset/${input.asset}`}
+                    class="secondary-color">{input.asset}</a>
+                </div>
+                <div class="mb-2">Prevout: {input.txid}:{input.index}</div>
+
+                <div class="mb-2">
+                  <a
+                    href={`${explorer}/address/${input.scriptpubkey_address}`}
+                    class="secondary-color">{input.scriptpubkey_address}</a>
+                </div>
               </div>
-            {/if}
+            {/each}
+          </div>
+
+          <div class="w-1/2">
+            <div class="font-bold text-xs">Outputs</div>
+            {#each outs as out, i}
+              {#if i > 0}
+                <hr />
+              {/if}
+              {#if out}
+                <div class="break-all mb-2 p-4">
+                  <div class="mb-2">Index: {i}</div>
+                  <div class="mb-2">
+                    {out.value}
+                    <a
+                      href={`${explorer}/asset/${out.asset}`}
+                      class="secondary-color">{out.asset}</a>
+                  </div>
+                  <div>
+                    <a
+                      href={`${explorer}/address/${out.address}`}
+                      class="secondary-color">{out.address}</a>
+                  </div>
+                </div>
+              {/if}
+            {/each}
           </div>
         </div>
-      {/each}
-      <div class="font-bold text-xs">Outputs</div>
-      <div class="flex break-all mb-2 text-sm">
-        <div class="w-1/6">Value</div>
-        <div class="mr-2">Asset</div>
-        <div class="text-right flex-grow">Recipient</div>
+        <button class="secondary-btn mb-2" on:click={() => copy($psbt.toBase64())}>Copy PSBT Base64</button>
+        <button class="primary-btn mb-2a" on:click={() => copy(tx.toHex())}>Copy Tx Hex</button>
       </div>
-      {#each outs as out}
-        {#if out}
-          <div class="flex break-all mb-2 text-sm">
-            <div class="w-1/6">{out.value}</div>
-            <div class="mr-2">{assetLabel(out.asset)}</div>
-            <div class="text-right flex-grow">{addressLabel(out.address)}</div>
-          </div>
-        {/if}
-      {/each}
-      {#if !summary}
-        <div class="font-bold text-xs">Size</div>
-        <div class="mb-4">{tx.virtualSize()}</div>
-        <div class="font-bold text-xs">Weight</div>
-        <div class="mb-4">{tx.weight()}</div>
-
-        <div class="font-bold text-xs">Tx Hex</div>
-        <div class="font-mono w-full text-xs text-wrap break-all mb-4">
-          {tx.toHex()}
-        </div>
-
-        <div class="font-bold text-xs">PSBT Base64</div>
-        <div class="font-mono w-full text-xs text-wrap break-all">
-          {$psbt.toBase64()}
-        </div>
-        <div class="font-bold text-xs">Combined</div>
-        <div class="font-mono w-full text-xs text-wrap break-all">
-          {combined}
-        </div>
-      {/if}
     {/if}
   </div>
 {/if}
