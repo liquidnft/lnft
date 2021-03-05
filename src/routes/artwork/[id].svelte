@@ -44,7 +44,7 @@
     subscription(
       operationStore(getArtworksByArtist(artwork.artist_id)),
       (a, b) =>
-        (others = b.artworks.filter((a) => artwork && a.id !== artwork.id))
+      (others = b.artworks.filter((a) => artwork && a.id !== artwork.id).slice(0, 4))
     );
 
   let artwork, start_counter, end_counter;
@@ -394,13 +394,16 @@
             More by this artist
           </h2>
           <div class="w-full flex flex-wrap">
+            {#if others.length}
             {#each others as artwork (artwork.id)}
               <div class="w-full lg:w-full xl:w-1/2 px-0 md:px-5 mb-20">
                 <Card {artwork} />
               </div>
+            {/each}
+            <a class="primary-btn mx-auto mb-12" href={`/artist/${artwork.artist.username}`}>View Gallery</a>
             {:else}
               <div class="mx-auto">No other artworks</div>
-            {/each}
+            {/if}
           </div>
         </div>
       </div>

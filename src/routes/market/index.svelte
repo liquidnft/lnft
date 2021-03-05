@@ -1,93 +1,24 @@
 <script>
-  import { tick, onMount } from "svelte";
-  import Card from "$components/Card";
   import { addresses, show, user } from "$lib/store";
-  import ToggleSwitch from "$components/ToggleSwitch";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
   import { goto } from "$lib/utils";
+  import Gallery from "$components/Gallery";
   import Search from "$components/Search";
-  import { getTags } from "$queries/artworks";
+  import Filter from "./_filter";
+  import Sort from "./_sort";
 
-  let tags = [];
+  export let artworks = [];
 
-  let getTags$ = operationStore(getTags);
+  if (!artworks.length)
+    subscription(
+      operationStore(getArtworks),
+      (a, b) => (artworks = b.artworks)
+    );
 
-  subscription(getTags$, (a, b) => {
-    let reduced = [];
-    b.tags.map((t) => {
-      let i = reduced.find((r) => t.tag === r.tag);
-      if (i) i.artworks.push(t.artwork);
-      else
-        reduced.push({
-          tag: t.tag,
-          artworks: [t.artwork],
-        });
-    });
-    tags = reduced;
-  });
-
-  let artworks = [];
-  subscription(operationStore(getArtworks), (a, b) => (artworks = b.artworks));
-
-  let filtered = [];
-  $: {
-    refs = {};
-    filtered = artworks
-      ? artworks
-          .filter(
-            (a) =>
-              (!listPrice || a.list_price) &&
-              (!openBid || a.bid[0].amount) &&
-              (!ownedByCreator || a.artist_id === a.owner_id) &&
-              (!hasSold || a.artist_id !== a.owner_id)
-          )
-          .sort(
-            (a, b) =>
-              ({
-                active:
-                  new Date(b.last_active) - new Date(a.last_active) ||
-                  new Date(b.created_at) - new Date(a.created_at),
-                lowest: a.list_price - b.list_price,
-                highest: b.list_price - a.list_price,
-                newest: new Date(b.created_at) - new Date(a.created_at),
-                oldest: new Date(a.created_at) - new Date(b.created_at),
-              }[sort])
-          ).slice(0, 11)
-      : 
-        [];
-
-    tick().then(() => {
-      let visible = {};
-      let observers = {};
-      let observe = (s) => {
-        console.log("obs", s, observers, visible, hidden);
-        let el = document.querySelector(s);
-        if (observers[s]) observers[s].unobserve();
-        observers[s] = new IntersectionObserver((e) => {
-          visible[s] = e[0].isIntersecting;
-          hidden = visible[".controls"] || visible[".footer"];
-        });
-        if (el) observers[s].observe(el);
-      };
-
-      observe(".controls");
-      observe(".footer");
-    });
-  }
-
-  let listPrice, openBid, ownedByCreator, hasSold, sort;
-
-  let showFilters = false;
-  let hidden;
-  let maxPages = 8;
-  $: offset = filtered.length / maxPages - ((filtered.length / maxPages) % 3) + 3;
-
-  let jump = async (i) => {
-    document.getElementById(`artwork-${i * offset}`).scrollIntoView();
-  };
-
-  let refs = {};
+  let sort, filter, showFilters;
+  $: filtered =
+    sort && filter && artworks ? artworks.filter(filter).sort(sort) : [];
 </script>
 
 <style>
@@ -99,15 +30,6 @@
     background-color: whitesmoke;
     padding-right: 3rem;
     background-size: 20px;
-  }
-  .switch-container {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-  }
-
-  .switch-container div {
-    margin: 0px 20px 20px 0;
   }
 
   .filters {
@@ -121,12 +43,6 @@
       appearance: none;
       border: 0;
       border-bottom: 1px solid #6ed8e0;
-    }
-
-    .switch-container {
-      flex-direction: column;
-      display: none;
-      margin-top: -10px;
     }
 
     select {
@@ -145,25 +61,14 @@
       display: block !important;
     }
   }
-
-  @media only screen and (max-width: 500px) {
-    .sort-container {
-      margin: 0;
-      margin-bottom: 20px;
-    }
-    select {
-      padding: 0;
-      background: none;
-    }
-  }
 </style>
 
 <div class="container mx-auto flex flex-wrap sm:justify-between mt-10 md:mt-20">
   <h2 class="mb-10 md:mb-0">Market</h2>
 
   {#if $user && $user.is_artist}
-    <button on:click={() => goto('/artwork/create')} class="primary-btn">Submit
-      a New Artwork</button>
+    <a href="/artwork/create" class="primary-btn">Submit a New
+      Artwork</a>
   {/if}
 </div>
 <div class="container mx-auto mt-10">
@@ -184,68 +89,10 @@
           <i class="fas fa-sliders-h ml-3" />
         </p>
       </div>
-      <div class="sort-container">
-        <select class="rounded-full bg-gray-100 px-8" bind:value={sort}>
-          <option value="active">Recently active</option>
-          <option value="lowest">Lowest price</option>
-          <option value="highest">Highest price</option>
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-        </select>
-      </div>
+      <Sort bind:sort />
     </div>
-    <div class:showFilters class="switch-container w-full md:w-auto">
-      <div>
-        <ToggleSwitch
-          id="list-price"
-          label="Has list price"
-          checked={listPrice}
-          on:change={(e) => (listPrice = e.target.checked)} />
-      </div>
-      <div>
-        <ToggleSwitch
-          id="open-bid"
-          label="Has open bid"
-          checked={openBid}
-          on:change={(e) => (openBid = e.target.checked)} />
-      </div>
-      <div>
-        <ToggleSwitch
-          id="owned-by-creator"
-          label="Owned by creator"
-          checked={ownedByCreator}
-          on:change={(e) => (ownedByCreator = e.target.checked)} />
-      </div>
-      <div>
-        <ToggleSwitch
-          id="has-sold"
-          label="Has sold"
-          checked={hasSold}
-          on:change={(e) => (hasSold = e.target.checked)} />
-      </div>
-    </div>
+    <Filter bind:filter {showFilters} />
   </div>
-
-  <div class="flex flex-wrap">
-    {#each filtered as artwork, i (artwork.id)}
-      {#if i % offset === 0}
-        <div class="w-full flex" class:invisible={i === 0} class:h-0={i === 0}>
-          <h4 class="mx-auto mb-12" id={`artwork-${i}`}>{i / offset + 1}</h4>
-        </div>
-      {/if}
-      <div class="w-full lg:w-1/3 lg:px-5 xl:px-8 mb-20" bind:this={refs[i]}>
-        <Card {artwork} />
-      </div>
-    {/each}
-  </div>
+  <Gallery artworks={filtered} />
 </div>
 
-<div class="fixed bottom-0 flex w-full bg-white p-4" class:hidden>
-  <div class="mx-auto">
-    {#each new Array(Math.ceil(filtered.length / offset)) as _, i}
-      <button
-        class="rounded-full bg-red w-12 h-12"
-        on:click={() => jump(i)}>{i + 1}</button>
-    {/each}
-  </div>
-</div>

@@ -55,6 +55,12 @@ export const getArtworksByArtist = (id) => `subscription {
   }
 }`;
 
+export const getArtworksByUsername = (username) => `subscription {
+  artworks(where: {artist: { username: {_eq: "${username}"}}}) {
+    ${fields}
+  }
+}`;
+
 export const getArtworksByTag = (tag) => `subscription {
   artworks(where: {tags: {tag: {_eq: "${tag}"}}}) {
     ${fields}
