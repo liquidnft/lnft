@@ -2,10 +2,14 @@
   import ToggleSwitch from "$components/ToggleSwitch";
 
   export let showFilters;
+  export let artworks;
+  export let filtered;
 
   let listPrice, openBid, ownedByCreator, hasSold;
+  $: update(listPrice, openBid, ownedByCreator, hasSold);
+  let update = () => (filtered = artworks.filter(filter));
 
-  export let filter = (a) =>
+  let filter = (a) =>
     (!listPrice || a.list_price) &&
     (!openBid || a.bid[0].amount) &&
     (!ownedByCreator || a.artist_id === a.owner_id) &&

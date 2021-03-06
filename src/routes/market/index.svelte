@@ -8,17 +8,12 @@
   import Filter from "./_filter";
   import Sort from "./_sort";
 
-  export let artworks = [];
+  let artworks = [];
+  let filtered = [];
 
-  if (!artworks.length)
-    subscription(
-      operationStore(getArtworks),
-      (a, b) => (artworks = b.artworks)
-    );
+  subscription(operationStore(getArtworks), (a, b) => (artworks = filtered = b.artworks));
 
-  let sort, filter, showFilters;
-  $: filtered =
-    sort && filter && artworks ? artworks.filter(filter).sort(sort) : [];
+  let showFilters;
 </script>
 
 <style>
@@ -67,8 +62,7 @@
   <h2 class="mb-10 md:mb-0">Market</h2>
 
   {#if $user && $user.is_artist}
-    <a href="/artwork/create" class="primary-btn">Submit a new
-      artwork</a>
+    <a href="/artwork/create" class="primary-btn">Submit a new artwork</a>
   {/if}
 </div>
 <div class="container mx-auto mt-10">
@@ -89,10 +83,9 @@
           <i class="fas fa-sliders-h ml-3" />
         </p>
       </div>
-      <Sort bind:sort />
+      <Sort bind:filtered />
     </div>
-    <Filter bind:filter {showFilters} />
+    <Filter bind:filtered {artworks} {showFilters} />
   </div>
   <Gallery artworks={filtered} />
 </div>
-

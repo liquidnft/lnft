@@ -419,10 +419,9 @@
                   wallet, giving potential collectors the ability to immediately
                   purchase the artwork.
                   <br /><br />
-                  Take note: Updating the listing price involves sending an
-                  on-chain cancellation transaction to invalidate the previous
-                  swap and there will be a small network transaction fee in that
-                  case.
+                  Updating the listing price involves sending an on-chain
+                  cancellation transaction to invalidate the previous offer.
+                  This will incur a small network transaction fee.
                 </span>
               </span></label>
             <input
@@ -444,10 +443,10 @@
                   <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
                     Setting a royalty involves transferring the artwork to a
                     2-of-2 multisig address with Raretoshi. Our server will
-                    co-sign transactions so long as they pay the specified
-                    royalty to the original artist. Collectors will not be able
-                    to transfer the NFT to an external wallet outside the
-                    Raretoshi platform.
+                    co-sign on all future sales only if they pay the specified
+                    royalty to the original artist and are transferring to
+                    another 2-of-2 address that's constructed with our public
+                    key.
                   </span>
                 </span></label>
               <input
@@ -456,7 +455,7 @@
                 bind:value={royalty}
                 disabled={auction_underway} />
               <div
-                class="absolute inset-y-0 right-0 flex items-center mr-2 mt-2">
+                class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4">
                 %
               </div>
             </div>
@@ -536,6 +535,10 @@
                       placeholder="0"
                       bind:value={artwork.reserve_price}
                       disabled={auction_underway} />
+                    <div
+                      class="absolute inset-y-0 right-0 flex items-center mr-2 mt-8">
+                      {assetLabel(artwork.asking_asset)}
+                    </div>
                   </label>
                 </div>
               </div>

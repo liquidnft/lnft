@@ -240,18 +240,21 @@
                   <hr />
                 {/if}
                 <div class="mb-2">Index: {i}</div>
+
                 <div class="mb-2">
                   Status:
                   {input.signed ? (input.pSig ? 'Partially signed' : 'Fully signed') : 'Unsigned'}
                 </div>
 
+                <div class="mb-2">Prevout: {input.txid}:{input.index}</div>
+
                 <div class="mb-2">
-                  {input.value} units of
+                  {input.value}
+                  units of
                   <a
                     href={`${explorer}/asset/${input.asset}`}
                     class="secondary-color">{input.asset}</a>
                 </div>
-                <div class="mb-2">Prevout: {input.txid}:{input.index}</div>
 
                 <div class="mb-2">
                   <a
@@ -272,15 +275,20 @@
                 <div class="break-all mb-2 p-4">
                   <div class="mb-2">Index: {i}</div>
                   <div class="mb-2">
-                    {out.value} units of
+                    {out.value}
+                    units of
                     <a
                       href={`${explorer}/asset/${out.asset}`}
                       class="secondary-color">{out.asset}</a>
                   </div>
                   <div>
-                    <a
-                      href={`${explorer}/address/${out.address}`}
-                      class="secondary-color">{out.address}</a>
+                    {#if out.address === 'Fee'}
+                      Fee
+                    {:else}
+                      <a
+                        href={`${explorer}/address/${out.address}`}
+                        class="secondary-color">{out.address}</a>
+                    {/if}
                   </div>
                 </div>
               {/if}
