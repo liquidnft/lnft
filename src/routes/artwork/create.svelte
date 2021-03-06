@@ -3,10 +3,17 @@
   import { v4 } from "uuid";
   import { electrs } from "$lib/api";
   import { tick, onMount } from "svelte";
-  import { psbt, password, prompt, user, token } from "$lib/store";
+  import {
+    edition,
+    fee,
+    psbt,
+    password,
+    prompt,
+    user,
+    token,
+  } from "$lib/store";
   import { Dropzone, ProgressLinear } from "$comp";
   import upload from "$lib/upload";
-  import Form from "./_form";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
   import { goto, err } from "$lib/utils";
@@ -18,6 +25,9 @@
     keypair,
   } from "$lib/wallet";
   import reverse from "buffer-reverse";
+
+  import Form from "./_form";
+  import Issuing from "./_issuing";
 
   $: requireLogin($page);
 
@@ -86,33 +96,26 @@
   const createArtwork = mutation(create);
 
   let hash;
-  let contract;
   const issue = async () => {
     await requirePassword();
     await tick();
 
-    contract = {
-      entity: { domain: `${$user.username}.${window.location.hostname}` },
-      issuer_pubkey: keypair().pubkey.toString("hex"),
-      name: artwork.title,
-      precision: 0,
-      ticker: (artwork.title.split(" ").length > 2
-        ? artwork.title
-            .split(" ")
-            .map((w) => w[0])
-            .join("")
-        : artwork.title.substr(0, 4)
-      ).toUpperCase(),
-      version: 0,
-    };
-
-    $psbt = await createIssuance(artwork, contract, 100);
+    let domain = `${$user.username}.${window.location.hostname}`;
+    let contract = await createIssuance(artwork, domain, $fee);
 
     await signAndBroadcast();
     let tx = $psbt.extractTransaction();
     artwork.asset = parseAsset(tx.outs[3].asset);
 
     hash = tx.getId();
+
+    return JSON.stringify(contract);
+  };
+
+  let poll = async (resolve) => {
+    let { confirmed } = await electrs.url(`/tx/${hash}/status`).get().json();
+    if (confirmed) return resolve();
+    setTimeout(() => poll(resolve), 2000);
   };
 
   let submit = async (e) => {
@@ -121,37 +124,48 @@
     if (!type) return err("Unrecognized file type");
 
     loading = true;
+    $edition = 1;
+    $prompt = Issuing;
 
     try {
       await requireLogin();
-
-      await issue();
-
-      artwork.id = v4();
       artwork.filetype = type;
-
       let tags = artwork.tags.map(({ tag }) => ({
         tag,
         artwork_id: artwork.id,
       }));
-      let artworkSansTags = { ...artwork };
-      delete artworkSansTags.tags;
-      await createArtwork({
-        artwork: artworkSansTags,
-        transaction: {
-          artwork_id: artwork.id,
-          type: "creation",
-          hash,
-          contract: JSON.stringify(contract),
-          asset: artwork.asset,
-          amount: artwork.editions,
-          psbt: $psbt.toBase64(),
-        },
-        tags,
-      });
 
+      let n = artwork.editions;
+      for (let i = 0; i < n; i++) {
+        let contract = await issue();
+        artwork.id = v4();
+        artwork.editions = $edition;
+
+        let artworkSansTags = { ...artwork };
+        delete artworkSansTags.tags;
+
+        await createArtwork({
+          artwork: artworkSansTags,
+          transaction: {
+            artwork_id: artwork.id,
+            type: "creation",
+            hash,
+            contract,
+            asset: artwork.asset,
+            amount: 1,
+            psbt: $psbt.toBase64(),
+          },
+          tags,
+        });
+
+        if (i < n - 1) await new Promise(poll);
+        $edition += 1;
+      }
+
+      $prompt = undefined;
       goto(`/artwork/${artwork.id}`);
     } catch (e) {
+      console.log(e);
       err(e);
       loading = false;
     }

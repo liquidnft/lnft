@@ -406,16 +406,16 @@ export const executeSwap = async (artwork) => {
   return swap;
 };
 
-export const createIssuance = async (artwork, contract) => {
+export const createIssuance = async (artwork, domain) => {
   let out = singlesig();
 
-  let swap = new Psbt()
+  let p = new Psbt()
     // fee
     .addOutput({
       asset: btc,
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
-      value: get(fee),
+      value: get(fee) * artwork.editions,
     })
     // op_return
     .addOutput({
@@ -425,9 +425,28 @@ export const createIssuance = async (artwork, contract) => {
       value: 0,
     });
 
-  await fund(swap, out, btc, get(fee));
+  await fund(p, out, btc, get(fee) * artwork.editions);
 
-  swap.addIssuance({
+  let ticker = (artwork.title.split(" ").length > 2
+    ? artwork.title
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+    : artwork.title
+  )
+    .substr(0, 4)
+    .toUpperCase();
+
+  let contract = {
+    entity: { domain },
+    issuer_pubkey: keypair().pubkey.toString("hex"),
+    name: artwork.title,
+    precision: 0,
+    ticker,
+    version: 0,
+  };
+
+  p.addIssuance({
     assetAmount: artwork.editions,
     assetAddress: out.address,
     tokenAmount: 0,
@@ -436,7 +455,8 @@ export const createIssuance = async (artwork, contract) => {
     contract,
   });
 
-  return swap;
+  psbt.set(p);
+  return contract;
 };
 
 export const signOver = async ({ asset }) => {

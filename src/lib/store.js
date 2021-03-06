@@ -22,3 +22,4 @@ export const token = writable();
 export const user = writable();
 export const wallet = writable();
 export const role = writable('user');
+export const edition = writable();
