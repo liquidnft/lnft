@@ -57,7 +57,7 @@
             </div>
           {/each}
         </div>
-        <a href="/" class="text-sm text-midblue block text-right">See full ranking</a>
+        <a href="/top-collectors" class="text-sm text-midblue block text-right">See full ranking</a>
       </div>
 
       <div class="boxShadow p-4 rounded-lg">
@@ -72,7 +72,7 @@
             </div>
           {/each}
         </div>
-        <a href="/" class="text-sm text-midblue block text-right">See full ranking</a>
+        <a href="/top-artists" class="text-sm text-midblue block text-right">See full ranking</a>
       </div>
     </div>
   </div>

@@ -39,7 +39,7 @@
         <h4 class="mx-auto mb-12" id={`artwork-${i}`}>{i / offset + 1}</h4>
       </div>
     {/if}
-    <div class="w-full lg:w-1/3 lg:px-5 xl:px-8 mb-20">
+    <div class="w-full lg:w-1/3 xl:w-1/4 lg:px-5 xl:px-8 mb-20">
       <Card {artwork} />
     </div>
   {/each}

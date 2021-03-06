@@ -8,8 +8,15 @@
   };
 </script>
 
+<style>
+.full-width {
+  width: 100%;
+  left: calc(100vw - 100%);
+}
+  </style>
+
 {#if artworks && offset}
-  <div class="fixed bottom-0 flex w-full bg-white p-4" class:hidden>
+  <div class="fixed full-width bottom-0 flex bg-white p-4 mx-auto" style= class:hidden>
     <div class="mx-auto">
       {#each new Array(Math.ceil(artworks.length / offset)) as _, i}
         <button
