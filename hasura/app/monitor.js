@@ -67,7 +67,7 @@ const transferOwnership = async ({
       artwork_id,
       hash,
       psbt,
-      artwork: { editions: amount, asset },
+      artwork: { asset },
     } = transaction;
 
     await hasura
@@ -80,7 +80,7 @@ const transferOwnership = async ({
             artwork_id,
             hash,
             psbt,
-            amount,
+            amount: 1,
             asset,
           },
         },

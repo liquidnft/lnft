@@ -358,7 +358,6 @@ export const signAndBroadcast = async () => {
 
 export const executeSwap = async (artwork) => {
   let {
-    editions,
     list_price,
     list_price_tx,
     asset,
@@ -378,7 +377,7 @@ export const executeSwap = async (artwork) => {
       asset,
       nonce: Buffer.alloc(1),
       script,
-      value: editions,
+      value: 1,
     })
     .addOutput({
       asset: btc,
@@ -415,7 +414,7 @@ export const createIssuance = async (artwork, domain) => {
       asset: btc,
       nonce: Buffer.alloc(1, 0),
       script: Buffer.alloc(0),
-      value: get(fee) * artwork.editions,
+      value: get(fee),
     })
     // op_return
     .addOutput({
@@ -425,7 +424,7 @@ export const createIssuance = async (artwork, domain) => {
       value: 0,
     });
 
-  await fund(p, out, btc, get(fee) * artwork.editions);
+  await fund(p, out, btc, get(fee));
 
   let ticker = (artwork.title.split(" ").length > 2
     ? artwork.title
@@ -447,7 +446,7 @@ export const createIssuance = async (artwork, domain) => {
   };
 
   p.addIssuance({
-    assetAmount: artwork.editions,
+    assetAmount: 1,
     assetAddress: out.address,
     tokenAmount: 0,
     precision: 0,
@@ -556,7 +555,7 @@ export const createOffer = async (artwork, amount) => {
   }
 
   try {
-    await fund(swap, ownerOut, artwork.asset, artwork.editions, 1, ms);
+    await fund(swap, ownerOut, artwork.asset, 1, 1, ms);
   } catch (e) {
     throw new Error(
       "Unable to construct offer, the asset could not be found in the owner's wallet"
@@ -577,9 +576,10 @@ export const createOffer = async (artwork, amount) => {
 export const sendToMultisig = async (artwork) => {
   let out = singlesig();
   let { output: script } = multisig();
-  let { asset, editions: value } = artwork;
+  let { asset } = artwork;
+  let value = 1;
 
-  let swap = new Psbt()
+  let p = new Psbt()
     .addOutput({
       asset,
       nonce: Buffer.alloc(1),
@@ -594,17 +594,14 @@ export const sendToMultisig = async (artwork) => {
     });
 
   try {
-    if (asset === btc) {
-      await fund(swap, out, btc, value + get(fee));
-    } else {
-      await fund(swap, out, asset, value);
-      await fund(swap, out, btc, get(fee));
-    }
+    await fund(p, out, asset, value);
+    await fund(p, out, btc, get(fee));
   } catch (e) {
     console.log(e.message);
   }
 
-  return swap;
+  psbt.set(p);
+  return p;
 };
 
 export const requestSignature = async (psbt) => {

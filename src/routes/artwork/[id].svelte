@@ -145,7 +145,7 @@
 
       await save();
 
-      transaction.amount = artwork.editions;
+      transaction.amount = 1;
       transaction.asset = artwork.asset;
       transaction.user;
     } catch (e) {
@@ -266,7 +266,7 @@
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || 'Untitled'}
         </h1>
-        <div class="mt-4 mb-6">{artwork.editions} Editions</div>
+        <div class="mt-4 mb-6">Edition {artwork.edition} of {artwork.editions}</div>
         <div class="mobileImage">
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} />

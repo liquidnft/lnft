@@ -208,6 +208,7 @@
       - auction_start
       - bid_increment
       - description
+      - edition
       - editions
       - extension_interval
       - filename
@@ -234,6 +235,7 @@
       - bid_increment
       - created_at
       - description
+      - edition
       - editions
       - extension_interval
       - filename
@@ -265,6 +267,7 @@
       - bid_increment
       - created_at
       - description
+      - edition
       - editions
       - extension_interval
       - filename
@@ -295,6 +298,7 @@
       - auction_start
       - bid_increment
       - description
+      - edition
       - editions
       - extension_interval
       - id

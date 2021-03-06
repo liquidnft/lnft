@@ -199,7 +199,7 @@
 
       await createTransaction$({
         transaction: {
-          amount: artwork.editions,
+          amount: 1,
           artwork_id: artwork.id,
           asset: artwork.asking_asset,
           hash: tx.getId(),
@@ -229,7 +229,7 @@
 
     await createTransaction$({
       transaction: {
-        amount: artwork.editions,
+        amount: 1,
         artwork_id: artwork.id,
         asset: artwork.asking_asset,
         hash: $psbt.extractTransaction().getId(),

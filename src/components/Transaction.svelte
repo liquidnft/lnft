@@ -64,17 +64,23 @@
     outs = tx.outs.map((out) => {
       let address;
 
-      try {
-        address = getAddress(out);
-      } catch (e) {
-        if (!out.script.length) address = "Fee";
-        else return;
-      }
-
-      let user = addressLabel(address);
       let asset = parseAsset(out.asset);
       let value = parseVal(out.value);
 
+      try {
+        address = getAddress(out);
+      } catch (e) {
+        console.log(out);
+        if (!out.script.length) address = "Fee";
+        else
+          return {
+            value,
+            asset,
+            address: "",
+          };
+      }
+
+      let user = addressLabel(address);
       users[user] = addressUser(address);
 
       if (!totals[user]) totals[user] = {};
@@ -116,7 +122,7 @@
                 {:else}
                   <div>{user}</div>
                 {/if}
-                <div class="ml-auto">
+                <div class="ml-auto mt-3">
                   {#each Object.keys(totals[user]) as asset}
                     {#if totals[user][asset] > 0}
                       <div class="flex break-all mb-2">
@@ -154,7 +160,7 @@
                 {:else}
                   <div>{user}</div>
                 {/if}
-                <div class="ml-auto">
+                <div class="ml-auto mt-3">
                   {#each Object.keys(totals[user]) as asset}
                     {#if totals[user][asset] < 0}
                       <div class="flex break-all mb-2">
@@ -170,22 +176,32 @@
             </div>
           {/if}
         {/each}
+
+        {#if totals['Fee']}
+          <h4 class="mt-6 mb-2 text-right">Fee</h4>
+          <div class="text-right">
+            {val(btc, Math.abs(totals['Fee'][btc]))}
+            BTC
+          </div>
+        {/if}
       </div>
     </div>
 
-    {#if totals['Fee']}
-      <div class="flex mt-6">
-        <h4 class="mr-1">Fee</h4>
-        <div>{val(btc, Math.abs(totals['Fee'][btc]))} BTC</div>
+    {#if showDetails}
+      <div
+        class="text-xs my-6 cursor-pointer"
+        on:click={() => (showDetails = !showDetails)}>
+        Hide details
+        <i class="fas fa-chevron-up ml-2" />
+      </div>
+    {:else}
+      <div
+        class="text-xs my-6 cursor-pointer"
+        on:click={() => (showDetails = !showDetails)}>
+        View details
+        <i class="fas fa-chevron-down ml-2" />
       </div>
     {/if}
-
-    <div
-      class="text-xs my-6 cursor-pointer"
-      on:click={() => (showDetails = !showDetails)}>
-      View details
-      <i class="fas fa-chevron-down ml-2" />
-    </div>
 
     {#if showDetails}
       <div class="text-sm">
@@ -230,7 +246,7 @@
                 </div>
 
                 <div class="mb-2">
-                  {input.value}
+                  {input.value} units of
                   <a
                     href={`${explorer}/asset/${input.asset}`}
                     class="secondary-color">{input.asset}</a>
@@ -256,7 +272,7 @@
                 <div class="break-all mb-2 p-4">
                   <div class="mb-2">Index: {i}</div>
                   <div class="mb-2">
-                    {out.value}
+                    {out.value} units of
                     <a
                       href={`${explorer}/asset/${out.asset}`}
                       class="secondary-color">{out.asset}</a>
@@ -271,8 +287,11 @@
             {/each}
           </div>
         </div>
-        <button class="secondary-btn mb-2" on:click={() => copy($psbt.toBase64())}>Copy PSBT Base64</button>
-        <button class="primary-btn mb-2a" on:click={() => copy(tx.toHex())}>Copy Tx Hex</button>
+        <button
+          class="secondary-btn mb-2"
+          on:click={() => copy($psbt.toBase64())}>Copy PSBT Base64</button>
+        <button class="primary-btn mb-2a" on:click={() => copy(tx.toHex())}>Copy
+          Tx Hex</button>
       </div>
     {/if}
   </div>

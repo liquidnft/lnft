@@ -1,6 +1,7 @@
 const fields = `
   id,
   asset
+  edition
   editions
   title
   description
@@ -22,17 +23,17 @@ const fields = `
   max_extensions
   royalty
   views
-    owner {
-      username
-      avatar_url
-      address
-      pubkey
-    },
-    artist {
-      address
-      username
-      avatar_url
-    },
+  owner {
+    username
+    avatar_url
+    address
+    pubkey
+  },
+  artist {
+    address
+    username
+    avatar_url
+  },
   bid {
     user {
       id
@@ -122,17 +123,6 @@ export const destroyArtwork = (artwork) => ({
 export const getArtwork = (id) => `subscription {
   artworks_by_pk(id: "${id}") {
     ${fields}
-    artist {
-      address
-      username
-      avatar_url
-    },
-    owner {
-      username
-      avatar_url
-      address
-      pubkey
-    },
     tags {
       tag
     },

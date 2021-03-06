@@ -89,6 +89,7 @@
     description: "",
     filename: "",
     asset: "",
+    edition: 1,
     editions: 1,
     tags: [],
   };
@@ -97,13 +98,20 @@
 
   let hash;
   const issue = async () => {
+    tries++;
+
     await requirePassword();
     await tick();
 
     let domain = `${$user.username}.${window.location.hostname}`;
     let contract = await createIssuance(artwork, domain, $fee);
 
-    await signAndBroadcast();
+    try {
+      await signAndBroadcast();
+    } catch (e) {
+      if (e.message.includes("conflict") && tries < 5) setTimeout(issue, 500);
+    }
+
     let tx = $psbt.extractTransaction();
     artwork.asset = parseAsset(tx.outs[3].asset);
 
@@ -112,11 +120,7 @@
     return JSON.stringify(contract);
   };
 
-  let poll = async (resolve) => {
-    let { confirmed } = await electrs.url(`/tx/${hash}/status`).get().json();
-    if (confirmed) return resolve();
-    setTimeout(() => poll(resolve), 2000);
-  };
+  let tries;
 
   let submit = async (e) => {
     e.preventDefault();
@@ -124,22 +128,22 @@
     if (!type) return err("Unrecognized file type");
 
     loading = true;
-    $edition = 1;
     $prompt = Issuing;
 
     try {
       await requireLogin();
       artwork.filetype = type;
-      let tags = artwork.tags.map(({ tag }) => ({
-        tag,
-        artwork_id: artwork.id,
-      }));
 
-      let n = artwork.editions;
-      for (let i = 0; i < n; i++) {
+      for ($edition = 1; $edition <= artwork.editions; $edition++) {
         let contract = await issue();
+        tries = 0;
         artwork.id = v4();
-        artwork.editions = $edition;
+        artwork.edition = $edition;
+
+        let tags = artwork.tags.map(({ tag }) => ({
+          tag,
+          artwork_id: artwork.id,
+        }));
 
         let artworkSansTags = { ...artwork };
         delete artworkSansTags.tags;
@@ -157,9 +161,6 @@
           },
           tags,
         });
-
-        if (i < n - 1) await new Promise(poll);
-        $edition += 1;
       }
 
       $prompt = undefined;
