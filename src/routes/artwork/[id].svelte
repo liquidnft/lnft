@@ -401,9 +401,9 @@
                   <Card {artwork} />
                 </div>
               {/each}
-              <a
-                class="primary-btn mx-auto mb-12"
-                href={`/artist/${artwork.artist.username}`}>View Gallery</a>
+              <div class="flex w-full">
+                <a class="primary-btn mx-auto mb-12" href={`/artist/${artwork.artist.username}`}>View Gallery</a>
+              </div>
             {:else}
               <div class="mx-auto">No other artworks</div>
             {/if}

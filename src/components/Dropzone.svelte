@@ -43,6 +43,7 @@
     max-width: 350px;
     max-height: 350px;
     margin: 100px auto;
+    margin-top: 30px;
   }
 
   form {
@@ -58,7 +59,7 @@
     top: -100em;
   }
 
-  @media only screen and (max-width: 500px) {
+  @media only screen and (max-width: 800px) {
     #drop-area{
       width: 100%;
       max-width:100%;

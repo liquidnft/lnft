@@ -104,6 +104,12 @@
   textarea {
     @apply appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
   }
+  
+  .name-input{
+    border: none;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 0;
+  }
 
   label {
     margin-bottom: 8px;
@@ -116,7 +122,7 @@
     position: absolute;
     pointer-events: none;
     right: 15px;
-    top: 15px;
+    top: 25px;
     font-size: 20px;
     color: #6ed8e0;
   }
@@ -132,7 +138,7 @@
 <div class="container mx-auto py-20">
   {#if form}
     <div
-      class="mb-4 w-full xl:w-1/2 md:shadow rounded-xl md:p-10 m-auto lg:flex-row bg-white">
+      class="mb-4 w-full max-w-5xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row bg-white">
       <a class="block mb-6 text-midblue" href={`/user/${$user.id}`}><i
           class="fas fa-chevron-left mr-3" />Back</a>
       <h2 class="mb-10">Become an artist</h2>
@@ -143,11 +149,11 @@
       </p>
       <div class="flex mt-4 m-auto flex-col-reverse lg:flex-row">
         <form
-          class="mb-6 flex-grow xl:mr-8"
+          class="mb-6 w-full lg:max-w-md xl:mr-8"
           on:submit|preventDefault={submit}
           autocomplete="off">
           <div class="flex flex-col mb-4">
-            <input
+            <input class="name-input"
               placeholder="What's your name?"
               bind:value={form.full_name} />
           </div>
@@ -156,12 +162,11 @@
             <input placeholder="Your email" bind:value={form.email} />
           </div>
           <div class="flex flex-col mb-4">
-            <input
-              placeholder="http://example.com"
-              bind:value={form.username} />
+            <i class="fas fa-link icon" />
+            <input placeholder="http://example.com" bind:value={form.location} />
           </div>
           <div class="flex flex-col mb-4">
-            <i class="fas fa-map-marker-alt icon" />
+            <i class="fab fa-instagram icon"></i>
             <input placeholder="@instagram" bind:value={form.location} />
           </div>
           <div class="flex flex-col mb-4">
@@ -170,11 +175,11 @@
           </div>
           <div class="flex flex-col mb-4">
             <label>Extra information</label>
-            <textarea placeholder="" bind:value={form.info} />
+            <textarea placeholder="Is there anything else you'd like to tell us about you?" bind:value={form.info} />
           </div>
-          <div class="flex justify-end mt-8">
-            <button on:click|preventDefault={submit} class="primary-btn ">Save
-              details</button>
+          <div class="flex mt-8">
+            <button on:click|preventDefault={submit} class="primary-btn ">Submit
+              profile</button>
           </div>
         </form>
         {#if percent}
