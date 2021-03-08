@@ -33,17 +33,17 @@
 
     if (file.size < 100000000) previewFile(file);
 
-    let filename = await upload(file, progress);
+    filename = file.name;
+    await upload(file, progress);
     url = preview || `/api/ipfs/${filename}`;
-    url += '#t=0.5';
+    url += "#t=0.5";
 
     await tick();
     if (type.includes("video")) {
-      let source = document.createElement('source');
-      source.setAttribute('src', url);
+      let source = document.createElement("source");
+      source.setAttribute("src", url);
       video.appendChild(source);
       video.load();
-      video.play();
     }
   };
 
@@ -54,19 +54,6 @@
       preview = e.target.result;
       await tick();
       if (type.includes("video")) preview = URL.createObjectURL(file);
-    };
-
-    reader.readAsDataURL(file);
-  };
-
-  let fileChosen = (e) => {
-    file = e.target.files[0];
-    if (!file) return;
-    filename = file.name;
-    var reader = new FileReader();
-
-    reader.onload = async (e) => {
-      preview = e.target.result;
     };
 
     reader.readAsDataURL(file);
@@ -179,7 +166,7 @@
           </div>
           <div class="flex flex-col mb-4">
             <i class="fas fa-link icon" />
-            <input placeholder="@twitter" bind:value={form.website} />
+            <input placeholder="@twitter" bind:value={form.twitter} />
           </div>
           <div class="flex flex-col mb-4">
             <label>Extra information</label>
@@ -191,30 +178,32 @@
           </div>
         </form>
         {#if percent}
-          <div class="ml-2 flex-1 flex">
-            <div class="mx-auto">
-              {type}
+          <div class="ml-2 flex">
+            <div>
               {#if type.includes('image')}
-                <img alt="preview" src={url} class="w-full" />
-                {:else}
-              <video
-                preload="metadata"
-                controls
-                class:hidden
-                muted
-                loop
-                class="w-full"
-                bind:this={video}>
-                Your browser does not support HTML5 video.
-              </video>
+                <img alt="preview" src={url} class="w-10 h-10" />
+              {:else}
+                <video
+                  preload="metadata"
+                  controls
+                  class:hidden
+                  muted
+                  loop
+                  class="w-10 h-10"
+                  bind:this={video}>
+                  Your browser does not support HTML5 video.
+                </video>
               {/if}
-              <div class="w-full bg-grey-light p-8">
+              <div class="bg-grey-light p-8">
                 <div
                   class="bg-green-200 font-bold rounded-full p-4 mx-auto max-w-xs text-center"
                   style={width}>
                   {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
                 </div>
               </div>
+            </div>
+            <div>
+              {filename}
             </div>
           </div>
         {:else}

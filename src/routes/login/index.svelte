@@ -8,7 +8,7 @@
   import { keypair, singlesig, multisig } from "$lib/wallet";
   import { login } from "$lib/auth";
 
-  let username = "anon";
+  let username = "";
   let password = "liquidart";
 
   let usernameInput;
@@ -67,7 +67,6 @@
       <label class="mb-2 font-medium text-gray-600" for="first_name">Email or
         username</label>
       <input
-        placeholder="username"
         bind:value={username}
         bind:this={usernameInput} />
     </div>
@@ -75,7 +74,7 @@
       <label
         class="mb-2 font-medium text-gray-600"
         for="last_name">Password</label>
-      <input placeholder="Password" type="password" bind:value={password} />
+      <input type="password" bind:value={password} />
     </div>
     <a href="/forgot-password" class="block w-full text-midblue">Forgot
       password?</a>

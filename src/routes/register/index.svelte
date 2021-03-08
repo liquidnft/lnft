@@ -4,9 +4,9 @@
   import { register } from "$lib/auth";
   import ProgressLinear from "$components/ProgressLinear";
 
-  let username = "anon";
-  let password = "liquidart";
-  let email = "anon@raretoshi.com";
+  let username = "";
+  let password = "";
+  let email = "";
 
   let ref;
   let pageChange = () => setTimeout(() => ref.select(), 50);

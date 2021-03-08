@@ -1,16 +1,11 @@
 <script>
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
-  import { err, info, goto } from "$lib/utils";
+  import { err, info, goto, validateEmail } from "$lib/utils";
   import { Avatar } from "$components/index";
   import upload from "$lib/upload";
   import { updateUser } from "$queries/users";
   import { mutation, subscription } from "@urql/svelte";
-
-function validateEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
-}
 
   let initialize = (user) => {
     if (!(form && form.id) && user) form = { ...user };
