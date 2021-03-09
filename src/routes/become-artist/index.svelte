@@ -6,7 +6,7 @@
   import { Dropzone, ProgressLinear } from "$comp";
   import upload from "$lib/upload";
   import { updateUser } from "$queries/users";
-  import { mutation, subscription } from "@urql/svelte";
+  import { mutation } from "@urql/svelte";
 
   let initialize = (user) => {
     if (!(form && form.id) && user) form = { ...user };
@@ -16,34 +16,42 @@
 
   let form;
   let fileInput;
-  let filename;
   let preview;
   let file;
   let percent;
-  let video;
-  let type;
   let url;
   let hidden;
+
+  let files = [];
 
   $: width = `width: ${percent}%`;
 
   const uploadFile = async ({ detail: file }) => {
+    percent = 0;
     if (!file) return;
-    ({ type } = file);
 
     if (file.size < 100000000) previewFile(file);
 
-    filename = file.name;
-    await upload(file, progress);
-    url = preview || `/api/ipfs/${filename}`;
+    let hash = await upload(file, progress);
+    let url = preview || `/api/ipfs/${hash}`;
     url += "#t=0.5";
 
+    files = [
+      ...files,
+      {
+        type: file.type,
+        filename: file.name,
+        hash,
+        url,
+      },
+    ];
+
     await tick();
-    if (type.includes("video")) {
+    if (file.type.includes("video")) {
       let source = document.createElement("source");
       source.setAttribute("src", url);
-      video.appendChild(source);
-      video.load();
+      file.video.appendChild(source);
+      file.video.load();
     }
   };
 
@@ -53,7 +61,7 @@
     reader.onload = async (e) => {
       preview = e.target.result;
       await tick();
-      if (type.includes("video")) preview = URL.createObjectURL(file);
+      if (file.type.includes("video")) preview = URL.createObjectURL(file);
     };
 
     reader.readAsDataURL(file);
@@ -63,17 +71,18 @@
     percent = Math.round((event.loaded / event.total) * 100);
   };
 
-  let submit = async () => {
-    if (file) {
-      form.avatar_url = await upload(file, progress);
-    }
-
-    update(form);
-  };
-
   let updateUser$ = mutation(updateUser);
 
-  let update = (form) => {
+  let insertSamples = mutation({
+    query: `mutation ($samples: [samples_insert_input!]!) {
+      insert_samples(objects: $samples) {
+        affected_rows
+      }
+    }`,
+  });
+
+  let submitted;
+  let submit = async () => {
     let {
       is_artist,
       is_admin,
@@ -82,12 +91,16 @@
       followed,
       id,
       balance,
+      pubkey,
       ...user
     } = form;
-    updateUser$({ user, id }).then((r) => {
-      info("Profile updated");
-      goto(`/user/${id}`);
-    });
+
+    await updateUser$({ user, id });
+
+    let samples = files.map((f) => ({ user_id: id, url: f.hash, type: f.type }));
+    await insertSamples({ samples });
+
+    submitted = true;
   };
 </script>
 
@@ -142,79 +155,85 @@
       <a class="block mb-6 text-midblue" href={`/user/${$user.id}`}><i
           class="fas fa-chevron-left mr-3" />Back</a>
       <h2 class="mb-10">Become an artist</h2>
-      <p>
-        We currently work with a limited number of artists, so we might take
-        some time to review your work and get back to you. But you are welcome
-        to submit your profile and apply to become an artist.
-      </p>
-      <div class="flex mt-4 m-auto flex-col-reverse lg:flex-row">
-        <form
-          class="mb-6 w-full lg:max-w-md xl:mr-8"
-          on:submit|preventDefault={submit}
-          autocomplete="off">
-          <div class="flex flex-col mb-4">
-            <input class="name-input"
-              placeholder="What's your name?"
-              bind:value={form.full_name} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="far fa-envelope icon" />
-            <input placeholder="Your email" bind:value={form.email} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="fas fa-link icon" />
-            <input placeholder="http://example.com" bind:value={form.location} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="fab fa-instagram icon"></i>
-            <input placeholder="@instagram" bind:value={form.location} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="fas fa-link icon" />
-            <input placeholder="@twitter" bind:value={form.twitter} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <label>Extra information</label>
-            <textarea placeholder="Is there anything else you'd like to tell us about you?" bind:value={form.info} />
-          </div>
-          <div class="flex mt-8">
-            <button on:click|preventDefault={submit} class="primary-btn ">Submit
-              profile</button>
-          </div>
-        </form>
-        {#if percent}
-          <div class="ml-2 flex">
-            <div>
-              {#if type.includes('image')}
-                <img alt="preview" src={url} class="w-10 h-10" />
-              {:else}
-                <video
-                  preload="metadata"
-                  controls
-                  class:hidden
-                  muted
-                  loop
-                  class="w-10 h-10"
-                  bind:this={video}>
-                  Your browser does not support HTML5 video.
-                </video>
-              {/if}
-              <div class="bg-grey-light p-8">
-                <div
-                  class="bg-green-200 font-bold rounded-full p-4 mx-auto max-w-xs text-center"
-                  style={width}>
-                  {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
+      {#if submitted}
+        <div>
+          Thank you! Your application has been recorded. We'll follow up by
+          email once we've had a chance to review it.
+        </div>
+      {:else}
+        <p>
+          We currently work with a limited number of artists, so we might take
+          some time to review your work and get back to you. But you are welcome
+          to submit your profile and apply to become an artist.
+        </p>
+        <div class="flex mt-4 m-auto flex-col-reverse lg:flex-row">
+          <form
+            class="mb-6 w-full lg:max-w-md xl:mr-8"
+            on:submit|preventDefault={submit}
+            autocomplete="off">
+            <div class="flex flex-col mb-4">
+              <input
+                class="name-input"
+                placeholder="What's your name?"
+                bind:value={form.full_name} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="far fa-envelope icon" />
+              <input placeholder="Your email" bind:value={form.email} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <input
+                placeholder="http://example.com"
+                bind:value={form.username} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="fab fa-instagram icon"></i>
+              <input placeholder="@instagram" bind:value={form.instagram} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="fas fa-link icon" />
+              <input placeholder="@twitter" bind:value={form.twitter} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <label>Extra information</label>
+              <textarea placeholder="" bind:value={form.info} />
+            </div>
+            <div class="flex justify-end mt-8">
+              <button
+                on:click|preventDefault={submit}
+                class="primary-btn">Submit profile</button>
+            </div>
+          </form>
+          <div class="w-1/2">
+            {#each files as file}
+              <div class="ml-2 flex mb-2">
+                <div>
+                  {#if file.type.includes('image')}
+                    <img alt="preview" src={file.url} class="w-20" />
+                  {:else}
+                    <video
+                      preload="metadata"
+                      controls
+                      class:hidden
+                      muted
+                      loop
+                      class="w-20"
+                      bind:this={file.video}>
+                      Your browser does not support HTML5 video.
+                    </video>
+                  {/if}
                 </div>
+                <div class="ml-2 mt-auto">{file.filename}</div>
               </div>
-            </div>
-            <div>
-              {filename}
-            </div>
+            {/each}
+
+            <Dropzone
+              on:file={uploadFile}
+              title={files.length < 1 ? 'Upload artwork samples' : 'Add artwork samples'}
+              style={files.length < 1 ? 'box' : 'link'} />
           </div>
-        {:else}
-          <Dropzone on:file={uploadFile} title="Upload Artwork Samples" />
-        {/if}
-      </div>
+        </div>
+      {/if}
     </div>
   {/if}
 </div>

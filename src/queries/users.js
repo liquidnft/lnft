@@ -2,7 +2,7 @@ import decode from "jwt-decode";
 import { operationStore, query } from "@urql/svelte";
 
 let fields =
-  "id, username, location, bio, email, full_name, website, twitter, instagram, avatar_url, address, mnemonic, multisig, pubkey, is_artist, is_admin, wallet_initialized";
+  "id, username, location, bio, email, full_name, website, twitter, instagram, avatar_url, address, mnemonic, multisig, pubkey, is_artist, is_admin, wallet_initialized, info";
 
 let computed = "followed, num_follows, num_followers";
 
@@ -17,6 +17,16 @@ export const getUsers = `subscription {
   users {
     ${fields} 
     ${computed}
+  }
+}`;
+
+export const getSamples = `subscription {
+  users {
+    ${fields} 
+    samples {
+      url
+      type
+    } 
   }
 }`;
 

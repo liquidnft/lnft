@@ -3,6 +3,7 @@
   const dispatch = createEventDispatcher();
 
   export let title = "Upload Your Artwork";
+  export let style = "box";
 
   let fileInput;
   let highlight;
@@ -37,7 +38,7 @@
 
   #drop-area {
     cursor: pointer;
-    border: 2px solid #6ED8E0;
+    border: 2px solid #6ed8e0;
     border-radius: 10px;
     width: 80%;
     max-width: 350px;
@@ -51,7 +52,7 @@
   }
 
   #drop-area.highlight {
-    border-color: #6ED8E0;
+    border-color: #6ed8e0;
   }
 
   #fileElem {
@@ -60,26 +61,47 @@
   }
 
   @media only screen and (max-width: 800px) {
-    #drop-area{
+    #drop-area {
       width: 100%;
-      max-width:100%;
+      max-width: 100%;
       margin: 0;
       margin-top: 50px;
     }
   }
 </style>
 
-<div
-  id="drop-area"
-  on:click={open}
-  on:dragenter={start}
-  on:dragover={start}
-  on:dragleave={stop}
-  on:mouseover={start}
-  on:mouseout={stop}
-  on:drop={drop}
-  class:highlight>
-  <form class="text-center">
+{#if style === 'box'}
+  <div
+    id="drop-area"
+    on:click={open}
+    on:dragenter={start}
+    on:dragover={start}
+    on:dragleave={stop}
+    on:mouseover={start}
+    on:mouseout={stop}
+    on:drop={drop}
+    class:highlight>
+    <form class="text-center">
+      <div class="flex justify-center flex-col align-center h-full">
+        <span class="uppercase">{title}</span>
+        <i
+          class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-5xl text-lightblue" />
+      </div>
+      <input
+        bind:this={fileInput}
+        type="file"
+        id="fileElem"
+        multiple
+        accept="image/*,video/*"
+        on:change={(e) => dispatch('file', e.target.files[0])} />
+    </form>
+  </div>
+{:else}
+  <a on:click={open} class="secondary-color cursor-pointer">{title}
+    <i
+      class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-lightblue" />
+  </a>
+  <form class="text-center invisible">
     <div class="flex justify-center flex-col align-center h-full">
       <span class="uppercase">{title}</span>
       <i
@@ -93,4 +115,4 @@
       accept="image/*,video/*"
       on:change={(e) => dispatch('file', e.target.files[0])} />
   </form>
-</div>
+{/if}

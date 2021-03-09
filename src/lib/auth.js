@@ -101,5 +101,5 @@ export const login = (email, password) => {
       pw.set(password);
       prompt.set(false);
       justRegistered ? goto("/wallet/create") : goto("/market");
-    });
+    }).catch(() => err("Login failed"));
 };

@@ -1,12 +1,16 @@
 <script>
+  import ArtworkMedia from "$components/ArtworkMedia";
   import { mutation, operationStore, subscription } from "@urql/svelte";
-  import { getUsers, updateUser } from "$queries/users";
+  import { getSamples, updateUser } from "$queries/users";
   import { role } from "$lib/store";
   import { api } from "$lib/api";
+  import { info } from "$lib/utils";
 
   let users = [];
-  subscription(operationStore(getUsers), (a, b) => {
-    users = b.users.sort((a, b) => a.username.localeCompare(b.username));
+  subscription(operationStore(getSamples), (a, b) => {
+    users = b.users
+      .sort((a, b) => a.username && a.username.localeCompare(b.username))
+      .filter((u) => u.info && !u.is_artist);
   });
 
   let updateUser$ = mutation(updateUser);
@@ -14,22 +18,44 @@
     $role = "approver";
     user.is_artist = true;
     updateUser$({ id: user.id, user: { is_artist: true } });
-    // api.url("/approve").post({ username: user.username });
     $role = "user";
     users = users;
+    info(`${user.username} is now an artist!`);
   };
 </script>
 
 <div class="container mx-auto mt-20">
-  <h2 class="mb-10 md:mb-0">Admin</h2>
+  <h2 class="mb-10">Artist Applicants</h2>
   {#each users as user}
-    <div class="flex w-full justify-center mb-2">
-      <div class="w-1/6 text-center my-auto mr-2">{user.username}</div>
-      <div class="w-1/3">
-        {#if !user.is_artist}
-          <button class="primary-btn" on:click={() => makeArtist(user)}>Make
-            Artist</button>
-        {/if}
+    <div class="flex w-full mb-8">
+      <div class="flex-grow mb-auto mr-2">
+        <div class="mb-2">
+          <h4>Username</h4>
+          <div>{user.username}</div>
+        </div>
+
+        <div class="mb-2">
+          <h4>Info</h4>
+          <div>{user.info}</div>
+        </div>
+
+        <h4>Artwork samples</h4>
+        <div class="text-center my-auto mr-2 flex">
+          {#each user.samples as sample}
+            <div class="w-40 mb-2 mr-2">
+              <a href={`https://ipfs.io/ipfs/${sample.url}`}>
+                <ArtworkMedia
+                  artwork={{ filename: sample.url, filetype: sample.type }} />
+              </a>
+            </div>
+          {/each}
+        </div>
+      </div>
+
+      <div>
+        <button
+          class="primary-btn"
+          on:click={() => makeArtist(user)}>Approve</button>
       </div>
     </div>
   {/each}

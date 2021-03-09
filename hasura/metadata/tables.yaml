@@ -475,6 +475,28 @@
             _eq: X-Hasura-User-Id
 - table:
     schema: public
+    name: samples
+  insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      columns:
+      - id
+      - type
+      - url
+      - user_id
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - id
+      - type
+      - url
+      - user_id
+      filter: {}
+- table:
+    schema: public
     name: search
   select_permissions:
   - role: anonymous
@@ -659,6 +681,13 @@
         table:
           schema: public
           name: follows
+  - name: samples
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          schema: public
+          name: samples
   computed_fields:
   - name: followed
     definition:
@@ -717,12 +746,15 @@
       - email
       - full_name
       - id
+      - info
+      - instagram
       - is_admin
       - is_artist
       - location
       - mnemonic
       - multisig
       - pubkey
+      - twitter
       - updated_at
       - username
       - wallet_initialized
@@ -743,6 +775,7 @@
       - email
       - full_name
       - id
+      - info
       - instagram
       - is_admin
       - is_artist
@@ -776,6 +809,7 @@
       - display_name
       - email
       - full_name
+      - info
       - instagram
       - location
       - mnemonic
