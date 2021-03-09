@@ -44,7 +44,7 @@
 <div
   class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
   in:fade>
-  <a href={`/artwork/${artwork.id}`}>
+  <a href={`/${artwork.slug}`}>
     <div class="flex justify-center">
       <ArtworkMedia {artwork} {showDetails} />
     </div>
@@ -69,13 +69,13 @@
             <div class="text-sm font-medium">
               Current bid by
               <a
-                href={`/user/${artwork.bid[0].user.id}`}>@{artwork.bid[0].user.username}</a>
+                href={`/${artwork.bid[0].user.username}`}>@{artwork.bid[0].user.username}</a>
             </div>
           </div>
         {/if}
       </div>
 
-        <a href={`/user/${artwork.artist_id}`}>
+        <a href={`/${artwork.artist.username}`}>
           <div class="flex">
             <Avatar user={artwork.artist} />
             <div class="ml-2">

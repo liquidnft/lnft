@@ -39,7 +39,7 @@
   </div>
   <div
     class="mb-5 w-full rounded-lg box-shadow thumb"
-    on:click={() => goto(`/artwork/${artwork.id}`)}>
+    on:click={() => goto(`/${artwork.slug}`)}>
     <ArtworkMedia {artwork} showDetails={false} />
   </div>
 </div>

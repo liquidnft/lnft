@@ -354,6 +354,7 @@ export const signAndBroadcast = async () => {
   await sign();
   await tick();
   await broadcast();
+  return get(psbt);
 };
 
 export const executeSwap = async (artwork) => {
@@ -405,7 +406,7 @@ export const executeSwap = async (artwork) => {
   return swap;
 };
 
-export const createIssuance = async (artwork, domain) => {
+export const createIssuance = async (artwork, domain, tx) => {
   let out = singlesig();
 
   let p = new Psbt()
@@ -424,7 +425,29 @@ export const createIssuance = async (artwork, domain) => {
       value: 0,
     });
 
-  await fund(p, out, btc, get(fee));
+  if (tx) {
+    let index = tx.outs.findIndex(
+      (o) =>
+        parseAsset(o.asset) === btc &&
+        o.script.toString("hex") === out.output.toString("hex")
+    );
+
+    let input = {
+      index,
+      hash: tx.getId(),
+      nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+      redeemScript: out.redeem.output,
+    };
+
+    p.addInput(input);
+
+    p.addOutput({
+      asset: btc,
+      nonce: Buffer.alloc(1),
+      script: out.output,
+      value: parseVal(tx.outs[index].value) - get(fee),
+    });
+  } else await fund(p, out, btc, get(fee));
 
   let ticker = (artwork.title.split(" ").length > 2
     ? artwork.title

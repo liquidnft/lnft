@@ -1,6 +1,14 @@
 import { fade as svelteFade } from "svelte/transition";
 import { get } from "svelte/store";
-import { assets, artworks, addresses, error, full, prompt, snack } from "$lib/store";
+import {
+  assets,
+  artworks,
+  addresses,
+  error,
+  full,
+  prompt,
+  snack,
+} from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
 import { tick } from "svelte";
 
@@ -15,10 +23,11 @@ cad = "ce091c998b83c78bb71a632313ba3760f1763d9cfcffae02258ffa9865a37bd2";
 usd = "8026fa969633b7b6f504f99dde71335d633b43d18314c501055fcd88b9fcb8de";
 */
 
-const fade = (n, o) => svelteFade(n, { ...o, duration: 50 })
+const fade = (n, o) => svelteFade(n, { ...o, duration: 50 });
 
 const addressUser = (a) =>
-  get(addresses) && get(addresses).find((u) => u.address === a || u.multisig === a);
+  get(addresses) &&
+  get(addresses).find((u) => u.address === a || u.multisig === a);
 
 const addressLabel = (address) => {
   let $addresses = get(addresses);
@@ -40,7 +49,7 @@ const assetLabel = (asset) => {
 
   let r = $artworks && $artworks.find((u) => u.asset === asset);
 
-  return r ? (r.title || r.name || 'Untitled') : ticker(asset);
+  return r ? r.title || r.name || "Untitled" : ticker(asset);
 };
 
 const artworkId = (asset) => {
@@ -172,27 +181,27 @@ const fullscreen = (elem) => {
   full.set(true);
 };
 
-
 function format(n, p) {
   if (!parseInt(p)) return parseInt(n).toFixed(0);
   else {
     let x = n / 10 ** p;
     if (Math.abs(x) < 1.0) {
-      var e = parseInt(x.toString().split('e-')[1]);
+      var e = parseInt(x.toString().split("e-")[1]);
       if (e) {
         x *= Math.pow(10, e - 1);
         x = x.toFixed(9 - e);
-        x = '0.' + new Array(e).join('0') + x.toString().substring(2);
+        x = "0." + new Array(e).join("0") + x.toString().substring(2);
       }
     } else {
-      var e = parseInt(x.toString().split('+')[1]);
+      var e = parseInt(x.toString().split("+")[1]);
       if (e > 20) {
         e -= 20;
         x /= Math.pow(10, e);
-        x += new Array(e + 1).join('0');
+        x += new Array(e + 1).join("0");
       }
     }
-    if (x.toString().split('.')[1] > p && x.toFixed) return parseFloat(x.toFixed(p)).toString();
+    if (x.toString().split(".")[1] > p && x.toFixed)
+      return parseFloat(x.toFixed(p)).toString();
     return x;
   }
 }
@@ -200,9 +209,16 @@ function format(n, p) {
 const validateEmail = (email) => {
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
-}
+};
 
 const go = ({ id, type, s }) => goto(`/${type}/${id ? id : s}`);
+
+const kebab = (str) =>
+  str &&
+  str
+    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+    .map((x) => x.toLowerCase())
+    .join("-");
 
 export {
   addressLabel,
@@ -221,10 +237,11 @@ export {
   info,
   pick,
   sats,
+  kebab,
   ticker,
   tickers,
   units,
   usd,
   val,
-  validateEmail
+  validateEmail,
 };

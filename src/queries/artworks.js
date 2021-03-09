@@ -22,6 +22,7 @@ const fields = `
   extension_interval
   max_extensions
   royalty
+  slug
   views
   owner {
     username
@@ -58,6 +59,12 @@ export const getArtworks = `subscription {
     tags {
       tag
     } 
+  }
+}`;
+
+export const getArtworkBySlug = (slug) => `subscription {
+  artworks(where: {slug : {_eq: "${slug}"}}, limit: 1) {
+    ${fields}
   }
 }`;
 

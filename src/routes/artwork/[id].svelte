@@ -29,18 +29,41 @@
   import { api } from "$lib/api";
   import Head from "$components/Head"
 
-  let { id } = $page.params;
+  export let id;
 
   $: pageChange($page);
-  let pageChange = () => api.url("/viewed").post({ id });
+  const pageChange = ({ params }) => {
+    if (params.id) {
+      ({ id } = params);
+      if ($user) api.url("/viewed").post({ id });
+    }
+  };
 
   let transactions = [];
-  subscription(
-    operationStore(getArtworkTransactions(id)),
-    (a, b) => (transactions = b.transactions)
-  );
+  $: setupSubscriptions(id);
+  const setupSubscriptions = (id) => {
+    if (id) {
+      subscription(
+        operationStore(getArtworkTransactions(id)),
+        (a, b) => (transactions = b.transactions)
+      );
 
-  let others = [];
+      subscription(operationStore(getArtwork(id)), (a, b) => {
+        artwork = b.artworks_by_pk;
+
+        let count = () => {
+          clearTimeout(timeout);
+          now = new Date();
+          if (!artwork) return;
+          start_counter = countdown(parseISO(artwork.auction_start));
+          end_counter = countdown(parseISO(artwork.auction_end));
+          timeout = setTimeout(count, 1000);
+        };
+        count();
+      });
+    }
+  };
+
   $: if (artwork)
     subscription(
       operationStore(getArtworksByArtist(artwork.artist_id)),
@@ -49,6 +72,8 @@
           .filter((a) => artwork && a.id !== artwork.id)
           .slice(0, 4))
     );
+
+  let others = [];
 
   let artwork, start_counter, end_counter;
   let createTransaction$ = mutation(createTransaction);
@@ -84,20 +109,6 @@
   };
 
   let now, timeout;
-
-  subscription(operationStore(getArtwork(id)), (a, b) => {
-    artwork = b.artworks_by_pk;
-
-    let count = () => {
-      clearTimeout(timeout);
-      now = new Date();
-      if (!artwork) return;
-      start_counter = countdown(parseISO(artwork.auction_start));
-      end_counter = countdown(parseISO(artwork.auction_end));
-      timeout = setTimeout(count, 1000);
-    };
-    count();
-  });
 
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
@@ -286,7 +297,12 @@
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || 'Untitled'}
         </h1>
-        <div class="mt-4 mb-6">Edition {artwork.edition} of {artwork.editions}</div>
+        <div class="mt-4 mb-6">
+          Edition
+          {artwork.edition}
+          of
+          {artwork.editions}
+        </div>
         <div class="mobileImage">
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} />

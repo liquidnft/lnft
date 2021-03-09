@@ -16,7 +16,7 @@
   import upload from "$lib/upload";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import { goto, err } from "$lib/utils";
+  import { kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
     createIssuance,
@@ -96,25 +96,29 @@
 
   const createArtwork = mutation(create);
 
-  let hash;
+  let hash, tx;
   const issue = async () => {
-    tries++;
-
-    await requirePassword();
-    await tick();
-
+    let contract;
     let domain = `${$user.username}.${window.location.hostname}`;
-    let contract = await createIssuance(artwork, domain, $fee);
+    let success;
 
-    try {
-      await signAndBroadcast();
-    } catch (e) {
-      if (e.message.includes("conflict") && tries < 5) setTimeout(issue, 500);
+    for (let i = 0; i < 5; i++) {
+      await requirePassword();
+
+      contract = await createIssuance(artwork, domain, tx);
+
+      try {
+        success = await signAndBroadcast();
+        break;
+      } catch (e) {
+        await new Promise((r) => setTimeout(r, 500));
+      }
     }
 
-    let tx = $psbt.extractTransaction();
-    artwork.asset = parseAsset(tx.outs[3].asset);
+    if (!success) throw new Error("Issuance failed");
 
+    tx = success.extractTransaction();
+    artwork.asset = parseAsset(tx.outs[3].asset);
     hash = tx.getId();
 
     return JSON.stringify(contract);
@@ -139,6 +143,8 @@
         tries = 0;
         artwork.id = v4();
         artwork.edition = $edition;
+        artwork.slug = kebab(artwork.title);
+        if ($edition > 1) artwork.slug += "-" + $edition;
 
         let tags = artwork.tags.map(({ tag }) => ({
           tag,
@@ -164,7 +170,7 @@
       }
 
       $prompt = undefined;
-      goto(`/artwork/${artwork.id}`);
+      goto(`/${artwork.slug}`);
     } catch (e) {
       console.log(e);
       err(e);

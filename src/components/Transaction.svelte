@@ -70,7 +70,6 @@
       try {
         address = getAddress(out);
       } catch (e) {
-        console.log(out);
         if (!out.script.length) address = "Fee";
         else
           return {
@@ -118,7 +117,7 @@
               <div class="flex ml-2 flex-grow sm:pr-8">
                 {#if users[user]}
                   <div class="my-auto">
-                    <a href={`/user/${users[user].id}`} class="secondary-color">
+                    <a href={`/${users[user].username}`} class="secondary-color">
                       {user}
                     </a>
                   </div>
@@ -157,7 +156,7 @@
               <div class="flex ml-2 flex-grow">
                 {#if users[user]}
                   <div class="my-auto">
-                    <a href={`/user/${users[user].id}`} class="secondary-color">
+                    <a href={`/${users[user].username}`} class="secondary-color">
                       {user}
                     </a>
                   </div>

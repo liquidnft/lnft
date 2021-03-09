@@ -6,12 +6,14 @@
   export let artworks;
   export let offset;
 
+  let w;
   let hidden;
   let maxPages = 7;
+  $: columns = w >= 1232 ? 4 : 3;
 
   $: offset =
     artworks &&
-    artworks.length / maxPages - ((artworks.length / maxPages) % 3) + 3;
+    artworks.length / maxPages - ((artworks.length / maxPages) % columns) + columns;
 
   $: artworks &&
     tick().then(() => {
@@ -32,7 +34,7 @@
     });
 </script>
 
-<div class="flex flex-wrap">
+<div class="flex flex-wrap" bind:clientWidth={w}>
   {#each artworks as artwork, i (artwork.id)}
     {#if i % offset === 0}
       <div class="w-full flex" class:invisible={i === 0} class:h-0={i === 0}>

@@ -55,7 +55,7 @@
   <h2 class="mb-5"><a href="/wallet">Wallet</a></h2>
 
   <div class="wallet-nav flex flex-col">
-    <a href={`/user/${$user.id}`}>
+    <a href={`/${$user.username}`}>
       <i class="fas fa-chevron-left"></i>
       <span>Back to Profile</span>
     </a>

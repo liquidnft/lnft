@@ -220,6 +220,7 @@
       - owner_id
       - reserve_price
       - royalty
+      - slug
       - ticker
       - title
       backend_only: false
@@ -247,6 +248,7 @@
       - owner_id
       - reserve_price
       - royalty
+      - slug
       - ticker
       - title
       - transferred_at
@@ -279,6 +281,7 @@
       - owner_id
       - reserve_price
       - royalty
+      - slug
       - ticker
       - title
       - transferred_at

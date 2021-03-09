@@ -68,7 +68,7 @@
     } = form;
     updateUser$({ user, id }).then((r) => {
       info("Profile updated");
-      goto(`/user/${id}`);
+      goto(`/${user.username}`);
     });
   };
 </script>
@@ -115,7 +115,7 @@
   {#if form}
     <div
       class="mb-4 w-full sm:max-w-3xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row  bg-white">
-      <a class="block mb-6 text-midblue" href={`/user/${$user.id}`}><i
+      <a class="block mb-6 text-midblue" href={`/${$user.username}`}><i
           class="fas fa-chevron-left mr-3" />Back</a>
       <h2 class="mb-10">Edit Profile</h2>
       <div class="flex mt-4 m-auto flex-col-reverse lg:flex-row">

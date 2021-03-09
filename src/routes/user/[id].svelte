@@ -13,15 +13,15 @@
   import { requireLogin } from "$lib/auth";
 
   export let id;
+  export let subject;
+
   $: pageChange($page);
 
-  const pageChange = async ({ params }) => {
+  const pageChange = ({ params }) => {
     if (params.id) ({ id } = params);
   };
 
-  let subject;
-
-  $: subscribeUser(id);
+  $: id && subscribeUser(id);
   let subscribeUser = () =>
     subscription(
       operationStore(getUser(id, $user && $user.id === id)),

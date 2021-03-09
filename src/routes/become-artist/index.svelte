@@ -98,7 +98,11 @@
 
     await updateUser$({ user, id });
 
-    let samples = files.map((f) => ({ user_id: id, url: f.hash, type: f.type }));
+    let samples = files.map((f) => ({
+      user_id: id,
+      url: f.hash,
+      type: f.type,
+    }));
     await insertSamples({ samples });
 
     submitted = true;
@@ -118,8 +122,8 @@
   textarea {
     @apply appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
   }
-  
-  .name-input{
+
+  .name-input {
     border: none;
     border-bottom: 1px solid #e5e7eb;
     border-radius: 0;
@@ -153,7 +157,7 @@
   {#if form}
     <div
       class="mb-4 w-full max-w-5xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row bg-white">
-      <a class="block mb-6 text-midblue" href={`/user/${$user.id}`}><i
+      <a class="block mb-6 text-midblue" href={`/${$user.username}`}><i
           class="fas fa-chevron-left mr-3" />Back</a>
       <h2 class="mb-10">Become an artist</h2>
       {#if submitted}
@@ -188,7 +192,7 @@
                 bind:value={form.username} />
             </div>
             <div class="flex flex-col mb-4">
-              <i class="fab fa-instagram icon"></i>
+              <i class="fab fa-instagram icon" />
               <input placeholder="@instagram" bind:value={form.instagram} />
             </div>
             <div class="flex flex-col mb-4">

@@ -38,6 +38,7 @@ const fields = `
     auction_start
     auction_end
     transferred_at
+    slug
     artist {
       id
       username

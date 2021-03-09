@@ -52,7 +52,7 @@
             <div class="flex my-4">
               <Avatar user={collector} />
               <div class="ml-2 my-auto font-bold">
-                <a href={`/user/${collector.id}`}>@{collector.username}</a>
+                <a href={`/${collector.username}`}>@{collector.username}</a>
               </div>
             </div>
           {/each}
@@ -67,7 +67,7 @@
             <div class="flex my-4">
               <Avatar user={collector} />
               <div class="ml-2 my-auto font-bold">
-                <a href={`/user/${collector.id}`}>@{collector.username}</a>
+                <a href={`/${collector.username}`}>@{collector.username}</a>
               </div>
             </div>
           {/each}
