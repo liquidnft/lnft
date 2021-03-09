@@ -841,10 +841,8 @@
       - location
       - mnemonic
       - multisig
-      - pubkey
       - twitter
       - username
-      - wallet_initialized
       - website
       filter:
         id:

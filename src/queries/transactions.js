@@ -35,6 +35,7 @@ const fields = `
     filetype
     asking_asset
     royalty
+    auction_start
     auction_end
     transferred_at
     artist {

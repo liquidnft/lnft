@@ -1,10 +1,28 @@
 <script>
   import { user } from "$lib/store";
-  import { parseISO, compareAsc, formatDistanceStrict } from "date-fns";
+  import {
+    isWithinInterval,
+    parseISO,
+    compareAsc,
+    formatDistanceStrict,
+  } from "date-fns";
   import AcceptOffer from "$components/AcceptOffer";
   export let transaction;
 
   let comp;
+
+  const canAccept = ({ type, artwork, created_at }) => {
+    const isCurrent = ({ transferred_at: t }) =>
+      type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)));
+
+    const isOwner = ({ owner }) => $user && $user.id === owner.id;
+
+    const underway = ({ auction_start: s, auction_end: e }) =>
+      !e ||
+      !isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
+
+    return isCurrent(artwork) && isOwner(artwork) && !underway(artwork);
+  };
 </script>
 
 <style>
@@ -24,7 +42,7 @@
   <a href={`/tx/${transaction.id}`} class="text-sm secondary-color">
     [view tx]
   </a>
-  {#if $user && transaction.type === 'bid' && (!transaction.artwork.transferred_at || compareAsc(parseISO(transaction.created_at), parseISO(transaction.artwork.transferred_at))) && $user.id === transaction.artwork.owner.id}
+  {#if canAccept(transaction)}
     <a
       href="#"
       on:click={() => comp.accept(transaction)}
