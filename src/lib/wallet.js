@@ -440,6 +440,7 @@ export const createIssuance = async (artwork, domain) => {
     entity: { domain },
     issuer_pubkey: keypair().pubkey.toString("hex"),
     name: artwork.title,
+    hash: artwork.filename,
     precision: 0,
     ticker,
     version: 0,

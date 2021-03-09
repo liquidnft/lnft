@@ -7,6 +7,7 @@
     error,
     poll,
     prompt,
+    results,
     token,
     user,
   } from "$lib/store";
@@ -27,7 +28,13 @@
   $: if ($error && $error.message && $error.message.includes("Insufficient"))
     $prompt = InsufficientFunds;
 
-  let pageChange = (p) => $poll.map((p) => clearInterval(p.interval));
+  let lastPage;
+  let pageChange = (p) => {
+    if (lastPage === '/market') $results = [];
+    $poll.map((p) => clearInterval(p.interval))
+    lastPage = p.path;
+  }
+
   $: pageChange($page);
 
   let id;

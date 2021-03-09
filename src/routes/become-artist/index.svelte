@@ -92,6 +92,7 @@
       id,
       balance,
       pubkey,
+      wallet_initialized,
       ...user
     } = form;
 

@@ -9,6 +9,7 @@
   import Filter from "./_filter";
   import Sort from "./_sort";
 
+
   let artworks = [];
   let filtered = [];
 

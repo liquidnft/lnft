@@ -58,8 +58,10 @@
   const submit = async () => {
     $results = await search(text);
     let keys = Object.keys($results);
-    if (keys.length === 1 && $results[keys[0]].length === 1)
+    if (keys.length === 1 && $results[keys[0]].length === 1) {
       go($results[keys[0]][0]);
+      $results = [];
+    }
     else if (keys.length > 0) goto("/market");
     else err("Nothing matched that search string");
   };
