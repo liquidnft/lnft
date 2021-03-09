@@ -12,28 +12,30 @@
   import { fade } from "svelte/transition";
   import { requireLogin } from "$lib/auth";
 
-  $: requireLogin($page);
+  let id;
+  $: pageChange($page);
 
-  let { id } = $page.params;
+  const pageChange = async ({ params }) => {
+    await requireLogin();
+    ({ id } = params);
+  };
+
+  let subject;
+  $: subscription(operationStore(getUser(id)), (_, data) => {
+    subject = data.users_by_pk;
+  });
+
   let collection = [];
   let creations = [];
   let favorites = [];
 
   let artworks;
-  subscription(operationStore(getArtworks), (_, data) => {
+  $: subject && subscription(operationStore(getArtworks), (_, data) => {
     artworks = data.artworks;
   });
 
-  let subject;
-  subscription(operationStore(getUser(id)), (_, data) => {
-    subject = data.users_by_pk;
-  });
 
   $: applyFilters(artworks, subject);
-
-  let updateSubject = async (data) => {
-    if (!data) return;
-  };
 
   let applyFilters = (artworks, subject) => {
     if (!(artworks && subject)) return;

@@ -67,7 +67,7 @@
 </style>
 
 <div class="flex justify-between items-center menu relative">
-  <Search nav="true" />
+  <Search suggest={false} />
   <a href="/market"><button on:click={toggle}>Market</button></a>
   <a href="/activity"><button on:click={toggle}>Activity</button></a>
   <a href="http://localhost:8082"><button on:click={toggle}>Blog</button></a>

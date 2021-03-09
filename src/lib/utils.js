@@ -1,7 +1,7 @@
 import { fade as svelteFade } from "svelte/transition";
 import { get } from "svelte/store";
 import { assets, artworks, addresses, error, full, prompt, snack } from "$lib/store";
-import { goto as go } from "$app/navigation";
+import { goto as svelteGoto } from "$app/navigation";
 import { tick } from "svelte";
 
 let cad, btc, usd;
@@ -27,7 +27,7 @@ const addressLabel = (address) => {
 
   if ($addresses) {
     r = $addresses.find((u) => u.multisig === address);
-    if (r) return r.username + "+us";
+    if (r) return r.username + " + us";
     r = $addresses.find((u) => u.address === address);
     if (r) return r.username;
   }
@@ -96,7 +96,7 @@ const sats = (asset, val) => units(asset)[0](val);
 const val = (asset, sats) => units(asset)[1](sats);
 
 const goto = (path) => {
-  go(path);
+  svelteGoto(path);
   if (window) window.history.pushState(null, null, path);
 };
 
@@ -202,6 +202,8 @@ const validateEmail = (email) => {
   return re.test(email);
 }
 
+const go = ({ id, type, s }) => goto(`/${type}/${id ? id : s}`);
+
 export {
   addressLabel,
   addressUser,
@@ -215,6 +217,7 @@ export {
   fade,
   fullscreen,
   goto,
+  go,
   info,
   pick,
   sats,

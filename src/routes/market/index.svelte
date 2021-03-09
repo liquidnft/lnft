@@ -1,9 +1,10 @@
 <script>
-  import { addresses, show, user } from "$lib/store";
+  import { addresses, show, user, results } from "$lib/store";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
   import { goto } from "$lib/utils";
   import Gallery from "$components/Gallery";
+  import Results from "$components/Results";
   import Search from "$components/Search";
   import Filter from "./_filter";
   import Sort from "./_sort";
@@ -11,7 +12,10 @@
   let artworks = [];
   let filtered = [];
 
-  subscription(operationStore(getArtworks), (a, b) => (artworks = filtered = b.artworks));
+  subscription(
+    operationStore(getArtworks),
+    (a, b) => (artworks = filtered = b.artworks)
+  );
 
   let showFilters;
 </script>
@@ -57,6 +61,8 @@
     }
   }
 </style>
+
+<Results />
 
 <div class="container mx-auto flex flex-wrap sm:justify-between mt-10 md:mt-20">
   <h2 class="mb-10 md:mb-0">Market</h2>

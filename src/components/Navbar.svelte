@@ -35,7 +35,8 @@
     <Hamburger bind:open={sidebar} />
   </nav>
   <div>
-    <a href="/"><img
+    <a href="/">
+      <img
         src="/logo-default.png"
         alt="logo"
         class="w-36 lg:w-48" /></a>

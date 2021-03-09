@@ -111,6 +111,9 @@
             <div class="flex mb-2">
               {#if users[user]}
                 <Avatar user={users[user]} />
+                {#if user.includes('+us')}
+                  <img src="/logo-graphic.png" class="ml-2 w-10" />
+                {/if}
               {/if}
               <div class="flex ml-2 flex-grow sm:pr-8">
                 {#if users[user]}
@@ -146,9 +149,10 @@
           {#if recipients[user] && user !== 'Fee'}
             <div class="flex mb-2">
               {#if users[user]}
-                <div class="mb-auto">
-                  <Avatar user={users[user]} />
-                </div>
+                <Avatar user={users[user]} />
+                {#if user.includes('+us')}
+                  <img src="/logo-graphic.png" class="ml-2 w-10" />
+                {/if}
               {/if}
               <div class="flex ml-2 flex-grow">
                 {#if users[user]}
