@@ -118,7 +118,7 @@ const query = `
   query transactions {
     transactions(where: {
       confirmed: {_eq: false},
-      type: {_in: ["purchase", "creation", "royalty", "accept", "release"] },
+      type: {_in: ["purchase", "creation", "royalty", "accept", "release", "auction"] },
     }) {
       id
       hash

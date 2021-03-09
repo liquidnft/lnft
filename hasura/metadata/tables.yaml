@@ -351,6 +351,33 @@
       filter: {}
 - table:
     schema: public
+    name: currentuser
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - address
+      - avatar_url
+      - bio
+      - display_name
+      - email
+      - full_name
+      - instagram
+      - location
+      - mnemonic
+      - multisig
+      - pubkey
+      - twitter
+      - username
+      - website
+      - created_at
+      - updated_at
+      - id
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+- table:
+    schema: public
     name: favorites
   object_relationships:
   - name: artwork

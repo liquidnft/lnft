@@ -593,12 +593,8 @@ export const sendToMultisig = async (artwork) => {
       value: get(fee),
     });
 
-  try {
-    await fund(p, out, asset, value);
-    await fund(p, out, btc, get(fee));
-  } catch (e) {
-    console.log(e.message);
-  }
+  await fund(p, out, asset, value);
+  await fund(p, out, btc, get(fee));
 
   psbt.set(p);
   return p;

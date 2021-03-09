@@ -128,7 +128,7 @@
     if (!type) return err("Unrecognized file type");
 
     loading = true;
-    $prompt = Issuing;
+    if (artwork.editions > 1) $prompt = Issuing;
 
     try {
       await requireLogin();

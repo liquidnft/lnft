@@ -187,12 +187,11 @@
 
     let newAuction = !artwork.auction_end;
 
-    artwork.auction_start = start;
-    artwork.auction_end = end;
-
     if (newAuction) {
       await requirePassword();
+      console.log("sending to multi");
       $psbt = await sendToMultisig(artwork);
+      console.log("got past it");
 
       await signAndBroadcast();
       let tx = $psbt.extractTransaction();
@@ -210,10 +209,13 @@
 
       await signOver(artwork);
       await tick();
-      console.log($psbt.toBase64());
 
       artwork.list_price_tx = $psbt.toBase64();
     }
+
+    console.log("made it here");
+    artwork.auction_start = start;
+    artwork.auction_end = end;
   };
 
   let stale;

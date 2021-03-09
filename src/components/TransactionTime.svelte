@@ -32,7 +32,7 @@
       [accept]
     </a>
   {/if}
-  {#if ['creation', 'purchase', 'accept', 'royalty'].includes(transaction.type) && !transaction.confirmed}
+  {#if ['creation', 'purchase', 'accept', 'royalty', 'auction', 'release'].includes(transaction.type) && !transaction.confirmed}
     <span class="text-yellow-500">(pending)</span>
   {/if}
 </div>
