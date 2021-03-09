@@ -12,28 +12,33 @@
   import { fade } from "svelte/transition";
   import { requireLogin } from "$lib/auth";
 
-  let id;
+  export let id;
   $: pageChange($page);
 
   const pageChange = async ({ params }) => {
-    await requireLogin();
-    ({ id } = params);
+    if (params.id) ({ id } = params);
   };
 
   let subject;
-  $: subscription(operationStore(getUser(id)), (_, data) => {
-    subject = data.users_by_pk;
-  });
+
+  $: subscribeUser(id);
+  let subscribeUser = () =>
+    subscription(
+      operationStore(getUser(id, $user && $user.id === id)),
+      (_, data) => {
+        subject = data.users_by_pk;
+      }
+    );
 
   let collection = [];
   let creations = [];
   let favorites = [];
 
   let artworks;
-  $: subject && subscription(operationStore(getArtworks), (_, data) => {
-    artworks = data.artworks;
-  });
-
+  $: subject &&
+    subscription(operationStore(getArtworks), (_, data) => {
+      artworks = data.artworks;
+    });
 
   $: applyFilters(artworks, subject);
 
@@ -120,39 +125,39 @@
             </div>
           </div>
           <div class="social-details">
-            {#if $user.instagram}
-              <a href={`https://instagram.com/${$user.instagram}`}>
+            {#if subject.instagram}
+              <a href={`https://instagram.com/${subject.instagram}`}>
                 <i class="fab fa-instagram" />
-                <span>@{$user.instagram}</span>
+                <span>@{subject.instagram}</span>
               </a>
             {/if}
-            {#if $user.twitter}
-              <a href={`https://twitter.com/${$user.twitter}`}>
+            {#if subject.twitter}
+              <a href={`https://twitter.com/${subject.twitter}`}>
                 <i class="fab fa-twitter" />
-                <span>@{$user.twitter}</span>
+                <span>@{subject.twitter}</span>
               </a>
             {/if}
-            {#if $user.email}
-              <a href={`mailto:${$user.email}`}>
+            {#if subject.email}
+              <a href={`mailto:${subject.email}`}>
                 <i class="far fa-envelope" />
-                <span>{$user.email}</span>
+                <span>{subject.email}</span>
               </a>
             {/if}
-            {#if $user.website}
-              <a href={`https://${$user.website}`}>
+            {#if subject.website}
+              <a href={`https://${subject.website}`}>
                 <i class="fas fa-link" />
-                <span>{$user.website}</span>
+                <span>{subject.website}</span>
               </a>
             {/if}
-            {#if $user.location}
+            {#if subject.location}
               <a href="#">
                 <i class="fas fa-map-marker-alt" />
-                <span>{$user.location}</span>
+                <span>{subject.location}</span>
               </a>
             {/if}
           </div>
-          {#if $user.bio}
-            <p>{$user.bio}</p>
+          {#if subject.bio}
+            <p>{subject.bio}</p>
           {/if}
           <div>
             {#if $user.id === id}

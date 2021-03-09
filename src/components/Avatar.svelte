@@ -1,6 +1,6 @@
 <script>
-  export let user;
-  export let src;
+  export let user = undefined;
+  export let src = undefined;
   export let size = "small";
 
   $: if (user && !src) src = user.avatar_url;

@@ -1,4 +1,3 @@
-import decode from "jwt-decode";
 import {
   initClient,
   dedupExchange,
@@ -8,6 +7,7 @@ import {
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import { get } from "svelte/store";
 import { role } from "$lib/store";
+import { expired } from "$lib/auth";
 
 let url, wsUrl;
 if (import.meta && import.meta.env && import.meta.env !== "production") {
@@ -19,7 +19,8 @@ if (import.meta && import.meta.env && import.meta.env !== "production") {
 }
 
 export const setupUrql = (token) => {
-  if (token && decode(token).exp * 1000 < Date.now()) token = undefined;
+  if (expired(token)) token = undefined;
+  
   initClient({
     url,
     exchanges: [

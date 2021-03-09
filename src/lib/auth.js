@@ -8,20 +8,22 @@ import PasswordPrompt from "$components/PasswordPrompt";
 import { goto, err } from "$lib/utils";
 import { createWallet, keypair } from "$lib/wallet";
 
+export const expired = (t) => !t || decode(t).exp * 1000 < Date.now();
+
 export const requireLogin = async (page) => {
   await tick();
 
   if (page && page.path === "/login") return;
   let $token = get(token);
 
-  if (!$token || decode($token).exp * 1000 < Date.now()) {
+  if (expired($token)) {
     await refreshToken();
     await tick();
   }
 
   $token = get(token);
 
-  if (!$token || decode($token).exp * 1000 < Date.now()) {
+  if (expired($token)) {
     goto("/login");
     throw new Error("Login required");
   }
@@ -59,9 +61,10 @@ export const logout = () => {
     .res(() => {
       window.sessionStorage.removeItem("password");
       window.sessionStorage.removeItem("token");
+      window.sessionStorage.removeItem("user");
       token.set(null);
       user.set(null);
-      goto("/login");
+      tick().then(() => goto("/login"));
     });
 };
 
@@ -101,5 +104,6 @@ export const login = (email, password) => {
       pw.set(password);
       prompt.set(false);
       justRegistered ? goto("/wallet/create") : goto("/market");
-    }).catch(() => err("Login failed"));
+    })
+    .catch(() => err("Login failed"));
 };

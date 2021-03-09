@@ -17,7 +17,7 @@
   import { setupUrql } from "$lib/urql";
   import { operationStore, subscription } from "@urql/svelte";
   import { page } from "$app/stores";
-  import { refreshToken } from "$lib/auth";
+  import { requireLogin, refreshToken } from "$lib/auth";
   import InsufficientFunds from "$components/InsufficientFunds";
 
   onMount(async () => {
@@ -30,14 +30,16 @@
 
   let lastPage;
   let pageChange = (p) => {
-    if (lastPage === '/market') $results = [];
-    $poll.map((p) => clearInterval(p.interval))
+    if ($user) requireLogin();
+    if (lastPage === "/market") $results = [];
+    $poll.map((p) => clearInterval(p.interval));
     lastPage = p.path;
-  }
+  };
 
   $: pageChange($page);
 
   let id;
+
   setupUrql();
   $: tokenUpdated($token);
 
@@ -45,7 +47,9 @@
     if (t) {
       id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
       setupUrql(t);
-      subscription(operationStore(getUser(id)), (_, data) => {
+
+      subscription(operationStore(getUser(id, true)), async (_, data) => {
+        await requireLogin();
         window.sessionStorage.setItem("user", JSON.stringify($user));
         $user = data.users_by_pk;
       });

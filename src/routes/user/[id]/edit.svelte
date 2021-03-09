@@ -45,9 +45,9 @@
     if (form.email && !validateEmail(form.email))
       return err("Invalid email");
 
-    form.twitter = form.twitter.replace(/@/g, "");
-    form.instagram = form.instagram.replace(/@/g, "");
-    form.website = form.website.replace(/.*:\/\//, "");
+    if (form.twitter) form.twitter = form.twitter.replace(/@/g, "");
+    if (form.instagram) form.instagram = form.instagram.replace(/@/g, "");
+    if (form.website) form.website = form.website.replace(/.*:\/\//, "");
 
     update(form);
   };
