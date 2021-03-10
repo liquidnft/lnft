@@ -1,4 +1,5 @@
 <script>
+  import {differenceInMilliseconds } from "date-fns";
   import { onMount } from "svelte";
   import { sortCriteria } from "$lib/store";
   export let filtered;
@@ -9,13 +10,12 @@
 
   let sort = (a, b) =>
     ({
-      active:
-        new Date(b.last_active) - new Date(a.last_active) ||
-        new Date(b.created_at) - new Date(a.created_at),
-      lowest: a.list_price - b.list_price,
-      highest: b.list_price - a.list_price,
       newest: new Date(b.created_at) - new Date(a.created_at),
       oldest: new Date(a.created_at) - new Date(b.created_at),
+      highest: b.list_price - a.list_price,
+      lowest: a.list_price - b.list_price,
+      ending_soon: !a.auction_end ? 1 : !b.auction_end ? -1 : differenceInMilliseconds(new Date(), new Date(b.auction_end)) - differenceInMilliseconds(new Date(), new Date(a.auction_end)),
+      most_viewed: b.views - a.views,
     }[$sortCriteria]);
 </script>
 
@@ -34,10 +34,11 @@
 
 <div class="sort-container">
   <select class="rounded-full bg-gray-100 px-8" bind:value={$sortCriteria}>
-    <option value="active">Recently active</option>
-    <option value="lowest">Lowest price</option>
-    <option value="highest">Highest price</option>
     <option value="newest">Newest</option>
     <option value="oldest">Oldest</option>
+    <option value="lowest">Lowest price</option>
+    <option value="highest">Highest price</option>
+    <option value="ending_soon">Ending soon</option>
+    <option value="most_viewed">Most viewed</option>
   </select>
 </div>

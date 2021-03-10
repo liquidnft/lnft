@@ -33,10 +33,8 @@
 
   $: pageChange($page);
   const pageChange = ({ params }) => {
-    if (params.id) {
-      ({ id } = params);
-      if ($user) api.url("/viewed").post({ id });
-    }
+    if (params.id) ({ id } = params);
+    api.url("/viewed").post({ id });
   };
 
   let transactions = [];
