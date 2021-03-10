@@ -31,7 +31,9 @@ export const setupUrql = (token) => {
           if (typeof WebSocket === "undefined") return;
           return new SubscriptionClient(wsUrl, {
             reconnect: true,
-            // reconnectionAttempts: 3,
+            reconnectionAttempts: 5,
+            minTimeout: 5000,
+            inactivityTimeout: 60000,
             lazy: true,
             connectionParams: {
               headers: token ? { authorization: `Bearer ${token}` } : undefined,
