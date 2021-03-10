@@ -96,7 +96,7 @@ const units = (asset) => {
   if (tickers[asset]) ({ decimals, precision } = tickers[asset]);
   return [
     (val) => Math.round(val * 10 ** precision),
-    (sats) => format(sats, precision),
+    (sats) => format(sats, precision, decimals),
     ticker(asset),
   ];
 };
@@ -181,7 +181,7 @@ const fullscreen = (elem) => {
   full.set(true);
 };
 
-function format(n, p) {
+function format(n, p, d) {
   if (!parseInt(p)) return parseInt(n).toFixed(0);
   else {
     let x = n / 10 ** p;
@@ -200,7 +200,9 @@ function format(n, p) {
         x += new Array(e + 1).join("0");
       }
     }
-    if (x.toString().split(".")[1] > p && x.toFixed)
+    let r = x.toString().split(".")[1];
+    if (r && r.length < 2 && d === 2) return x.toFixed(2);
+    if (r > p && x.toFixed)
       return parseFloat(x.toFixed(p)).toString();
     return x;
   }
