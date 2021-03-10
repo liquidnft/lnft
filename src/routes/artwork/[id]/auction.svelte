@@ -25,6 +25,7 @@
     signOver,
     sendToMultisig,
     requestSignature,
+    createRelease,
   } from "$lib/wallet";
   import {
     format,
@@ -34,6 +35,7 @@
     parse,
     parseISO,
     addMinutes,
+    addSeconds,
   } from "date-fns";
   import {
     btc,
@@ -205,10 +207,8 @@
         },
       });
 
-      await signOver(artwork);
-      await tick();
-
-      artwork.list_price_tx = $psbt.toBase64();
+      artwork.list_price_tx = (await signOver(artwork)).toBase64();
+      artwork.auction_release_tx = (await createRelease(artwork, tx)).toBase64();
     }
 
     artwork.auction_start = start;
@@ -262,6 +262,7 @@
         filename,
         reserve_price,
         list_price_tx,
+        auction_release_tx,
         title,
         bid_increment,
         max_extensions,
@@ -275,6 +276,7 @@
         artwork: {
           list_price: sats(artwork.asking_asset, list_price),
           list_price_tx,
+          auction_release_tx,
           reserve_price,
           auction_start,
           auction_end,
@@ -301,11 +303,14 @@
   let enableAuction = () => {
     if (!start_date) {
       start_date = format(new Date(), "yyyy-MM-dd");
-      start_time = format(addMinutes(new Date(), 15), "HH:mm");
+      //      start_time = format(addMinutes(new Date(), 15), "HH:mm");
+      start_time = format(addMinutes(new Date(), 1), "HH:mm");
     }
     if (!end_date) {
-      end_date = format(addDays(new Date(), 3), "yyyy-MM-dd");
-      end_time = format(addMinutes(addDays(new Date(), 3), 15), "HH:mm");
+      end_date = format(new Date(), "yyyy-MM-dd");
+      //end_date = format(addDays(new Date(), 3), "yyyy-MM-dd");
+      //end_time = format(addMinutes(addDays(new Date(), 3), 15), "HH:mm");
+      end_time = format(addSeconds(new Date(), 90), "HH:mm");
     }
   };
 </script>

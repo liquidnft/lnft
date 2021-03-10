@@ -486,8 +486,40 @@ export const signOver = async ({ asset }) => {
   let p = new Psbt();
   await fund(p, multisig(), asset, 1, noneAnyoneCanPay, true);
   psbt.set(p);
-  console.log(p.toBase64());
   return sign(noneAnyoneCanPay);
+};
+
+export const createRelease = async ({ asset, owner }, tx) => {
+  let p = new Psbt()
+    .addOutput({
+      asset,
+      nonce: Buffer.alloc(1),
+      script: Address.toOutputScript(owner.address, network),
+      value: 1,
+    })
+    .addOutput({
+      asset: btc,
+      nonce: Buffer.alloc(1, 0),
+      script: Buffer.alloc(0),
+      value: get(fee),
+    });
+
+  await fund(p, singlesig(), btc, get(fee), 1, false);
+
+  let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
+
+  let input = {
+    index,
+    hash: tx.getId(),
+    nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+    redeemScript: multisig().redeem.output,
+  };
+
+  p.addInput(input);
+
+  psbt.set(p);
+
+  return sign();
 };
 
 export const createSwap = async (

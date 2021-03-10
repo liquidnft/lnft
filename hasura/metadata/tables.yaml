@@ -298,6 +298,7 @@
       columns:
       - asking_asset
       - auction_end
+      - auction_release_tx
       - auction_start
       - bid_increment
       - description

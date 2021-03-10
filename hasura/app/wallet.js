@@ -28,6 +28,10 @@ const keypair = () => {
   return { pubkey, privkey, seed, base58 };
 };
 
+const release = (a) => {
+  return Psbt.fromBase64(a);
+} 
+
 const combine = (a, b) => {
   let c = Psbt.fromBase64(b);
   a = Psbt.fromBase64(a)
@@ -91,5 +95,6 @@ module.exports = {
     })];
   },
 
+  release,
   sign,
 };
