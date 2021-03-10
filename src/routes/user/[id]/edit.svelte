@@ -64,6 +64,8 @@
       id,
       balance,
       pubkey,
+      wallet_initialized,
+      mnemonic,
       ...user
     } = form;
     updateUser$({ user, id }).then((r) => {
