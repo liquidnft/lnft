@@ -15,7 +15,7 @@
 
   subscription(
     operationStore(getArtworks),
-    (a, b) => (artworks = filtered = b.artworks)
+    (a, b) => (artworks = b.artworks)
   );
 
   let showFilters;

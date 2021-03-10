@@ -1,9 +1,11 @@
 <script>
+  import { onMount } from "svelte";
+  import { sortCriteria } from "$lib/store";
   export let filtered;
 
-  let sortCriteria;
-  $: update(sortCriteria);
+  $: update($sortCriteria, filtered);
   let update = () => (filtered = filtered.sort(sort));
+  onMount(update);
 
   let sort = (a, b) =>
     ({
@@ -14,7 +16,7 @@
       highest: b.list_price - a.list_price,
       newest: new Date(b.created_at) - new Date(a.created_at),
       oldest: new Date(a.created_at) - new Date(b.created_at),
-    }[sortCriteria]);
+    }[$sortCriteria]);
 </script>
 
 <style>
@@ -31,7 +33,7 @@
 </style>
 
 <div class="sort-container">
-  <select class="rounded-full bg-gray-100 px-8" bind:value={sortCriteria}>
+  <select class="rounded-full bg-gray-100 px-8" bind:value={$sortCriteria}>
     <option value="active">Recently active</option>
     <option value="lowest">Lowest price</option>
     <option value="highest">Highest price</option>
