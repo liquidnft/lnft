@@ -70,7 +70,7 @@
   <Search suggest={false} />
   <a href="/market"><button on:click={toggle}>Market</button></a>
   <a href="/activity"><button on:click={toggle}>Activity</button></a>
-  <a href="http://localhost:8082"><button on:click={toggle}>Blog</button></a>
+  <a href="https://blog.raretoshi.com/"><button on:click={toggle}>Blog</button></a>
   {#if $user}
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
