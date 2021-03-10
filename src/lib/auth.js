@@ -17,8 +17,10 @@ export const requireLogin = async (page) => {
   let $token = get(token);
 
   if (expired($token)) {
-    await refreshToken();
-    await tick();
+    try {
+      await refreshToken();
+      await tick();
+    } catch(e) {}
   }
 
   $token = get(token);

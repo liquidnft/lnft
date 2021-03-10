@@ -1,23 +1,16 @@
 top priorities
+release token back to owner if no bids
+lightning/on-chain withdrawals from wallet page
+avatar not updating after ownership change
+allow changing listing price after enabling auction but before auction starts
 lock wallet utxos involved in active bids
 email notifications for bids, buys, sales, etc.
-title slug urls for artworks and users
-default withdraw asset to current asset
-use asset colors from design
-auction multisig encumberance
 allow users to customize fee rates for txns, calculate/estimate tx size
-multisig server check that recipient is also 2of2
-auction extension if bid received in last 10 minutes
 server-side filtering / limits
-coinos for lightning/on-chain btc <-> lbtc deposit/exchange?
 email verification
 forgot password reset
-per-artist subdomains and asset registration
-top artists/collectors stats
 monitor bid utxos on blockchain for spends/cancellations
-file hash (dat hash?) in asset contract
 image/video processing (svelte-image, ffmpeg?)
-market page infinite scroll and pagination
 graphcache, optimistic updates - waiting on upstream svelte bugfix
 pr to epslora to group assets by domain and subdomain
 create liquidjs fork with no secp256/blech/confidential deps
@@ -52,3 +45,14 @@ setup ipfs for storage
 blog
 search mega menu
 mnemonic/private key import/export
+market page infinite scroll and pagination
+title slug urls for artworks and users
+default withdraw asset to current asset
+use asset colors from design
+auction multisig encumberance
+multisig server check that recipient is also 2of2
+auction extension if bid received in last 10 minutes
+coinos for lightning/on-chain btc <-> lbtc deposit/exchange?
+per-artist subdomains and asset registration
+top artists/collectors stats
+file hash (dat hash?) in asset contract
