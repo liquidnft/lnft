@@ -444,7 +444,7 @@
                 </div>
               {/each}
               <div class="flex w-full">
-                <a class="primary-btn mx-auto mb-12" href={`/artist/${artwork.artist.username}`}>View Gallery</a>
+                <a class="primary-btn mx-auto mb-12" href={`/artist/${artwork.artist.username}`}>View gallery</a>
               </div>
             {:else}
               <div class="mx-auto">No other artworks</div>

@@ -31,6 +31,10 @@
   span {
     @apply break-all;
   }
+
+  .pending {
+    @apply rounded bg-yellow-200 text-center rounded-full text-xs p-1 px-2;
+  }
 </style>
 
 <AcceptOffer bind:this={comp} />
@@ -51,6 +55,6 @@
     </a>
   {/if}
   {#if ['creation', 'purchase', 'accept', 'royalty', 'auction', 'release'].includes(transaction.type) && !transaction.confirmed}
-    <span class="text-yellow-500">(pending)</span>
+    <span class="pending">Pending</span>
   {/if}
 </div>
