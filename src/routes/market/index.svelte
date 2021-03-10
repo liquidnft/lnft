@@ -2,7 +2,7 @@
   import { addresses, show, user, results } from "$lib/store";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
-  import { goto } from "$lib/utils";
+  import { info, err, goto } from "$lib/utils";
   import Gallery from "$components/Gallery";
   import Results from "$components/Results";
   import Search from "$components/Search";

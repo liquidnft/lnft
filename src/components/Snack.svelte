@@ -19,25 +19,28 @@
   .snack-container {
     @apply fixed z-20 mt-6;
     width: 300px;
-    left: 50%;
-    margin-left: -150px;
+    right: 10%;
+    top: 10%;
   }
 
   .snack {
-    @apply border-2 px-4 py-3 rounded relative mb-4 mx-auto text-center font-bold bg-white;
+    @apply px-4 py-3 rounded relative mb-4 mx-auto font-bold bg-white;
   }
 
   .snack.info {
-    @apply border-green-400;
+    background: #6ed8e0;
   }
 
   .snack.error {
-    @apply border-red-400;
+    @apply bg-gray-200 text-red-600;
   }
 </style>
 
 {#if $snack}
   <div class="snack-container">
-    <div class="snack mx-0 w-full" class:info class:error>{$snack.msg}</div>
+    <div class="snack mx-0 w-full flex"  class:info class:error>
+      <div class="flex-grow">{$snack.msg}</div>
+      <button class="ml-auto my-auto w-auto" on:click={() => $snack = undefined}><i class="fa fa-times text-2xl" /></button>
+    </div>
   </div>
 {/if}
