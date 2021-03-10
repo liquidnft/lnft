@@ -359,23 +359,27 @@
   - role: user
     permission:
       columns:
-      - address
-      - avatar_url
-      - bio
-      - display_name
-      - email
-      - full_name
-      - instagram
-      - location
-      - mnemonic
-      - multisig
-      - pubkey
-      - twitter
-      - username
-      - website
+      - id
       - created_at
       - updated_at
-      - id
+      - display_name
+      - avatar_url
+      - username
+      - location
+      - bio
+      - website
+      - email
+      - full_name
+      - mnemonic
+      - address
+      - multisig
+      - is_artist
+      - is_admin
+      - wallet_initialized
+      - twitter
+      - instagram
+      - pubkey
+      - info
       filter:
         id:
           _eq: X-Hasura-User-Id
@@ -750,15 +754,10 @@
       - full_name
       - id
       - instagram
-      - is_admin
-      - is_artist
       - location
-      - mnemonic
       - multisig
-      - pubkey
       - twitter
       - username
-      - wallet_initialized
       - website
       computed_fields:
       - followed
@@ -800,23 +799,15 @@
       - address
       - avatar_url
       - bio
-      - created_at
-      - display_name
       - email
       - full_name
       - id
-      - info
       - instagram
-      - is_admin
-      - is_artist
       - location
-      - mnemonic
       - multisig
       - pubkey
       - twitter
-      - updated_at
       - username
-      - wallet_initialized
       - website
       computed_fields:
       - followed

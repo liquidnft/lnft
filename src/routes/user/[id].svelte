@@ -5,7 +5,7 @@
   import { goto } from "$lib/utils";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
-  import { getUser } from "$queries/users";
+  import { getUserById } from "$queries/users";
   import { createFollow, deleteFollow } from "$queries/follows";
   import Menu from "./_menu";
   import { mutation, subscription, operationStore } from "@urql/svelte";
@@ -23,12 +23,9 @@
 
   $: id && subscribeUser(id);
   let subscribeUser = () =>
-    subscription(
-      operationStore(getUser(id, $user && $user.id === id)),
-      (_, data) => {
-        subject = data.users_by_pk;
-      }
-    );
+    subscription(operationStore(getUserById(id)), (_, data) => {
+      subject = data.users_by_pk;
+    });
 
   let collection = [];
   let creations = [];
@@ -160,7 +157,7 @@
             <p>{subject.bio}</p>
           {/if}
           <div>
-            {#if $user.id === id}
+            {#if $user.id === subject.id}
               <Menu />
             {:else}
               <button class="p-2 primary-btn follow mt-8" on:click={follow}>

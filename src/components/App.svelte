@@ -51,7 +51,7 @@
       subscription(operationStore(getUser(id, true)), async (_, data) => {
         await requireLogin();
         window.sessionStorage.setItem("user", JSON.stringify($user));
-        $user = data.users_by_pk;
+        $user = data.currentuser[0];
       });
 
       subscription(operationStore(getAddresses), (a, b) => {

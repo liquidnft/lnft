@@ -75,7 +75,7 @@ const tickers = {
   },
   [usd]: {
     name: "Liquid USDt",
-    ticker: "USDt",
+    ticker: "USD",
     precision: 8,
     decimals: 2,
     color: "green-400",

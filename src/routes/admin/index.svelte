@@ -8,6 +8,7 @@
 
   let users = [];
   subscription(operationStore(getSamples), (a, b) => {
+    console.log("uh", b.users.map(u => u.info));
     users = b.users
       .sort((a, b) => a.username && a.username.localeCompare(b.username))
       .filter((u) => u.info && !u.is_artist);

@@ -1,4 +1,5 @@
 <script>
+  import { border, bg } from "./_colors";
   import { page } from "$app/stores";
   import { electrs } from "$lib/api";
   import { onMount, tick } from "svelte";
@@ -58,6 +59,18 @@
   $: [_, val, _] = units($asset);
 </script>
 
+<style>
+  .dark-red { background: #2b0208; } 
+  .dark-yellow { background: #31240c; } 
+  .dark-green { background: #082527; }
+  .dark-gray { background: #31373e; }
+  .border-blue { border-color: #6ed8e0; }
+
+  .active {
+    @apply border-t-2 border-b-2 border-r-2 text-white;
+  } 
+</style>
+
 {#if loading}
   <div class="absolute top-0 w-full left-0">
     <ProgressLinear />
@@ -74,7 +87,7 @@
 
     <div class="bg-black mb-2 pt-1 rounded-lg">
       <div
-        class="border-l-8 border-green-700 bg-green-100 bg-opacity-10 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5">
+        class={`border-l-8 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5 ${border($asset)} ${bg($asset)}`}>
         {assetLabel($asset)}
       </div>
 

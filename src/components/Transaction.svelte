@@ -108,18 +108,24 @@
         {#each Object.keys(totals) as user}
           {#if senders[user] && user !== 'Fee'}
             <div class="flex mb-2">
-              {#if users[user]}
-                <Avatar user={users[user]} />
-                {#if user.includes('+us')}
-                  <img src="/logo-graphic.png" class="ml-2 w-10" />
-                {/if}
-              {/if}
               <div class="flex ml-2 flex-grow sm:pr-8">
                 {#if users[user]}
-                  <div class="my-auto">
-                    <a href={`/${users[user].username}`} class="secondary-color">
-                      {user}
-                    </a>
+                  <div class="mb-auto flex">
+                    <div>
+                      {#if users[user]}
+                        <Avatar user={users[user]} />
+                        {#if user.includes('+ us')}
+                          <img src="/logo-graphic.png" class="ml-2 w-10" />
+                        {/if}
+                      {/if}
+                    </div>
+                    <div class="my-auto ml-2">
+                      <a
+                        href={`/${users[user].username}`}
+                        class="secondary-color">
+                        {user}
+                      </a>
+                    </div>
                   </div>
                 {:else}
                   <div>{user}</div>
@@ -147,22 +153,28 @@
         {#each Object.keys(totals) as user}
           {#if recipients[user] && user !== 'Fee'}
             <div class="flex mb-2">
-              {#if users[user]}
-                <Avatar user={users[user]} />
-                {#if user.includes('+us')}
-                  <img src="/logo-graphic.png" class="ml-2 w-10" />
-                {/if}
-              {/if}
               <div class="flex ml-2 flex-grow">
-                {#if users[user]}
-                  <div class="my-auto">
-                    <a href={`/${users[user].username}`} class="secondary-color">
-                      {user}
-                    </a>
-                  </div>
-                {:else}
-                  <div>{user}</div>
-                {/if}
+                <div class="flex">
+                  {#if users[user]}
+                    <Avatar user={users[user]} />
+                    {#if user.includes('+ us')}
+                      <img src="/logo-graphic.png" class="ml-2 w-10" />
+                    {/if}
+                  {/if}
+                </div>
+                <div class="my-auto ml-2">
+                  {#if users[user]}
+                    <div class="my-auto">
+                      <a
+                        href={`/${users[user].username}`}
+                        class="secondary-color">
+                        {user}
+                      </a>
+                    </div>
+                  {:else}
+                    <div>{user}</div>
+                  {/if}
+                </div>
                 <div class="ml-auto mt-3">
                   {#each Object.keys(totals[user]) as asset}
                     {#if totals[user][asset] < 0}
