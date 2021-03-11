@@ -36,13 +36,27 @@
   .active {
     color: #6aced5;
   }
+
+  .word{
+    padding: 10px;
+    display: inline-block;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    font-weight: bold;
+  }
+
+  .word b{
+    margin-right:10px;
+    font-size: 15px;
+    color: gray;
+  }
 </style>
 
 {#if mnemonic}
   <p>Write down the following 24 words in the correct order:</p>
 
   {#each mnemonic.split(' ').slice(offset, offset + 6) as word, i}
-    <div class="text-xl text-center my-4"><b>{i + 1 + offset}</b> - {word}</div>
+    <div class="text-xl text-center my-4"><p class="word"><b>{i + 1 + offset}</b> {word}</p></div>
   {/each}
 
   <div class="flex justify-center text-center mt-5">
