@@ -27,6 +27,7 @@
   } from "$lib/wallet";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { api } from "$lib/api";
+  import Head from "$components/Head"
 
   let { id } = $page.params;
 
@@ -234,6 +235,22 @@
     max-height: 70vh;
   }
 
+  .social-share{
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .social-share span{
+    margin-right: 5px;
+    color: #3ba5ac;
+  }
+
+  .social-share a{
+    margin-right: 35px;
+  }
+
+
   @keyframes zoom {
     0% {
       transform: scale(0.6);
@@ -259,8 +276,11 @@
   }
 </style>
 
+
+
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork && !loading}
+  <Head {artwork}/>
     <div class="flex justify-between flex-wrap" bind:this={target}>
       <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">
@@ -389,6 +409,14 @@
             <div class="closeButton"><i class="fas fa-times" /></div>
             <Card {artwork} columns={1} showDetails={false} />
           </span>
+        </div>
+        <div class="social-share">
+          <a href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}" 
+            target="_blank">
+            <span>TWEET IT</span> 
+            <span class="fab fa-twitter"></span>
+          </a>
+          <a href="/"><i class="far fa-heart"></i></a>
         </div>
         <div class="w-full mt-28">
           <h2 class="text-2xl font-bold primary-color py-10 px-0 md:px-5">
