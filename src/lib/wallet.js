@@ -115,7 +115,7 @@ export const getTx = async (txid) => {
   return Transaction.fromHex(await getHex(txid));
 };
 
-const DUST = 1000;
+const DUST = 1500;
 
 export const createWallet = (mnemonic, pass) => {
   try {
@@ -260,68 +260,65 @@ const fund = async (
     psbt.addInput(input);
   }
 
-  if (total > amount) {
-    psbt.addOutput({
-      asset,
-      nonce: Buffer.alloc(1),
-      script: multisig ? singlesig().output : out.output,
-      value: total - amount,
-    });
-  }
+  if (total > amount)
+    if (total - amount > DUST || asset !== btc)
+      psbt.addOutput({
+        asset,
+        nonce: Buffer.alloc(1),
+        script: multisig ? singlesig().output : out.output,
+        value: total - amount,
+      });
+    else bumpFee(total - amount);
 };
+
+const addFee = (p) =>
+  p.addOutput({
+    asset: btc,
+    nonce: Buffer.alloc(1, 0),
+    script: Buffer.alloc(0),
+    value: get(fee),
+  });
+
+const bumpFee = (v) => fee.set(get(fee) + v)
 
 export const pay = async ({ asset, auction_end, royalty }, to, amount) => {
   amount = parseInt(amount);
 
   let ms = !!(royalty || auction_end);
 
-  let swap = new Psbt()
-    .addOutput({
-      asset,
-      nonce: Buffer.alloc(1),
-      script: Address.toOutputScript(to, network),
-      value: amount,
-    })
-    .addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1, 0),
-      script: Buffer.alloc(0),
-      value: get(fee),
-    });
+  let p = new Psbt().addOutput({
+    asset,
+    nonce: Buffer.alloc(1),
+    script: Address.toOutputScript(to, network),
+    value: amount,
+  });
 
   let out = ms ? multisig() : singlesig();
   if (asset === btc) {
-    await fund(swap, singlesig(), asset, amount + get(fee));
+    await fund(p, singlesig(), asset, amount + get(fee));
   } else {
-    await fund(swap, out, asset, amount, 1, ms);
-    await fund(swap, singlesig(), btc, get(fee));
+    await fund(p, out, asset, amount, 1, ms);
+    await fund(p, singlesig(), btc, get(fee));
   }
 
-  return swap;
+  return p;
 };
 
 export const cancelSwap = async ({ auction_end, royalty, asset }) => {
   let ms = royalty || auction_end;
   let out = ms ? multisig() : singlesig();
 
-  let swap = new Psbt()
-    .addOutput({
-      asset,
-      nonce: Buffer.alloc(1),
-      script: out.output,
-      value: 1,
-    })
-    .addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1, 0),
-      script: Buffer.alloc(0),
-      value: get(fee),
-    });
+  let p = new Psbt().addOutput({
+    asset,
+    nonce: Buffer.alloc(1),
+    script: out.output,
+    value: 1,
+  });
 
-  await fund(swap, out, asset, 1);
-  await fund(swap, singlesig(), btc, get(fee));
+  await fund(p, out, asset, 1);
+  await fund(p, singlesig(), btc, get(fee));
 
-  return swap;
+  return p;
 };
 
 export const sign = (sighash = 1) => {
@@ -369,30 +366,23 @@ export const executeSwap = async (artwork) => {
     artist_id,
     owner_id,
   } = artwork;
-  let swap = Psbt.fromBase64(list_price_tx);
+  let p = Psbt.fromBase64(list_price_tx);
   let out = singlesig();
   let script = (royalty ? multisig() : singlesig()).output;
   let total = list_price;
 
-  swap
-    .addOutput({
-      asset,
-      nonce: Buffer.alloc(1),
-      script,
-      value: 1,
-    })
-    .addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1, 0),
-      script: Buffer.alloc(0),
-      value: get(fee),
-    });
+  p.addOutput({
+    asset,
+    nonce: Buffer.alloc(1),
+    script,
+    value: 1,
+  });
 
   if (royalty && artist_id !== owner_id) {
     let value = Math.round((total * royalty) / 100);
     total += value;
 
-    swap.addOutput({
+    p.addOutput({
       asset: asking_asset,
       value,
       nonce: Buffer.alloc(1),
@@ -401,23 +391,18 @@ export const executeSwap = async (artwork) => {
   }
 
   if (asking_asset === btc) total += get(fee);
-  else await fund(swap, out, btc, get(fee));
-  await fund(swap, out, asking_asset, total);
+  else await fund(p, out, btc, get(fee));
+  await fund(p, out, asking_asset, total);
 
-  return swap;
+  addFee(p);
+
+  return p;
 };
 
 export const createIssuance = async (artwork, domain, tx) => {
   let out = singlesig();
 
   let p = new Psbt()
-    // fee
-    .addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1, 0),
-      script: Buffer.alloc(0),
-      value: get(fee),
-    })
     // op_return
     .addOutput({
       asset: btc,
@@ -442,12 +427,15 @@ export const createIssuance = async (artwork, domain, tx) => {
 
     p.addInput(input);
 
-    p.addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1),
-      script: out.output,
-      value: parseVal(tx.outs[index].value) - get(fee),
-    });
+    let value = parseVal(tx.outs[index].value) - get(fee);
+    if (value > DUST)
+      p.addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: out.output,
+        value,
+      });
+    else bumpFee(value);
   } else await fund(p, out, btc, get(fee));
 
   let ticker = (artwork.title.split(" ").length > 2
@@ -479,6 +467,8 @@ export const createIssuance = async (artwork, domain, tx) => {
     contract,
   });
 
+  addFee(p);
+
   psbt.set(p);
   return contract;
 };
@@ -491,19 +481,12 @@ export const signOver = async ({ asset }) => {
 };
 
 export const createRelease = async ({ asset, owner }, tx) => {
-  let p = new Psbt()
-    .addOutput({
-      asset,
-      nonce: Buffer.alloc(1),
-      script: Address.toOutputScript(owner.address, network),
-      value: 1,
-    })
-    .addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1, 0),
-      script: Buffer.alloc(0),
-      value: get(fee),
-    });
+  let p = new Psbt().addOutput({
+    asset,
+    nonce: Buffer.alloc(1),
+    script: Address.toOutputScript(owner.address, network),
+    value: 1,
+  });
 
   let index = tx.outs.findIndex(
     (o) =>
@@ -541,6 +524,8 @@ export const createRelease = async ({ asset, owner }, tx) => {
     redeemScript: multisig().redeem.output,
     witnessScript: multisig().redeem.redeem.output,
   });
+
+  addFee(p);
 
   psbt.set(p);
 
@@ -585,19 +570,12 @@ export const createOffer = async (artwork, amount) => {
   let out = singlesig();
   let ms = !!(auction_end || royalty);
 
-  let swap = new Psbt()
-    .addOutput({
-      asset,
-      nonce: Buffer.alloc(1),
-      script: Address.toOutputScript(artwork.owner.address, network),
-      value: amount,
-    })
-    .addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1, 0),
-      script: Buffer.alloc(0),
-      value: get(fee),
-    });
+  let p = new Psbt().addOutput({
+    asset,
+    nonce: Buffer.alloc(1),
+    script: Address.toOutputScript(artwork.owner.address, network),
+    value: amount,
+  });
 
   let total = parseInt(amount);
   let pubkey = fromBase58(artwork.owner.pubkey, network).publicKey;
@@ -608,7 +586,7 @@ export const createOffer = async (artwork, amount) => {
       let value = Math.round((total * royalty) / 100);
       total += value;
 
-      swap.addOutput({
+      p.addOutput({
         asset,
         value,
         nonce: Buffer.alloc(1),
@@ -616,7 +594,7 @@ export const createOffer = async (artwork, amount) => {
       });
     }
 
-    swap.addOutput({
+    p.addOutput({
       asset: artwork.asset,
       nonce: Buffer.alloc(1),
       script: out.output,
@@ -627,7 +605,7 @@ export const createOffer = async (artwork, amount) => {
   } else {
     ownerOut = singlesig({ pubkey });
 
-    swap.addOutput({
+    p.addOutput({
       asset: artwork.asset,
       nonce: Buffer.alloc(1),
       script: out.output,
@@ -636,7 +614,7 @@ export const createOffer = async (artwork, amount) => {
   }
 
   try {
-    await fund(swap, ownerOut, artwork.asset, 1, 1, ms);
+    await fund(p, ownerOut, artwork.asset, 1, 1, ms);
   } catch (e) {
     throw new Error(
       "Unable to construct offer, the asset could not be found in the owner's wallet"
@@ -646,12 +624,13 @@ export const createOffer = async (artwork, amount) => {
   if (asset === btc) {
     total += get(fee);
   } else {
-    await fund(swap, out, btc, get(fee));
+    await fund(p, out, btc, get(fee));
   }
 
-  await fund(swap, out, asset, total);
+  await fund(p, out, asset, total);
+  addFee(p);
 
-  return swap;
+  return p;
 };
 
 export const sendToMultisig = async (artwork) => {
@@ -660,22 +639,16 @@ export const sendToMultisig = async (artwork) => {
   let { asset } = artwork;
   let value = 1;
 
-  let p = new Psbt()
-    .addOutput({
-      asset,
-      nonce: Buffer.alloc(1),
-      script,
-      value,
-    })
-    .addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1, 0),
-      script: Buffer.alloc(0),
-      value: get(fee),
-    });
+  let p = new Psbt().addOutput({
+    asset,
+    nonce: Buffer.alloc(1),
+    script,
+    value,
+  });
 
   await fund(p, out, asset, value);
   await fund(p, out, btc, get(fee));
+  addFee(p);
 
   psbt.set(p);
   return p;

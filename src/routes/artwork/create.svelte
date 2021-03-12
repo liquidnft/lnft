@@ -100,7 +100,7 @@
   const issue = async () => {
     let contract;
     let domain = `${$user.username}.${window.location.hostname}`;
-    let success;
+    let error, success;
 
     for (let i = 0; i < 5; i++) {
       await requirePassword();
@@ -111,11 +111,15 @@
         success = await signAndBroadcast();
         break;
       } catch (e) {
+        error = e.message;
         await new Promise((r) => setTimeout(r, 500));
       }
     }
 
-    if (!success) throw new Error("Issuance failed");
+    if (!success) {
+      console.log($psbt.toBase64());
+      throw new Error("Issuance failed: " + error);
+    } 
 
     tx = success.extractTransaction();
     artwork.asset = parseAsset(tx.outs[3].asset);
