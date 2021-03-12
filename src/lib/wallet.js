@@ -279,7 +279,7 @@ const addFee = (p) =>
     value: get(fee),
   });
 
-const bumpFee = (v) => fee.set(get(fee) + v)
+const bumpFee = (v) => fee.set(get(fee) + v);
 
 export const pay = async ({ asset, auction_end, royalty }, to, amount) => {
   amount = parseInt(amount);
@@ -418,6 +418,7 @@ export const createIssuance = async (artwork, domain, tx) => {
         o.script.toString("hex") === out.output.toString("hex")
     );
 
+    if (index > -1) {
     let input = {
       index,
       hash: tx.getId(),
@@ -436,6 +437,7 @@ export const createIssuance = async (artwork, domain, tx) => {
         value,
       });
     else bumpFee(value);
+    }
   } else await fund(p, out, btc, get(fee));
 
   let ticker = (artwork.title.split(" ").length > 2

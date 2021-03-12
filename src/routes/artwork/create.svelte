@@ -119,10 +119,10 @@
     if (!success) {
       console.log($psbt.toBase64());
       throw new Error("Issuance failed: " + error);
-    } 
+    }
 
     tx = success.extractTransaction();
-    artwork.asset = parseAsset(tx.outs[3].asset);
+    artwork.asset = parseAsset(tx.outs.find((o) => o.asset !== btc).asset);
     hash = tx.getId();
 
     return JSON.stringify(contract);
