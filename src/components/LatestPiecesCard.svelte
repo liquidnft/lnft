@@ -14,7 +14,14 @@
   .thumb {
     overflow: hidden;
     cursor: pointer;
+    height: 300px;
   }
+
+  .thumb :global(video, .cover){
+    width: 100%;
+    height: 100%;
+  }
+
 
   @media only screen and (max-width: 1024px) {
     .recentCard {

@@ -14,6 +14,12 @@
   .thumb {
     overflow: hidden;
     cursor: pointer;
+    height: 300px;
+  }
+
+  .thumb :global(video, .cover){
+    width: 100%;
+    height: 100%;
   }
 
   @media only screen and (max-width: 1024px) {
@@ -38,7 +44,7 @@
     </div>
   </div>
   <div
-    class="mb-5 w-full rounded-lg box-shadow thumb"
+    class="mb-5 w-full flex rounded-lg box-shadow thumb"
     on:click={() => goto(`/${artwork.slug}`)}>
     <ArtworkMedia {artwork} showDetails={false} />
   </div>
