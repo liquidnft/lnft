@@ -32,6 +32,8 @@ import {
 import cryptojs from "crypto-js";
 import { btc, assetLabel } from "$lib/utils";
 
+const DUST = 1000;
+
 //const network = networks.liquid;
 const network = networks.regtest;
 const singleAnyoneCanPay =
@@ -114,7 +116,6 @@ export const getTx = async (txid) => {
   return Transaction.fromHex(await getHex(txid));
 };
 
-const DUST = 1500;
 
 export const createWallet = (mnemonic, pass) => {
   try {
@@ -316,6 +317,8 @@ export const cancelSwap = async ({ auction_end, royalty, asset }) => {
 
   await fund(p, out, asset, 1);
   await fund(p, singlesig(), btc, get(fee));
+
+  addFee(p);
 
   return p;
 };
@@ -537,17 +540,20 @@ export const createSwap = async (
   { asset, asking_asset, auction_end, royalty },
   amount
 ) => {
-  let swap = new Psbt().addOutput({
+  if (asking_asset === btc && amount < DUST)
+    throw new Error(`Minimum BTC asking price is ${DUST} sats`);
+
+  let p = new Psbt().addOutput({
     asset: asking_asset,
     nonce: Buffer.alloc(1),
     script: singlesig().output,
     value: amount,
   });
 
-  let ms = royalty || auction_end;
+  let ms = !!(royalty || auction_end);
 
   await fund(
-    swap,
+    p,
     ms ? multisig() : singlesig(),
     asset,
     1,
@@ -555,7 +561,7 @@ export const createSwap = async (
     ms
   );
 
-  return swap;
+  return p;
 };
 
 export const createOffer = async (artwork, amount) => {
