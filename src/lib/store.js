@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 
-export const fee = writable(1500);
+export const fee = writable(300);
 export const error = writable();
 export const addresses = writable();
 export const artworks = writable([]);

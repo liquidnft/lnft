@@ -122,7 +122,7 @@
     }
 
     tx = success.extractTransaction();
-    artwork.asset = parseAsset(tx.outs.find((o) => o.asset !== btc).asset);
+    artwork.asset = parseAsset(tx.outs.find((o) => parseAsset(o.asset) !== btc).asset);
     hash = tx.getId();
 
     return JSON.stringify(contract);

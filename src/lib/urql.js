@@ -36,7 +36,9 @@ export const setupUrql = (token) => {
             inactivityTimeout: 60000,
             lazy: true,
             connectionParams: {
-              headers: token ? { authorization: `Bearer ${token}` } : undefined,
+              headers: token ? { 
+                authorization: `Bearer ${token}`,
+              } : undefined,
             },
           }).request(operation);
         },

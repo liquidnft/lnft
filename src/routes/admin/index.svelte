@@ -1,26 +1,36 @@
 <script>
+  import { onDestroy } from "svelte";
+  import { page } from "$app/stores";
   import ArtworkMedia from "$components/ArtworkMedia";
-  import { mutation, operationStore, subscription } from "@urql/svelte";
+  import { query, mutation, operationStore, subscription } from "@urql/svelte";
   import { getSamples, updateUser } from "$queries/users";
   import { role } from "$lib/store";
   import { api } from "$lib/api";
   import { info } from "$lib/utils";
 
   let users = [];
-  subscription(operationStore(getSamples), (a, b) => {
-    console.log("uh", b.users.map(u => u.info));
-    users = b.users
-      .sort((a, b) => a.username && a.username.localeCompare(b.username))
-      .filter((u) => u.info && !u.is_artist);
-  });
+  let samples;
+
+  $: pageChange($page);
+  let pageChange = async () => {
+    $role = "approver";
+    samples = operationStore(getSamples);
+    samples.subscribe((res) => {
+      if (!res.data) return;
+      users = res.data.users
+        .sort((a, b) => a.username && a.username.localeCompare(b.username))
+        .filter((u) => u.info && !u.is_artist);
+    });
+    query(samples);
+  };
+
+  onDestroy(() => ($role = "user"));
 
   let updateUser$ = mutation(updateUser);
   let makeArtist = (user) => {
-    $role = "approver";
     user.is_artist = true;
     updateUser$({ id: user.id, user: { is_artist: true } });
-    $role = "user";
-    users = users;
+    users = users.filter(u => u.id !== user.id);
     info(`${user.username} is now an artist!`);
   };
 </script>

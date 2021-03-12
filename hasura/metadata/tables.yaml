@@ -522,6 +522,14 @@
       - user_id
       backend_only: false
   select_permissions:
+  - role: approver
+    permission:
+      columns:
+      - type
+      - url
+      - id
+      - user_id
+      filter: {}
   - role: user
     permission:
       columns:
@@ -529,7 +537,9 @@
       - type
       - url
       - user_id
-      filter: {}
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: search

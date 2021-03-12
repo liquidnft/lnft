@@ -8,6 +8,7 @@
     poll,
     prompt,
     results,
+    role,
     token,
     user,
   } from "$lib/store";
@@ -41,9 +42,9 @@
   let id;
 
   setupUrql();
-  $: tokenUpdated($token);
+  $: setup($role, $token);
 
-  let tokenUpdated = async (t) => {
+  let setup = async (r, t) => {
     if (t) {
       id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
       setupUrql(t);

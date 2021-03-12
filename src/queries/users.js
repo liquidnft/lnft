@@ -36,7 +36,7 @@ export const getUsers = `subscription {
   }
 }`;
 
-export const getSamples = `subscription {
+export const getSamples = `query {
   users {
     ${fields} 
     info
