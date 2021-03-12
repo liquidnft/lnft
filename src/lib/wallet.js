@@ -82,9 +82,8 @@ export const getBalances = () => {
       utxos
         .map(({ asset: a }) => ({ name: assetLabel(a), asset: a }))
         .sort((a, b) => a.name.localeCompare(b.name))
-        .filter(
-          (item, pos, ary) => item && (!pos || item.asset != ary[pos - 1].asset)
-        )
+        .filter((a, i, r) => a && (!i || a.asset != r[i - 1].asset))
+        .filter((a) => a.asset !== btc || a.value > DUST)
     );
 
     let b = {};
@@ -419,24 +418,24 @@ export const createIssuance = async (artwork, domain, tx) => {
     );
 
     if (index > -1) {
-    let input = {
-      index,
-      hash: tx.getId(),
-      nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
-      redeemScript: out.redeem.output,
-    };
+      let input = {
+        index,
+        hash: tx.getId(),
+        nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+        redeemScript: out.redeem.output,
+      };
 
-    p.addInput(input);
+      p.addInput(input);
 
-    let value = parseVal(tx.outs[index].value) - get(fee);
-    if (value > DUST)
-      p.addOutput({
-        asset: btc,
-        nonce: Buffer.alloc(1),
-        script: out.output,
-        value,
-      });
-    else bumpFee(value);
+      let value = parseVal(tx.outs[index].value) - get(fee);
+      if (value > DUST)
+        p.addOutput({
+          asset: btc,
+          nonce: Buffer.alloc(1),
+          script: out.output,
+          value,
+        });
+      else bumpFee(value);
     }
   } else await fund(p, out, btc, get(fee));
 

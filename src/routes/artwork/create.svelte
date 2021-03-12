@@ -16,7 +16,7 @@
   import upload from "$lib/upload";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import { kebab, goto, err } from "$lib/utils";
+  import { btc, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
     createIssuance,
