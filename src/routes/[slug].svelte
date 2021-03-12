@@ -9,6 +9,12 @@
 
   let artwork, user;
 
+  $: pageChange($page);
+  let pageChange = () => {
+    artwork = undefined;
+    user = undefined;
+  } 
+
   $: subscription(
     operationStore(getArtworkBySlug($page.params.slug)),
     (_, data) => {
