@@ -48,7 +48,7 @@ const sign = (psbt, sighash = 1, privkey) => {
 
   psbt.data.inputs.map((input, i) => {
     try {
-      let sighashTypes;
+      let sighashTypes = [1];
       if (input.sighashType) sighashTypes = [input.sighashType];
 
       psbt = psbt

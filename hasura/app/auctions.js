@@ -11,7 +11,7 @@ const close = `mutation update_artwork($id: uuid!, $artwork: artworks_set_input!
   }
 }`;
 
-const releaseQuery = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!, $bid_id: uuid) {
+const releaseQuery = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!, $bid_id: uuid, $type: String!) {
   update_artworks_by_pk(
     pk_columns: { id: $id }, 
     _set: { 
@@ -99,7 +99,6 @@ setInterval(async () => {
     } catch (e) {
       try {
         let psbt = await sign(artwork.auction_release_tx);
-        console.log(psbt.toBase64());
         await broadcast(psbt);
 
         await hasura
@@ -132,8 +131,6 @@ setInterval(async () => {
           },
         })
         .json();
-
-      console.log(e.message);
     }
   }
 }, 2000);

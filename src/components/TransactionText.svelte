@@ -24,6 +24,8 @@
     {val(transaction.asset, transaction.amount)}
     {ticker(transaction.asset)}
     for
+  {:else if transaction.type === 'return'}
+    did not receive any bids for
   {:else if transaction.type === 'release'}
     won the auction for
   {:else if transaction.type === 'auction'}

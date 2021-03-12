@@ -111,7 +111,7 @@
               <div class="flex ml-2 flex-grow sm:pr-8">
                 {#if users[user]}
                   <div class="mb-auto flex">
-                    <div>
+                    <div class="flex">
                       {#if users[user]}
                         <Avatar user={users[user]} />
                         {#if user.includes('+ us')}

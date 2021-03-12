@@ -223,6 +223,7 @@ const fund = async (
   multisig = false
 ) => {
   let { address, redeem, output } = out;
+
   let utxos = shuffle(
     (await electrs.url(`/address/${address}/utxo`).get().json())
       .filter((o) => o.asset === asset)
@@ -263,7 +264,7 @@ const fund = async (
     psbt.addOutput({
       asset,
       nonce: Buffer.alloc(1),
-      script: output,
+      script: multisig ? singlesig().output : out.output,
       value: total - amount,
     });
   }
@@ -334,7 +335,7 @@ export const sign = (sighash = 1) => {
         .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
         .finalizeInput(i);
     } catch (e) {
-      console.log(e.message);
+      // console.log(e.message);
     }
   });
 
@@ -504,18 +505,42 @@ export const createRelease = async ({ asset, owner }, tx) => {
       value: get(fee),
     });
 
-  await fund(p, singlesig(), btc, get(fee), 1, false);
+  let index = tx.outs.findIndex(
+    (o) =>
+      parseAsset(o.asset) === btc &&
+      parseVal(o.value) >= get(fee) &&
+      o.script.toString("hex") === singlesig().output.toString("hex")
+  );
 
-  let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
+  if (index > -1) {
+    p.addInput({
+      index,
+      hash: tx.getId(),
+      nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+      redeemScript: singlesig().redeem.output,
+    });
 
-  let input = {
+    if (parseVal(tx.outs[index].value) > get(fee)) {
+      p.addOutput({
+        asset: btc,
+        nonce: Buffer.alloc(1),
+        script: singlesig().output,
+        value: parseVal(tx.outs[index].value) - get(fee),
+      });
+    }
+  } else {
+    await fund(p, singlesig(), btc, get(fee), 1, false);
+  }
+
+  index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
+
+  p.addInput({
     index,
     hash: tx.getId(),
     nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
     redeemScript: multisig().redeem.output,
-  };
-
-  p.addInput(input);
+    witnessScript: multisig().redeem.redeem.output,
+  });
 
   psbt.set(p);
 
