@@ -41,8 +41,6 @@
           ...new Array(24 - typed.split(" ").length),
         ];
       curr = words.findIndex((w) => !w);
-      if (curr < 12) offset = 0;
-      else offset = 12;
       if (inputs[curr]) inputs[curr].select();
     });
   };
@@ -50,10 +48,9 @@
   $: init($page);
   let init = () => tick().then(() => inputs[0].focus());
 
-  let words = new Array(24);
-  let inputs = new Array(24);
+  let words = new Array(12);
+  let inputs = new Array(12);
   let show = true;
-  let offset = 0;
   let curr = 0;
 
   let bulk = false;
@@ -66,17 +63,9 @@
   let take = async (suggestion) => {
     words[curr] = suggestion;
     curr++;
-    if (curr === 12) {
-      offset = 12;
-    }
 
     await tick();
 
-    if (curr === 12) {
-      inputs[0].select();
-    } else if (curr < 24) {
-      inputs[curr - offset].select();
-    }
     suggestions = [];
   };
 
@@ -144,42 +133,42 @@
 {:else}
   <div class="flex flex-wrap mb-2">
     <div class="mr-2 sm:mr-0 flex-grow w-1/4 sm:w-1/2">
-      {#each words.slice(offset, offset + 6) as word, i (i)}
+      {#each words.slice(0, 6) as word, i (i)}
         <div class="flex">
-          <div class="my-auto w-1/12">{i + offset + 1}.</div>
+          <div class="my-auto w-1/12">{i + 1}.</div>
           {#if show}
             <input
-              bind:value={words[i + offset]}
-              on:keydown={(e) => keyup(i + offset, e)}
-              key={i + offset}
-              bind:this={inputs[i + offset]} />
+              bind:value={words[i]}
+              on:keydown={(e) => keyup(i, e)}
+              key={i}
+              bind:this={inputs[i]} />
           {:else}
             <input
-              bind:value={words[i + offset]}
-              on:keydown={(e) => keyup(i + offset, e)}
-              key={i + offset}
-              bind:this={inputs[i + offset]}
+              bind:value={words[i]}
+              on:keydown={(e) => keyup(i, e)}
+              key={i }
+              bind:this={inputs[i]}
               type="password" />
           {/if}
         </div>
       {/each}
     </div>
     <div class="flex-grow w-1/4 sm:w-1/2">
-      {#each words.slice(offset + 6, offset + 12) as word, i (i)}
+      {#each words.slice(6, 12) as word, i (i)}
         <div class="flex">
-          <div class="my-auto w-1/12">{i + offset + 6 + 1}.</div>
+          <div class="my-auto w-1/12">{i + 6 + 1}.</div>
           {#if show}
             <input
-              bind:value={words[i + offset + 6]}
-              on:keydown={(e) => keyup(i + offset + 6, e)}
-              bind:this={inputs[i + offset + 6]}
-              key={i + offset + 6} />
+              bind:value={words[i + 6]}
+              on:keydown={(e) => keyup(i + 6, e)}
+              bind:this={inputs[i + 6]}
+              key={i + 6} />
           {:else}
             <input
-              bind:value={words[i + offset + 6]}
-              on:keydown={(e) => keyup(i + offset + 6, e)}
-              bind:this={inputs[i + offset + 6]}
-              key={i + offset + 6}
+              bind:value={words[i + 6]}
+              on:keydown={(e) => keyup(i + 6, e)}
+              bind:this={inputs[i + 6]}
+              key={i + 6}
               type="password" />
           {/if}
         </div>
@@ -192,16 +181,6 @@
         class="primary-btn w-auto border m-1"
         on:click={() => take(suggestion)}>{suggestion}</button>
     {/each}
-  </div>
-  <div class="flex justify-center text-center mt-5">
-    <button
-      on:click={() => (offset = 0)}
-      class="pagination w-auto"
-      class:active={offset === 0}><i class="fas fa-circle" /></button>
-    <button
-      on:click={() => (offset = 12)}
-      class="pagination w-auto"
-      class:active={offset === 12}><i class="fas fa-circle" /></button>
   </div>
 {/if}
 

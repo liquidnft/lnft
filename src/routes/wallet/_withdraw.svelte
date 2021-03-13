@@ -10,7 +10,6 @@
   export let withdrawing;
 
   let amount;
-  let fee = 0.00001;
   let to;
   let loading;
 
@@ -26,19 +25,20 @@
     loading = true;
     try {
       let artwork = $artworks.find(a => a.asset === $asset);
-      $psbt = await pay(artwork, to, sats($asset, amount), sats(btc, fee));
+      $psbt = await pay(artwork, to, sats($asset, amount));
       await sign();
 
-      if (artwork.auction_end || artwork.royalty) {
+      if (artwork && (artwork.auction_end || artwork.royalty)) {
         $psbt = await requestSignature($psbt);
       } 
 
       await broadcast();
+
+      $balances[$asset] -= amount;
       info("Payment sent!");
       withdrawing = false;
     } catch (e) {
       err(e);
-      return;
     }
     loading = false;
   };
@@ -67,13 +67,6 @@
               <option value={asset.asset}>{assetLabel(asset.asset)}</option>
             {/each}
           </select>
-        </div>
-      </div>
-      <div class="flex flex-col mb-4 relative">
-        <label>Fee</label>
-        <input placeholder={val(btc, 0)} bind:value={fee} />
-        <div class="absolute inset-y-0 right-0 top-8 flex items-center mr-2">
-          {assetLabel(btc)}
         </div>
       </div>
       <div class="flex flex-col mb-4">

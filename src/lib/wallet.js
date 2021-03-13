@@ -81,17 +81,17 @@ export const getBalances = () => {
     let utxos = [...single, ...multi];
 
     assets.set(
-      utxos
+      [...utxos, { asset: btc }]
         .map(({ asset: a }) => ({ name: assetLabel(a), asset: a }))
         .sort((a, b) => a.name.localeCompare(b.name))
         .filter((a, i, r) => a && (!i || a.asset != r[i - 1].asset))
-        .filter((a) => a.asset !== btc || a.value > DUST)
     );
 
     let b = {};
     let p = {};
 
     utxos.map((u) => {
+      if (u.asset === btc && u.value < DUST) return;
       if (u.status.confirmed) {
         if (b[u.asset]) b[u.asset] += u.value;
         else b[u.asset] = u.value;
@@ -115,7 +115,6 @@ const getHex = async (txid) => {
 export const getTx = async (txid) => {
   return Transaction.fromHex(await getHex(txid));
 };
-
 
 export const createWallet = (mnemonic, pass) => {
   try {
@@ -281,7 +280,19 @@ const addFee = (p) =>
 
 const bumpFee = (v) => fee.set(get(fee) + v);
 
-export const pay = async ({ asset, auction_end, royalty }, to, amount) => {
+export const pay = async (artwork, to, amount) => {
+  let asset = btc;
+  let auction_end, royalty;
+
+  if (artwork) ({ asset, auction_end, royalty } = artwork);
+
+  let script;
+  try {
+    script = Address.toOutputScript(to, network);
+  } catch (e) {
+    throw new Error("Unrecognized address");
+  }
+
   amount = parseInt(amount);
 
   let ms = !!(royalty || auction_end);
@@ -289,7 +300,7 @@ export const pay = async ({ asset, auction_end, royalty }, to, amount) => {
   let p = new Psbt().addOutput({
     asset,
     nonce: Buffer.alloc(1),
-    script: Address.toOutputScript(to, network),
+    script,
     value: amount,
   });
 
@@ -300,6 +311,8 @@ export const pay = async ({ asset, auction_end, royalty }, to, amount) => {
     await fund(p, out, asset, amount, 1, ms);
     await fund(p, singlesig(), btc, get(fee));
   }
+
+  addFee(p);
 
   return p;
 };

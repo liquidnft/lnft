@@ -196,7 +196,7 @@
           <h4 class="mt-6 mb-2 text-right">Fee</h4>
           <div class="text-right">
             {val(btc, Math.abs(totals['Fee'][btc]))}
-            BTC
+            L-BTC
           </div>
         {/if}
       </div>

@@ -53,7 +53,7 @@
 </style>
 
 {#if mnemonic}
-  <p>Write down the following 24 words in the correct order:</p>
+  <p>Write down the following 12 words in the correct order:</p>
 
   {#each mnemonic.split(' ').slice(offset, offset + 6) as word, i}
     <div class="text-xl text-center my-4"><p class="word"><b>{i + 1 + offset}</b> {word}</p></div>
@@ -64,10 +64,6 @@
         class="fas fa-circle" /></button>
     <button on:click={() => (offset = 6)} class="pagination w-auto" class:active={offset === 6}><i
         class="fas fa-circle" /></button>
-    <button on:click={() => (offset = 12)} class="pagination w-auto" class:active={offset === 12}><i
-        class="fas fa-circle" /></button>
-    <button on:click={() => (offset = 18)} class="pagination w-auto" class:active={offset === 18}><i
-        class="fas fa-circle" /></button>
   </div>
 
   <div class="flex justify-center text-center mt-5">
@@ -75,7 +71,7 @@
       on:click={() => (offset === 0 ? goto('/wallet/create/step1') : (offset -= 6))}
       class="w-2/4 secondary-btn m-2">Back</button>
     <button
-      on:click={() => (offset === 18 ? goto('/wallet/create/step3') : (offset += 6))}
+      on:click={() => (offset === 6 ? goto('/wallet/create/step3') : (offset += 6))}
       class="w-2/4 primary-btn m-2">Next</button>
   </div>
 

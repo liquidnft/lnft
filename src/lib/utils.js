@@ -61,24 +61,21 @@ const artworkId = (asset) => {
 const tickers = {
   [btc]: {
     name: "Liquid Bitcoin",
-    ticker: "BTC",
+    ticker: "L-BTC",
     precision: 8,
     decimals: 8,
-    color: "orange-500",
   },
   [cad]: {
     name: "Liquid CAD",
-    ticker: "CAD",
+    ticker: "L-CAD",
     precision: 8,
     decimals: 2,
-    color: "red-500",
   },
   [usd]: {
     name: "Liquid USDt",
-    ticker: "USD",
+    ticker: "L-USDt",
     precision: 8,
     decimals: 2,
-    color: "green-400",
   },
 };
 

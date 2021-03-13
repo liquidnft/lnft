@@ -79,7 +79,7 @@ export const register = async (email, username, password) => {
         email,
         password,
         username,
-        ...createWallet(generateMnemonic(256), password),
+        ...createWallet(generateMnemonic(), password),
       })
       .badRequest(err)
       .res();

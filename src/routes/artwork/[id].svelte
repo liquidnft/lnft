@@ -427,7 +427,7 @@
         <div class="social-share">
           <a href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}" 
             target="_blank">
-            <span>TWEET IT</span> 
+            <span class="uppercase">Tweet it</span>
             <span class="fab fa-twitter"></span>
           </a>
           <a href="/"><i class="far fa-heart"></i></a>

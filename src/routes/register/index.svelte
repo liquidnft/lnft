@@ -79,7 +79,7 @@
           <label
             class="mb-2 font-medium text-gray-600"
             for="first_name">Username</label>
-          <input placeholder="Username" bind:value={username} bind:this={ref} />
+          <input placeholder="Username" bind:value={username} />
         </div>
         <div class="flex flex-col mb-4">
           <label
