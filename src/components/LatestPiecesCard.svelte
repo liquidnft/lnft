@@ -17,7 +17,7 @@
     height: 300px;
   }
 
-  .thumb :global(video, .cover){
+  .thumb :global(video, img, .cover){
     width: 100%;
     height: 100%;
   }
