@@ -22,7 +22,7 @@
 </style>
 
 <div class="flex mb-4 text-left">
-  <Avatar user={transaction.user} />
+  <Avatar user={transaction.user} key={transaction.user.username} />
   <div class="ml-3">
     <TransactionText {transaction} />
     <TransactionTime {transaction} />

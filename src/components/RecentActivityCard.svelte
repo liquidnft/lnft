@@ -43,9 +43,10 @@
       </p>
     </div>
   </div>
+      <a href={`/${artwork.slug}`}>
   <div
-    class="mb-5 w-full flex rounded-lg box-shadow thumb"
-    on:click={() => goto(`/${artwork.slug}`)}>
+    class="mb-5 w-full flex rounded-lg box-shadow thumb">
     <ArtworkMedia {artwork} showDetails={false} />
   </div>
+</a>
 </div>

@@ -1,4 +1,5 @@
 top priorities
+in case of offer being double spent, go to next highest bidder
 transaction showing 2 units of artwork being received in auction setup tx
 release token back to owner if no bids
 lightning/on-chain withdrawals from wallet page

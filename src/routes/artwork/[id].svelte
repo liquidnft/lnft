@@ -313,12 +313,15 @@
             <Card {artwork} columns={1} showDetails={false} />
           </span>
         </div>
+
         <Sidebar bind:artwork />
 
         {#if $user && $user.id === artwork.owner_id}
-          <button
-            on:click={() => goto(`/artwork/${id}/auction`)}
-            class="secondary-btn">List</button>
+        <div class="w-full mb-2">
+          <a
+            href={`/artwork/${id}/auction`}
+            class="block text-center text-sm secondary-btn w-full">List</a>
+        </div>
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
             <button on:click={buyNow} class="secondary-btn">Buy now</button>

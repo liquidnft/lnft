@@ -10,42 +10,54 @@
 
   $: if ($user) getBalances();
   $: requireLogin($page);
-
 </script>
 
 <style>
-  .dark-red { background: #2b0208; } 
-  .dark-yellow { background: #31240c; } 
-  .dark-green { background: #082527; }
-  .dark-gray { background: #31373e; }
-  .border-blue { border-color: #6ed8e0; }
+  .dark-red {
+    background: #2b0208;
+  }
+  .dark-yellow {
+    background: #31240c;
+  }
+  .dark-green {
+    background: #082527;
+  }
+  .dark-gray {
+    background: #31373e;
+  }
+  .border-blue {
+    border-color: #6ed8e0;
+  }
 
   .active {
     @apply border-t-2 border-b-2 border-r-2 text-white;
-  } 
+  }
 </style>
 
-<div class="container mx-auto">
-  <div class="mb-5">
-    <a href="/wallet" class="text-midblue"><i
-        class="fas fa-chevron-left mr-2" />
-      Back</a>
-  </div>
-  <div class="bg-black p-4 rounded-lg">
-    {#each $assets as a}
-      <div
-        class="flex mb-2 cursor-pointer"
-        on:click={() => {
-          $asset = a.asset;
-          goto('/wallet');
-        }}>
-        <div class={`py-2 ${outer(a.asset)} w-3 rounded-l-lg`} />
+{#if $balances}
+  <div class="container mx-auto">
+    <div class="mb-5">
+      <a href="/wallet" class="text-midblue"><i
+          class="fas fa-chevron-left mr-2" />
+        Back</a>
+    </div>
+    <div class="bg-black p-4 rounded-lg">
+      {#each $assets as a}
         <div
-          class={`flex ${bg(a.asset)} text-gray-300 rounded-r-lg p-4 flex-grow ${border(a.asset)}`} class:active={$asset === a.asset}>
-          <div class="flex-grow">{a.name}</div>
-          <div>{val(a.asset, $balances[a.asset])}</div>
+          class="flex mb-2 cursor-pointer"
+          on:click={() => {
+            $asset = a.asset;
+            goto('/wallet');
+          }}>
+          <div class={`py-2 ${outer(a.asset)} w-3 rounded-l-lg`} />
+          <div
+            class={`flex ${bg(a.asset)} text-gray-300 rounded-r-lg p-4 flex-grow ${border(a.asset)}`}
+            class:active={$asset === a.asset}>
+            <div class="flex-grow">{a.name}</div>
+            <div>{val(a.asset, $balances[a.asset] || 0)}</div>
+          </div>
         </div>
-      </div>
-    {/each}
+      {/each}
+    </div>
   </div>
-</div>
+{/if}

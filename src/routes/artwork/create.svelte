@@ -147,7 +147,7 @@
         tries = 0;
         artwork.id = v4();
         artwork.edition = $edition;
-        artwork.slug = kebab(artwork.title);
+        artwork.slug = kebab(artwork.title || "untitled");
         if ($edition > 1) artwork.slug += "-" + $edition;
         artwork.slug += "-" + artwork.id.substr(0, 5)
 

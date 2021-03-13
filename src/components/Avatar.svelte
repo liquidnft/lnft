@@ -2,8 +2,6 @@
   export let user = undefined;
   export let src = undefined;
   export let size = "small";
-
-  $: if (user && !src) src = user.avatar_url;
 </script>
 
 <style>
@@ -23,9 +21,10 @@
 <div class={`${size} my-auto`}>
   <div
     class={`relative ${size} group rounded-full overflow-hidden shadow-inner text-center bg-purple table cursor-pointer`}>
-    {#if src}
+    {#if user || src}
       <img
-        src={src.startsWith('data') ? src : `/api/ipfs/${src}`}
+        key={user && user.username}
+        src={user ? `/api/ipfs/${user.avatar_url}` : src.startsWith('data') ? src : `/api/ipfs/${src}`}
         alt={user ? user.username : 'lovely avatar'}
         class="absolute w-full h-full object-cover object-center visible group-hover:hidden overflow-hidden" />
     {/if}
