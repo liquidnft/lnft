@@ -7,6 +7,8 @@
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
 
+  let tab = "liquid";
+
   let loading;
   let amount;
   $: amount = val(
@@ -16,6 +18,13 @@
   let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
   let img;
+
+  let showInvoice = false;
+  let toggle = () => {
+    console.log("booger");
+    showInvoice = !showInvoice;
+    console.log(showInvoice);
+  };
 
   $: updateAddress(address);
 
@@ -44,6 +53,7 @@
 
   let fee = 0;
   let bitcoin = async () => {
+    tab = "bitcoin";
     fee = 0;
     loading = true;
     try {
@@ -62,11 +72,13 @@
   };
 
   let liquid = () => {
+    tab = "liquid";
     fee = 0;
     address = $user.address;
   };
 
   let lightning = async () => {
+    tab = "lightning";
     fee = 0;
     loading = true;
     try {
@@ -89,28 +101,64 @@
   $: if ($user) address = $user.address;
 </script>
 
+<style>
+  .hover {
+    @apply border-b-2;
+    border-bottom: 3px solid #6ed8e0;
+  }
+
+  .tabs div {
+    @apply mb-auto h-8 mx-2 md:mx-4 mt-6;
+    &:hover {
+      @apply hover;
+    }
+  }
+</style>
+
 <svelte:options accessors={true} />
 <div class="mb-2 rounded-lg">
-  <div class="flex justify-between place-items-center text-gray-400">
-    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-      Add Funds
-    </h3>
+  <div class="flex w-full">
+    <h3 class="text-2xl flex-grow text-left">Add funds</h3>
     <button
-      class="text-gray-400 text-xl"
-      on:click={() => ($prompt = undefined)}><i class="fas fa-times" /></button>
+      class="text-xl ml-auto font-thin w-10 h-10 bg-gray-100 rounded rounded-full"
+      on:click={() => ($prompt = undefined)}><i class="fa fa-times" /></button>
   </div>
-  <div class="text-center text-sm mt-6">Funds Required</div>
-  <div class="text-center text-xl">{amount} {assetLabel($error.asset)}</div>
-  <div class="text-center text-sm mt-6">Current Balance</div>
-  <div class="text-center text-xl">
-    {val($error.asset, parseInt(current))}
-    {#if incoming}
-      <span class="text-yellow-500 text-sm">
-        +{val($error.asset, parseInt(incoming))}
-      </span>
-    {/if}
-    {assetLabel($error.asset)}
+  <div class="flex mt-4">
+    <div class="w-1/2">
+      <div class="text-xs mt-6">Current Balance</div>
+      <div class="text-xl">
+        {val($error.asset, parseInt(current))}
+        {#if incoming}
+          <span class="text-yellow-500 text-sm">
+            +{val($error.asset, parseInt(incoming))}
+          </span>
+        {/if}
+        {assetLabel($error.asset)}
+      </div>
+    </div>
+    <div class="w-1/2">
+      <div class="text-xs mt-6">Funds Required</div>
+      <div class="text-xl">{amount} {assetLabel($error.asset)}</div>
+    </div>
   </div>
+
+  {#if $error.asset === btc}
+    <div class="flex justify-center text-center cursor-pointer tabs flex-wrap">
+      <div class:hover={tab === 'liquid'} on:click={liquid}>Liquid</div>
+      <div class:hover={tab === 'bitcoin'} on:click={bitcoin}>Bitcoin</div>
+      <div class:hover={tab === 'lightning'} on:click={lightning}>
+        Lightning
+      </div>
+    </div>
+  {/if}
+  {#if tab !== 'liquid'}
+    <p class="text-sm my-4">
+      We'll automatically convert up to 1 BTC to L-BTC so you can continue your
+      offer. This will incur an additional fee of
+      {fee}
+      sats.
+    </p>
+  {/if}
   <div class="mb-2 flex justify-center flex-col">
     <div class="flex mb-2 mx-auto w-4/5" class:invisible={loading}>
       {@html img}
@@ -118,32 +166,36 @@
     {#if loading}
       <ProgressLinear />
     {:else}
-      <div
-        class="text-center text-sm text-gray-500 break-all"
-        class:invisible={loading}>
-        {address}
+      <div class="flex">
+        <div
+          class="break-all text-sm text-gray-500"
+          class:truncate={!showInvoice}
+          class:invisible={loading}
+          class:mx-auto={tab !== 'lightning'}>
+          {address}
+        </div>
+        {#if tab === 'lightning' && !showInvoice}
+          <div
+            class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
+            on:click={toggle}>
+            Show invoice
+            <i class="fa fa-chevron-down" />
+          </div>
+        {/if}
       </div>
+      {#if tab === 'lightning' && showInvoice}
+        <div
+          class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
+          on:click={toggle}>
+          Hide invoice
+          <i class="fa fa-chevron-up" />
+        </div>
+      {/if}
       <button
         on:click={() => copy(address)}
-        class="center font-medium secondary-color">COPY ADDRESS
+        class="center font-medium secondary-color uppercase mt-4">Copy
+        {tab === 'lightning' ? 'invoice' : 'address'}
         <i class="far fa-clone ml-2" /></button>
-    {/if}
-
-    {#if $error.asset === btc}
-      <div class="flex justify-center text-center">
-        <button
-          on:click={bitcoin}
-          class="mr-2 center font-medium secondary-color">Bitcoin
-        </button>
-        <button
-          on:click={liquid}
-          class="mr-2 center font-medium secondary-color">Liquid
-        </button>
-        <button
-          on:click={lightning}
-          class="center font-medium secondary-color">Lightning
-        </button>
-      </div>
     {/if}
   </div>
 </div>

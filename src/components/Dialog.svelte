@@ -38,7 +38,7 @@
             <button
               bind:this={ok}
               on:click={comp.submit}
-              class="primary-btn ml-2">
+              class="primary-btn mb-2 sm:mb-0 sm:ml-2">
               Ok
             </button>
             <button
