@@ -113,10 +113,9 @@
                   <div class="mb-auto flex">
                     <div class="flex">
                       {#if users[user]}
-                        <Avatar user={users[user]} />
-                        {#if user.includes('+ us')}
-                          <img src="/logo-graphic.png" class="ml-2 w-10" />
-                        {/if}
+                        <Avatar
+                          user={users[user]}
+                          overlay={user.includes('+ us') && '/logo-graphic.png'} />
                       {/if}
                     </div>
                     <div class="my-auto ml-2">
@@ -156,10 +155,9 @@
               <div class="flex ml-2 flex-grow">
                 <div class="flex">
                   {#if users[user]}
-                    <Avatar user={users[user]} />
-                    {#if user.includes('+ us')}
-                      <img src="/logo-graphic.png" class="ml-2 w-10" />
-                    {/if}
+                    <Avatar
+                      user={users[user]}
+                      overlay={user.includes('+ us') && '/logo-graphic.png'} />
                   {/if}
                 </div>
                 <div class="my-auto ml-2">

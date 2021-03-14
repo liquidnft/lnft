@@ -1,6 +1,7 @@
 <script>
-  export let user = undefined;
-  export let src = undefined;
+  export let user;
+  export let src;
+  export let overlay;
   export let size = "small";
 </script>
 
@@ -18,9 +19,9 @@
   }
 </style>
 
-<div class={`${size} my-auto`}>
+<div class={`${size} my-auto relative`}>
   <div
-    class={`relative ${size} group rounded-full overflow-hidden shadow-inner text-center bg-purple table cursor-pointer`}>
+    class={`relative ${size} group rounded-full overflow-hidden shadow-inner text-center cursor-pointer`}>
     {#if user || src}
       <img
         key={user && user.username}
@@ -29,4 +30,10 @@
         class="absolute w-full h-full object-cover object-center visible group-hover:hidden overflow-hidden" />
     {/if}
   </div>
+  {#if overlay}
+    <img
+      src={overlay}
+      class="w-6 h-6 absolute"
+      style="bottom: -8px; right: -12px" />
+  {/if}
 </div>
