@@ -6,6 +6,10 @@
 </script>
 
 <style>
+  header{
+    padding-top: 20px;
+  }
+
   .hambuger {
     display: none;
   }

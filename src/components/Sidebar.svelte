@@ -7,6 +7,7 @@
 <style>
   aside {
     left: -100%;
+    top: 0;
     transition: left 0.3s ease-in-out;
     z-index: 10;
     background-color: white;

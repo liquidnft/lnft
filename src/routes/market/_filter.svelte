@@ -34,6 +34,11 @@
       display: none;
       margin-top: -10px;
     }
+
+    .showFilters {
+      display: block !important;
+      width: 100%;
+    }
   }
 </style>
 

@@ -18,7 +18,7 @@
     (a, b) => (artworks = b.artworks)
   );
 
-  let showFilters;
+  export let showFilters;
 </script>
 
 <style>
@@ -56,17 +56,22 @@
     .filters {
       display: block;
     }
+  }
 
-    .showFilters {
-      display: block !important;
+  @media only screen and (max-width: 767px) {
+    .primary-btn{
+      width: 300px;
+      text-align: center;
+      margin: 0 auto;
+      margin-bottom: 30px;
     }
   }
 </style>
 
 <Results />
 
-<div class="container mx-auto flex flex-wrap sm:justify-between mt-10 md:mt-20">
-  <h2 class="mb-10 md:mb-0">Market</h2>
+<div class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20">
+  <h2 class="md:mb-0">Market</h2>
 
   {#if $user && $user.is_artist}
     <a href="/artwork/create" class="primary-btn">Submit a new artwork</a>
