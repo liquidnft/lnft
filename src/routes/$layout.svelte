@@ -1,4 +1,5 @@
 <script>
+  import { page } from "$app/stores";
   import decode from "jwt-decode";
   import {
     App,
@@ -81,11 +82,13 @@
 <Snack />
 
 {#if ready}
+  {#if !['/login', '/register'].includes($page.path)}
   <Sidebar bind:open />
   <div in:fade>
     <Navbar bind:sidebar={open} />
   </div>
   <Dialog />
+{/if}
 
   <main>
     <div class="mx-auto min-h-screen">
@@ -94,5 +97,8 @@
       </App>
     </div>
   </main>
+
+  {#if !['/login', '/register'].includes($page.path)}
   <Footer />
+{/if}
 {/if}

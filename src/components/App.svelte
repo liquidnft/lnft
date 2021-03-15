@@ -20,6 +20,7 @@
   import { page } from "$app/stores";
   import { requireLogin, refreshToken } from "$lib/auth";
   import InsufficientFunds from "$components/InsufficientFunds";
+  import { publicPages } from "$lib/utils";
 
   onMount(async () => {
     refreshToken();
@@ -31,7 +32,7 @@
 
   let lastPage;
   let pageChange = (p) => {
-    if ($user) requireLogin();
+    if (!publicPages.includes(p.path)) requireLogin();
     if (lastPage === "/market") $results = [];
     $poll.map((p) => clearInterval(p.interval));
     lastPage = p.path;

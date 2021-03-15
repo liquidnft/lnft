@@ -4,7 +4,7 @@
   let email;
   let forgot;
   let ref;
-  let pageChange = () => setTimeout(() => ref.select(), 50);
+  let pageChange = () => setTimeout(() => ref && ref.select(), 50);
   $: if (ref) pageChange($page);
 </script>
 

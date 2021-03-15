@@ -5,7 +5,7 @@ import { tick } from "svelte";
 import { get } from "svelte/store";
 import { password as pw, poll, prompt, user, token } from "$lib/store";
 import PasswordPrompt from "$components/PasswordPrompt";
-import { goto, err } from "$lib/utils";
+import { goto, err, validateEmail } from "$lib/utils";
 import { createWallet, keypair } from "$lib/wallet";
 
 export const expired = (t) => !t || decode(t).exp * 1000 < Date.now();
@@ -72,6 +72,9 @@ export const logout = () => {
 
 let justRegistered;
 export const register = async (email, username, password) => {
+  if (!validateEmail(email)) throw new Error("Invalid email");
+  if (password.length < 8) throw new Error("Password must be 8 characters");
+
   try {
     await api
       .url("/register")
