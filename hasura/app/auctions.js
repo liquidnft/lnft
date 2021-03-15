@@ -36,7 +36,8 @@ const releaseQuery = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amo
 }`;
 
 setInterval(async () => {
-  const query = `query {
+  try {
+    const query = `query {
     artworks(where: { auction_end: { _lte: "${formatISO(new Date())}"}}) {
       id
       title
@@ -70,35 +71,15 @@ setInterval(async () => {
     } 
   }`;
 
-  let { artworks } = (await hasura.post({ query }).json()).data;
-  for (let i = 0; i < artworks.length; i++) {
-    let artwork = artworks[i];
+    let { artworks } = (await hasura.post({ query }).json()).data;
+    for (let i = 0; i < artworks.length; i++) {
+      let artwork = artworks[i];
 
-    try {
-      if (!artwork.bid[0].psbt) throw new Error("No bid");
-
-      let combined = combine(artwork.list_price_tx, artwork.bid[0].psbt);
-      let psbt = await sign(combined);
-      await broadcast(psbt);
-
-      await hasura
-        .post({
-          query: releaseQuery,
-          variables: {
-            id: artwork.id,
-            owner_id: artwork.bid[0].user.id,
-            amount: artwork.bid[0].amount,
-            hash: psbt.extractTransaction().getId(),
-            psbt: psbt.toBase64(),
-            asset: artwork.asking_asset,
-            bid_id: artwork.bid[0].id,
-            type: "release",
-          },
-        })
-        .json();
-    } catch (e) {
       try {
-        let psbt = await sign(artwork.auction_release_tx);
+        if (!artwork.bid[0].psbt) throw new Error("No bid");
+
+        let combined = combine(artwork.list_price_tx, artwork.bid[0].psbt);
+        let psbt = await sign(combined);
         await broadcast(psbt);
 
         await hasura
@@ -106,31 +87,54 @@ setInterval(async () => {
             query: releaseQuery,
             variables: {
               id: artwork.id,
-              owner_id: artwork.owner.id,
-              amount: 0,
+              owner_id: artwork.bid[0].user.id,
+              amount: artwork.bid[0].amount,
               hash: psbt.extractTransaction().getId(),
               psbt: psbt.toBase64(),
               asset: artwork.asking_asset,
-              type: "return",
+              bid_id: artwork.bid[0].id,
+              type: "release",
             },
           })
           .json();
       } catch (e) {
-        console.log("Problem releasing", e);
-      }
+        try {
+          let psbt = await sign(artwork.auction_release_tx);
+          await broadcast(psbt);
 
-      await hasura
-        .post({
-          query: close,
-          variables: {
-            id: artwork.id,
-            artwork: {
-              auction_start: null,
-              auction_end: null,
+          await hasura
+            .post({
+              query: releaseQuery,
+              variables: {
+                id: artwork.id,
+                owner_id: artwork.owner.id,
+                amount: 0,
+                hash: psbt.extractTransaction().getId(),
+                psbt: psbt.toBase64(),
+                asset: artwork.asking_asset,
+                type: "return",
+              },
+            })
+            .json();
+        } catch (e) {
+          console.log("Problem releasing", e);
+        }
+
+        await hasura
+          .post({
+            query: close,
+            variables: {
+              id: artwork.id,
+              artwork: {
+                auction_start: null,
+                auction_end: null,
+              },
             },
-          },
-        })
-        .json();
+          })
+          .json();
+      }
     }
+  } catch (e) {
+    console.log(e);
   }
 }, 2000);
