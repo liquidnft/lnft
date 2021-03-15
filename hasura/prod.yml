@@ -78,7 +78,7 @@ services:
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
   hbp:
     container_name: hbp
-    image: nhost/hasura-backend-plus:latest
+    image: asoltys/hasura-backend-plus:latest
     depends_on:
       - 'minio'
     ports:
