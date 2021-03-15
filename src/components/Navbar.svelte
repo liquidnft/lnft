@@ -37,7 +37,7 @@
   <div>
     <a href="/">
       <img
-        src="/logo-default.png"
+        src="/logo-default.svg"
         alt="logo"
         class="w-36 lg:w-48" /></a>
   </div>

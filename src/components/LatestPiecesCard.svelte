@@ -20,6 +20,7 @@
   .thumb :global(video, img, .cover){
     width: 100%;
     height: 100%;
+    object-fit: cover !important;
   }
 
 

@@ -20,6 +20,7 @@
   .thumb :global(video, .cover){
     width: 100%;
     height: 100%;
+    object-fit: cover !important;
   }
 
   @media only screen and (max-width: 1024px) {
