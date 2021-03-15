@@ -21,9 +21,7 @@
 
   let showInvoice = false;
   let toggle = () => {
-    console.log("booger");
     showInvoice = !showInvoice;
-    console.log(showInvoice);
   };
 
   $: updateAddress(address);
