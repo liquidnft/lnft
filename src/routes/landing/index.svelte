@@ -27,7 +27,7 @@
         .splice(0, 3))
   );
 
-  let featuredArtworkId = "40585b78-ec02-401f-8ef3-1474d2aaf783";
+  let featuredArtworkId = "shadow-self-7897c";
   let recent = [];
   let latest = [];
   subscription(operationStore(getTransactions), (a, b) => {
