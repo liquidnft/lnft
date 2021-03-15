@@ -414,7 +414,7 @@ export const executeSwap = async (artwork) => {
   return p;
 };
 
-export const createIssuance = async (artwork, domain, tx) => {
+export const createIssuance = async ({ filename: hash, title: name, ticker }, domain, tx) => {
   let out = singlesig();
 
   let p = new Psbt()
@@ -455,21 +455,11 @@ export const createIssuance = async (artwork, domain, tx) => {
     }
   } else await fund(p, out, btc, get(fee));
 
-  let ticker = (artwork.title.split(" ").length > 2
-    ? artwork.title
-        .split(" ")
-        .map((w) => w[0])
-        .join("")
-    : artwork.title
-  )
-    .substr(0, 4)
-    .toUpperCase();
-
   let contract = {
     entity: { domain },
     issuer_pubkey: keypair().pubkey.toString("hex"),
-    name: artwork.title,
-    hash: artwork.filename,
+    name,
+    hash,
     precision: 0,
     ticker,
     version: 0,

@@ -101,16 +101,6 @@
     let contract;
     let domain = `${$user.username}.${window.location.hostname}`;
 
-    artwork.ticker = (artwork.title.split(" ").length > 2
-      ? artwork.title
-          .split(" ")
-          .map((w) => w[0])
-          .join("")
-      : artwork.title
-    )
-      .substr(0, 3)
-      .toUpperCase();
-
     let error, success;
 
     for (let i = 0; i < 5; i++) {
@@ -143,6 +133,7 @@
 
   let tries;
 
+  const alphanumeric = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let submit = async (e) => {
     e.preventDefault();
 
@@ -156,11 +147,24 @@
       artwork.filetype = type;
 
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
-        let contract = await issue(ticker);
+        artwork.ticker = (artwork.title.split(" ").length > 2
+          ? artwork.title
+              .split(" ")
+              .map((w) => w[0])
+              .join("")
+          : artwork.title
+        )
+          .substr(0, 3)
+          .toUpperCase();
+
+        if ($edition > 1) artwork.ticker += alphanumeric[$edition];
+
+        let contract = await issue();
         tries = 0;
         artwork.id = v4();
         artwork.edition = $edition;
         artwork.slug = kebab(artwork.title || "untitled");
+
         if ($edition > 1) artwork.slug += "-" + $edition;
         artwork.slug += "-" + artwork.id.substr(0, 5);
 
@@ -179,8 +183,6 @@
             type: "creation",
             hash,
             contract,
-            instagram,
-            ticker,
             asset: artwork.asset,
             amount: 1,
             psbt: $psbt.toBase64(),

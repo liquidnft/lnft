@@ -23,6 +23,9 @@ const fields = `
   max_extensions
   royalty
   slug
+  is_physical
+  instagram
+  ticker
   views
   owner {
     username

@@ -263,11 +263,20 @@
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || 'Untitled'}
         </h1>
-        <div class="mt-4 mb-6">
-          Edition
-          {artwork.edition}
-          of
-          {artwork.editions}
+        <div class="flex mb-6">
+          <div class="my-auto">
+            Edition
+            {artwork.edition}
+            of
+            {artwork.editions}
+          </div>
+          {#if artwork.is_physical}
+            <div
+              class="flex ml-auto py-1 px-4 bg-gray-100 rounded rounded-full my-auto">
+              <div class="my-auto"><i class="far fa-image mr-1" /></div>
+              <div class="my-auto mb-1"><span class="text-sm">Physical artwork</span></div>
+            </div>
+          {/if}
         </div>
         <div class="mobileImage">
           <span on:click={() => (showPopup = !showPopup)}>
@@ -387,19 +396,20 @@
             <Card {artwork} columns={1} showDetails={false} />
           </span>
         </div>
-        <div class="flex pt-2 w-full">
+        <div class="flex pt-4 w-full">
+          <div class="ml-auto" />
           {#if artwork.instagram}
-          <div class="ml-auto mr-8">
-            <a
-              class="secondary-color"
-              href={artwork.instagram}
-              target="_blank">
-              <span class="uppercase mr-1">Like it</span>
-            </a>
-            <span class="fab fa-instagram" />
-          </div>
+            <div class="mr-8">
+              <a
+                class="secondary-color"
+                href={artwork.instagram}
+                target="_blank">
+                <span class="uppercase mr-1">Like it</span>
+              </a>
+              <span class="fab fa-instagram" />
+            </div>
           {/if}
-          <div class="mr-8 ml-auto">
+          <div class="mr-8">
             <a
               class="secondary-color"
               href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}"
