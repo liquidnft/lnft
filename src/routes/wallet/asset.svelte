@@ -13,6 +13,10 @@
 </script>
 
 <style>
+  .bg-btc { background: #3f6777; } 
+  .outer-btc { background: #30bfad; } 
+  .border-btc { border-color: #30bfad; } 
+
   .dark-red {
     background: #2b0208;
   }

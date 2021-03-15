@@ -21,9 +21,7 @@
   let loading = true;
   if (!$asset) $asset = btc;
   let name = (a) => {
-    let artwork = artworks.find((aw) => aw.a === a);
-    if (artwork) return artwork.title;
-    return tickers[a] ? tickers[a].name : a.substr(0, 12);
+    return tickers[a] ? tickers[a].name : assetLabel(a)
   };
 
   let ticker = (a) => {
@@ -61,10 +59,12 @@
 
 <style>
   .dark-red { background: #2b0208; } 
-  .dark-yellow { background: #31240c; } 
   .dark-green { background: #082527; }
   .dark-gray { background: #31373e; }
   .border-blue { border-color: #6ed8e0; }
+
+  .bg-btc { background: #3e6d79; } 
+  .border-btc { border-color: #30bfad; } 
 
   .active {
     @apply border-t-2 border-b-2 border-r-2 text-white;
@@ -88,7 +88,7 @@
     <div class="bg-black mb-2 pt-1 rounded-lg">
       <div
         class={`border-l-8 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5 ${border($asset)} ${bg($asset)}`}>
-        {assetLabel($asset)}
+        {name($asset)}
       </div>
 
       <div class="m-6">

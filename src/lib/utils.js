@@ -25,7 +25,14 @@ usd = "8026fa969633b7b6f504f99dde71335d633b43d18314c501055fcd88b9fcb8de";
 
 const fade = (n, o) => svelteFade(n, { ...o, duration: 50 });
 
-const publicPages = ['/login', '/register', '/forgot-password', '/terms-and-conditions', '/privacy-policy', '/activate'];
+const publicPages = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/terms-and-conditions",
+  "/privacy-policy",
+  "/activate",
+];
 
 const addressUser = (a) =>
   get(addresses) &&
@@ -62,7 +69,7 @@ const artworkId = (asset) => {
 
 const tickers = {
   [btc]: {
-    name: "Liquid Bitcoin",
+    name: "Liquid BTC",
     ticker: "L-BTC",
     precision: 8,
     decimals: 8,
@@ -201,8 +208,7 @@ function format(n, p, d) {
     }
     let r = x.toString().split(".")[1];
     if (r && r.length < 2 && d === 2) return x.toFixed(2);
-    if (r > p && x.toFixed)
-      return parseFloat(x.toFixed(p)).toString();
+    if (r > p && x.toFixed) return parseFloat(x.toFixed(p)).toString();
     return x;
   }
 }
