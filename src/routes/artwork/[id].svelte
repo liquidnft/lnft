@@ -9,7 +9,6 @@
   import {
     getArtwork,
     getArtworksByArtist,
-    destroyArtwork,
   } from "$queries/artworks";
   import {
     createTransaction,
@@ -27,7 +26,7 @@
   } from "$lib/wallet";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { api } from "$lib/api";
-  import Head from "$components/Head"
+  import Head from "$components/Head";
 
   export let id;
 
@@ -165,16 +164,6 @@
     loading = false;
   };
 
-  let target;
-  let destroyArtwork$, destroy;
-  $: if (artwork) {
-    destroyArtwork$ = mutation(destroyArtwork(artwork));
-
-    destroy = async () => {
-      destroyArtwork$().then(() => goto("/market"));
-    };
-  }
-
   let showPopup = false;
 </script>
 
@@ -244,21 +233,20 @@
     max-height: 70vh;
   }
 
-  .social-share{
+  .social-share {
     display: flex;
     justify-content: center;
     padding: 20px;
   }
 
-  .social-share span{
+  .social-share span {
     margin-right: 5px;
     color: #3ba5ac;
   }
 
-  .social-share a{
+  .social-share a {
     margin-right: 35px;
   }
-
 
   @keyframes zoom {
     0% {
@@ -285,12 +273,10 @@
   }
 </style>
 
-
-
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork && !loading}
-  <Head {artwork}/>
-    <div class="flex justify-between flex-wrap" bind:this={target}>
+    <Head {artwork} />
+    <div class="flex justify-between flex-wrap">
       <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || 'Untitled'}
@@ -317,11 +303,11 @@
         <Sidebar bind:artwork />
 
         {#if $user && $user.id === artwork.owner_id}
-        <div class="w-full mb-2">
-          <a
-            href={`/artwork/${id}/auction`}
-            class="block text-center text-sm secondary-btn w-full">List</a>
-        </div>
+          <div class="w-full mb-2">
+            <a
+              href={`/artwork/${id}/auction`}
+              class="block text-center text-sm secondary-btn w-full">List</a>
+          </div>
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
             <button on:click={buyNow} class="secondary-btn">Buy now</button>
@@ -349,14 +335,6 @@
           {:else}
             <button on:click={startBidding} class="secondary-btn">Make an offer</button>
           {/if}
-        {/if}
-        {#if $user && $user.is_admin}
-          <button
-            on:click={() => goto(`/artwork/${id}/edit`)}
-            class="secondary-btn">Edit</button>
-          <button
-            on:click={destroy}
-            class="dangerous secondary-btn">Destroy</button>
         {/if}
 
         <div class="flex justify-between">
@@ -428,32 +406,33 @@
           </span>
         </div>
         <div class="social-share">
-          <a href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}" 
+          <a
+            href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}"
             target="_blank">
             <span class="uppercase">Tweet it</span>
-            <span class="fab fa-twitter"></span>
+            <span class="fab fa-twitter" />
           </a>
-          <a href="/"><i class="far fa-heart"></i></a>
+          <a href="/"><i class="far fa-heart" /></a>
         </div>
-        <div class="w-full mt-28">
-          <h2 class="text-2xl font-bold primary-color py-10 px-0 md:px-5">
-            More by this artist
-          </h2>
-          <div class="w-full flex flex-wrap">
-            {#if others.length}
+        {#if others.length}
+          <div class="w-full mt-28">
+            <h2 class="text-2xl font-bold primary-color py-10 px-0 md:px-5">
+              More by this artist
+            </h2>
+            <div class="w-full flex flex-wrap">
               {#each others as artwork (artwork.id)}
                 <div class="w-full lg:w-full xl:w-1/2 px-0 md:px-5 mb-20">
                   <Card {artwork} />
                 </div>
               {/each}
               <div class="flex w-full">
-                <a class="primary-btn mx-auto mb-12" href={`/artist/${artwork.artist.username}`}>View gallery</a>
+                <a
+                  class="primary-btn mx-auto mb-12"
+                  href={`/artist/${artwork.artist.username}`}>View gallery</a>
               </div>
-            {:else}
-              <div class="mx-auto">No other artworks</div>
-            {/if}
+            </div>
           </div>
-        </div>
+        {/if}
       </div>
     </div>
   {:else}

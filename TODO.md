@@ -1,4 +1,7 @@
 top priorities
+show generated ticker, allow override
+check reserve price before recording bids
+wallet transactions should be links or be expandable to show detail
 in case of offer being double spent, go to next highest bidder
 transaction showing 2 units of artwork being received in auction setup tx
 release token back to owner if no bids
