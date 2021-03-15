@@ -100,7 +100,7 @@ export const login = (email, password) => {
       window.sessionStorage.setItem("token", t);
       pw.set(password);
       prompt.set(false);
-      justRegistered ? goto("/wallet/create") : goto("/market");
+      justRegistered ? goto("/wallet/create") : goto("/landing");
     })
     .catch(() => err("Login failed"));
 };

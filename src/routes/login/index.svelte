@@ -9,7 +9,7 @@
   import { login } from "$lib/auth";
 
   let username = "";
-  let password = "liquidart";
+  let password = "";
 
   let usernameInput;
   let pageChange = () => setTimeout(() => usernameInput.select(), 50);

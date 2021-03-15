@@ -98,7 +98,7 @@
 <Snack />
 
 {#if ready}
-  {#if !['/login', '/register'].includes($page.path)}
+  {#if !['/', '/login', '/register'].includes($page.path)}
   <Sidebar bind:open />
   <div class="{y > 300 ? 'sticky' : ''}" in:fade>
     <Navbar bind:sidebar={open} />
@@ -114,7 +114,7 @@
     </div>
   </main>
 
-  {#if !['/login', '/register'].includes($page.path)}
+  {#if !['/', '/login', '/register'].includes($page.path)}
   <Footer />
 {/if}
 {/if}

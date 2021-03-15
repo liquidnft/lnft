@@ -4,9 +4,9 @@
   import { register } from "$lib/auth";
   import ProgressLinear from "$components/ProgressLinear";
 
-  let username = "asoltys";
-  let password = "liquidart";
-  let email = "asoltys@gmail.com";
+  let username = "";
+  let password = "";
+  let email = "";
   let registered;
 
   let ref;
