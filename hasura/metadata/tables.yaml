@@ -214,6 +214,8 @@
       - filename
       - filetype
       - id
+      - instagram
+      - is_physical
       - list_price
       - list_price_tx
       - max_extensions
@@ -242,6 +244,7 @@
       - filename
       - filetype
       - id
+      - instagram
       - list_price
       - list_price_tx
       - max_extensions
@@ -275,6 +278,8 @@
       - filename
       - filetype
       - id
+      - instagram
+      - is_physical
       - list_price
       - list_price_tx
       - max_extensions
@@ -306,6 +311,8 @@
       - editions
       - extension_interval
       - id
+      - instagram
+      - is_physical
       - list_price
       - list_price_tx
       - max_extensions

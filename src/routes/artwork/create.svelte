@@ -97,9 +97,20 @@
   const createArtwork = mutation(create);
 
   let hash, tx;
-  const issue = async () => {
+  const issue = async (ticker) => {
     let contract;
     let domain = `${$user.username}.${window.location.hostname}`;
+
+    artwork.ticker = (artwork.title.split(" ").length > 2
+      ? artwork.title
+          .split(" ")
+          .map((w) => w[0])
+          .join("")
+      : artwork.title
+    )
+      .substr(0, 3)
+      .toUpperCase();
+
     let error, success;
 
     for (let i = 0; i < 5; i++) {
@@ -122,7 +133,9 @@
     }
 
     tx = success.extractTransaction();
-    artwork.asset = parseAsset(tx.outs.find((o) => parseAsset(o.asset) !== btc).asset);
+    artwork.asset = parseAsset(
+      tx.outs.find((o) => parseAsset(o.asset) !== btc).asset
+    );
     hash = tx.getId();
 
     return JSON.stringify(contract);
@@ -143,13 +156,13 @@
       artwork.filetype = type;
 
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
-        let contract = await issue();
+        let contract = await issue(ticker);
         tries = 0;
         artwork.id = v4();
         artwork.edition = $edition;
         artwork.slug = kebab(artwork.title || "untitled");
         if ($edition > 1) artwork.slug += "-" + $edition;
-        artwork.slug += "-" + artwork.id.substr(0, 5)
+        artwork.slug += "-" + artwork.id.substr(0, 5);
 
         let tags = artwork.tags.map(({ tag }) => ({
           tag,
@@ -166,6 +179,8 @@
             type: "creation",
             hash,
             contract,
+            instagram,
+            ticker,
             asset: artwork.asset,
             amount: 1,
             psbt: $psbt.toBase64(),
@@ -177,7 +192,6 @@
       $prompt = undefined;
       goto(`/${artwork.slug}`);
     } catch (e) {
-      console.log(e);
       err(e);
       loading = false;
     }

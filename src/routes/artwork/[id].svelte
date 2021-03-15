@@ -6,10 +6,7 @@
   import { tick } from "svelte";
   import { prompt, password, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
-  import {
-    getArtwork,
-    getArtworksByArtist,
-  } from "$queries/artworks";
+  import { getArtwork, getArtworksByArtist } from "$queries/artworks";
   import {
     createTransaction,
     getArtworkTransactions,
@@ -233,21 +230,6 @@
     max-height: 70vh;
   }
 
-  .social-share {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .social-share span {
-    margin-right: 5px;
-    color: #3ba5ac;
-  }
-
-  .social-share a {
-    margin-right: 35px;
-  }
-
   @keyframes zoom {
     0% {
       transform: scale(0.6);
@@ -405,14 +387,28 @@
             <Card {artwork} columns={1} showDetails={false} />
           </span>
         </div>
-        <div class="social-share">
-          <a
-            href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}"
-            target="_blank">
-            <span class="uppercase">Tweet it</span>
+        <div class="flex pt-2 w-full">
+          {#if artwork.instagram}
+          <div class="ml-auto mr-8">
+            <a
+              class="secondary-color"
+              href={artwork.instagram}
+              target="_blank">
+              <span class="uppercase mr-1">Like it</span>
+            </a>
+            <span class="fab fa-instagram" />
+          </div>
+          {/if}
+          <div class="mr-8 ml-auto">
+            <a
+              class="secondary-color"
+              href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}"
+              target="_blank">
+              <span class="uppercase mr-1">Tweet it</span>
+            </a>
             <span class="fab fa-twitter" />
-          </a>
-          <a href="/"><i class="far fa-heart" /></a>
+          </div>
+          <div><a href="/"><i class="far fa-heart" /></a></div>
         </div>
         {#if others.length}
           <div class="w-full mt-28">

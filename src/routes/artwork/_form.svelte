@@ -29,40 +29,94 @@
 </script>
 
 <style>
-  input, select, textarea{ 
+  .tooltip {
+    cursor: pointer;
+  }
+  .tooltip .tooltip-text {
+    visibility: hidden;
+    padding: 15px;
+    position: absolute;
+    z-index: 100;
+    width: 300px;
+    font-style: normal;
+  }
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+  }
+  input[type="checkbox"]:checked {
+    appearance: none;
+    border: 5px solid #fff;
+    outline: 2px solid #6ed8e0;
+    background-color: #6ed8e0;
+    padding: 2px;
+    border-radius: 0;
+  }
+
+  input,
+  select,
+  textarea {
     @apply rounded-lg;
   }
 
-  label{
+  label {
     @apply mb-4;
   }
 
-  div{
+  div {
     margin-bottom: 30px;
   }
-
 </style>
 
 <form class="flex flex-col w-full mb-6 mt-20" on:submit autocomplete="off">
   <div class="flex flex-col mb-4">
     <input
-      class="border-0 border-b-2 rounded-none"
+      class="border-0 border-b-2"
+      style="border-radius: 0 !important"
       placeholder="What's your artwork title?"
       bind:value={artwork.title}
       bind:this={input} />
   </div>
-  <div class="flex flex-col mb-4">
-    <label>Description</label>
-    <textarea placeholder="How would you describe it?" bind:value={artwork.description} />
+  <div class="toggle">
+    <label class="inline-flex items-center">
+      <input
+        class="form-checkbox h-6 w-6"
+        type="checkbox"
+        bind:checked={artwork.is_physical} />
+      <span class="ml-3">This is a physical artwork</span>
+    </label>
   </div>
   {#if !artwork.id}
     <div class="flex flex-col mb-4">
       <label>Number of editions</label>
-      <input placeholder="Editions" bind:value={artwork.editions} />
+      <input
+        placeholder="Editions"
+        bind:value={artwork.editions}
+        class="w-1/2" />
     </div>
   {/if}
   <div class="flex flex-col mb-4">
-    <label>Tags <span class="text-gray-400">(e.g. Abstract, monochromatic, etc)</span></label>
+    <label>Description</label>
+    <textarea
+      placeholder="How would you describe it?"
+      bind:value={artwork.description} />
+  </div>
+  <div class="flex flex-col mb-4">
+    <label>Ticker
+      <span class="tooltip">
+        <i class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
+        <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">The ticker
+          symbol should be 3 or 4 alphanumeric characters and will be used to
+          register the token in Blockstream's Liquid Asset Registry.
+          <br /><br />
+          The ticker will appear as a unit symbol associated with the token in
+          some Liquid wallets.</span>
+      </span>
+    </label>
+    <input class="w-1/2" bind:value={artwork.ticker} />
+  </div>
+  <div class="flex flex-col mb-4">
+    <label>Tags
+      <span class="text-gray-400">(e.g. Abstract, monochromatic, etc)</span></label>
     <Select
       {items}
       isMulti={true}
@@ -71,9 +125,11 @@
       {selectedValue}
       isCreatable={true} />
   </div>
+  <div class="flex flex-col mb-4">
+    <label>Instagram post</label>
+    <input bind:value={artwork.instagram} placeholder="Want to share a link?" />
+  </div>
   <div class="flex">
-    <button
-      type="submit"
-      class="primary-btn">Submit</button>
+    <button type="submit" class="primary-btn">Submit</button>
   </div>
 </form>

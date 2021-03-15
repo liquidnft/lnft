@@ -118,7 +118,7 @@ const goto = (path) => {
 const explorer =
   import.meta && import.meta.env && import.meta.env !== "production"
     ? import.meta.env.SNOWPACK_PUBLIC_EXPLORER
-    : "https://explorer.coinos.io";
+    : "https://blockstream.info/liquid";
 
 const copy = (v) => {
   let textArea = document.createElement("textarea");
