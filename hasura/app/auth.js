@@ -69,9 +69,7 @@ app.post("/register", async (req, res) => {
     }
 
     response = await wretch()
-      .url(
-        `https://unavatar.now.sh/${email}?fallback=${faces[rand(0, 300)]}`
-      )
+      .url(`https://unavatar.now.sh/${email}?fallback=${faces[rand(0, 300)]}`)
       .get()
       .res();
 
@@ -133,4 +131,10 @@ app.post("/approve", auth, async (req, res) => {
     priority: 10,
     proxied: true,
   });
+});
+
+app.get("/activate", async (req, res) => {
+  const { ticket } = req.query;
+  console.log("ticket", ticket);
+  res.send(await hbp.url("/auth/activate").query({ ticket }).get().res());
 });

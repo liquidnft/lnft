@@ -20,7 +20,7 @@ export const requireLogin = async (page) => {
     try {
       await refreshToken();
       await tick();
-    } catch(e) {}
+    } catch (e) {}
   }
 
   $token = get(token);
@@ -75,23 +75,15 @@ export const register = async (email, username, password) => {
   if (!validateEmail(email)) throw new Error("Invalid email");
   if (password.length < 8) throw new Error("Password must be 8 characters");
 
-  try {
-    await api
-      .url("/register")
-      .post({
-        email,
-        password,
-        username,
-        ...createWallet(generateMnemonic(), password),
-      })
-      .badRequest(err)
-      .res();
-
-    justRegistered = true;
-    login(email, password);
-  } catch (e) {
-    err(e);
-  }
+  return api
+    .url("/register")
+    .post({
+      email,
+      password,
+      username,
+      ...createWallet(generateMnemonic(), password),
+    })
+    .res();
 };
 
 export const login = (email, password) => {
@@ -111,4 +103,9 @@ export const login = (email, password) => {
       justRegistered ? goto("/wallet/create") : goto("/market");
     })
     .catch(() => err("Login failed"));
+};
+
+export const activate = (ticket) => {
+  console.log(ticket);
+  return api.url("/activate").query({ ticket }).get().res();
 };

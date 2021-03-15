@@ -4,9 +4,10 @@
   import { register } from "$lib/auth";
   import ProgressLinear from "$components/ProgressLinear";
 
-  let username = "";
-  let password = "";
-  let email = "";
+  let username = "asoltys";
+  let password = "liquidart";
+  let email = "asoltys@gmail.com";
+  let registered;
 
   let ref;
   let pageChange = () => setTimeout(() => ref && ref.select(), 50);
@@ -18,9 +19,10 @@
 
     try {
       await register(email, username, password);
-    } catch(e) {
+      registered = true;
+    } catch (e) {
       err(e);
-    } 
+    }
 
     loading = false;
   };
@@ -72,37 +74,49 @@
     {#if loading}
       <ProgressLinear />
     {:else}
-      <h2 class="mb-8">Sign up</h2>
 
-      <div class="flex flex-col mb-4">
-        <label
-          class="mb-2 font-medium text-gray-600"
-          for="first_name">Email</label>
-        <input placeholder="Email" bind:value={email} bind:this={ref} />
-      </div>
-      <div class="flex flex-col mb-4">
-        <label
-          class="mb-2 font-medium text-gray-600"
-          for="first_name">Username</label>
-        <input placeholder="Username" bind:value={username} />
-      </div>
-      <div class="flex flex-col mb-4">
-        <label
-          class="mb-2 font-medium text-gray-600"
-          for="last_name">Password</label>
-        <input
-          placeholder="At least 8 characters."
-          type="password"
-          bind:value={password} />
-      </div>
-      <span class="block w-full">By signing up, you agree to the
-        <a href="/terms-and-conditions" class="text-midblue">Terms and
-          Conditions</a>
-        and
-        <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
-      <div class="flex my-5 justify-end">
-        <button class="primary-btn w-1/2" type="submit">Register</button>
-      </div>
+      {#if registered}
+        <h2 class="mb-8">Registered!</h2>
+        <p>
+          Thanks for registering. Please check your email for an activation
+          link.
+        </p>
+
+        <p class="mt-4">
+          <a href="/login" class="secondary-color">Continue to sign in page</a>
+        </p>
+      {:else}
+        <h2 class="mb-8">Sign up</h2>
+        <div class="flex flex-col mb-4">
+          <label
+            class="mb-2 font-medium text-gray-600"
+            for="first_name">Email</label>
+          <input placeholder="Email" bind:value={email} bind:this={ref} />
+        </div>
+        <div class="flex flex-col mb-4">
+          <label
+            class="mb-2 font-medium text-gray-600"
+            for="first_name">Username</label>
+          <input placeholder="Username" bind:value={username} />
+        </div>
+        <div class="flex flex-col mb-4">
+          <label
+            class="mb-2 font-medium text-gray-600"
+            for="last_name">Password</label>
+          <input
+            placeholder="At least 8 characters."
+            type="password"
+            bind:value={password} />
+        </div>
+        <span class="block w-full">By signing up, you agree to the
+          <a href="/terms-and-conditions" class="text-midblue">Terms and
+            Conditions</a>
+          and
+          <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
+        <div class="flex my-5 justify-end">
+          <button class="primary-btn w-1/2" type="submit">Register</button>
+        </div>
+      {/if}
     {/if}
   </form>
 </div>

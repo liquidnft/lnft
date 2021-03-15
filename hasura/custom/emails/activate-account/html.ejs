@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+      }
+
+      button {
+        border-radius: 30px;
+        padding: 0.8rem 1.5rem !important;
+        color: #444444;
+        font-weight: bold;
+        background: rgb(143,238,245);
+        background: linear-gradient(90deg, rgba(143,238,245,1) 0%, rgba(127,228,235,1) 50%, rgba(110,216,224,1) 100%);
+        border: 0px solid white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p>Hello,</p>
+    <p>Please confirm your email address by clicking the button below:</p>
+    <a href="<%= url %>/activate?ticket=<%= ticket %>">
+      <button>Confirm email address</button></a
+    >
+
+    <p>
+    Or visit <a href="<%= url %>/activate?ticket=<%= ticket %>"><%= url %>/activate?ticket=<%= ticket %></a>
+    </p>
+
+    <p>Thanks, and welcome to Raretoshi!</p>
+  </body>
+</html>
