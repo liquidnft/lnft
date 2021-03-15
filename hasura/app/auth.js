@@ -45,6 +45,8 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+const whitelist = ["asoltys@gmail.com"];
 app.post("/register", async (req, res) => {
   let {
     address,
@@ -55,6 +57,8 @@ app.post("/register", async (req, res) => {
     password,
     username,
   } = req.body;
+
+  if (!email.includes("blockstream.com") && !whitelist.includes(email)) throw new Error("Registration is invite-only at this time");
 
   try {
     let response = await hbp
@@ -135,6 +139,5 @@ app.post("/approve", auth, async (req, res) => {
 
 app.get("/activate", async (req, res) => {
   const { ticket } = req.query;
-  console.log("ticket", ticket);
   res.send(await hbp.url("/auth/activate").query({ ticket }).get().res());
 });
