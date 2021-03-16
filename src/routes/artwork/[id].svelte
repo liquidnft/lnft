@@ -190,10 +190,10 @@
 
   .popup {
     position: fixed;
-    z-index: 100;
+    z-index: 900;
     width: 100%;
     height: 100vh;
-    padding: 20%;
+    padding: 5px;
     text-align: center;
     top: 0;
     left: 0;
@@ -230,10 +230,19 @@
   .popup :global(video) {
     width: 50%;
     margin: 0 auto;
+  } 
+
+  .popup :global(div){
+    width: 100%;
+    height: auto;
   }
 
-  .desktopImage :global(img, video) {
-    max-height: 70vh;
+  .popup :global(img){
+    height: 95vh;
+  }
+
+  .desktopImage span:nth-child(1) :global(img, video) {
+    max-height: 50vh;
   }
 
   @keyframes zoom {
@@ -257,6 +266,10 @@
     .closeButton {
       top: 20px;
       right: 20px;
+    }
+
+    .popup :global(img){
+      height: auto;
     }
   }
 </style>
@@ -286,13 +299,6 @@
         </div>
         <div class="mobileImage">
           <span on:click={() => (showPopup = !showPopup)}>
-            <Card {artwork} columns={1} showDetails={false} />
-          </span>
-          <span
-            on:click={() => (showPopup = !showPopup)}
-            class:showPopup
-            class="popup">
-            <div class="closeButton"><i class="fas fa-times" /></div>
             <Card {artwork} columns={1} showDetails={false} />
           </span>
         </div>
@@ -394,13 +400,13 @@
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} />
           </span>
-          <span
-            on:click={() => (showPopup = !showPopup)}
-            class:showPopup
-            class="popup">
-            <div class="closeButton"><i class="fas fa-times" /></div>
-            <Card {artwork} columns={1} showDetails={false} />
-          </span>
+        </div>
+        <div
+          on:click={() => (showPopup = !showPopup)}
+          class:showPopup
+          class="popup">
+          <span class="closeButton"><i class="fas fa-times" /></span>
+          <Card {artwork} columns={1} showDetails={false} />
         </div>
         <div class="flex pt-4 w-full">
           <div class="ml-auto" />
