@@ -10,8 +10,8 @@
   subscription(getArtworksByTag$, (a, b) => (artworks = b.artworks));
 </script>
 
-<div class="container mx-auto px-8">
-  <h1 class="title">#{tag}</h1>
+<div class="container mx-auto mt-10 md:mt-20">
+  <h3 class="mb-10">#{tag}</h3>
 
   <div class="flex flex-wrap">
     {#each artworks as artwork (artwork.id)}

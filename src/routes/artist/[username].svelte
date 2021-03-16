@@ -12,7 +12,7 @@
   );
 </script>
 
-<div class="container mx-auto flex flex-wrap sm:justify-between mt-10 md:mt-20">
+<div class="container mx-auto mt-10 md:mt-20">
   <h2 class="mb-10">{username}</h2>
   <Gallery {artworks} />
 </div>
