@@ -245,6 +245,7 @@
       - filetype
       - id
       - instagram
+      - is_physical
       - list_price
       - list_price_tx
       - max_extensions

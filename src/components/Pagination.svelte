@@ -20,7 +20,7 @@
     <div class="mx-auto">
       {#each new Array(Math.ceil(artworks.length / offset)) as _, i}
         <button
-          class="rounded-full bg-red w-12 h-12"
+          class="rounded-full w-12 h-12"
           on:click={() => jump(i)}>{i + 1}</button>
       {/each}
     </div>

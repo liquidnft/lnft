@@ -1,7 +1,7 @@
 <script>
-  export let user;
-  export let src;
-  export let overlay;
+  export let user = undefined;
+  export let src = undefined;;
+  export let overlay = undefined;
   export let size = "small";
 </script>
 
