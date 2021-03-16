@@ -18,7 +18,7 @@
     display: none;
   }
 
-  @media only screen and (max-width: 640px) {
+  @media only screen and (max-width: 1023px) {
     .hambuger {
       display: block;
     }
@@ -47,7 +47,7 @@
   </div>
   <a class="mobileSearch" href="/market"><i
       class="fas fa-search text-2xl" /></a>
-  <nav class="hidden text-bold sm:block">
+  <nav class="hidden text-bold lg:block">
     <Menu />
   </nav>
 </header>

@@ -48,7 +48,7 @@
     }
   }
 
-  @media only screen and (max-width: 640px) {
+  @media only screen and (max-width: 1023px) {
     .menu {
       flex-direction: column;
       align-items: flex-start;

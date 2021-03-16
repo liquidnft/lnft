@@ -26,6 +26,7 @@
     .hide{display: none;}
     .showFeed {display: none;}
     .showRank {display: block;}
+    button{font-weight: bold;}
     button:focus{border-bottom: 2px solid #6ED8E0;}
   }
 </style>
