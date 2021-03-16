@@ -267,7 +267,9 @@
       top: 20px;
       right: 20px;
     }
+  }
 
+  @media only screen and (max-width: 500px) {
     .popup :global(img){
       height: auto;
     }
