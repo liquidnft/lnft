@@ -4,6 +4,7 @@ services:
     container_name: app
     build:
       context: ./app
+    restart: on-failure
     environment:
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       CLOUDFLARE_TOKEN: '${CLOUDFLARE_TOKEN}'

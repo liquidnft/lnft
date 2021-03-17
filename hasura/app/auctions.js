@@ -39,6 +39,7 @@ setInterval(async () => {
   try {
     const query = `query {
     artworks(where: { auction_end: { _lte: "${formatISO(new Date())}"}}) {
+
       id
       title
       filename

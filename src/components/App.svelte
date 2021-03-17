@@ -9,6 +9,7 @@
     prompt,
     results,
     role,
+    snack,
     token,
     user,
   } from "$lib/store";
@@ -36,6 +37,8 @@
     if (lastPage === "/market") $results = [];
     $poll.map((p) => clearInterval(p.interval));
     lastPage = p.path;
+    $error = null;
+    $snack = null;
   };
 
   $: pageChange($page);
