@@ -1,4 +1,7 @@
 top priorities
+limit recent activity and latest pieces to 1 edition
+show asset id on wallet page somewhere
+link to tx viewer from wallet tx history
 show generated ticker, allow override
 check reserve price before recording bids
 wallet transactions should be links or be expandable to show detail
