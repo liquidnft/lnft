@@ -41,7 +41,7 @@
     <div class="p-4">
       <div class="flex justify-between mb-4">
         <h3 class="text-xl break-all font-bold">{artwork.title}</h3>
-        <p class="text-right pl-5">4 BTC</p>
+        <p class="text-right pl-5"></p>
       </div>
       <div class="flex">
         <div
