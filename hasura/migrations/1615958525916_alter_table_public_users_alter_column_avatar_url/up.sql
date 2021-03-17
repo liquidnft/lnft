@@ -1,0 +1,1 @@
+ALTER TABLE ONLY "public"."users" ALTER COLUMN "avatar_url" SET DEFAULT 'QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z';

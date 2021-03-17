@@ -66,19 +66,6 @@ app.post("/register", async (req, res) => {
       .post({ email, password })
       .res();
 
-    function rand(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    response = await wretch()
-      .url(`https://unavatar.now.sh/${email}?fallback=${faces[rand(0, 300)]}`)
-      .get()
-      .res();
-
-    const ipfs = ipfsClient(process.env.IPFS_URL);
-    let { cid } = await ipfs.add(response.body);
 
     let query = `mutation ($user: users_set_input!, $email: String!) {
       update_users(where: {display_name: {_eq: $email}}, _set: $user) {
@@ -98,7 +85,6 @@ app.post("/register", async (req, res) => {
             pubkey,
             mnemonic,
             multisig,
-            avatar_url: cid.toString(),
           },
         },
       })
