@@ -46,7 +46,7 @@ app.post("/login", async (req, res) => {
 });
 
 
-const whitelist = ["asoltys@gmail.com", "adam@coinos.io"];
+const whitelist = ["asoltys@gmail.com", "adam@coinos.io", "bob@coinos,io", "charlie@coinos.io"];
 app.post("/register", async (req, res) => {
   let {
     address,

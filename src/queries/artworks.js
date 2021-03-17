@@ -28,12 +28,14 @@ const fields = `
   ticker
   views
   owner {
+    id
     username
     avatar_url
     address
     pubkey
   },
   artist {
+    id
     address
     username
     avatar_url

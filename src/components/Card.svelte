@@ -80,7 +80,7 @@
             <div class="flex">
               <Avatar user={artwork.artist} />
               <div class="ml-2">
-                <div>@{artwork.artist.username}</div>
+                <div class="break-all">@{artwork.artist.username}</div>
                 <div class="text-xs text-gray-600">Artist</div>
               </div>
             </div>
@@ -88,12 +88,12 @@
         </div>
 
         {#if artwork.owner.id !== artwork.artist.id}
-          <div>
+          <div class="ml-auto">
             <a href={`/${artwork.artist.username}`}>
               <div class="flex">
                 <Avatar user={artwork.owner} />
                 <div class="ml-2">
-                  <div>@{artwork.owner.username}</div>
+                  <div class="break-all">@{artwork.owner.username}</div>
                   <div class="text-xs text-gray-600">Owner</div>
                 </div>
               </div>
