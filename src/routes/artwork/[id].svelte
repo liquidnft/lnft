@@ -27,6 +27,8 @@
 
   export let id;
 
+  $: disabled = !transactions || transactions.some(t => !t.confirmed)
+
   $: pageChange($page);
   const pageChange = ({ params }) => {
     if (params.id) ({ id } = params);
@@ -165,6 +167,10 @@
 </script>
 
 <style>
+  a.disabled {
+    @apply text-gray-400 border-gray-400;
+  }
+
   button {
     @apply mb-2 w-full text-sm;
     &:hover {
@@ -296,8 +302,8 @@
         {#if $user && $user.id === artwork.owner_id}
           <div class="w-full mb-2">
             <a
-              href={`/artwork/${id}/auction`}
-              class="block text-center text-sm secondary-btn w-full">List</a>
+              href={disabled ? '' : `/artwork/${id}/auction`}
+              class="block text-center text-sm secondary-btn w-full" class:disabled>List</a>
           </div>
         {:else if artwork.asking_asset}
           {#if artwork.list_price}

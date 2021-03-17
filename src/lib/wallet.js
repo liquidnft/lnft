@@ -480,9 +480,21 @@ export const createIssuance = async ({ filename: hash, title: name, ticker }, do
   return contract;
 };
 
-export const signOver = async ({ asset }) => {
+export const signOver = async ({ asset }, tx) => {
   let p = new Psbt();
-  await fund(p, multisig(), asset, 1, noneAnyoneCanPay, true);
+
+  let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
+
+  p.addInput({
+    index,
+    hash: tx.getId(),
+    nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+    redeemScript: multisig().redeem.output,
+    witnessScript: multisig().redeem.redeem.output,
+    sighashType: noneAnyoneCanPay,
+  });
+
+
   psbt.set(p);
   return sign(noneAnyoneCanPay);
 };

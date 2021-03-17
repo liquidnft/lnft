@@ -207,7 +207,7 @@
         },
       });
 
-      artwork.list_price_tx = (await signOver(artwork)).toBase64();
+      artwork.list_price_tx = (await signOver(artwork, tx)).toBase64();
       artwork.auction_release_tx = (await createRelease(artwork, tx)).toBase64();
     }
 
@@ -379,8 +379,10 @@
 
 <div class="container mx-auto md:p-20">
   <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
-    <a class="block mb-6 text-midblue" href="/"><i
+    {#if artwork}
+    <a class="block mb-6 text-midblue" href={`/artwork/${artwork.id}`}><i
         class="fas fa-chevron-left mr-3" />Back</a>
+  {/if}
     <h2>List artwork</h2>
 
     {#if loading}

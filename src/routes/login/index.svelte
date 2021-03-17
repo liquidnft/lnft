@@ -12,7 +12,7 @@
   let password = "";
 
   let usernameInput;
-  let pageChange = () => setTimeout(() => usernameInput.select(), 50);
+  let pageChange = () => setTimeout(() => usernameInput && usernameInput.select(), 50);
   $: if (usernameInput) pageChange($page);
 </script>
 
