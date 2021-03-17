@@ -4,7 +4,7 @@
   import { api } from "$lib/api";
   import { err } from "$lib/utils";
 
-  let attempt = "liquidart";
+  let attempt = "";
   let input;
 
   let focus = (p) => p && tick().then(() => input.select());

@@ -303,14 +303,14 @@
   let enableAuction = () => {
     if (!start_date) {
       start_date = format(new Date(), "yyyy-MM-dd");
-      //      start_time = format(addMinutes(new Date(), 15), "HH:mm");
-      start_time = format(addMinutes(new Date(), 1), "HH:mm");
+      start_time = format(addMinutes(new Date(), 15), "HH:mm");
+      //start_time = format(addMinutes(new Date(), 1), "HH:mm");
     }
     if (!end_date) {
-      end_date = format(new Date(), "yyyy-MM-dd");
-      //end_date = format(addDays(new Date(), 3), "yyyy-MM-dd");
-      //end_time = format(addMinutes(addDays(new Date(), 3), 15), "HH:mm");
-      end_time = format(addSeconds(new Date(), 90), "HH:mm");
+      end_date = format(addDays(new Date(), 3), "yyyy-MM-dd");
+      end_time = format(addMinutes(addDays(new Date(), 3), 15), "HH:mm");
+      //end_date = format(new Date(), "yyyy-MM-dd");
+      //end_time = format(addSeconds(new Date(), 90), "HH:mm");
     }
   };
 </script>
