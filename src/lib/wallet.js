@@ -414,7 +414,11 @@ export const executeSwap = async (artwork) => {
   return p;
 };
 
-export const createIssuance = async ({ filename: hash, title: name, ticker }, domain, tx) => {
+export const createIssuance = async (
+  { filename: hash, title: name, ticker },
+  domain,
+  tx
+) => {
   let out = singlesig();
 
   let p = new Psbt()
@@ -494,7 +498,6 @@ export const signOver = async ({ asset }, tx) => {
     sighashType: noneAnyoneCanPay,
   });
 
-
   psbt.set(p);
   return sign(noneAnyoneCanPay);
 };
@@ -553,7 +556,8 @@ export const createRelease = async ({ asset, owner }, tx) => {
 
 export const createSwap = async (
   { asset, asking_asset, auction_end, royalty },
-  amount
+  amount,
+  tx
 ) => {
   if (asking_asset === btc && amount < DUST)
     throw new Error(`Minimum BTC asking price is ${DUST} sats`);
@@ -567,14 +571,27 @@ export const createSwap = async (
 
   let ms = !!(royalty || auction_end);
 
-  await fund(
-    p,
-    ms ? multisig() : singlesig(),
-    asset,
-    1,
-    singleAnyoneCanPay,
-    ms
-  );
+  if (tx) {
+    let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
+
+    p.addInput({
+      index,
+      hash: tx.getId(),
+      nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+      redeemScript: multisig().redeem.output,
+      witnessScript: multisig().redeem.redeem.output,
+      sighashType: singleAnyoneCanPay,
+    });
+  } else {
+    await fund(
+      p,
+      ms ? multisig() : singlesig(),
+      asset,
+      1,
+      singleAnyoneCanPay,
+      ms
+    );
+  }
 
   return p;
 };

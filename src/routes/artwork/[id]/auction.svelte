@@ -148,9 +148,11 @@
     )
       return true;
 
+    let tx;
+    if (stale) tx = $psbt.extractTransaction();
     await requirePassword();
 
-    $psbt = await createSwap(artwork, sats(artwork.asking_asset, list_price));
+    $psbt = await createSwap(artwork, sats(artwork.asking_asset, list_price), tx);
 
     await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
