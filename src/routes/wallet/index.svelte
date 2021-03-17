@@ -69,6 +69,10 @@
   .active {
     @apply border-t-2 border-b-2 border-r-2 text-white;
   } 
+
+  button:disabled {
+    @apply text-gray-400 border-gray-400;
+  } 
 </style>
 
 {#if loading}
@@ -111,7 +115,7 @@
           class="button-trans-gray w-full mr-2">Fund</button>
         <button
           on:click={toggleWithdrawing}
-          class="button-trans-gray w-full ml-2">Withdraw</button>
+          class="button-trans-gray w-full ml-2" disabled={!$balances[$asset]}>Withdraw</button>
       </div>
     </div>
     <div>
