@@ -478,6 +478,9 @@
           _eq: X-Hasura-User-Id
 - table:
     schema: public
+    name: invitees
+- table:
+    schema: public
     name: offers
   object_relationships:
   - name: artwork

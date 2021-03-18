@@ -45,8 +45,12 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
-const whitelist = ["asoltys@gmail.com", "adam@coinos.io", "bob@coinos,io", "charlie@coinos.io"];
+const whitelist = [
+  "asoltys@gmail.com",
+  "adam@coinos.io",
+  "bob@coinos,io",
+  "charlie@coinos.io",
+];
 app.post("/register", async (req, res) => {
   let {
     address,
@@ -58,14 +62,22 @@ app.post("/register", async (req, res) => {
     username,
   } = req.body;
 
-  if (!email.includes("blockstream.com") && !whitelist.includes(email)) throw new Error("Registration is invite-only at this time");
+  let { data } = await hasura
+    .post({ query: `query { invitees { email }}` })
+    .json();
+
+  console.log(data.invitees);
+  if (
+    !email.includes("blockstream.com") &&
+    !data.invitees.map((i) => i.email).includes(email)
+  )
+    throw new Error("Registration is invite-only at this time");
 
   try {
     let response = await hbp
       .url("/auth/register")
       .post({ email, password })
       .res();
-
 
     let query = `mutation ($user: users_set_input!, $email: String!) {
       update_users(where: {display_name: {_eq: $email}}, _set: $user) {
