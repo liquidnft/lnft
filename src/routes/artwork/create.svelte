@@ -302,7 +302,7 @@
           </div>
         </div>
       {:else}
-        <Dropzone on:file={uploadFile} />
+        <Dropzone on:file={uploadFile} style="box" />
       {/if}
     </div>
   </div>
