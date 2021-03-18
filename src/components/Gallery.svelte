@@ -7,6 +7,8 @@
   export let artworks;
   export let offset;
 
+  let loaded = {};
+
   let w;
   let hidden;
   let maxPages = 7;
@@ -14,7 +16,9 @@
 
   $: offset =
     artworks &&
-    artworks.length / maxPages - ((artworks.length / maxPages) % columns) + columns;
+    artworks.length / maxPages -
+      ((artworks.length / maxPages) % columns) +
+      columns;
 
   $: artworks &&
     tick().then(() => {
@@ -44,9 +48,12 @@
     {/if}
     <div class="w-full md:w-1/2 md:p-5 lg:w-1/3 xl:w-1/4 lg:px-5 xl:px-8 mb-20">
       {#if artwork}
-        <Card {artwork} />
-      {:else}
-        <LoadingPlaceholder />
+        {#if !loaded[artwork.id]}
+          <LoadingPlaceholder />
+        {/if}
+        <div class:invisible={!loaded[artwork.id]}>
+          <Card {artwork} bind:loaded={loaded[artwork.id]} />
+        </div>
       {/if}
     </div>
   {/each}

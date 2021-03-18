@@ -2,9 +2,20 @@
   import { onMount } from "svelte";
   export let artwork;
   export let showDetails;
+  export let loaded = false;
+  let media;
 
   $: cover = !showDetails;
   $: contain = showDetails;
+  $: setLoaded(media);
+  let setLoaded = (media) => {
+    console.log("ohh");
+    media &&
+      (media.onload = () => {
+        console.log("oh");
+        loaded = true;
+      });
+  };
 
   onMount(() => {
     var lazyVideos = [].slice.call(document.querySelectorAll("video.lazy"));
@@ -57,13 +68,7 @@
 
 <div class:cover class:contain>
   {#if artwork.filetype && artwork.filetype.includes('video')}
-    <video
-      class="lazy"
-      controls
-      autoplay
-      muted
-      playsinline
-      loop>
+    <video class="lazy" controls autoplay muted playsinline loop>
       <source data-src={`/api/ipfs/${artwork.filename}`} />
       Your browser does not support HTML5 video.
     </video>
@@ -71,6 +76,7 @@
     <img
       src={`/api/ipfs/${artwork.filename}`}
       alt={artwork.title}
-      loading="lazy" />
+      loading="lazy"
+      bind:this={media} />
   {/if}
 </div>

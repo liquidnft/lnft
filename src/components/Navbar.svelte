@@ -6,7 +6,7 @@
 </script>
 
 <style>
-  header{
+  header {
     padding-top: 20px;
   }
 
@@ -39,11 +39,8 @@
     <Hamburger bind:open={sidebar} />
   </nav>
   <div>
-    <a href="/">
-      <img
-        src="/logo-default.svg"
-        alt="logo"
-        class="w-36 lg:w-48" /></a>
+    <a href="/landing">
+      <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-48" /></a>
   </div>
   <a class="mobileSearch" href="/market"><i
       class="fas fa-search text-2xl" /></a>

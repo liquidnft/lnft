@@ -4,6 +4,7 @@
   import Heart from "$components/Heart";
   import countdown from "$lib/countdown";
   import { fade, goto, units } from "$lib/utils";
+  import { onMount } from "svelte";
 
   export let artwork;
   export let columns = 3;
@@ -11,6 +12,7 @@
   export let showDetails = true;
   export let shadow = !showDetails;
   export let activityPage = false;
+  export let loaded = false;
 
   $: [sats, val, ticker] = units(artwork.asking_asset);
 
@@ -46,7 +48,7 @@
   in:fade>
   <a href={`/${artwork.slug}`}>
     <div class="flex justify-center">
-      <ArtworkMedia {artwork} {showDetails} />
+      <ArtworkMedia {artwork} {showDetails} bind:loaded />
     </div>
   </a>
   {#if showDetails}

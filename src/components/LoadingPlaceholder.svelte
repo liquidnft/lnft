@@ -1,5 +1,5 @@
 <style>
-.card {
+  .card {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     overflow: hidden;
@@ -35,14 +35,11 @@
       background-position: -150% 0;
     }
   }
-
 </style>
 
-<div class="card"> 
-    <div class="card-header animated-bg" id="header">&nbsp;</div>
-    <div class="card-content">
-       <h3 class="card-title animated-bg animated-bg-text" id="title">
-            &nbsp;
-        </h3>
-    </div>
+<div class="card">
+  <div class="card-header animated-bg" id="header">&nbsp;</div>
+  <div class="card-content">
+    <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
+  </div>
 </div>
