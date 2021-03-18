@@ -244,6 +244,9 @@
 
   .desktopImage span:nth-child(1) :global(img, video) {
     max-height: 50vh;
+  }
+
+  .desktopImage :global(img){
     object-fit: contain !important;
   }
 

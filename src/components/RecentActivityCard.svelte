@@ -5,6 +5,7 @@
   import Card from "$components/Card";
   import TransactionText from "$components/TransactionText";
   import TransactionTime from "$components/TransactionTime";
+  import LoadingPlaceholder from "$components/LoadingPlaceholder";
   export let transaction;
 
   let { artwork } = transaction;
@@ -29,7 +30,7 @@
     }
   }
 </style>
-
+{#if artwork}
 <div class="flex flex-col px-4 mb-10 lg:w-1/3">
   <div class="recentCard flex-grow flex mb-10">
     <div class="mt-2 mr-4">
@@ -44,10 +45,15 @@
       </p>
     </div>
   </div>
-      <a href={`/${artwork.slug}`}>
-  <div
-    class="mb-5 w-full flex rounded-lg box-shadow thumb">
-    <ArtworkMedia {artwork} showDetails={false} />
-  </div>
-</a>
+  <a href={`/${artwork.slug}`}>
+    <div
+      class="mb-5 w-full flex rounded-lg box-shadow thumb">
+      <ArtworkMedia {artwork} showDetails={false} />
+    </div>
+  </a>
 </div>
+{:else}
+<div class="flex flex-col px-4 mb-20 lg:w-1/3">
+  <LoadingPlaceholder />
+</div>
+{/if}

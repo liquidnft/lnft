@@ -2,6 +2,7 @@
   import Card from "$components/Card";
   import { tick } from "svelte";
   import Pagination from "$components/Pagination";
+  import LoadingPlaceholder from "$components/LoadingPlaceholder";
 
   export let artworks;
   export let offset;
@@ -42,7 +43,11 @@
       </div>
     {/if}
     <div class="w-full md:w-1/2 md:p-5 lg:w-1/3 xl:w-1/4 lg:px-5 xl:px-8 mb-20">
-      <Card {artwork} />
+      {#if artwork}
+        <Card {artwork} />
+      {:else}
+        <LoadingPlaceholder />
+      {/if}
     </div>
   {/each}
 </div>
