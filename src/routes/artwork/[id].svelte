@@ -239,11 +239,14 @@
 
   .popup :global(img){
     height: 95vh;
+    object-fit: contain !important;
   }
 
   .desktopImage span:nth-child(1) :global(img, video) {
     max-height: 50vh;
+    object-fit: contain !important;
   }
+
 
   @keyframes zoom {
     0% {
