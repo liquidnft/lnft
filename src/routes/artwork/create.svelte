@@ -1,7 +1,7 @@
 <script>
   import { page } from "$app/stores";
   import { v4 } from "uuid";
-  import { electrs } from "$lib/api";
+  import { hasura } from "$lib/api";
   import { tick, onMount } from "svelte";
   import {
     edition,
@@ -38,6 +38,7 @@
   let hidden;
   let loading;
   let focus;
+  let title;
 
   $: hidden = type && !type.includes("video");
 
@@ -132,6 +133,50 @@
   };
 
   let tries;
+  let l;
+
+  $: generateTicker(title);
+  let generateTicker = (t) => {
+    if (!t) return;
+    artwork.ticker = (t.split(" ").length > 2
+      ? t
+          .split(" ")
+          .map((w) => w[0])
+          .join("")
+      : t
+    )
+      .substr(0, 3)
+      .toUpperCase();
+
+    l = artwork.ticker.length;
+    checks = 0;
+    checkTicker();
+  };
+
+  let checks;
+  let checkTicker = async () => {
+    let { data } = await hasura
+      .auth(`Bearer ${$token}`)
+      .post({
+        query: `query { artworks(where: { ticker: { _like: "${artwork.ticker}%" }}) { ticker }}`,
+      })
+      .json();
+
+    if (!data.errors && data.artworks.length) {
+      let { ticker } = data.artworks
+        .sort(({ ticker: a }, { ticker: b }) =>
+          b.length < a.length
+            ? 1
+            : a.charCodeAt(a.length - 1) - b.charCodeAt(b.length - 1)
+        )
+        .pop();
+
+      artwork.ticker = ticker.replace(
+        /.$/,
+        String.fromCharCode(ticker.charCodeAt(ticker.length - 1) + 1)
+      );
+    }
+  };
 
   const alphanumeric = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let submit = async (e) => {
@@ -147,16 +192,6 @@
       artwork.filetype = type;
 
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
-        artwork.ticker = (artwork.title.split(" ").length > 2
-          ? artwork.title
-              .split(" ")
-              .map((w) => w[0])
-              .join("")
-          : artwork.title
-        )
-          .substr(0, 3)
-          .toUpperCase();
-
         if ($edition > 1) artwork.ticker += alphanumeric[$edition];
 
         let contract = await issue();
@@ -176,7 +211,7 @@
         let artworkSansTags = { ...artwork };
         delete artworkSansTags.tags;
 
-        await createArtwork({
+        let result = await createArtwork({
           artwork: artworkSansTags,
           transaction: {
             artwork_id: artwork.id,
@@ -189,6 +224,8 @@
           },
           tags,
         });
+
+        if (result.error) throw new Error(result.error.message);
       }
 
       $prompt = undefined;
@@ -236,7 +273,7 @@
         {#if loading}
           <ProgressLinear />
         {:else}
-          <Form bind:artwork bind:focus on:submit={submit} />
+          <Form bind:artwork bind:focus on:submit={submit} bind:title />
         {/if}
       </div>
       {#if percent}

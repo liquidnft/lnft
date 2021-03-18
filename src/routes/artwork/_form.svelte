@@ -4,6 +4,20 @@
   import Select from "svelte-select";
   import { mutation, subscription, operationStore } from "@urql/svelte";
 
+  export let title;
+  let loading;
+  let timer;
+  const debounce = (v) => {
+    loading = true;
+    artwork.title = v;
+    artwork.ticker = '';
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      title = v;
+      loading = false;
+    }, 550);
+  };
+
   export let artwork;
   let input;
   let items;
@@ -73,7 +87,7 @@
       class="border-0 border-b-2"
       style="border-radius: 0 !important"
       placeholder="What's your artwork title?"
-      bind:value={artwork.title}
+      on:input={({ target: { value } }) => debounce(value)}
       bind:this={input} />
   </div>
   <div class="toggle">
@@ -104,15 +118,12 @@
     <label>Ticker
       <span class="tooltip">
         <i class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
-        <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">The ticker
-          symbol should be 3 or 4 alphanumeric characters and will be used to
-          register the token in Blockstream's Liquid Asset Registry.
-          <br /><br />
-          The ticker will appear as a unit symbol associated with the token in
-          some Liquid wallets.</span>
+        <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">The ticker is
+          a short 3-5 character identifier for your asset that you'll see in
+          other wallets and explorers.</span>
       </span>
     </label>
-    <input class="w-1/2" bind:value={artwork.ticker} />
+    <input class="w-1/2" bind:value={artwork.ticker} maxlength="5" />
   </div>
   <div class="flex flex-col mb-4">
     <label>Tags

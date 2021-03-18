@@ -24,7 +24,7 @@
 </div>
 
 <div class="menu uppercase">
-  {#if !user.is_artist}
+  {#if !$user.is_artist}
     <a href="/become-artist">
       <i class="far fa-user-circle"></i>
       <span>Become an Artist</span>
