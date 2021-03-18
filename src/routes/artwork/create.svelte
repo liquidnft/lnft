@@ -100,7 +100,7 @@
   let hash, tx;
   const issue = async (ticker) => {
     let contract;
-    let domain = `${$user.username}.${window.location.hostname}`;
+    let domain = `${$user.username}.raretoshi.com`;
 
     let error, success;
 
@@ -148,51 +148,87 @@
       .substr(0, 3)
       .toUpperCase();
 
-    l = artwork.ticker.length;
-    checks = 0;
     checkTicker();
   };
 
-  let checks;
   let checkTicker = async () => {
     let { data } = await hasura
       .auth(`Bearer ${$token}`)
       .post({
-        query: `query { artworks(where: { ticker: { _like: "${artwork.ticker}%" }}) { ticker }}`,
+        query: `query { artworks(where: { ticker: { _like: "${artwork.ticker.toUpperCase()}%" }}) { ticker }}`,
       })
       .json();
 
     if (!data.errors && data.artworks.length) {
-      let { ticker } = data.artworks
-        .sort(({ ticker: a }, { ticker: b }) =>
-          b.length < a.length
-            ? 1
-            : a.charCodeAt(a.length - 1) - b.charCodeAt(b.length - 1)
-        )
-        .pop();
-
-      artwork.ticker = ticker.replace(
-        /.$/,
-        String.fromCharCode(ticker.charCodeAt(ticker.length - 1) + 1)
+      let tickers = data.artworks.sort(({ ticker: a }, { ticker: b }) =>
+        b.length < a.length
+          ? 1
+          : a.charCodeAt(a.length - 1) - b.charCodeAt(b.length - 1)
       );
+
+      if (tickers.map((a) => a.ticker).includes(artwork.ticker)) {
+        let { ticker } = tickers.pop();
+        artwork.ticker =
+          ticker.substr(0, 3) + c[c.indexOf(ticker.substr(3)) + 1];
+      }
     }
   };
 
-  const alphanumeric = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let checkTickers = async (tickers) => {
+    let { data } = await hasura
+      .auth(`Bearer ${$token}`)
+      .post({
+        query: `query { artworks(where: { ticker: { _in: ${JSON.stringify(
+          tickers
+        )} }}) { ticker }}`,
+      })
+      .json();
+
+    if (data.artworks && data.artworks.length)
+      throw new Error(
+        `Ticker(s) not available: ${data.artworks
+          .map((a) => a.ticker)
+          .join(", ")}`
+      );
+  };
+
+  let a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  let b = [];
+  for (let i = 0; i < a.length; i++) {
+    for (let j = 0; j < a.length; j++) {
+      b.push(a[i] + a[j]);
+    }
+  }
+  let c = [...a, ...b];
+
   let submit = async (e) => {
     e.preventDefault();
 
     if (!type) return err("Unrecognized file type");
 
     loading = true;
-    if (artwork.editions > 1) $prompt = Issuing;
 
     try {
       await requireLogin();
       artwork.filetype = type;
 
+      let { ticker } = artwork;
+      let tickers = [];
+
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
-        if ($edition > 1) artwork.ticker += alphanumeric[$edition];
+        if ($edition > 1)
+          ticker =
+            artwork.ticker.substr(0, 3) + c[c.indexOf(ticker.substr(3)) + 1];
+        tickers.push(ticker.toUpperCase());
+      }
+
+      await checkTickers(tickers);
+
+      if (artwork.editions > 1) $prompt = Issuing;
+
+      for ($edition = 1; $edition <= artwork.editions; $edition++) {
+        if ($edition > 1) artwork.ticker = tickers[$edition - 1];
+        artwork.ticker = artwork.ticker.toUpperCase();
 
         let contract = await issue();
         tries = 0;

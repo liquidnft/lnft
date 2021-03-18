@@ -463,7 +463,7 @@ export const createIssuance = async (
     entity: { domain },
     issuer_pubkey: keypair().pubkey.toString("hex"),
     name,
-    hash,
+//    hash,
     precision: 0,
     ticker,
     version: 0,
