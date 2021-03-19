@@ -1,3 +1,4 @@
+import bs58 from "bs58";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { api, electrs } from "$lib/api";
@@ -426,7 +427,7 @@ export const createIssuance = async (
     .addOutput({
       asset: btc,
       nonce: Buffer.alloc(1),
-      script: payments.embed({ data: [Buffer.alloc(1)] }).output,
+      script: payments.embed({ data: [bs58.decode(hash)] }).output,
       value: 0,
     });
 
