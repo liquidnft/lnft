@@ -4,25 +4,13 @@
   import { mutation } from "@urql/svelte";
   import { requireLogin } from "$lib/auth";
 
+  import Fa from "svelte-fa";
+  import { faHeart } from "@fortawesome/free-regular-svg-icons";
+  import { faHeart as solidHeart } from "@fortawesome/free-solid-svg-icons";
+
   export let artwork;
 
-  let favorited;
-  $: artwork && ({favorited} = artwork);
-
-  let stroke = favorited ? "red" : "black";
-  let fill = favorited ? "red" : "none";
-
-  let enter = () => {
-    stroke = "red";
-    fill = "red";
-  };
-
-  let leave = () => {
-    if (!favorited) {
-      stroke = "black";
-      fill = "none";
-    }
-  };
+  let { favorited } = artwork;
 
   let createFavorite$ = mutation(createFavorite);
   let deleteFavorite$ = mutation(deleteFavorite);
@@ -31,6 +19,8 @@
     await requireLogin();
     let { id: artwork_id } = artwork;
     let { id: user_id } = $user;
+
+    console.log("updating", favorited);
 
     if (favorited) {
       deleteFavorite$({ artwork_id, user_id });
@@ -44,4 +34,16 @@
   };
 </script>
 
-<img src="/heart.png" class="w-8 h-8 cursor-pointer" alt={artwork.title} on:click={favorite} />
+<style>
+  div:hover,
+  .favorited {
+    @apply text-primary cursor-pointer;
+  }
+</style>
+
+<div
+  on:click={favorite}
+  class:favorited
+  >
+  <Fa icon={favorited ? solidHeart : faHeart} size="1.5x" />
+</div>

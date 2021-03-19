@@ -54,7 +54,12 @@
   {#if showDetails}
     <div class="p-4">
       <div class="flex flex-row justify-between mb-2">
-        <h1 class="text-xl">{artwork.title || 'Untitled'}</h1>
+        <div>
+          <h1 class="text-xl">{artwork.title || 'Untitled'}</h1>
+          {#if artwork.editions > 1}
+          <h2 class="text-sm text-gray-400 font-light">Edition {artwork.edition} of {artwork.editions}</h2>
+        {/if}
+        </div>
         <Heart {artwork} />
       </div>
       <div class="flex mb-4">

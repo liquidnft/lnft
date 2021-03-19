@@ -8,6 +8,8 @@
 		"start": "svelte-kit start --port 3010"
 	},
 	"devDependencies": {
+		"@fortawesome/free-regular-svg-icons": "^5.15.3",
+		"@fortawesome/free-solid-svg-icons": "^5.15.3",
 		"@snowpack/plugin-dotenv": "^2.0.5",
 		"@sveltejs/adapter-node": "next",
 		"@sveltejs/kit": "next",
@@ -29,6 +31,7 @@
 		"snowpack": "^3.0.11",
 		"subscriptions-transport-ws": "^0.9.18",
 		"svelte": "^3.29.0",
+		"svelte-fa": "^2.2.0",
 		"svelte-preprocess": "^4.6.1",
 		"svelte-select": "^3.17.0",
 		"tailwindcss": "^2.0.3",
