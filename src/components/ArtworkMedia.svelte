@@ -3,18 +3,20 @@
   export let artwork;
   export let showDetails;
   export let loaded = false;
-  let media;
+  let img, vid;
 
   $: cover = !showDetails;
   $: contain = showDetails;
-  $: setLoaded(media);
-  let setLoaded = (media) => {
-    console.log("ohh");
-    media &&
-      (media.onload = () => {
-        console.log("oh");
+  $: setLoaded(img, vid);
+  let setLoaded = (img, vid) => {
+    img &&
+      (img.onload = () => {
         loaded = true;
       });
+
+    vid && (vid.onloadeddata = () => {
+      loaded = true;
+    }); 
   };
 
   onMount(() => {
@@ -68,7 +70,7 @@
 
 <div class:cover class:contain>
   {#if artwork.filetype && artwork.filetype.includes('video')}
-    <video class="lazy" controls autoplay muted playsinline loop>
+    <video class="lazy" controls autoplay muted playsinline loop bind:this={vid}>
       <source data-src={`/api/ipfs/${artwork.filename}`} />
       Your browser does not support HTML5 video.
     </video>
@@ -77,6 +79,6 @@
       src={`/api/ipfs/${artwork.filename}`}
       alt={artwork.title}
       loading="lazy"
-      bind:this={media} />
+      bind:this={img} />
   {/if}
 </div>
