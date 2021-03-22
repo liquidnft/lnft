@@ -19,8 +19,8 @@ app.post("/upload", async function (req, res) {
   const { cid } = await ipfs.add(s1);
   const name = cid.toString();
 
-  const path = `/export/${name}`;
-  const ext = data.filename.split(".")[1];
+  const ext = data.mimetype.split("/")[1];
+  const path = `/export/${name}.${ext}`;
 
   try {
     if (ext === "gif") throw new Error("Can't process gifs");

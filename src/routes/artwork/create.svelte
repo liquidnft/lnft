@@ -164,7 +164,7 @@
       })
       .json();
 
-    if (!data.errors && data.artworks.length) {
+    if (!data.errors && data.artworks && data.artworks.length) {
       let tickers = data.artworks.sort(({ ticker: a }, { ticker: b }) =>
         b.length < a.length
         ? 1 : b.length > a.length ? -1 

@@ -7,7 +7,7 @@
   export let preview;
 
   let img, vid;
-  let prefix = thumb ? "/api/public" : "/api/ipfs";
+  $: path = artwork && (thumb ? `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}` : `/api/ipfs/${artwork.filename}`);
 
   $: cover = !showDetails;
   $: contain = showDetails;
@@ -77,13 +77,13 @@
 
 {#if artwork.filetype && artwork.filetype.includes('video')}
   <video class="lazy" autoplay muted playsinline loop bind:this={vid}>
-    <source data-src={preview || artwork.filename && `${prefix}/${artwork.filename}`} />
+    <source data-src={preview || path} />
     Your browser does not support HTML5 video.
   </video>
 {:else}
   <div class:cover class:contain>
     <img
-      src={preview || artwork.filename && `${prefix}/${artwork.filename}`}
+      src={preview || path}
       alt={artwork.title}
       loading="lazy"
       bind:this={img} />
