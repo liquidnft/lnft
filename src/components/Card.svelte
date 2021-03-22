@@ -13,6 +13,7 @@
   export let shadow = !showDetails;
   export let activityPage = false;
   export let loaded = false;
+  export let thumb = true;
 
   $: [sats, val, ticker] = units(artwork.asking_asset);
 
@@ -48,7 +49,7 @@
   in:fade>
   <a href={`/${artwork.slug}`}>
     <div class="flex justify-center">
-      <ArtworkMedia {artwork} {showDetails} bind:loaded />
+      <ArtworkMedia {artwork} {showDetails} bind:loaded bind:thumb />
     </div>
   </a>
   {#if showDetails}

@@ -307,7 +307,7 @@
         </div>
         <div class="mobileImage">
           <span on:click={() => (showPopup = !showPopup)}>
-            <Card {artwork} columns={1} showDetails={false} />
+            <Card {artwork} columns={1} showDetails={false} thumb={false} />
           </span>
         </div>
 
@@ -406,7 +406,7 @@
       <div class="w-full lg:w-2/3 lg:px-12">
         <div class="desktopImage">
           <span on:click={() => (showPopup = !showPopup)}>
-            <Card {artwork} columns={1} showDetails={false} />
+            <Card {artwork} columns={1} showDetails={false} thumb={false} />
           </span>
         </div>
         <div
@@ -414,7 +414,7 @@
           class:showPopup
           class="popup">
           <span class="closeButton"><i class="fas fa-times" /></span>
-          <Card {artwork} columns={1} showDetails={false} />
+          <Card {artwork} columns={1} showDetails={false} thumb={false} />
         </div>
         <div class="flex pt-4 w-full">
           <div class="ml-auto" />

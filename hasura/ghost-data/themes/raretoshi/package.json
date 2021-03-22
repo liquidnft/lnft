@@ -2,7 +2,7 @@
     "name": "raretoshi",
     "description": "Raretoshi ghost theme",
     "demo": "https://raretoshi.com",
-    "version": "3.1.2",
+    "version": "3.1.4",
     "engines": {
         "ghost": ">=3.0.0",
         "ghost-api": "v3"

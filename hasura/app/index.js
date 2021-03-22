@@ -1,11 +1,18 @@
 const toBuffer = require("blob-to-buffer");
 const { formatISO } = require("date-fns");
 const fs = require("fs");
+const path = require("path");
+
 require('make-promises-safe');
 
 app = require("fastify")({
   logger: true,
 });
+
+app.register(require('fastify-static'), {
+  root: path.join('/export'),
+  prefix: '/public/', // optional: default '/'
+})
 
 require("./auth");
 require("./artworks");

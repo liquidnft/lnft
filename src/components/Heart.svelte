@@ -20,8 +20,6 @@
     let { id: artwork_id } = artwork;
     let { id: user_id } = $user;
 
-    console.log("updating", favorited);
-
     if (favorited) {
       deleteFavorite$({ artwork_id, user_id });
       artwork.num_favorites--;

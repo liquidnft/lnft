@@ -32,7 +32,7 @@
 
 <div class="container mx-auto px-10 mt-16 max-w-4xl">
   <div class="mb-5">
-    <a on:click={() => window.history.back()} href="/" class="text-midblue"><i
+    <a on:click|preventDefault={() => window.history.back()} href="#" class="text-midblue"><i
         class="fas fa-chevron-left mr-2" />Back</a>
     <h3 class="py-4">Transaction details</h3>
   </div>

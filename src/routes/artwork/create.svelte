@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { v4 } from "uuid";
   import { hasura } from "$lib/api";
-  import { tick, onMount } from "svelte";
+  import { tick, onDestroy } from "svelte";
   import {
     edition,
     fee,
@@ -16,7 +16,7 @@
   import upload from "$lib/upload";
   import { create } from "$queries/artworks";
   import { mutation } from "@urql/svelte";
-  import { btc, kebab, goto, err } from "$lib/utils";
+  import { btc, fade, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
     createIssuance,
@@ -25,6 +25,7 @@
     keypair,
   } from "$lib/wallet";
   import reverse from "buffer-reverse";
+  import  ArtworkMedia  from "$components/ArtworkMedia";
 
   import Form from "./_form";
   import Issuing from "./_issuing";
@@ -35,20 +36,23 @@
   let filename;
   let type;
   let video;
-  let hidden;
+  let hidden = true;
   let loading;
   let focus;
   let title;
-
-  $: hidden = type && !type.includes("video");
 
   let previewFile = (file) => {
     var reader = new FileReader();
 
     reader.onload = async (e) => {
+      percent = 1;
       preview = e.target.result;
       await tick();
-      if (type.includes("video")) preview = URL.createObjectURL(file);
+      if (type.includes("video")) {
+        preview = URL.createObjectURL(file);
+      } else {
+        url = preview;
+      }
     };
 
     reader.readAsDataURL(file);
@@ -70,19 +74,20 @@
   const uploadFile = async ({ detail: file }) => {
     if (!file) return;
     ({ type } = file);
+    artwork.filetype = type;
 
     if (file.size < 100000000) previewFile(file);
 
-    artwork.filename = await upload(file, progress);
-    url = preview || `/api/ipfs/${artwork.filename}`;
-    await tick();
-    if (type.includes("video")) {
-      let source = document.createElement("source");
-      source.setAttribute("src", url);
-      video.appendChild(source);
-      video.load();
-      video.play();
+    try {
+      artwork.filename = await upload(file, progress);
+    } catch (e) {
+      err(e);
+      percent = 0;
+      return;
     }
+
+    url = `/api/ipfs/${artwork.filename}`;
+    await tick();
   };
 
   let artwork = {
@@ -162,7 +167,7 @@
     if (!data.errors && data.artworks.length) {
       let tickers = data.artworks.sort(({ ticker: a }, { ticker: b }) =>
         b.length < a.length
-          ? 1
+        ? 1 : b.length > a.length ? -1 
           : a.charCodeAt(a.length - 1) - b.charCodeAt(b.length - 1)
       );
 
@@ -204,13 +209,14 @@
   let submit = async (e) => {
     e.preventDefault();
 
+    if (!artwork.filename)
+      return err("File not uploaded or hasn't finished processing");
     if (!type) return err("Unrecognized file type");
 
     loading = true;
 
     try {
       await requireLogin();
-      artwork.filetype = type;
 
       let { ticker } = artwork;
       let tickers = [];
@@ -300,7 +306,10 @@
 <div class="container mx-auto py-20">
   <div
     class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow">
-    <a class="block mb-6 text-midblue" href="/">
+    <a
+      class="block mb-6 text-midblue"
+      href="#"
+      on:click|preventDefault={() => window.history.back()}>
       <i class="fas fa-chevron-left mr-3" />Back
     </a>
     <h2>Submit artwork</h2>
@@ -315,24 +324,16 @@
       {#if percent}
         <div class="ml-2 flex-1 flex">
           <div class="mx-auto">
-            {#if type.includes('image')}
-              <img alt="preview" src={url} class="w-full" />
-            {/if}
-            <video
-              controls
-              class:hidden
-              muted
-              autoplay
-              loop
-              class="w-full"
-              bind:this={video}>
-              Your browser does not support HTML5 video.
-            </video>
+            <ArtworkMedia {artwork} {preview} showDetails={false} thumb={false} />
             <div class="w-full bg-grey-light p-8">
               <div
-                class="bg-green-200 font-bold rounded-full p-4 mx-auto max-w-xs text-center"
+                class="font-light p-4 mx-auto max-w-xs text-center"
+                class:bg-primary={percent >= 100 && artwork.filename}
+                class:bg-yellow-200={percent < 100 || !artwork.filename}
                 style={width}>
-                {#if percent < 100}{percent}%{:else}Upload Complete!{/if}
+                {#if percent < 100}
+                  {percent}%
+                {:else if artwork.filename}Upload complete!{:else}Processing video...{/if}
               </div>
             </div>
           </div>

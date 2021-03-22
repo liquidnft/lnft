@@ -3,7 +3,11 @@
   export let artwork;
   export let showDetails;
   export let loaded = false;
+  export let thumb = true;
+  export let preview;
+
   let img, vid;
+  let prefix = thumb ? "/api/public" : "/api/ipfs";
 
   $: cover = !showDetails;
   $: contain = showDetails;
@@ -14,14 +18,14 @@
         loaded = true;
       });
 
-    vid && (vid.onloadeddata = () => {
-      loaded = true;
-    }); 
+    vid &&
+      (vid.onloadeddata = () => {
+        loaded = true;
+      });
   };
 
-  onMount(() => {
-    var lazyVideos = [].slice.call(document.querySelectorAll("video.lazy"));
-
+  let loadVideo = () => {
+    if (!vid) return;
     if ("IntersectionObserver" in window) {
       var lazyVideoObserver = new IntersectionObserver(function (
         entries,
@@ -46,11 +50,14 @@
         });
       });
 
-      lazyVideos.forEach(function (lazyVideo) {
-        lazyVideoObserver.observe(lazyVideo);
-      });
+      lazyVideoObserver.observe(vid);
     }
-  });
+  };
+
+  onMount(loadVideo);
+  $: loadVideo(preview);
+  $: reloadVideo(artwork);
+  let reloadVideo = () => !preview && loadVideo();
 </script>
 
 <style>
@@ -68,17 +75,17 @@
   }
 </style>
 
-<div class:cover class:contain>
-  {#if artwork.filetype && artwork.filetype.includes('video')}
-    <video class="lazy" controls autoplay muted playsinline loop bind:this={vid}>
-      <source data-src={`/api/ipfs/${artwork.filename}`} />
-      Your browser does not support HTML5 video.
-    </video>
-  {:else}
+{#if artwork.filetype && artwork.filetype.includes('video')}
+  <video class="lazy" autoplay muted playsinline loop bind:this={vid}>
+    <source data-src={preview || artwork.filename && `${prefix}/${artwork.filename}`} />
+    Your browser does not support HTML5 video.
+  </video>
+{:else}
+  <div class:cover class:contain>
     <img
-      src={`/api/ipfs/${artwork.filename}`}
+      src={preview || artwork.filename && `${prefix}/${artwork.filename}`}
       alt={artwork.title}
       loading="lazy"
       bind:this={img} />
-  {/if}
-</div>
+  </div>
+{/if}
