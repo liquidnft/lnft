@@ -11,15 +11,15 @@
 
   let comp;
 
-  const canAccept = ({ type, artwork, created_at }) => {
-    const isCurrent = ({ transferred_at: t }) =>
+  let canAccept = ({ type, artwork, created_at }, debug) => {
+    let isCurrent = ({ transferred_at: t }) =>
       type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)));
 
-    const isOwner = ({ owner }) => $user && $user.id === owner.id;
+    let isOwner = ({ owner }) => $user && $user.id === owner.id;
 
-    const underway = ({ auction_start: s, auction_end: e }) =>
-      !e ||
-      !isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
+    let underway = ({ auction_start: s, auction_end: e }) =>
+      e &&
+      isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
 
     return isCurrent(artwork) && isOwner(artwork) && !underway(artwork);
   };
@@ -54,7 +54,7 @@
       [accept]
     </a>
   {/if}
-  {#if ['creation', 'purchase', 'accept', 'royalty', 'auction', 'release'].includes(transaction.type) && !transaction.confirmed}
+  {#if ['creation', 'purchase', 'accept', 'royalty', 'auction', 'release', 'cancel'].includes(transaction.type) && !transaction.confirmed}
     <span class="pending">Pending</span>
   {/if}
 </div>

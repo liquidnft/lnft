@@ -1,4 +1,8 @@
 top priorities
+bids below high bid should not extend auction
+buy it now shoudl still work when auction underway
+null% royalty issue, check or of setupswap/setuproyalty
+accept link not appearing for bids anymore
 limit recent activity and latest pieces to 1 edition
 show asset id on wallet page somewhere
 link to tx viewer from wallet tx history

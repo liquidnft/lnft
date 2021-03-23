@@ -7,6 +7,8 @@
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
 
+      export let hide = true;
+
   let tab = "liquid";
 
   let loading;
@@ -41,8 +43,23 @@
     await tick();
   });
 
+  let confirming;
+  let confirmed;
+
   $: current = ($balances && $balances[$error.asset]) || 0;
   $: incoming = ($pending && $pending[$error.asset]) || 0;
+  $: incoming && (confirming = true);
+  $: newBalance(current);
+  let newBalance = () => {
+    if (confirming) {
+      confirmed = true;
+      confirming = false;
+    }
+
+    if (current >= $error.amount) {
+      $prompt = undefined;
+    }
+  };
 
   export let submit = (e) => {
     if (e) e.preventDefault();
@@ -121,79 +138,86 @@
       class="text-xl ml-auto font-thin w-10 h-10 bg-gray-100 rounded rounded-full"
       on:click={() => ($prompt = undefined)}><i class="fa fa-times" /></button>
   </div>
-  <div class="flex mt-4">
-    <div class="w-1/2">
-      <div class="text-xs mt-6">Current Balance</div>
-      <div class="text-xl">
-        {val($error.asset, parseInt(current))}
-        {#if incoming}
-          <span class="text-yellow-500 text-sm">
-            +{val($error.asset, parseInt(incoming))}
-          </span>
-        {/if}
-        {assetLabel($error.asset)}
-      </div>
-    </div>
-    <div class="w-1/2">
-      <div class="text-xs mt-6">Funds Required</div>
-      <div class="text-xl">{amount} {assetLabel($error.asset)}</div>
-    </div>
-  </div>
-
-  {#if $error.asset === btc}
-    <div class="flex justify-center text-center cursor-pointer tabs flex-wrap">
-      <div class:hover={tab === 'liquid'} on:click={liquid}>Liquid</div>
-      <div class:hover={tab === 'bitcoin'} on:click={bitcoin}>Bitcoin</div>
-      <div class:hover={tab === 'lightning'} on:click={lightning}>
-        Lightning
-      </div>
-    </div>
-  {/if}
-  {#if tab !== 'liquid'}
-    <p class="text-sm my-4">
-      We'll automatically convert up to 1 BTC to L-BTC so you can continue your
-      offer. This will incur an additional fee of
-      {fee}
-      sats.
-    </p>
-  {/if}
-  <div class="mb-2 flex justify-center flex-col">
-    <div class="flex mb-2 mx-auto w-4/5" class:invisible={loading}>
-      {@html img}
-    </div>
-    {#if loading}
-      <ProgressLinear />
-    {:else}
-      <div class="flex">
-        <div
-          class="break-all text-sm text-gray-500"
-          class:truncate={!showInvoice}
-          class:invisible={loading}
-          class:mx-auto={tab !== 'lightning'}>
-          {address}
+  {#if incoming}
+    <div class="text-xs mt-6">Unconfirmed Payment Detected</div>
+    <span class="text-yellow-500 text-sm">
+      +{val($error.asset, parseInt(incoming))}
+      {assetLabel($error.asset)}
+    </span>
+  {:else}
+    {#if confirmed}
+      <div class="text-xs mt-6">Payment Confirmed</div>
+    {/if}
+    <div class="flex mt-4">
+      <div class="w-1/2">
+        <div class="text-xs mt-6">Current Balance</div>
+        <div class="text-xl">
+          {val($error.asset, parseInt(current))}
+          {assetLabel($error.asset)}
         </div>
-        {#if tab === 'lightning' && !showInvoice}
+      </div>
+      <div class="w-1/2">
+        <div class="text-xs mt-6">Funds Required</div>
+        <div class="text-xl">{amount} {assetLabel($error.asset)}</div>
+      </div>
+    </div>
+
+    {#if $error.asset === btc}
+      <div
+        class="flex justify-center text-center cursor-pointer tabs flex-wrap">
+        <div class:hover={tab === 'liquid'} on:click={liquid}>Liquid</div>
+        <div class:hover={tab === 'bitcoin'} on:click={bitcoin}>Bitcoin</div>
+        <div class:hover={tab === 'lightning'} on:click={lightning}>
+          Lightning
+        </div>
+      </div>
+    {/if}
+    {#if tab !== 'liquid'}
+      <p class="text-sm my-4">
+        We'll automatically convert up to 1 BTC to L-BTC so you can continue
+        your offer. This will incur an additional fee of
+        {fee}
+        sats.
+      </p>
+    {/if}
+    <div class="mb-2 flex justify-center flex-col">
+      <div class="flex mb-2 mx-auto w-4/5" class:invisible={loading}>
+        {@html img}
+      </div>
+      {#if loading}
+        <ProgressLinear />
+      {:else}
+        <div class="flex">
+          <div
+            class="break-all text-sm text-gray-500"
+            class:truncate={!showInvoice}
+            class:invisible={loading}
+            class:mx-auto={tab !== 'lightning'}>
+            {address}
+          </div>
+          {#if tab === 'lightning' && !showInvoice}
+            <div
+              class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
+              on:click={toggle}>
+              Show invoice
+              <i class="fa fa-chevron-down" />
+            </div>
+          {/if}
+        </div>
+        {#if tab === 'lightning' && showInvoice}
           <div
             class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
             on:click={toggle}>
-            Show invoice
-            <i class="fa fa-chevron-down" />
+            Hide invoice
+            <i class="fa fa-chevron-up" />
           </div>
         {/if}
-      </div>
-      {#if tab === 'lightning' && showInvoice}
-        <div
-          class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
-          on:click={toggle}>
-          Hide invoice
-          <i class="fa fa-chevron-up" />
-        </div>
+        <button
+          on:click={() => copy(address)}
+          class="center font-medium secondary-color uppercase mt-4">Copy
+          {tab === 'lightning' ? 'invoice' : 'address'}
+          <i class="far fa-clone ml-2" /></button>
       {/if}
-      <button
-        on:click={() => copy(address)}
-        class="center font-medium secondary-color uppercase mt-4">Copy
-        {tab === 'lightning' ? 'invoice' : 'address'}
-        <i class="far fa-clone ml-2" /></button>
-    {/if}
-  </div>
+    </div>
+  {/if}
 </div>

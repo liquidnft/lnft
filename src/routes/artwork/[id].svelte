@@ -27,7 +27,7 @@
 
   export let id;
 
-  $: disabled = !transactions || transactions.some(t => ['purchase', 'creation'].includes(t.type) && !t.confirmed)
+  $: disabled = !transactions || transactions.some(t => ['purchase', 'creation', 'cancel'].includes(t.type) && !t.confirmed)
 
   $: pageChange($page);
   const pageChange = ({ params }) => {
