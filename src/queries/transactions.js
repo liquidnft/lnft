@@ -84,6 +84,18 @@ export const getTransactions = `subscription {
   }
 }`;
 
+export const getRecentActivity = `subscription {
+  transactions(distinct_on: [artwork_id], where: {artwork_id: {_is_null: false}, type: {_neq: "receipt"}}, order_by: [{artwork_id: desc}, {created_at: desc}], limit: 3) {
+    ${fields}
+  }
+}`;
+
+export const getLatestPieces = `subscription {
+  transactions(where: {artwork_id: {_is_null: false}, type: {_eq: "creation"}}, order_by: [{created_at: desc}], limit: 3) {
+    ${fields}
+  }
+}`;
+
 export const getOffers = `subscription {
   offers {
     transaction {

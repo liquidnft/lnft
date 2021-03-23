@@ -6,7 +6,7 @@
   import RecentActivityCard from "$components/RecentActivityCard";
   import LatestPiecesCard from "$components/LatestPiecesCard";
   import { goto } from "$lib/utils";
-  import { getTransactions } from "$queries/transactions";
+  import { getRecentActivity, getLatestPieces } from "$queries/transactions";
 
   let artists = [];
   let collectors = [];
@@ -30,16 +30,13 @@
   let featuredArtworkId = "shadow-self-7897c";
   let recent = [];
   let latest = [];
-  subscription(operationStore(getTransactions), (a, b) => {
-    recent = [];
 
-    let i = 0;
-    while (recent.length < 3 && i < b.transactions.length) {
-      let t = b.transactions[i];
-      recent.find((r) => r.artwork_id === t.artwork_id) || recent.push(t);
-      i++;
-    }
-    latest = b.transactions.filter((t) => t.type === "creation").slice(0, 3);
+  subscription(operationStore(getRecentActivity), (a, b) => {
+    recent = b.transactions;
+  });
+
+  subscription(operationStore(getLatestPieces), (a, b) => {
+    latest = b.transactions;
   });
 </script>
 
