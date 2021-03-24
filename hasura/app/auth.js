@@ -45,12 +45,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-const whitelist = [
-  "asoltys@gmail.com",
-  "adam@coinos.io",
-  "bob@coinos,io",
-  "charlie@coinos.io",
-];
 app.post("/register", async (req, res) => {
   let {
     address,
@@ -66,7 +60,6 @@ app.post("/register", async (req, res) => {
     .post({ query: `query { invitees { email }}` })
     .json();
 
-  console.log(data.invitees);
   if (
     !email.includes("blockstream.com") &&
     !data.invitees.map((i) => i.email).includes(email)
