@@ -67,6 +67,12 @@ export const getArtworks = `subscription {
   }
 }`;
 
+export const getArtworkByAsset = (asset) => `subscription {
+  artworks(where: {asset: {_eq: "${asset}"}}, limit: 1) {
+    ${fields}
+  }
+}`;
+
 export const getArtworkBySlug = (slug) => `subscription {
   artworks(where: {slug : {_eq: "${slug}"}}, limit: 1) {
     ${fields}

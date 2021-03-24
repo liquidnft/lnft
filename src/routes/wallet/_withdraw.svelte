@@ -1,18 +1,26 @@
 <script>
   import { tick } from "svelte";
-  import { asset, artworks, assets, balances, psbt, user } from "$lib/store";
+  import { asset, assets, balances, psbt, user } from "$lib/store";
   import { broadcast, pay, keypair, requestSignature } from "$lib/wallet";
   import { btc, err, info, sats, val, assetLabel } from "$lib/utils";
   import sign from "$lib/sign";
   import { ProgressLinear } from "$comp";
   import { requirePassword } from "$lib/auth";
+  import { getArtworkByAsset } from "$queries/artworks";
+  import { subscription, operationStore } from "@urql/svelte";
 
   export let withdrawing;
 
   let amount;
   let to;
   let loading;
+  let artwork;
 
+  $: updateAsset($asset);
+  let updateAsset = (a) =>
+    subscription(operationStore(getArtworkByAsset(a)), (a, b) => {
+      artwork = b.artworks[0];
+    });
 
   $: clearForm($asset);
   let clearForm = () => {
@@ -24,13 +32,13 @@
     await requirePassword();
     loading = true;
     try {
-      let artwork = $artworks.find(a => a.asset === $asset);
+      if ($asset !== btc && !artwork) artwork = { asset: $asset };
       $psbt = await pay(artwork, to, sats($asset, amount));
       await sign();
 
       if (artwork && (artwork.auction_end || artwork.royalty)) {
         $psbt = await requestSignature($psbt);
-      } 
+      }
 
       await broadcast();
 

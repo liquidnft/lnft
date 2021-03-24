@@ -3,11 +3,11 @@ import { get } from "svelte/store";
 import {
   assets,
   artworks,
-  addresses,
   error,
   full,
   prompt,
   snack,
+  users,
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
 import { tick } from "svelte";
@@ -35,18 +35,18 @@ const publicPages = [
 ];
 
 const addressUser = (a) =>
-  get(addresses) &&
-  get(addresses).find((u) => u.address === a || u.multisig === a);
+  get(users) &&
+  get(users).find((u) => u.address === a || u.multisig === a);
 
 const addressLabel = (address) => {
-  let $addresses = get(addresses);
+  let $users = get(users);
 
   let r;
 
-  if ($addresses) {
-    r = $addresses.find((u) => u.multisig === address);
+  if ($users) {
+    r = $users.find((u) => u.multisig === address);
     if (r) return r.username + " + us";
-    r = $addresses.find((u) => u.address === address);
+    r = $users.find((u) => u.address === address);
     if (r) return r.username;
   }
 
@@ -227,6 +227,18 @@ const kebab = (str) =>
     .map((x) => x.toLowerCase())
     .join("-");
 
+const etag = async (o) => {
+  let d = await crypto.subtle.digest(
+    "SHA-1",
+    new TextEncoder().encode(JSON.stringify(o))
+  );
+
+  return Array.from(new Uint8Array(d))
+    .map((a) => a.toString(16).padStart(2, "0"))
+    .join("")
+    .substring(0, 27);
+};
+
 export {
   addressLabel,
   addressUser,
@@ -235,6 +247,7 @@ export {
   btc,
   cad,
   copy,
+  etag,
   err,
   explorer,
   fade,

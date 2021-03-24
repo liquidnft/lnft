@@ -1,5 +1,5 @@
 <script>
-  import { addresses, show, user, results } from "$lib/store";
+  import { show, user, results } from "$lib/store";
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
   import { info, err, goto } from "$lib/utils";

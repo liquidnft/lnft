@@ -22,6 +22,7 @@
   onMount(async () => {
     ready = true;
     try {
+      console.log("getting user");
       $user = JSON.parse(window.sessionStorage.getItem("user"));
     } catch (e) {}
 

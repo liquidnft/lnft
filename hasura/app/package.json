@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@asoltys/liquidjs-lib": "^5.1.21",
+    "abstract-cache-redis": "^1.1.0",
     "bip32": "^2.0.6",
     "bip39": "^3.0.3",
     "blob-to-buffer": "^1.2.9",
@@ -13,8 +14,10 @@
     "crypto-js": "^4.0.0",
     "date-fns": "^2.17.0",
     "fastify": "^3.10.1",
+    "fastify-caching": "^6.1.0",
     "fastify-http-proxy": "^4.3.0",
     "fastify-multipart": "^4.0.0",
+    "fastify-redis": "^4.3.0",
     "fastify-static": "^4.0.1",
     "fluent-ffmpeg": "^2.1.2",
     "http-proxy": "^1.18.1",

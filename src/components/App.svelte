@@ -1,8 +1,8 @@
 <script>
+  import { api } from "$lib/api";
   import { onMount } from "svelte";
   import decode from "jwt-decode";
   import {
-    addresses,
     artworks,
     error,
     poll,
@@ -12,6 +12,7 @@
     snack,
     token,
     user,
+    users,
   } from "$lib/store";
   import { fade } from "svelte/transition";
   import { getUser, getAddresses, updateUser } from "$queries/users";
@@ -21,7 +22,7 @@
   import { page } from "$app/stores";
   import { requireLogin, refreshToken } from "$lib/auth";
   import InsufficientFunds from "$components/InsufficientFunds";
-  import { publicPages } from "$lib/utils";
+  import { etag, publicPages } from "$lib/utils";
 
   onMount(async () => {
     refreshToken();
@@ -33,7 +34,7 @@
 
   let lastPage;
   let pageChange = (p) => {
-    if (!publicPages.includes(p.path.replace(/\?.*/, ''))) requireLogin();
+    if (!publicPages.includes(p.path.replace(/\?.*/, ""))) requireLogin();
     if (lastPage === "/market") $results = [];
     $poll.map((p) => clearInterval(p.interval));
     lastPage = p.path;
@@ -59,13 +60,37 @@
         $user = data.currentuser[0];
       });
 
-      subscription(operationStore(getAddresses), (a, b) => {
-        $addresses = b.users;
-      });
+      let a = window.localStorage.getItem("artworks");
+      if (a !== 'undefined') a = JSON.parse(a);
 
-      subscription(operationStore(getArtworks), (a, b) => {
-        $artworks = b.artworks;
-      });
+      a = await api
+        .url("/artworks")
+        .headers({
+          "If-None-Match": await etag(a),
+        })
+        .get()
+        .error(304, () => {})
+        .json();
+
+      if (a) {
+        $artworks = a;
+        window.localStorage.setItem("artworks", JSON.stringify($artworks));
+      } 
+
+      a = window.localStorage.getItem("users");
+      if (a !== 'undefined') a = JSON.parse(a);
+
+      api
+        .url("/users")
+        .headers({
+          "If-None-Match": await etag(a),
+        })
+        .get()
+        .error(304, () => { a && ($users = a) })
+        .json((a) => { 
+          $users = a;
+          window.localStorage.setItem("users", JSON.stringify($users));
+        });
     }
   };
 </script>

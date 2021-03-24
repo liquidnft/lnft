@@ -7,7 +7,7 @@
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
 
-      export let hide = true;
+  export let hide = true;
 
   let tab = "liquid";
 

@@ -1,6 +1,6 @@
 <script>
   import Avatar from "$components/Avatar";
-  import { addresses, psbt, user } from "$lib/store";
+  import { psbt, user } from "$lib/store";
   import reverse from "buffer-reverse";
   import { electrs } from "$lib/api";
   import { getAddress, parseVal, parseAsset } from "$lib/wallet";
