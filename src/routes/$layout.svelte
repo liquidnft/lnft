@@ -38,7 +38,7 @@
 {#if ready}
   {#if !['/', '/login', '/register'].includes($page.path)}
     <Sidebar bind:open />
-    <div class={y > 300 ? 'sticky' : ''} in:fade>
+    <div class={y > 50 ? 'sticky' : ''} in:fade>
       <Navbar bind:sidebar={open} />
     </div>
     <Dialog />
