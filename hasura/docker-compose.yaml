@@ -23,6 +23,7 @@ services:
       IPFS_URL: '${IPFS_URL}'
       IPFS_WEB_URL: '${IPFS_WEB_URL}'
       SIGNING_SERVER_MNEMONIC: '${SIGNING_SERVER_MNEMONIC}'
+      REDIS_URL: '${REDIS_URL}'
     ports:
       - '8091:8091'
       - '8092:8092'
