@@ -300,6 +300,11 @@
     max-width: 100%;
   }
 
+  :global(.cover){
+    height: 320px !important;
+    object-fit: contain !important;
+  }
+
   button {
     @apply block bg-green-400 hover:bg-green-600 text-white uppercase text-lg mx-auto p-4 rounded flex-1;
   }
