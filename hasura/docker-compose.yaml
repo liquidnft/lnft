@@ -1,5 +1,10 @@
 version: '3.6'
 services:
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - '6379:6379'
   app:
     container_name: app
     build:
