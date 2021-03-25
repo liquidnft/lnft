@@ -17,6 +17,7 @@ const fields = `
   asset
   confirmed
   bid {
+    id
     user {
       id 
       username
@@ -78,20 +79,20 @@ export const getTransaction = (id) => `subscription {
   }
 }`;
 
-export const getTransactions = `subscription {
-  transactions(where: {artwork_id: {_is_null: false}, type: {_neq: "receipt"}}, order_by: {created_at: desc}) {
+export const getTransactions = (limit = 10) => `query {
+  transactions(where: {artwork_id: {_is_null: false}, type: {_neq: "receipt"}}, order_by: {created_at: desc}, limit: ${limit}) {
     ${fields}
   }
 }`;
 
-export const getRecentActivity = `subscription {
-  transactions(distinct_on: [artwork_id], where: {artwork_id: {_is_null: false}, type: {_neq: "receipt"}}, order_by: [{artwork_id: desc}, {created_at: desc}], limit: 3) {
+export const getRecentActivity = (limit = 3) => `query {
+  transactions(distinct_on: [artwork_id], where: {artwork_id: {_is_null: false}, type: {_neq: "receipt"}}, order_by: [{artwork_id: desc}, {created_at: desc}], limit: ${limit}) {
     ${fields}
   }
 }`;
 
-export const getLatestPieces = `subscription {
-  transactions(where: {artwork_id: {_is_null: false}, type: {_eq: "creation"}}, order_by: [{created_at: desc}], limit: 3) {
+export const getLatestPieces = (limit = 3) => `query {
+  transactions(where: {artwork_id: {_is_null: false}, type: {_eq: "creation"}}, order_by: [{created_at: desc}], limit: ${limit}) {
     ${fields}
   }
 }`;

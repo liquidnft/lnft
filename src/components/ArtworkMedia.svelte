@@ -4,7 +4,7 @@
   export let showDetails;
   export let loaded = false;
   export let thumb = true;
-  export let preview;
+  export let preview = false;
 
   let img, vid;
   $: path = artwork && (thumb ? `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}` : `/api/ipfs/${artwork.filename}`);

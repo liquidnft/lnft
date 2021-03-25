@@ -8,7 +8,7 @@ let privateFields = "is_artist, mnemonic, wallet_initialized, is_admin, info";
 
 let computed = "followed, num_follows, num_followers";
 
-export const getUser = () => `subscription {
+export const getUser = `query {
   currentuser (limit: 1) { 
     ${fields} 
     ${privateFields}
@@ -41,6 +41,7 @@ export const getSamples = `query {
     ${fields} 
     info
     samples {
+      id
       url
       type
     } 
@@ -56,8 +57,8 @@ export const updateUser = {
   }`,
 };
 
-export const topCollectors = `subscription {
-  collectors { 
+export const topCollectors = (limit) => `query {
+  collectors(limit: ${limit}) { 
     id
     username
     avatar_url
@@ -69,8 +70,8 @@ export const topCollectors = `subscription {
   }
 }`;
 
-export const topArtists = `subscription {
-  artists { 
+export const topArtists = (limit) => `query {
+  artists(limit: ${limit}) { 
     id
     username
     avatar_url
@@ -82,7 +83,7 @@ export const topArtists = `subscription {
   }
 }`;
 
-export const getAddresses = `subscription {
+export const getUsersAddresses = `query {
   users {
     id
     address

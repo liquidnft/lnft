@@ -1,6 +1,7 @@
 <script>
   import { Summary } from "$comp";
-  import { operationStore, subscription } from "@urql/svelte";
+  import { user } from "$lib/store";
+  import { operationStore, query } from "@urql/svelte";
   import { topCollectors, topArtists } from "$queries/users";
   import Activity from "$components/Activity";
   import RecentActivityCard from "$components/RecentActivityCard";
@@ -8,36 +9,31 @@
   import { goto } from "$lib/utils";
   import { getRecentActivity, getLatestPieces } from "$queries/transactions";
 
-  let artists = [];
-  let collectors = [];
-
-  subscription(
-    operationStore(topArtists),
-    (a, b) =>
-      (artists = b.artists
-        .map((u) => ({ user: u, value: u.sold }))
-        .splice(0, 3))
-  );
-
-  subscription(
-    operationStore(topCollectors),
-    (a, b) =>
-      (collectors = b.collectors
-        .map((u) => ({ user: u, value: u.owned }))
-        .splice(0, 3))
-  );
-
+  const requestPolicy = "cache-and-network";
   let featuredArtworkId = "shadow-self-7897c";
+
+  let artists = [];
+  query(operationStore(topArtists(3)), {}, { requestPolicy }).subscribe(
+    ({ data }) =>
+      data && (artists = data.artists.map((u) => ({ user: u, value: u.sold })))
+  );
+
+  let collectors = [];
+  query(operationStore(topCollectors(3)), {}, { requestPolicy }).subscribe(
+    ({ data }) =>
+      data &&
+      (collectors = data.collectors.map((u) => ({ user: u, value: u.owned })))
+  );
+
   let recent = [];
+  query(operationStore(getRecentActivity(3)), {}, { requestPolicy }).subscribe(
+    ({ data }) => data && (recent = data.transactions)
+  );
+
   let latest = [];
-
-  subscription(operationStore(getRecentActivity), (a, b) => {
-    recent = b.transactions;
-  });
-
-  subscription(operationStore(getLatestPieces), (a, b) => {
-    latest = b.transactions;
-  });
+  query(operationStore(getLatestPieces(3)), {}, { requestPolicy }).subscribe(
+    ({ data }) => data && (latest = data.transactions)
+  );
 </script>
 
 <style>

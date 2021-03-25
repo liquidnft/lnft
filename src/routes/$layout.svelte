@@ -21,10 +21,6 @@
 
   onMount(async () => {
     ready = true;
-    try {
-      console.log("getting user");
-      $user = JSON.parse(window.sessionStorage.getItem("user"));
-    } catch (e) {}
 
     if (!$password) $password = window.sessionStorage.getItem("password");
     if (!$token) $token = window.sessionStorage.getItem("token");
@@ -51,7 +47,7 @@
   <main>
     <div class="mx-auto min-h-screen">
       <App>
-        <slot />
+        <slot/>
       </App>
     </div>
   </main>

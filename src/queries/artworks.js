@@ -41,6 +41,7 @@ const fields = `
     avatar_url
   },
   bid {
+    id
     user {
       id
       username
@@ -51,6 +52,7 @@ const fields = `
 
 export const getAssets = `subscription {
  artworks {
+   id
    title
    asset
    auction_end
@@ -58,7 +60,7 @@ export const getAssets = `subscription {
  }
 }`;
 
-export const getArtworks = `subscription {
+export const getArtworks = `query {
  artworks {
     ${fields}
     tags {

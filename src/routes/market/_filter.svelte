@@ -1,14 +1,13 @@
 <script>
   import { onMount } from "svelte";
   import ToggleSwitch from "$components/ToggleSwitch";
-  import { filterCriteria as fc } from "$lib/store";
+  import { artworks, filterCriteria as fc } from "$lib/store";
 
   export let showFilters;
-  export let artworks;
   export let filtered;
 
-  $: update($fc.listPrice, $fc.openBid, $fc.ownedByCreator, $fc.hasSold, artworks);
-  let update = () => (filtered = artworks.filter(filter));
+  $: update($fc.listPrice, $fc.openBid, $fc.ownedByCreator, $fc.hasSold, $artworks);
+  let update = () => (filtered = $artworks.filter(filter));
   onMount(update);
 
   let filter = (a) =>

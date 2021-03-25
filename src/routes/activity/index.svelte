@@ -1,51 +1,68 @@
 <script>
   import { user } from "$lib/store";
   import { Activity, Avatar } from "$comp";
-  import { getTransactions } from "$queries/transactions";
+  import { getRecentActivity } from "$queries/transactions";
   import { topCollectors } from "$queries/users";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
-
-  let collectors = [];
-  let topCollectors$ = operationStore(topCollectors);
-  subscription(topCollectors$, (a, b) => (collectors = b.collectors));
+  import { query, operationStore } from "@urql/svelte";
+  const requestPolicy = "cache-and-network";
 
   let transactions = [];
-  subscription(
-    operationStore(getTransactions),
-    (a, b) => (transactions = b.transactions)
+  query(operationStore(getRecentActivity(20)), {}, { requestPolicy }).subscribe(
+    ({ data }) => {
+      if (data) transactions = data.transactions;
+    }
   );
 
-  let show = false
-  
+  let collectors = [];
+  query(operationStore(topCollectors(5)), {}, { requestPolicy }).subscribe(
+    ({ data }) => data && (collectors = data.collectors)
+  );
+
+  let show = false;
 </script>
 
 <style>
-  .tabs{display: none;}
-  @media only screen and (max-width: 1023px){
-    .tabs{display: flex;}
-    .hide{display: none;}
-    .showFeed {display: none;}
-    .showRank {display: block;}
-    button{font-weight: bold;}
-    button:focus{border-bottom: 2px solid #6ED8E0;}
+  .tabs {
+    display: none;
+  }
+  @media only screen and (max-width: 1023px) {
+    .tabs {
+      display: flex;
+    }
+    .hide {
+      display: none;
+    }
+    .showFeed {
+      display: none;
+    }
+    .showRank {
+      display: block;
+    }
+    button {
+      font-weight: bold;
+    }
+    button:focus {
+      border-bottom: 2px solid #6ed8e0;
+    }
   }
 </style>
-
 
 <div class="container mx-auto my-10 md:my-20">
   <h2>Activity</h2>
   <div class="flex flex-wrap justify-between mt-10 lg:mt-20">
     <div class="tabs flex w-full justify-center border-b-2 mb-8">
-      <button on:click="{() => show = false}" class="w-1/2 pb-3">Feed</button>
-      <button on:click="{() => show = true}" class="w-1/2 pb-3">Rankings</button>
+      <button on:click={() => (show = false)} class="w-1/2 pb-3">Feed</button>
+      <button
+        on:click={() => (show = true)}
+        class="w-1/2 pb-3">Rankings</button>
     </div>
-    <div class:showFeed="{show}" class="w-full lg:max-w-lg">
+    <div class:showFeed={show} class="w-full lg:max-w-lg">
       {#each transactions as transaction}
         <Activity {transaction} showImage={true} />
       {/each}
     </div>
 
-    <div class:showRank="{show}" class="w-full lg:w-1/3 flex flex-col hide">
+    <div class:showRank={show} class="w-full lg:w-1/3 flex flex-col hide">
       <div class="boxShadow p-4 mb-10 rounded-lg">
         <p>Top Collectors</p>
         <div class="mb-4 top-collectors">
@@ -58,7 +75,9 @@
             </div>
           {/each}
         </div>
-        <a href="/top-collectors" class="text-sm text-midblue block text-right">See full ranking</a>
+        <a
+          href="/top-collectors"
+          class="text-sm text-midblue block text-right">See full ranking</a>
       </div>
 
       <div class="boxShadow p-4 rounded-lg">
@@ -73,7 +92,8 @@
             </div>
           {/each}
         </div>
-        <a href="/top-artists" class="text-sm text-midblue block text-right">See full ranking</a>
+        <a href="/top-artists" class="text-sm text-midblue block text-right">See
+          full ranking</a>
       </div>
     </div>
   </div>

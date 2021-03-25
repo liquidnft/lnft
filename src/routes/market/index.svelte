@@ -1,6 +1,7 @@
 <script>
-  import { show, user, results } from "$lib/store";
-  import { operationStore, subscription } from "@urql/svelte";
+  import { page } from "$app/stores";
+  import { artworks, show, user, results } from "$lib/store";
+  import { query, operationStore } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
   import { info, err, goto } from "$lib/utils";
   import Gallery from "$components/Gallery";
@@ -9,16 +10,20 @@
   import Filter from "./_filter";
   import Sort from "./_sort";
 
+  export let showFilters = true;
 
-  let artworks = [];
   let filtered = [];
 
-  subscription(
-    operationStore(getArtworks),
-    (a, b) => (artworks = b.artworks)
-  );
+  let a = operationStore(getArtworks);
+  let o = { requestPolicy: "cache-and-network" };
 
-  export let showFilters;
+  query(a, {}, o).subscribe(({ data }) => {
+    if (data) {
+      $artworks = data.artworks;
+    }
+  });
+
+  page.subscribe(() => ($a.context = { requestPolicy: "network-only" }));
 </script>
 
 <style>
@@ -59,7 +64,7 @@
   }
 
   @media only screen and (max-width: 767px) {
-    .primary-btn{
+    .primary-btn {
       width: 300px;
       text-align: center;
       margin: 0 auto;
@@ -70,7 +75,8 @@
 
 <Results />
 
-<div class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20">
+<div
+  class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20">
   <h2 class="md:mb-0">Market</h2>
 
   {#if $user && $user.is_artist}
@@ -97,7 +103,7 @@
       </div>
       <Sort bind:filtered />
     </div>
-    <Filter bind:filtered {artworks} {showFilters} />
+    <Filter bind:filtered {showFilters} />
   </div>
   <Gallery artworks={filtered} />
 </div>

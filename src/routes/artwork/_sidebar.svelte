@@ -34,7 +34,7 @@
   </a>
   <a href={`/${artwork.owner.username}`}>
     <div class="flex mb-6 secondary-color">
-      <Avatar user={artwork.owner} key={artwork.owner.username} />
+      <Avatar user={artwork.owner} />
       <div class="ml-2">
         <div>@{artwork.owner.username}</div>
         <div class="text-xs text-gray-600">Owner</div>

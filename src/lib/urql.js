@@ -4,10 +4,13 @@ import {
   fetchExchange,
   subscriptionExchange,
 } from "@urql/svelte";
+import { offlineExchange } from "@urql/exchange-graphcache";
+import { makeDefaultStorage } from "@urql/exchange-graphcache/default-storage";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import { get } from "svelte/store";
 import { role } from "$lib/store";
 import { expired } from "$lib/auth";
+import schema from "$lib/schema";
 
 let url, wsUrl;
 if (import.meta && import.meta.env && import.meta.env !== "production") {
@@ -19,12 +22,35 @@ if (import.meta && import.meta.env && import.meta.env !== "production") {
 }
 
 export const setupUrql = (token) => {
+  const storage = makeDefaultStorage({
+    idbName: "graphcache-v3", // The name of the IndexedDB database
+    maxAge: 7, // The maximum age of the persisted data in days
+  });
+
+  const cache = offlineExchange({
+    keys: {
+      transactions: data => data.id,
+      favorites_aggregate_fields: data => null,
+      favorites_aggregate: data => null,
+      tags: data => data.tag,
+    },
+    schema,
+    storage,
+    updates: {
+      /* ... */
+    },
+    optimistic: {
+      /* ... */
+    },
+  });
+
   if (expired(token)) token = undefined;
-  
+
   initClient({
     url,
     exchanges: [
       dedupExchange,
+      cache,
       fetchExchange,
       subscriptionExchange({
         forwardSubscription(operation) {
@@ -36,9 +62,11 @@ export const setupUrql = (token) => {
             inactivityTimeout: 60000,
             lazy: true,
             connectionParams: {
-              headers: token ? { 
-                authorization: `Bearer ${token}`,
-              } : undefined,
+              headers: token
+                ? {
+                    authorization: `Bearer ${token}`,
+                  }
+                : undefined,
             },
           }).request(operation);
         },
