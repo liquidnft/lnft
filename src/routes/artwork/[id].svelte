@@ -12,7 +12,7 @@
     getArtworkTransactions,
   } from "$queries/transactions";
   import { goto, err, explorer, info, units } from "$lib/utils";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
+  import { mutation, query, operationStore } from "@urql/svelte";
   import { requirePassword } from "$lib/auth";
   import {
     createOffer,
@@ -27,7 +27,13 @@
 
   export let id;
 
-  $: disabled = !transactions || transactions.some(t => ['purchase', 'creation', 'cancel'].includes(t.type) && !t.confirmed)
+  const requestPolicy = "cache-and-network";
+
+  $: disabled =
+    !transactions ||
+    transactions.some(
+      (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
+    );
 
   $: pageChange($page);
   const pageChange = ({ params }) => {
@@ -36,16 +42,18 @@
   };
 
   let transactions = [];
-  $: setupSubscriptions(id);
-  const setupSubscriptions = (id) => {
-    if (id) {
-      subscription(
-        operationStore(getArtworkTransactions(id)),
-        (a, b) => (transactions = b.transactions)
-      );
+  query(
+    operationStore(getArtworkTransactions(id)),
+    {},
+    { requestPolicy }
+  ).subscribe(({ data }) => data && (transactions = data.transactions) && console.log(data));
 
-      subscription(operationStore(getArtwork(id)), (a, b) => {
-        artwork = b.artworks_by_pk;
+  let artwork, start_counter, end_counter, now, timeout;
+  query(operationStore(getArtwork(id)), {}, { requestPolicy }).subscribe(
+    (r) => {
+      console.log("oh", r)
+      if (r.data) {
+        artwork = r.data.artworks_by_pk;
 
         let count = () => {
           clearTimeout(timeout);
@@ -56,22 +64,21 @@
           timeout = setTimeout(count, 1000);
         };
         count();
-      });
+      }
     }
-  };
+  );
 
   $: if (artwork)
-    subscription(
-      operationStore(getArtworksByArtist(artwork.artist_id)),
-      (a, b) =>
-        (others = b.artworks
+    query(operationStore(getArtworksByArtist(artwork.artist_id))).subscribe(
+      ({ data }) =>
+        data && data.artworks &&
+        (others = data.artworks
           .filter((a) => artwork && a.id !== artwork.id)
-          .slice(0, 4))
+          .slice(0, 4)) && console.log(data)
     );
 
   let others = [];
 
-  let artwork, start_counter, end_counter;
   let createTransaction$ = mutation(createTransaction);
 
   let list_price;
@@ -103,8 +110,6 @@
     transaction.hash = $psbt.__CACHE.__TX.getId();
     await save();
   };
-
-  let now, timeout;
 
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
@@ -230,14 +235,14 @@
   .popup :global(video) {
     width: 50%;
     margin: 0 auto;
-  } 
+  }
 
-  .popup :global(div){
+  .popup :global(div) {
     width: 100%;
     height: auto;
   }
 
-  .popup :global(img){
+  .popup :global(img) {
     height: 95vh;
     object-fit: contain !important;
   }
@@ -246,10 +251,9 @@
     max-height: 50vh;
   }
 
-  .desktopImage :global(img){
+  .desktopImage :global(img) {
     object-fit: contain !important;
   }
-
 
   @keyframes zoom {
     0% {
@@ -276,7 +280,7 @@
   }
 
   @media only screen and (max-width: 500px) {
-    .popup :global(img){
+    .popup :global(img) {
       height: auto;
     }
   }
@@ -301,7 +305,9 @@
             <div
               class="flex ml-auto py-1 px-4 bg-gray-100 rounded rounded-full my-auto">
               <div class="my-auto"><i class="far fa-image mr-1" /></div>
-              <div class="my-auto mb-1"><span class="text-sm">Physical artwork</span></div>
+              <div class="my-auto mb-1">
+                <span class="text-sm">Physical artwork</span>
+              </div>
             </div>
           {/if}
         </div>
@@ -317,7 +323,8 @@
           <div class="w-full mb-2">
             <a
               href={disabled ? '' : `/artwork/${id}/auction`}
-              class="block text-center text-sm secondary-btn w-full" class:disabled>List</a>
+              class="block text-center text-sm secondary-btn w-full"
+              class:disabled>List</a>
           </div>
         {:else if artwork.asking_asset}
           {#if artwork.list_price}

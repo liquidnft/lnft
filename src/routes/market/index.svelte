@@ -22,8 +22,6 @@
       $artworks = data.artworks;
     }
   });
-
-  page.subscribe(() => ($a.context = { requestPolicy: "network-only" }));
 </script>
 
 <style>

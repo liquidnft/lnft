@@ -81,7 +81,7 @@ export const getArtworkBySlug = (slug) => `subscription {
   }
 }`;
 
-export const getArtworksByArtist = (id) => `subscription {
+export const getArtworksByArtist = (id) => `query {
   artworks(where: {artist_id: {_eq: "${id}"}}) {
     ${fields}
   }
@@ -140,7 +140,7 @@ export const destroyArtwork = (artwork) => ({
     }`,
 });
 
-export const getArtwork = (id) => `subscription {
+export const getArtwork = (id) => `query {
   artworks_by_pk(id: "${id}") {
     ${fields}
     tags {

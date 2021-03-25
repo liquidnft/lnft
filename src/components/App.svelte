@@ -63,8 +63,8 @@
   });
 
   let userQuery = operationStore(getUser);
-  query(userQuery, {}, o).subscribe(({ data }) => {
-    if (data) {
+  $: if ($token) query(userQuery, {}, o).subscribe(({ data }) => {
+    if (data && data.currentuser) {
       $user = data.currentuser[0];
     }
   });

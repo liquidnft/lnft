@@ -10,7 +10,6 @@ export default async (file, progress) => {
     let ajax = new XMLHttpRequest();
     ajax.addEventListener("load", () => {
       if (ajax.readyState === ajax.DONE) {
-        console.log(ajax.response);
         if (ajax.status === 200) resolve(ajax.response);
         else reject(new Error(`Upload failed: ${ajax.response}`));
       }
