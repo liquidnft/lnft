@@ -11,6 +11,7 @@ import { get } from "svelte/store";
 import { role } from "$lib/store";
 import { expired } from "$lib/auth";
 import schema from "$lib/schema";
+import { getArtworks } from "$queries/artworks";
 
 let url, wsUrl;
 if (import.meta && import.meta.env && import.meta.env !== "production") {
@@ -29,15 +30,22 @@ export const setupUrql = (token) => {
 
   const cache = offlineExchange({
     keys: {
-      transactions: data => data.id,
-      favorites_aggregate_fields: data => null,
-      favorites_aggregate: data => null,
-      tags: data => data.tag,
+      transactions: (data) => data.id,
+      favorites_aggregate_fields: (data) => null,
+      favorites_aggregate: (data) => null,
+      tags: (data) => data.tag,
     },
     schema,
     storage,
     updates: {
-      /* ... */
+      Mutation: {
+        insert_artworks_one(_result, args, cache, _info) {
+          cache.updateQuery({ query: getArtworks }, data => {
+            data.artworks.push(_result.insert_artworks_one);
+            return data;
+          });
+        },
+      },
     },
     optimistic: {
       /* ... */

@@ -100,9 +100,12 @@ export const getArtworksByTag = (tag) => `subscription {
 }`;
 
 export const create = {
-  query: `mutation insert_single_artwork($artwork: artworks_insert_input!, $tags: [tags_insert_input!]!, $transaction: transactions_insert_input!) {
+  query: `mutation insertArtwork($artwork: artworks_insert_input!, $tags: [tags_insert_input!]!, $transaction: transactions_insert_input!) {
       insert_artworks_one(object: $artwork) {
-        id
+        ${fields}
+        tags {
+          tag
+        } 
       }
       insert_tags(objects: $tags) {
         affected_rows

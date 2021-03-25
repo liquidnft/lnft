@@ -12,7 +12,7 @@
     getArtworkTransactions,
   } from "$queries/transactions";
   import { goto, err, explorer, info, units } from "$lib/utils";
-  import { mutation, query, operationStore } from "@urql/svelte";
+  import { mutation, subscription, query, operationStore } from "@urql/svelte";
   import { requirePassword } from "$lib/auth";
   import {
     createOffer,
@@ -42,39 +42,43 @@
   };
 
   let transactions = [];
-  query(
-    operationStore(getArtworkTransactions(id)),
-    {},
-    { requestPolicy }
-  ).subscribe(({ data }) => data && (transactions = data.transactions) && console.log(data));
 
   let artwork, start_counter, end_counter, now, timeout;
-  query(operationStore(getArtwork(id)), {}, { requestPolicy }).subscribe(
-    (r) => {
-      console.log("oh", r)
-      if (r.data) {
-        artwork = r.data.artworks_by_pk;
 
-        let count = () => {
-          clearTimeout(timeout);
-          now = new Date();
-          if (!artwork) return;
-          start_counter = countdown(parseISO(artwork.auction_start));
-          end_counter = countdown(parseISO(artwork.auction_end));
-          timeout = setTimeout(count, 1000);
-        };
-        count();
+  $: setup(id);
+  let setup = () => {
+    subscription(
+      operationStore(getArtworkTransactions(id)),
+      (a, b) => (transactions = b.transactions)
+    );
+
+    query(operationStore(getArtwork(id)), {}, { requestPolicy }).subscribe(
+      (r) => {
+        if (r.data) {
+          artwork = r.data.artworks_by_pk;
+
+          let count = () => {
+            clearTimeout(timeout);
+            now = new Date();
+            if (!artwork) return;
+            start_counter = countdown(parseISO(artwork.auction_start));
+            end_counter = countdown(parseISO(artwork.auction_end));
+            timeout = setTimeout(count, 1000);
+          };
+          count();
+        }
       }
-    }
-  );
+    );
+  };
 
   $: if (artwork)
     query(operationStore(getArtworksByArtist(artwork.artist_id))).subscribe(
       ({ data }) =>
-        data && data.artworks &&
+        data &&
+        data.artworks &&
         (others = data.artworks
           .filter((a) => artwork && a.id !== artwork.id)
-          .slice(0, 4)) && console.log(data)
+          .slice(0, 4))
     );
 
   let others = [];
