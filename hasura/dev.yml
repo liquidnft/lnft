@@ -1,10 +1,5 @@
 version: '3.6'
 services:
-  redis:
-    container_name: redis
-    image: redis
-    ports:
-      - '6379:6379'
   app:
     container_name: app
     image: asoltys/app-server
@@ -22,7 +17,6 @@ services:
       HBP_URL: '${HBP_URL}'
       IPFS_URL: '${IPFS_URL}'
       IPFS_WEB_URL: '${IPFS_WEB_URL}'
-      REDIS_URL: '${REDIS_URL}'
       SIGNING_SERVER_MNEMONIC: '${SIGNING_SERVER_MNEMONIC}'
     ports:
       - '8091:8091'
