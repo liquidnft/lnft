@@ -18,9 +18,9 @@
     hasura migrate apply
     hasura metadata apply
     hasura seeds apply
-    cd ..
-    sudo cp static/user.png hasura/storage
+    sudo cp ../static/user.png hasura/storage
     docker exec -it ipfs ipfs add /export/user.png
+    cd ..
     yarn dev   # site is available at http://localhost:3000/
 
 ## Regtest mining

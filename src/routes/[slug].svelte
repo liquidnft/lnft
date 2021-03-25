@@ -3,31 +3,31 @@
   import { onMount } from "svelte";
   import { getArtworkBySlug } from "$queries/artworks";
   import { getUserByUsername } from "$queries/users";
-  import { operationStore, subscription } from "@urql/svelte";
+  import { operationStore, query } from "@urql/svelte";
   import Artwork from "./artwork/[id].svelte";
   import User from "./user/[id].svelte";
 
-  let artwork, user;
+  const requestPolicy = "cache-and-network";
 
-  $: pageChange($page);
-  let pageChange = () => {
+  let artwork, user, a, u, una, unu;
+
+  $: update($page.params.slug);
+  let update = (slug) => {
     artwork = undefined;
     user = undefined;
-  } 
 
-  $: subscription(
-    operationStore(getArtworkBySlug($page.params.slug)),
-    (_, data) => {
-      artwork = data.artworks[0];
-    }
-  );
+    una && una();
+    a = operationStore(getArtworkBySlug(slug));
+    una = query(a, {}, { requestPolicy }).subscribe(
+      ({ data }) => data && (artwork = data.artworks[0])
+    );
 
-  $: subscription(
-    operationStore(getUserByUsername($page.params.slug)),
-    (_, data) => {
-      user = data.users[0];
-    }
-  );
+    unu && unu();
+    u = operationStore(getUserByUsername(slug));
+    unu = query(u, {}, { requestPolicy }).subscribe(
+      ({ data }) => data && (user = data.users[0])
+    );
+  };
 </script>
 
 {#if artwork}

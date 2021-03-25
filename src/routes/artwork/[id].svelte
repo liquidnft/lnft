@@ -473,6 +473,6 @@
       </div>
     </div>
   {:else}
-    <ProgressLinear app={true} />
+    <ProgressLinear />
   {/if}
 </div>

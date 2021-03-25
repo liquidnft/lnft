@@ -22,7 +22,7 @@ export const getUserById = (id) => `subscription {
   }
 }`;
 
-export const getUserByUsername = (username) => `subscription {
+export const getUserByUsername = (username) => `query {
   users(where: { username: {_eq: "${username}" }}, limit: 1) { 
     ${fields} 
     ${computed}
