@@ -4,7 +4,7 @@
   import { user, token } from "$lib/store";
   import { goto } from "$lib/utils";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
-  import { getArtworks } from "$queries/artworks";
+  import { getUserArtworks } from "$queries/artworks";
   import { getUserById } from "$queries/users";
   import { createFollow, deleteFollow } from "$queries/follows";
   import Menu from "./_menu";
@@ -21,21 +21,14 @@
     if (params.id) ({ id } = params);
   };
 
-  $: id && subscribeUser(id);
-  let subscribeUser = () =>
-    subscription(operationStore(getUserById(id)), (_, data) => {
-      subject = data.users_by_pk;
-    });
-
   let collection = [];
   let creations = [];
   let favorites = [];
 
   let artworks;
-  $: subject &&
-    subscription(operationStore(getArtworks), (_, data) => {
-      artworks = data.artworks;
-    });
+  $: if (id) query(operationStore(getUserArtworks(id))).subscribe(
+    ({ data }) => data && (artworks = data.artworks) && console.log(data)
+  );
 
   $: applyFilters(artworks, subject);
 

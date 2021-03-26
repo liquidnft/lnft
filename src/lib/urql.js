@@ -12,6 +12,7 @@ import { role } from "$lib/store";
 import { expired } from "$lib/auth";
 import schema from "$lib/schema";
 import { getArtworks } from "$queries/artworks";
+import { getRecentActivity, getLatestPieces } from "$queries/transactions";
 
 let url, wsUrl;
 if (import.meta && import.meta.env && import.meta.env !== "production") {
@@ -39,9 +40,33 @@ export const setupUrql = (token) => {
     storage,
     updates: {
       Mutation: {
-        insert_artworks_one(_result, args, cache, _info) {
-          cache.updateQuery({ query: getArtworks }, data => {
-            data.artworks.push(_result.insert_artworks_one);
+        insert_transactions_one(result, args, cache, info) {
+          cache.updateQuery({ query: getRecentActivity(20) }, (data) => {
+            try {
+              data.recentactivity.unshift(result.insert_transactions_one).pop();
+            } catch {}
+            return data;
+          });
+
+          cache.updateQuery({ query: getRecentActivity(3) }, (data) => {
+            try {
+              data.recentactivity.unshift(result.insert_transactions_one).pop();
+            } catch {}
+            return data;
+          });
+
+          cache.updateQuery({ query: getLatestPieces(3) }, (data) => {
+            try {
+            data.transactions[0] = result.insert_transactions_one;
+            } catch {}
+            return data;
+          });
+        },
+        insert_artworks_one(result, args, cache, info) {
+          cache.updateQuery({ query: getArtworks }, (data) => {
+            try {
+            data.artworks.push(result.insert_artworks_one);
+            } catch {}
             return data;
           });
         },

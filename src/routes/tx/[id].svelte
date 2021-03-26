@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { electrs } from "$lib/api";
-  import { subscription, operationStore } from "@urql/svelte";
+  import { query, operationStore } from "@urql/svelte";
   import { getTransaction } from "$queries/transactions";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { psbt } from "$lib/store";
@@ -12,8 +12,9 @@
   const { id } = $page.params;
 
   let tx;
-  subscription(operationStore(getTransaction(id)), async (a, b) => {
-    let transaction = b.transactions_by_pk;
+  $: if (id) query(operationStore(getTransaction(id))).subscribe(async ({ data }) => {
+    if (!data) return;
+    let transaction = data.transactions_by_pk;
     let { psbt: p } = transaction;
 
     if (p) $psbt = Psbt.fromBase64(p);

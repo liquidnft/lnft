@@ -1,3 +1,5 @@
+import { fields as txfields } from "./transactions";
+
 const fields = `
   id,
   asset
@@ -69,6 +71,15 @@ export const getArtworks = `query {
   }
 }`;
 
+export const getUserArtworks = (id) => `query {
+ artworks(where: { _or: { artist_id: { _eq: "${id}" }}, { owner_id: { _eq: { "${id}" }}}, { favorited: { _eq: true }}})  {
+    ${fields}
+    tags {
+      tag
+    } 
+  }
+}`;
+
 export const getArtworkByAsset = (asset) => `subscription {
   artworks(where: {asset: {_eq: "${asset}"}}, limit: 1) {
     ${fields}
@@ -111,7 +122,7 @@ export const create = {
         affected_rows
       }
       insert_transactions_one(object: $transaction) {
-        id
+        ${txfields}
       } 
     }`,
 };

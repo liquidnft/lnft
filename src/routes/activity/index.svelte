@@ -4,13 +4,12 @@
   import { getRecentActivity } from "$queries/transactions";
   import { topCollectors } from "$queries/users";
   import { query, operationStore } from "@urql/svelte";
+
   const requestPolicy = "cache-and-network";
 
   let transactions = [];
   query(operationStore(getRecentActivity(20)), {}, { requestPolicy }).subscribe(
-    ({ data }) => {
-      if (data) transactions = data.transactions;
-    }
+    ({ data }) => data && (transactions = data.recentactivity)
   );
 
   let collectors = [];

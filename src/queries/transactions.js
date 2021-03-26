@@ -7,7 +7,7 @@ export const createTransaction = {
   }`,
 };
 
-const fields = `
+export const fields = `
   id
   psbt
   amount 
@@ -73,7 +73,7 @@ export const getUserTransactions = (id) => `subscription {
   }
 }`;
 
-export const getTransaction = (id) => `subscription {
+export const getTransaction = (id) => `query {
   transactions_by_pk(id: "${id}") {
     ${fields}
   }
@@ -86,7 +86,7 @@ export const getTransactions = (limit = 10) => `query {
 }`;
 
 export const getRecentActivity = (limit = 3) => `query {
-  transactions(distinct_on: [artwork_id], where: {artwork_id: {_is_null: false}, type: {_neq: "receipt"}}, order_by: [{artwork_id: desc}, {created_at: desc}], limit: ${limit}) {
+  recentactivity(limit: ${limit}) {
     ${fields}
   }
 }`;

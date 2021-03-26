@@ -27,7 +27,7 @@
 
   let recent = [];
   query(operationStore(getRecentActivity(3)), {}, { requestPolicy }).subscribe(
-    ({ data }) => data && (recent = data.transactions)
+    ({ data }) => data && (recent = data.recentactivity)
   );
 
   let latest = [];

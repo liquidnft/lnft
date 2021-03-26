@@ -15,7 +15,7 @@ export const getUser = `query {
   }
 }`;
 
-export const getUserById = (id) => `subscription {
+export const getUserById = (id) => `query {
   users_by_pk (id: "${id}") {
     ${fields} 
     ${computed}
