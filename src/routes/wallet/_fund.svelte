@@ -38,7 +38,7 @@
         .auth(`Bearer ${$token}`)
         .post({
           amount: 10000,
-          liquidAddress: $user.address,
+          liquidAddress: $user.confidential,
         })
         .json());
     } catch (e) {
@@ -50,7 +50,7 @@
   let liquid = () => {
     tab = "liquid";
     fee = 0;
-    address = $user.address;
+    address = $user.confidential;
   };
 
   let lightning = async () => {
@@ -63,7 +63,7 @@
         .auth(`Bearer ${$token}`)
         .post({
           amount: 10000,
-          liquidAddress: $user.address,
+          liquidAddress: $user.confidential,
         })
         .json());
     } catch (e) {
@@ -74,11 +74,11 @@
   };
 
   let address;
-  $: if ($user) address = $user.address;
+  $: if ($user) address = $user.confidential;
 
-  $: if ($user && $user.address) {
+  $: if ($user && $user.confidential) {
     const qr = new qrcode(0, "H");
-    qr.addData($user.address);
+    qr.addData($user.confidential);
     qr.make();
     img = qr.createSvgTag({});
   }

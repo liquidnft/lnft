@@ -2,64 +2,30 @@
 # yarn lockfile v1
 
 
-"@asoltys/bitcoin-ops@^2.0.10":
-  version "2.0.10"
-  resolved "https://registry.yarnpkg.com/@asoltys/bitcoin-ops/-/bitcoin-ops-2.0.10.tgz#be64059fc885014d218eb97c9db974a5b444cf7a"
-  integrity sha512-7EmZt85+5Ss3BJ/CXRlVoyFVbe1fmgbklM39mkJXtJo2jR0Ev4chnPJdjl09sIcTB5rKx/jPnnNI8TCL1CyMDw==
-
-"@asoltys/blech32@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@asoltys/blech32/-/blech32-1.0.1.tgz#0c427728e2861dbe03ec2bc3824b052a6e7d6abf"
-  integrity sha512-5zYDrAbZZ8e7d9QKQ5ixeePCoBYJack4GUVnlqaiWIaArHYlgPP/wNzCMQlHzrCbyLt6av34LpIQ/MgI2bw1ew==
-
-"@asoltys/liquidjs-lib@^5.1.21":
-  version "5.1.21"
-  resolved "https://registry.yarnpkg.com/@asoltys/liquidjs-lib/-/liquidjs-lib-5.1.21.tgz#17f2c936d565f0c0e6912ea9bb449ecbfc7b616d"
-  integrity sha512-OsL5zckb6nJ1uGMH8ym1iEzrmqYJ9lsUCB5eeWPfud06O4eESPld+fLpwoaAgBWqChZpfxzFafWWHbjEYsKJ6w==
+"@asoltys/liquidjs-lib@^5.1.25":
+  version "5.1.25"
+  resolved "https://registry.yarnpkg.com/@asoltys/liquidjs-lib/-/liquidjs-lib-5.1.25.tgz#802a98eaec409a354027afa0f42d747c0924218d"
+  integrity sha512-VHAkrvZug+jKrSOhPmevUcX99QVITU0T+vfpZgCmG0O7fwaxVQ6vYzPpA/NtOXkS1dKKCzY4sYFM5RbPDREFog==
   dependencies:
-    "@asoltys/bitcoin-ops" "^2.0.10"
-    "@asoltys/blech32" "^1.0.1"
-    "@asoltys/minimaldata" "^2.0.4"
-    "@asoltys/pushdata-bitcoin" "^1.1.4"
-    "@asoltys/secp256k1-zkp" "^1.0.1"
-    axios "^0.19.2"
+    axios "^0.21.1"
     bech32 "^1.1.2"
-    bip174 "github:vulpemventures/bip174"
+    bip174 vulpemventures/bip174.git
     bip32 "^2.0.4"
     bip66 "^1.1.0"
+    bitcoin-ops "^1.4.0"
+    blech32 vulpemventures/blech32.git
     bs58check "^2.0.0"
     buffer-es6 "^4.9.3"
     create-hash "^1.1.0"
     create-hmac "^1.1.3"
     merkle-lib "^2.0.10"
+    pushdata-bitcoin "^1.0.1"
     randombytes "^2.0.1"
+    secp256k1-zkp "github:asoltys/secp256k1-zkp"
     tiny-secp256k1 "^1.1.1"
     typeforce "^1.11.3"
     varuint-bitcoin "^1.0.4"
     wif "^2.0.1"
-
-"@asoltys/minimaldata@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@asoltys/minimaldata/-/minimaldata-2.0.4.tgz#9dd59d73f648cfb6fb2b2f99c78a605c318f673d"
-  integrity sha512-PTpotv+d9OG1ZXddgSNpqmwb9BE7xaXxoikG6FOXMF7XfuG3sz9Jy7OVGmZKLEjGQXBQSCYFhmrcCv8jVjQ2ZA==
-  dependencies:
-    "@asoltys/bitcoin-ops" "^2.0.10"
-    "@asoltys/pushdata-bitcoin" "^1.1.3"
-
-"@asoltys/pushdata-bitcoin@^1.1.3", "@asoltys/pushdata-bitcoin@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@asoltys/pushdata-bitcoin/-/pushdata-bitcoin-1.1.4.tgz#b3be4dc7f101b98b3317a3ab41f923bbc09a440b"
-  integrity sha512-BDqKtYr2ChogxGt1FEDaZZr2J6MlOXCFAt1Qceny5T2dICO/YFxnrI4o/kNmNsxQLaBUZqqVQaNN7raJXRuKhQ==
-  dependencies:
-    "@asoltys/bitcoin-ops" "^2.0.10"
-
-"@asoltys/secp256k1-zkp@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@asoltys/secp256k1-zkp/-/secp256k1-zkp-1.0.1.tgz#0e3ea305843a197cf586bee08bbaa37d51444fa3"
-  integrity sha512-w3xk38j7CHbjb1K2jzwGff6mXRhh/ldZY2s9TPS4QHYJHfFCdcHZqDZzb/svXmG/YZgavwRF2hYiNMkaML3mKw==
-  dependencies:
-    "@types/node" "^13.9.2"
-    long "^4.0.0"
 
 "@multiformats/base-x@^4.0.1":
   version "4.0.1"
@@ -87,6 +53,11 @@
   version "11.11.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.6.tgz#df929d1bb2eee5afdda598a41930fe50b43eaa6a"
   integrity sha512-Exw4yUWMBXM3X+8oqzJNRqZSwUAaS4+7NdvHqQuFi/d+synz++xmX3QIf+BFqneW8N31R8Ky+sikfZUXq07ggQ==
+
+"@types/node@^13.9.1":
+  version "13.13.47"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.47.tgz#6eca42c3462821309b26edbc2eff0db1e37ab9bc"
+  integrity sha512-R6851wTjN1YJza8ZIeX6puNBSi/ZULHVh4WVleA7q256l+cP2EtXnKbO455fTs2ytQk3dL9qkU+Wh8l/uROdKg==
 
 "@types/node@^13.9.2":
   version "13.13.40"
@@ -255,12 +226,12 @@ avvio@^7.1.2:
     fastq "^1.6.1"
     queue-microtask "^1.1.2"
 
-axios@^0.19.2:
-  version "0.19.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
-  integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
+axios@^0.21.1:
+  version "0.21.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
   dependencies:
-    follow-redirects "1.5.10"
+    follow-redirects "^1.10.0"
 
 balanced-match@^1.0.0:
   version "1.0.0"
@@ -335,6 +306,11 @@ bip66@^1.1.0:
   dependencies:
     safe-buffer "^5.0.1"
 
+bitcoin-ops@^1.3.0, bitcoin-ops@^1.4.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/bitcoin-ops/-/bitcoin-ops-1.4.1.tgz#e45de620398e22fd4ca6023de43974ff42240278"
+  integrity sha512-pef6gxZFztEhaE9RY9HmWVmiIHqCb2OyS4HPKkpc6CIiiOa3Qmuoylxc5P2EkU3w+5eTSifI9SEZC88idAIGow==
+
 bl@^4.0.0, bl@^4.0.3:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/bl/-/bl-4.1.0.tgz#451535264182bec2fbbc83a62ab98cf11d9f7b3a"
@@ -348,6 +324,10 @@ blakejs@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/blakejs/-/blakejs-1.1.0.tgz#69df92ef953aa88ca51a32df6ab1c54a155fc7a5"
   integrity sha1-ad+S75U6qIylGjLfarHFShVfx6U=
+
+"blech32@github:vulpemventures/blech32":
+  version "1.0.0"
+  resolved "https://codeload.github.com/vulpemventures/blech32/tar.gz/b42822d0496a27ed5a313395517e9029bcfccf2e"
 
 blob-to-buffer@^1.2.9:
   version "1.2.9"
@@ -724,13 +704,6 @@ debug@2.6.9, debug@^2.2.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
   integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
-  dependencies:
-    ms "2.0.0"
-
-debug@=3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
-  integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
   dependencies:
     ms "2.0.0"
 
@@ -1224,17 +1197,15 @@ fluent-ffmpeg@^2.1.2:
     async ">=0.2.9"
     which "^1.1.1"
 
-follow-redirects@1.5.10:
-  version "1.5.10"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
-  integrity sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ==
-  dependencies:
-    debug "=3.1.0"
-
 follow-redirects@^1.0.0:
   version "1.13.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.2.tgz#dd73c8effc12728ba5cf4259d760ea5fb83e3147"
   integrity sha512-6mPTgLxYm3r6Bkkg0vNM0HTjfGrOEtsfbhagQvbxDEsEkpNhw582upBaoRZylzen6krEmxXJgt9Ju6HiI4O7BA==
+
+follow-redirects@^1.10.0:
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.3.tgz#e5598ad50174c1bc4e872301e82ac2cd97f90267"
+  integrity sha512-DUgl6+HDzB0iEptNQEXLx/KhTmDb8tZUHSeLqpnjpknR70H0nC2t9N73BK6fN4hOvJ84pKlIQVQ4k5FFlBedKA==
 
 form-data@^3.0.0:
   version "3.0.0"
@@ -2682,6 +2653,13 @@ pupa@^2.0.1:
   dependencies:
     escape-goat "^2.0.0"
 
+pushdata-bitcoin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/pushdata-bitcoin/-/pushdata-bitcoin-1.0.1.tgz#15931d3cd967ade52206f523aa7331aef7d43af7"
+  integrity sha1-FZMdPNlnreUiBvUjqnMxrvfUOvc=
+  dependencies:
+    bitcoin-ops "^1.3.0"
+
 queue-microtask@^1.1.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.2.tgz#abf64491e6ecf0f38a6502403d4cda04f372dfd3"
@@ -2870,6 +2848,13 @@ safe-regex2@^2.0.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
+"secp256k1-zkp@github:asoltys/secp256k1-zkp":
+  version "2.0.0"
+  resolved "https://codeload.github.com/asoltys/secp256k1-zkp/tar.gz/09fe8dec0f6b66033907fc34f2a0aa70db4e548e"
+  dependencies:
+    "@types/node" "^13.9.2"
+    long "^4.0.0"
+
 secp256k1@^4.0.0:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.2.tgz#15dd57d0f0b9fdb54ac1fa1694f40e5e9a54f4a1"
@@ -3017,6 +3002,16 @@ simple-swizzle@^0.2.2:
   integrity sha1-pNprY1/8zMoz9w0Xy5JZLeleVXo=
   dependencies:
     is-arrayish "^0.3.1"
+
+slip77@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/slip77/-/slip77-0.1.1.tgz#171a5489a3b4ba099c04621866bf8a0587cccbd2"
+  integrity sha512-C/6oIYbq4jwDzllpQiIK2dtjhx3SyZCTNJ91H2mfeIFuDDjNZF9aJyFhZO60NKJfLuSyOukIYKlSYXi0sxcnog==
+  dependencies:
+    "@types/node" "^13.9.1"
+    create-hmac "^1.1.7"
+    tiny-secp256k1 "^1.1.3"
+    typeforce "^1.18.0"
 
 sonic-boom@^1.0.2:
   version "1.3.0"
@@ -3262,7 +3257,7 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typeforce@^1.11.3, typeforce@^1.11.5:
+typeforce@^1.11.3, typeforce@^1.11.5, typeforce@^1.18.0:
   version "1.18.0"
   resolved "https://registry.yarnpkg.com/typeforce/-/typeforce-1.18.0.tgz#d7416a2c5845e085034d70fcc5b6cc4a90edbfdc"
   integrity sha512-7uc1O8h1M1g0rArakJdf0uLRSSgFcYexrVoKo+bzJd32gd4gDy2L/Z+8/FjPnU9ydY3pEnVPtr9FyscYY60K1g==

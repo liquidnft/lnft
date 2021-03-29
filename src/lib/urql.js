@@ -57,7 +57,7 @@ export const setupUrql = (token) => {
 
           cache.updateQuery({ query: getLatestPieces(3) }, (data) => {
             try {
-            data.transactions[0] = result.insert_transactions_one;
+              data.transactions[0] = result.insert_transactions_one;
             } catch {}
             return data;
           });

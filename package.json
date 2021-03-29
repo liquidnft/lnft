@@ -30,6 +30,7 @@
 		"prettier": "^2.1.2",
 		"prettier-plugin-svelte": "^1.4.1",
 		"rollup": "^2.33.1",
+		"slip77": "^0.1.1",
 		"snowpack": "^3.0.11",
 		"subscriptions-transport-ws": "^0.9.18",
 		"svelte": "^3.35.0",
@@ -41,7 +42,7 @@
 		"wretch": "^1.7.4"
 	},
 	"dependencies": {
-		"@asoltys/liquidjs-lib": "^5.1.21",
+		"@asoltys/liquidjs-lib": "^5.1.33",
 		"@fortawesome/fontawesome-free": "^5.15.2",
 		"@sveltejs/adapter-static": "^1.0.0-next.0",
 		"bip32": "^2.0.6",

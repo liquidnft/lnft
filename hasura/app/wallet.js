@@ -2,6 +2,7 @@ const { mnemonicToSeedSync } = require("bip39");
 const { fromSeed } = require("bip32");
 const {
   address: Address,
+  confidential,
   ECPair,
   Psbt,
   Transaction,
@@ -72,10 +73,20 @@ const broadcast = async (psbt) => {
 let parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 let parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
+const unblind = (hex, vout, blindkey) => {
+  let output = Transaction.fromHex(hex).outs[vout];
+
+  return confidential.unblindOutputWithKey(
+    output,
+    blindkey
+  );
+};
+
 module.exports = {
   broadcast,
   combine,
   keypair,
+  unblind,
 
   parse(psbt) {
     psbt = Psbt.fromBase64(psbt);
@@ -98,3 +109,4 @@ module.exports = {
   release,
   sign,
 };
+

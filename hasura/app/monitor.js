@@ -1,5 +1,6 @@
 const { api, hasura, electrs, registry } = require("./api");
 const { formatISO } = require("date-fns");
+const { unblind } = require("./wallet");
 
 const setConfirmed = `
   mutation setConfirmed($id: uuid!) {
@@ -144,7 +145,7 @@ const registerAsset = async ({ asset: asset_id, contract, user }) => {
         contract: JSON.parse(contract),
       })
       .json();
-  } catch(e) {}
+  } catch (e) {}
 };
 
 app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
@@ -167,6 +168,7 @@ app.get("/transactions", auth, async (req, res) => {
         id
         address
         multisig
+        blindkey
       } 
     }`;
 
@@ -191,21 +193,59 @@ app.get("/transactions", auth, async (req, res) => {
   for (let i = 0; i < unseen.length; i++) {
     let { txid, vin, vout, status } = unseen[i];
     let total = {};
+
     for (let j = 0; j < vin.length; j++) {
       let { txid, vout } = vin[j];
       let tx = await electrs.url(`/tx/${txid}`).get().json().catch(console.log);
       let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
-      if ([user.address, user.multisig].includes(a))
-        total[asset] ? (total[asset] -= value) : (total[asset] = -value);
+
+      if ([user.address, user.multisig].includes(a)) {
+        if (!asset) {
+          hex = await electrs
+            .url(`/tx/${txid}/hex`)
+            .get()
+            .text()
+            .catch(console.log);
+          try {
+            ({ asset, value, address: a } = await unblind(
+              hex,
+              vout,
+              Buffer.from(user.blindkey, "hex")
+            ));
+          } catch (e) {}
+        }
+
+        if (asset)
+          total[asset] ? (total[asset] -= value) : (total[asset] = -value);
+      }
     }
-    vout.map(({ asset, value, scriptpubkey_address: a }) => {
-      if ([user.address, user.multisig].includes(a))
-        total[asset] ? (total[asset] += value) : (total[asset] = value);
-    });
+
+    for (let k = 0; k < vout.length; k++) {
+      let { asset, value, scriptpubkey_address: a } = vout[k];
+      if ([user.address, user.multisig].includes(a)) {
+        if (!asset) {
+          hex = await electrs
+            .url(`/tx/${txid}/hex`)
+            .get()
+            .text()
+            .catch(console.log);
+          try {
+            ({ asset, value, address: a } = await unblind(
+              hex,
+              vout,
+              Buffer.from(user.blindkey, "hex")
+            ));
+          } catch (e) {}
+          if (asset)
+            total[asset] ? (total[asset] += value) : (total[asset] = value);
+        }
+      }
+    }
 
     let assets = Object.keys(total);
-    for (i = 0; i < assets.length; i++) {
-      let asset = assets[i];
+
+    for (let l = 0; l < assets.length; l++) {
+      let asset = assets[l];
       let type = total[asset] < 0 ? "withdrawal" : "deposit";
       query = `mutation {
           insert_transactions_one(object: {
@@ -219,6 +259,7 @@ app.get("/transactions", auth, async (req, res) => {
         }`;
 
       let insert = await api(req.headers).post({ query }).json();
+
       if (status.block_time) {
         query = `mutation {
             update_transactions_by_pk(

@@ -54,6 +54,8 @@ app.post("/register", async (req, res) => {
     email,
     password,
     username,
+    confidential,
+    blindkey,
   } = req.body;
 
   let { data } = await hasura
@@ -90,6 +92,8 @@ app.post("/register", async (req, res) => {
             pubkey,
             mnemonic,
             multisig,
+            confidential,
+            blindkey,
           },
         },
       })
