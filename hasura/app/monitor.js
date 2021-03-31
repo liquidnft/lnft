@@ -1,6 +1,7 @@
 const { api, hasura, electrs, registry } = require("./api");
 const { formatISO } = require("date-fns");
 const { unblind } = require("./wallet");
+const reverse = require("buffer-reverse");
 
 const setConfirmed = `
   mutation setConfirmed($id: uuid!) {
@@ -212,16 +213,20 @@ app.get("/transactions", auth, async (req, res) => {
               vout,
               Buffer.from(user.blindkey, "hex")
             ));
+
+            asset = reverse(asset).toString("hex");
           } catch (e) {}
         }
 
-        if (asset)
-          total[asset] ? (total[asset] -= value) : (total[asset] = -value);
+        if (asset) {
+          total[asset] ? (total[asset] -= parseInt(value)) : (total[asset] = parseInt(-value));
+        }
       }
     }
 
     for (let k = 0; k < vout.length; k++) {
       let { asset, value, scriptpubkey_address: a } = vout[k];
+
       if ([user.address, user.multisig].includes(a)) {
         if (!asset) {
           hex = await electrs
@@ -232,12 +237,15 @@ app.get("/transactions", auth, async (req, res) => {
           try {
             ({ asset, value, address: a } = await unblind(
               hex,
-              vout,
+              k,
               Buffer.from(user.blindkey, "hex")
             ));
+            asset = reverse(asset).toString("hex");
           } catch (e) {}
-          if (asset)
-            total[asset] ? (total[asset] += value) : (total[asset] = value);
+        }
+
+        if (asset) {
+          total[asset] ? (total[asset] += parseInt(value)) : (total[asset] = parseInt(value));
         }
       }
     }

@@ -74,7 +74,8 @@ let parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 let parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 const unblind = (hex, vout, blindkey) => {
-  let output = Transaction.fromHex(hex).outs[vout];
+  let tx = Transaction.fromHex(hex)
+  let output = tx.outs[vout];
 
   return confidential.unblindOutputWithKey(
     output,

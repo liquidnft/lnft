@@ -3,7 +3,14 @@
   import { psbt, user } from "$lib/store";
   import reverse from "buffer-reverse";
   import { electrs } from "$lib/api";
-  import { getAddress, parseVal, parseAsset } from "$lib/wallet";
+  import {
+    getTx,
+    getAddress,
+    parseVal,
+    parseAsset,
+    unblind,
+  } from "$lib/wallet";
+  import { requirePassword } from "$lib/auth";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import {
     explorer,
@@ -19,19 +26,30 @@
   } from "$lib/utils";
 
   export let summary = false;
+  export let tx;
 
-  let ins, outs, totals, senders, recipients, tx, showDetails, users;
-  $: init($psbt);
-  let init = async (p) => {
+  let ins, outs, totals, senders, recipients, showDetails, users, lock, pp, uu;
+  $: init($psbt, $user);
+  let init = async (p, u) => {
+    pp = JSON.stringify(p);
+    uu = JSON.stringify(u);
+    if (lock) {
+      if (JSON.stringify(p) !== pp || JSON.stringify(u) !== uu)
+        setTimeout(() => init(p, u), 50);
+      return;
+    }
+    lock = true;
     if (!p) return;
 
     ins = [];
     outs = [];
 
-    try {
-      tx = p.extractTransaction();
-    } catch (e) {
-      tx = p.__CACHE.__TX;
+    if (!tx) {
+      try {
+        tx = p.extractTransaction();
+      } catch (e) {
+        tx = p.__CACHE.__TX;
+      }
     }
 
     totals = {};
@@ -43,6 +61,15 @@
       let { hash, index } = tx.ins[i];
       let txid = reverse(hash).toString("hex");
       let input = (await electrs.url(`/tx/${txid}`).get().json()).vout[index];
+      if ($user && input.assetcommitment) {
+        await requirePassword();
+        try {
+          let { asset, value } = await unblind((await getTx(txid)).outs[index]);
+          input.asset = reverse(asset).toString("hex");
+          input.value = parseInt(value);
+        } catch (e) {}
+      }
+
       input.signed =
         !!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig;
       input.pSig = !!p.data.inputs[i].partialSig;
@@ -52,47 +79,68 @@
       ins = [...ins, input];
 
       let { asset, scriptpubkey_address: address } = input;
-      let user = addressLabel(address);
-      users[user] = addressUser(address);
+      let username = addressLabel(address);
+      users[username] = addressUser(address);
 
-      if (!totals[user]) totals[user] = {};
-      if (!totals[user][asset]) totals[user][asset] = 0;
-      totals[user][asset] += input.value;
-      senders[user] = true;
+      if (!totals[username]) totals[username] = {};
+      if (!totals[username][asset]) totals[username][asset] = 0;
+      totals[username][asset] += input.value;
+      senders[username] = true;
     }
 
-    outs = tx.outs.map((out) => {
-      let address;
+    for (let j = 0; j < tx.outs.length; j++) {
+      let out = tx.outs[j];
 
-      let asset = parseAsset(out.asset);
-      let value = parseVal(out.value);
+      let address, asset, value;
+
+      if ($user && out.rangeProof.length) {
+        await requirePassword();
+        try {
+          ({ asset, value } = await unblind(out));
+          asset = reverse(asset).toString("hex");
+          value = parseInt(value);
+        } catch (e) {}
+      } else {
+        asset = parseAsset(out.asset);
+        value = parseVal(out.value);
+      }
 
       try {
         address = getAddress(out);
       } catch (e) {
         if (!out.script.length) address = "Fee";
-        else
-          return {
-            value,
-            asset,
-            address: "",
-          };
+        else {
+          outs = [
+            ...outs,
+            {
+              value,
+              asset,
+              address: "",
+            },
+          ];
+          continue;
+        }
       }
 
-      let user = addressLabel(address);
-      users[user] = addressUser(address);
+      let username = addressLabel(address);
+      users[username] = addressUser(address);
 
-      if (!totals[user]) totals[user] = {};
-      if (!totals[user][asset]) totals[user][asset] = 0;
-      totals[user][asset] -= value;
-      if (totals[user][asset] < 0) recipients[user] = true;
+      if (!totals[username]) totals[username] = {};
+      if (!totals[username][asset]) totals[username][asset] = 0;
+      totals[username][asset] -= value;
+      if (totals[username][asset] < 0) recipients[username] = true;
 
-      return {
-        value,
-        asset,
-        address,
-      };
-    });
+      outs = [
+        ...outs,
+        {
+          value,
+          asset,
+          address,
+        },
+      ];
+    }
+
+    lock = false;
   };
 
   let base64;
@@ -105,36 +153,34 @@
     <div class="flex flex-wrap">
       <div class="w-full sm:w-1/2">
         <h4 class="mb-2">Sending</h4>
-        {#each Object.keys(totals) as user}
-          {#if senders[user] && user !== 'Fee'}
+        {#each Object.keys(totals) as username}
+          {#if senders[username] && username !== 'Fee'}
             <div class="flex mb-2">
               <div class="flex ml-2 flex-grow sm:pr-8">
-                {#if users[user]}
+                {#if users[username]}
                   <div class="mb-auto flex">
                     <div class="flex">
-                      {#if users[user]}
+                      {#if users[username]}
                         <Avatar
-                          user={users[user]}
-                          overlay={user.includes('+ us') && '/logo-graphic.png'} />
+                          user={users[username]}
+                          overlay={username.includes('+ us') && '/logo-graphic.png'} />
                       {/if}
                     </div>
                     <div class="my-auto ml-2">
-                      <a
-                        href={`/${users[user].username}`}
-                        class="secondary-color">
-                        {user}
+                      <a href={`/${username}`} class="secondary-color">
+                        {username}
                       </a>
                     </div>
                   </div>
                 {:else}
-                  <div>{user}</div>
+                  <div class="w-2/3 break-all">{username}</div>
                 {/if}
                 <div class="ml-auto mt-3">
-                  {#each Object.keys(totals[user]) as asset}
-                    {#if totals[user][asset] > 0}
+                  {#each Object.keys(totals[username]) as asset}
+                    {#if totals[username][asset] > 0}
                       <div class="flex break-all mb-2">
                         <div class="ml-auto mr-1">
-                          {val(asset, Math.abs(totals[user][asset]))}
+                          {val(asset, Math.abs(totals[username][asset]))}
                         </div>
                         <div>{assetLabel(asset)}</div>
                       </div>
@@ -149,36 +195,34 @@
 
       <div class="w-full sm:w-1/2">
         <h4 class="mb-2">Receiving</h4>
-        {#each Object.keys(totals) as user}
-          {#if recipients[user] && user !== 'Fee'}
+        {#each Object.keys(totals) as username}
+          {#if recipients[username] && username !== 'Fee'}
             <div class="flex mb-2">
               <div class="flex ml-2 flex-grow">
                 <div class="flex">
-                  {#if users[user]}
+                  {#if users[username]}
                     <Avatar
-                      user={users[user]}
-                      overlay={user.includes('+ us') && '/logo-graphic.png'} />
+                      user={users[username]}
+                      overlay={username.includes('+ us') && '/logo-graphic.png'} />
                   {/if}
                 </div>
                 <div class="my-auto ml-2">
-                  {#if users[user]}
+                  {#if users[username]}
                     <div class="my-auto">
-                      <a
-                        href={`/${users[user].username}`}
-                        class="secondary-color">
-                        {user}
+                      <a href={`/${username}`} class="secondary-color">
+                        {username}
                       </a>
                     </div>
                   {:else}
-                    <div>{user}</div>
+                    <div class="w-2/3 break-all">{username}</div>
                   {/if}
                 </div>
                 <div class="ml-auto mt-3">
-                  {#each Object.keys(totals[user]) as asset}
-                    {#if totals[user][asset] < 0}
+                  {#each Object.keys(totals[username]) as asset}
+                    {#if totals[username][asset] < 0}
                       <div class="flex break-all mb-2">
                         <div class="mx-auto mr-1">
-                          {val(asset, Math.abs(totals[user][asset]))}
+                          {val(asset, Math.abs(totals[username][asset]))}
                         </div>
                         <div>{assetLabel(asset)}</div>
                       </div>

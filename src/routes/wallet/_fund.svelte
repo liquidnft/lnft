@@ -5,7 +5,7 @@
   import { api } from "$lib/api";
   import ProgressLinear from "$components/ProgressLinear";
 
-  export let funding;
+  export let funding = false;
 
   let img;
   let tab = "liquid";
@@ -14,6 +14,13 @@
   let toggle = () => {
     showInvoice = !showInvoice;
   };
+
+  let confidential = true;
+  let toggleConfidential = () => {
+    confidential = !confidential;
+    if (confidential) address = $user.confidential;
+    else address = $user.address;
+  } 
 
   $: updateAddress(address);
 
@@ -98,6 +105,7 @@
   }
 </style>
 
+
 {#if $user && funding}
   <div class="dark mb-2 rounded-lg">
     <div class="flex justify-between place-items-center text-gray-400">
@@ -129,11 +137,17 @@
         <div class="flex">
           <div
             class="break-all text-sm text-gray-500"
-            class:truncate={!showInvoice}
+            class:truncate={tab === 'lightning' && !showInvoice}
             class:invisible={loading}
             class:mx-auto={tab !== 'lightning'}>
             {address}
           </div>
+          {#if tab === 'liquid'}
+        <button
+          on:click={toggleConfidential}
+          class:secondary-color={confidential}>
+          <i class="fas fa-user-secret ml-2" /></button>
+        {/if}
           {#if tab === 'lightning' && !showInvoice}
             <div
               class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"

@@ -19,6 +19,7 @@
   import { btc, fade, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
+    fundUnconfidential,
     createIssuance,
     signAndBroadcast,
     parseAsset,
@@ -109,10 +110,17 @@
 
     let error, success;
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 1; i++) {
       await requirePassword();
 
-      contract = await createIssuance(artwork, domain, tx);
+      try {
+        contract = await createIssuance(artwork, domain, tx);
+      } catch(e) {
+        if (e.message.startsWith("No")) {
+          tx = await fundUnconfidential();
+          contract = await createIssuance(artwork, domain, tx);
+        } 
+      } 
 
       try {
         success = await signAndBroadcast();
@@ -124,7 +132,6 @@
     }
 
     if (!success) {
-      console.log($psbt.toBase64());
       throw new Error("Issuance failed: " + error);
     }
 

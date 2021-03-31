@@ -47,31 +47,8 @@ const noneAnyoneCanPay =
 export const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 export const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
-export const doit = async () => {
-  let hex = await electrs
-    .url(
-      `/tx/a5793145ce947a3d5cc89b6c28c30249ed6fd23be235a16b3ea5e5f9a21633e6/hex`
-    )
-    .get()
-    .text();
-
-  console.log(hex);
-  console.log(await unblind(hex, 1));
-};
-
-export const unblind = (hex, vout) => {
-  let { pubkey, seed } = keypair();
-
-  let redeem = payments.p2wpkh({
-    pubkey,
-    network,
-  });
-
-  let { privateKey } = slip77(seed).derive(redeem.output);
-  let output = Transaction.fromHex(hex).outs[vout];
-
-  return confidential.unblindOutputWithKey(output, privateKey);
-};
+export const unblind = (output) =>
+  confidential.unblindOutputWithKey(output, blindingKey().privateKey);
 
 export const getTransactions = () => {
   if (!get(poll).find((p) => p.name === "txns"))
@@ -103,26 +80,30 @@ export const getBalances = () => {
       },
     ]);
 
+  let unblinded = {};
   let getUtxos = async (singlesig, multisig) => {
     await requirePassword();
     let f = (a) => electrs.url(`/address/${a}/utxo`).get().json();
     let single = (await f(singlesig)).map((u) => ({ ...u, single: true }));
     let multi = (await f(multisig)).map((u) => ({ ...u, multi: true }));
     let utxos = [...single, ...multi];
-    let unblinded = [];
 
     for (let i = 0; i < utxos.length; i++) {
-      if (utxos[i].asset) break;
+      if (utxos[i].asset) continue;
       let { txid, vout } = utxos[i];
-      if (!unblinded[txid]) {
-        let hex = await electrs.url(`/tx/${txid}/hex`).get().text();
+      if (unblinded[txid]) {
+        utxos[i].asset = unblinded[txid].asset;
+        utxos[i].value = unblinded[txid].value;
+      } else {
+        let tx = await getTx(txid);
         try {
-          let { asset } = await unblind(hex, vout);
-          utxos[i].asset = parseAsset(asset);
+          let { asset, value } = await unblind(tx.outs[vout]);
+          utxos[i].asset = reverse(asset).toString("hex");
+          utxos[i].value = parseInt(value);
           unblinded[txid] = utxos[i];
-        } catch(e) {
+        } catch (e) {
+          console.log(e);
           utxos.splice(i, 1);
-          console.log("boom", e);
         }
       }
     }
@@ -140,15 +121,15 @@ export const getBalances = () => {
     utxos.map((u) => {
       if (u.asset === btc && u.value < DUST) return;
       if (u.status.confirmed) {
-        if (b[u.asset]) b[u.asset] += u.value;
+        if (b[u.asset]) b[u.asset] += parseInt(u.value);
         else b[u.asset] = u.value;
       } else {
-        if (p[u.asset]) p[u.asset] += u.value;
+        if (p[u.asset]) p[u.asset] += parseInt(u.value);
         else p[u.asset] = u.value;
       }
     });
 
-    balances.set(b);
+    balances.set(JSON.parse(JSON.stringify(b)));
     pending.set(p);
   };
 
@@ -171,12 +152,7 @@ export const createWallet = (mnemonic, pass) => {
     const key = keypair(mnemonic, pass);
     let { pubkey, seed } = key;
 
-    let redeem = payments.p2wpkh({
-      pubkey,
-      network,
-    });
-
-    let { privateKey } = slip77(seed).derive(redeem.output);
+    let { privateKey } = blindingKey(key);
 
     return {
       address: singlesig(key).address,
@@ -225,10 +201,23 @@ export const singlesig = (key) => {
     network,
   });
 
-  let blindingKey = slip77(seed).derive(redeem.output);
-  let { publicKey: blindkey } = blindingKey;
+  return payments.p2sh({
+    redeem,
+    network,
+    blindkey: blindingKey(key).publicKey,
+  });
+};
 
-  return payments.p2sh({ redeem, network, blindkey });
+export const blindingKey = (key) => {
+  if (!key) key = keypair();
+  let { pubkey, seed } = key;
+
+  let redeem = payments.p2wpkh({
+    pubkey,
+    network,
+  });
+
+  return slip77(seed).derive(redeem.output);
 };
 
 export const multisig = (key) => {
@@ -272,60 +261,119 @@ function shuffle(array) {
 }
 
 const fund = async (
-  psbt,
+  p,
   out,
   asset,
   amount,
   sighashType = 1,
-  multisig = false
+  multisig = false,
+  confidential = true
 ) => {
   let { address, redeem, output } = out;
 
-  let utxos = shuffle(
-    (await electrs.url(`/address/${address}/utxo`).get().json())
-      .filter((o) => o.asset === asset)
-      .filter((o) => o.asset !== btc || o.value > DUST)
+  let unblinded = {};
+  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+  for (let i = 0; i < utxos.length; i++) {
+    if (utxos[i].asset) continue;
+    let { txid, vout } = utxos[i];
+    if (!unblinded[txid]) {
+      let tx = await getTx(txid);
+      try {
+        let unblinded = await unblind(tx.outs[vout]);
+        let {
+          asset,
+          value,
+          assetBlindingFactor,
+          valueBlindingFactor,
+        } = unblinded;
+        utxos[i].asset = reverse(asset).toString("hex");
+        utxos[i].value = parseInt(value);
+        utxos[i].assetBuffer = asset;
+        utxos[i].valueString = value;
+        utxos[i].assetBlindingFactor = assetBlindingFactor;
+        utxos[i].valueBlindingFactor = valueBlindingFactor;
+        unblinded[txid] = utxos[i];
+      } catch (e) {
+        utxos.splice(i, 1);
+      }
+    }
+  }
+
+  let all = utxos.filter(
+    (o) => o.asset === asset && (o.asset !== btc || o.value > DUST)
+  );
+
+  utxos = shuffle(
+    all
+      .filter((o) => confidential || !o.assetBuffer)
+      .filter((o) => o.assetBuffer || confidential !== "only")
   );
 
   let i = 0;
   let total = 0;
 
   while (total < amount) {
-    if (i >= utxos.length)
+    if (i >= utxos.length) {
+      if (!confidential && all.length > utxos.length)
+        throw { message: "No confidential" };
       throw { message: "Insufficient funds", amount, asset, total };
+    }
     total += utxos[i].value;
     i++;
   }
 
+  let blinded = {};
   for (var j = 0; j < i; j++) {
     let prevout = utxos[j];
     let hex = await getHex(prevout.txid);
+    let tx = Transaction.fromHex(hex);
 
     let input = {
       hash: prevout.txid,
       index: prevout.vout,
-      // witnessUtxo: tx.outs[prevout.vout],
-      nonWitnessUtxo: Buffer.from(hex, "hex"),
       redeemScript: redeem.output,
       sighashType,
     };
+
+    if (prevout.assetcommitment) {
+      blinded[j] = true;
+      input.witnessUtxo = tx.outs[prevout.vout];
+    } else {
+      input.nonWitnessUtxo = Buffer.from(hex, "hex");
+    }
 
     if (multisig) {
       input.witnessScript = redeem.redeem.output;
     }
 
-    psbt.addInput(input);
+    p.addInput(input);
   }
 
   if (total > amount)
-    if (total - amount > DUST || asset !== btc)
-      psbt.addOutput({
+    if (total - amount > DUST || asset !== btc) {
+      let index = p.data.outputs.length;
+      p.addOutput({
         asset,
         nonce: Buffer.alloc(1),
         script: multisig ? singlesig().output : out.output,
         value: total - amount,
       });
-    else bumpFee(total - amount);
+
+      let inputs = Object.keys(blinded);
+      let inputMap = new Map();
+      inputs.map((i) => {
+        let o = { ...utxos[i] };
+        o.asset = utxos[i].assetBuffer;
+        o.value = utxos[i].valueString;
+        inputMap.set(parseInt(i), o);
+      });
+
+      let outputMap = new Map().set(index, blindingKey().publicKey);
+
+      if (inputs.length && !p.data.inputs.find((i) => i.issuance)) {
+        await p.blindOutputsByIndex(inputMap, outputMap);
+      }
+    } else bumpFee(total - amount);
 };
 
 const addFee = (p) =>
@@ -395,22 +443,22 @@ export const cancelSwap = async ({ auction_end, royalty, asset }) => {
 };
 
 export const sign = (sighash = 1) => {
-  let $psbt = get(psbt);
+  let p = get(psbt);
 
   let { privkey } = keypair();
 
-  $psbt.data.inputs.map((_, i) => {
+  p.data.inputs.map((_, i) => {
     try {
-      $psbt = $psbt
+      p = p
         .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
         .finalizeInput(i);
     } catch (e) {
-      // console.log(e.message);
+      // console.log("failed to sign", e.message);
     }
   });
 
-  psbt.set($psbt);
-  return $psbt;
+  psbt.set(p);
+  return p;
 };
 
 export const broadcast = async () => {
@@ -472,8 +520,24 @@ export const executeSwap = async (artwork) => {
   return p;
 };
 
+export const fundUnconfidential = async () => {
+  let out = singlesig();
+  let p = new Psbt();
+  await fund(p, out, btc, DUST + get(fee), 1, false, "only");
+  p.addOutput({
+    asset: btc,
+    nonce: Buffer.alloc(1),
+    script: out.output,
+    value: DUST,
+  });
+  addFee(p);
+  psbt.set(p);
+  p = await signAndBroadcast();
+  return p.extractTransaction();
+};
+
 export const createIssuance = async (
-  { filename: hash, title: name, ticker },
+  { filename: file, title: name, ticker },
   domain,
   tx
 ) => {
@@ -484,7 +548,7 @@ export const createIssuance = async (
     .addOutput({
       asset: btc,
       nonce: Buffer.alloc(1),
-      script: payments.embed({ data: [bs58.decode(hash)] }).output,
+      script: payments.embed({ data: [bs58.decode(file)] }).output,
       value: 0,
     });
 
@@ -515,13 +579,15 @@ export const createIssuance = async (
         });
       else bumpFee(value);
     }
-  } else await fund(p, out, btc, get(fee));
+  } else {
+    await fund(p, out, btc, get(fee), 1, false, false);
+  }
 
   let contract = {
     entity: { domain },
+    file,
     issuer_pubkey: keypair().pubkey.toString("hex"),
     name,
-    //    hash,
     precision: 0,
     ticker,
     version: 0,
@@ -539,6 +605,7 @@ export const createIssuance = async (
   addFee(p);
 
   psbt.set(p);
+
   return contract;
 };
 

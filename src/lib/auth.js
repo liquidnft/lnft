@@ -1,12 +1,10 @@
 import { api } from "$lib/api";
-import { generateMnemonic } from "bip39";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { password as pw, poll, prompt, user, token } from "$lib/store";
 import PasswordPrompt from "$components/PasswordPrompt";
-import { goto, err, validateEmail } from "$lib/utils";
-import { createWallet, keypair } from "$lib/wallet";
+import { goto, err } from "$lib/utils";
 
 export const expired = (t) => !t || decode(t).exp * 1000 < Date.now();
 
@@ -70,22 +68,6 @@ export const logout = () => {
     });
 };
 
-let justRegistered;
-export const register = async (email, username, password) => {
-  if (!validateEmail(email)) throw new Error("Invalid email");
-  if (password.length < 8) throw new Error("Password must be 8 characters");
-
-  return api
-    .url("/register")
-    .post({
-      email,
-      password,
-      username,
-      ...createWallet(generateMnemonic(), password),
-    })
-    .res();
-};
-
 export const login = (email, password) => {
   api
     .url("/login")
@@ -100,7 +82,7 @@ export const login = (email, password) => {
       window.sessionStorage.setItem("token", t);
       pw.set(password);
       prompt.set(false);
-      justRegistered ? goto("/wallet/create") : goto("/landing");
+      goto("/landing");
     })
     .catch(() => err("Login failed"));
 };

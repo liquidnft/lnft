@@ -8,15 +8,9 @@
   import Search from "$components/Search";
   import Filter from "./_filter";
   import Sort from "./_sort";
-  import { doit } from "$lib/wallet";
   import { requirePassword } from "$lib/auth";
 
   export let showFilters = true;
-
-  let go = async () => {
-    await requirePassword();
-    doit();
-  } 
 
   let filtered = [];
 
@@ -76,10 +70,6 @@
     }
   }
 </style>
-
-<div class="flex w-full">
-<button class="mx-auto" on:click={go}>Do it</button>
-</div>
 
 <Results />
 

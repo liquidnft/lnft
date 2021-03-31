@@ -39,10 +39,8 @@
 		"svelte-select": "^3.17.0",
 		"tailwindcss": "^2.0.3",
 		"uuid": "^8.3.2",
-		"wretch": "^1.7.4"
-	},
-	"dependencies": {
-		"@asoltys/liquidjs-lib": "^5.1.33",
+		"wretch": "^1.7.4",
+		"@asoltys/liquidjs-lib": "^5.1.34",
 		"@fortawesome/fontawesome-free": "^5.15.2",
 		"@sveltejs/adapter-static": "^1.0.0-next.0",
 		"bip32": "^2.0.6",

@@ -57,19 +57,20 @@
 
   {#each txns as tx}
     {#if !show || tx.asset === $asset}
-    <div class="w-full mb-4">
-      <div class="flex">
-        <div class="flex-grow text-sm text-gray-500">
-          {format(parseISO(tx.created_at), 'MMM do, yyyy')}
-        </div>
-        <div
-          class:text-green-500={tx.amount > 0}>
-          {tx.amount > 0 ? "+" : ""}{val(tx.asset, tx.amount)}
-        </div>
-      </div>
+      <a href={`/tx/${tx.id}`}>
+        <div class="w-full mb-4">
+          <div class="flex">
+            <div class="flex-grow text-sm text-gray-500">
+              {format(parseISO(tx.created_at), 'MMM do, yyyy')}
+            </div>
+            <div class:text-green-500={tx.amount > 0}>
+              {tx.amount > 0 ? '+' : ''}{val(tx.asset, tx.amount)}
+            </div>
+          </div>
 
-      <div class="">{assetLabel(tx.asset)}</div>
-    </div>
-  {/if}
+          <div class="">{assetLabel(tx.asset)}</div>
+        </div>
+      </a>
+    {/if}
   {/each}
 {/if}

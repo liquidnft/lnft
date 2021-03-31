@@ -7,9 +7,8 @@
   import { ProgressLinear } from "$comp";
   import { getArtworks } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
-  import reverse from "buffer-reverse";
-  import { assetLabel, btc, sats, units, tickers } from "$lib/utils";
-  import { requireLogin, requirePassword } from "$lib/auth";
+  import { assetLabel, btc, sats, tickers, val } from "$lib/utils";
+  import { requireLogin } from "$lib/auth";
   import { getBalances } from "$lib/wallet";
 
   import Fund from "./_fund";
@@ -17,6 +16,9 @@
   import Transactions from "./_transactions";
 
   $: requireLogin($page);
+
+  let balance;
+  balances.subscribe((b) => b && (balance = val($asset, b[$asset] || 0)))
 
   let loading = true;
   if (!$asset) $asset = btc;
@@ -53,8 +55,6 @@
       getBalances();
       loading = false;
     });
-
-  $: [_, val, _] = units($asset);
 </script>
 
 <style>
@@ -79,9 +79,9 @@
   <div class="absolute top-0 w-full left-0">
     <ProgressLinear />
   </div>
-{:else if $balances}
+{:else if $balances && $pending}
   <div class="w-full xl:w-3/4 max-w-lg">
-    {#if $assets.length}
+    {#if $assets.length > 1}
       <div class="mb-5">
         <a class="secondary-color" href="/wallet/asset">{$assets.length}
           assets available in this wallet
@@ -98,14 +98,14 @@
       <div class="m-6">
         <div class="text-sm text-gray-400">Balance</div>
         <div class="flex mt-3">
-          <span class="text-4xl text-white mr-3">{val($balances[$asset] || 0)}</span>
+          <span class="text-4xl text-white mr-3">{balance}</span>
           <span class="text-gray-400 mt-3.5">{assetLabel($asset)}</span>
         </div>
       </div>
       <div class="m-6">
         <div class="text-sm text-gray-400">Pending</div>
         <div class="flex mt-3">
-          <span class="text-gray-400 mr-3">{val($pending[$asset] || 0)}</span>
+          <span class="text-gray-400 mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
           <span class="text-gray-400">{assetLabel($asset)}</span>
         </div>
       </div>
@@ -115,7 +115,7 @@
           class="button-trans-gray w-full mr-2">Fund</button>
         <button
           on:click={toggleWithdrawing}
-          class="button-trans-gray w-full ml-2" disabled={!$balances[$asset]}>Withdraw</button>
+          class="button-trans-gray w-full ml-2" disabled={!balance}>Withdraw</button>
       </div>
     </div>
     <div>

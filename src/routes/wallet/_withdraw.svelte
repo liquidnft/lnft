@@ -9,10 +9,10 @@
   import { getArtworkByAsset } from "$queries/artworks";
   import { subscription, operationStore } from "@urql/svelte";
 
-  export let withdrawing;
+  export let withdrawing = false;
 
   let amount;
-  let to;
+  let to = "AzpkhPrKwPmRy48BZ1EuTjk31557T4kMuDRWwfYBLJoJsDDFf4QC1hNpRcHvL6rwSr9seDTqjB3MfTvB";
   let loading;
   let artwork;
 
@@ -24,12 +24,12 @@
 
   $: clearForm($asset);
   let clearForm = () => {
-    amount = undefined;
+    amount = 0.001;
   };
 
   let send = async (e) => {
-    e.preventDefault();
     await requirePassword();
+
     loading = true;
     try {
       if ($asset !== btc && !artwork) artwork = { asset: $asset };
@@ -42,10 +42,10 @@
 
       await broadcast();
 
-      $balances[$asset] -= amount;
       info("Payment sent!");
       withdrawing = false;
     } catch (e) {
+      console.log(e);
       err(e);
     }
     loading = false;
@@ -60,7 +60,7 @@
 </style>
 
 {#if $user && withdrawing}
-  <form class="dark w-full flex flex-col" on:submit={send} autocomplete="off">
+  <form class="dark w-full flex flex-col" on:submit|preventDefault={send} autocomplete="off">
     {#if loading}
       <ProgressLinear />
     {:else}

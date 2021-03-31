@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@asoltys/blech32/-/blech32-1.0.4.tgz#10066fb173b9b426a465504d7418e3d7295d2d58"
   integrity sha512-yiiQNRSCqUMCDcFbPvG2QIyBNJsTbZvthq7inIF9RKVd6ei8yuMUXPdO85cwyANLeVvtdFEBpsKBzCETahSk0A==
 
-"@asoltys/liquidjs-lib@^5.1.33":
-  version "5.1.33"
-  resolved "https://registry.yarnpkg.com/@asoltys/liquidjs-lib/-/liquidjs-lib-5.1.33.tgz#86e1b58f977bafc1a663aa2f67d62b9a3d6f2cbf"
-  integrity sha512-12NQAyiYJIOL4/BiOj/uggyCEJCu1nQncwlHlRWCkyHEvFqlLXMony6/wSO/2oE0+fRe3Sopd0L2OIKKBesnEQ==
+"@asoltys/liquidjs-lib@^5.1.34":
+  version "5.1.34"
+  resolved "https://registry.yarnpkg.com/@asoltys/liquidjs-lib/-/liquidjs-lib-5.1.34.tgz#1450fae74c324d9845c8e2a096a52b02b33e1f5e"
+  integrity sha512-k38oL2+t1Ukafu8QyeKa8pyqmws4n+ZGEL0OI4xCDaIM0oS2zYJ1KjqwhPcPL88aCUzfFL9SFWM3S8/nJzGZsw==
   dependencies:
     "@asoltys/blech32" "^1.0.4"
     "@asoltys/secp256k1-zkp" "^2.0.4"

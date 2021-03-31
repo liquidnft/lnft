@@ -29,8 +29,9 @@
     setInterval(refreshToken, 600000);
   });
 
-  $: if ($error && $error.message && $error.message.includes("Insufficient"))
+  $: if ($error && $error.message && $error.message.includes("Insufficient")) {
     $prompt = InsufficientFunds;
+  }
 
   let lastPage;
   let pageChange = (p) => {

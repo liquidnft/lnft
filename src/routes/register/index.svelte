@@ -1,7 +1,7 @@
 <script>
   import { err } from "$lib/utils";
   import { page } from "$app/stores";
-  import { register } from "$lib/auth";
+  import { register } from "$lib/register";
   import ProgressLinear from "$components/ProgressLinear";
 
   let username = "";
