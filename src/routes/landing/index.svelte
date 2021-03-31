@@ -42,10 +42,12 @@
   }
   .secondary-header {
     height: 600px;
+    /*
     background-image: url("/secondary-header.jpg");
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+     */
   }
   .header-button {
     width: 170px;
@@ -80,15 +82,28 @@
 
 <div class="flex secondary-header mt-20 mb-20 text-white">
   <div
-    class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6">
-    <h2 class="mb-3 text-white">Anon artist</h2>
-    <p>The artwork</p>
+    class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
+    <h2 class="mb-3 text-white">cryptograffiti <br />x loudsqueak</h2>
+    <p>Strikes Twice</p>
     <button
       class="button-transparent header-button text-white border mt-10"
       on:click={() => goto(`/artwork/${featuredArtworkId}`)}>
       View Artwork</button>
   </div>
+
+
+  <video
+    class="lazy cover absolute secondary-header"
+    autoplay
+    muted
+    playsinline
+    loop>
+    <source src="/api/ipfs/QmTLNhbh6EhA1V3q7NR91GLnqJ5VG8BPH2GGZ6DZrRxFqe" />
+    Your browser does not support HTML5 video.
+  </video>
+
 </div>
+
 
 <div class="container mx-auto px-10 mb-8">
   <h3>Recent Activity</h3>
