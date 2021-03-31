@@ -147,6 +147,8 @@ export const getTx = async (txid) => {
 export const createWallet = (mnemonic, pass) => {
   try {
     if (!pass) pass = get(password);
+    if (!mnemonic) mnemonic = getMnemonic();
+
     mnemonic = cryptojs.AES.encrypt(mnemonic, pass).toString();
 
     const key = keypair(mnemonic, pass);
@@ -169,7 +171,7 @@ export const createWallet = (mnemonic, pass) => {
 };
 
 export const getMnemonic = (mnemonic, pass) => {
-  if (!mnemonic) mnemonic = get(user).mnemonic;
+  if (!mnemonic && get(user)) mnemonic = get(user).mnemonic;
   if (!pass) pass = get(password);
 
   mnemonic = cryptojs.AES.decrypt(mnemonic, pass).toString(cryptojs.enc.Utf8);

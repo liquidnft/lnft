@@ -18,11 +18,12 @@
   import { getUser, getUsersAddresses, updateUser } from "$queries/users";
   import { getArtworks } from "$queries/artworks";
   import { setupUrql } from "$lib/urql";
-  import { query, operationStore } from "@urql/svelte";
+  import { mutation, query, operationStore } from "@urql/svelte";
   import { page } from "$app/stores";
-  import { requireLogin, refreshToken } from "$lib/auth";
+  import { requireLogin, refreshToken, requirePassword } from "$lib/auth";
   import InsufficientFunds from "$components/InsufficientFunds";
-  import { etag, publicPages } from "$lib/utils";
+  import { etag, publicPages, err, info } from "$lib/utils";
+  import { createWallet } from "$lib/wallet";
 
   onMount(async () => {
     refreshToken();
@@ -65,21 +66,39 @@
     }
   });
 
-  let userQuery = operationStore(getUser);
-  $: if ($token) query(userQuery, {}, o).subscribe(({ data }) => {
-    if (data && data.currentuser) {
-      $user = data.currentuser[0];
-    }
-  });
+  $: setupConfidential($user);
+  let setupConfidential = async (u) => {
+    if (!u || u.confidential) return;
+    info(
+      "Looks like your account doesn't have a confidential address, let's fix that"
+    );
+    await requirePassword();
+
+    let { confidential, blindkey } = createWallet();
+    updateUserQuery({ user: { confidential, blindkey }, id: u.id }).then(
+      (r) => {
+        if (r.error) return err(r.error.message);
+        if (r.data) info("Your confidential address has been enabled");
+      }
+    );
+  };
+
+  let updateUserQuery, userQuery;
+  $: if ($token) {
+    updateUserQuery = mutation(updateUser);
+    userQuery = operationStore(getUser);
+
+    query(userQuery, {}, o).subscribe(async ({ data }) => {
+      if (data && data.currentuser) {
+        $user = data.currentuser[0];
+      }
+    });
+  }
 
   let setup = (r, t) => {
     if (t && !initialized) {
       id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
       setupUrql(t);
-      if ($userQuery) {
-        $userQuery.context = { requestPolicy: "cache-and-network" };
-      } 
-
       initialized = true;
     }
   };

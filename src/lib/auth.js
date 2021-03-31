@@ -62,6 +62,7 @@ export const logout = () => {
       window.sessionStorage.removeItem("password");
       window.sessionStorage.removeItem("token");
       window.sessionStorage.removeItem("user");
+      indexedDB.deleteDatabase('graphcache-v3');
       token.set(null);
       user.set(null);
       tick().then(() => goto("/login"));
@@ -88,6 +89,5 @@ export const login = (email, password) => {
 };
 
 export const activate = (ticket) => {
-  console.log(ticket);
   return api.url("/activate").query({ ticket }).get().res();
 };
