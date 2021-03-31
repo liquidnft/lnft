@@ -1,5 +1,8 @@
 <script>
   import { onMount } from "svelte";
+  import Fa from "svelte-fa";
+  import { faVolumeUp, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+
   export let artwork;
   export let showDetails;
   export let loaded = false;
@@ -7,7 +10,11 @@
   export let preview = false;
 
   let img, vid;
-  $: path = artwork && (thumb ? `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}` : `/api/ipfs/${artwork.filename}`);
+  $: path =
+    artwork &&
+    (thumb
+      ? `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`
+      : `/api/ipfs/${artwork.filename}`);
 
   $: cover = !showDetails;
   $: contain = showDetails;
@@ -58,6 +65,17 @@
   $: loadVideo(preview);
   $: reloadVideo(artwork);
   let reloadVideo = () => !preview && loadVideo();
+
+  let muted = true;
+  let invisible = true;
+
+  let over = () => (invisible = false);
+  let out = () => (invisible = true);
+
+  let toggleSound = () => {
+    muted = !muted;
+    vid.muted = muted;
+  };
 </script>
 
 <style>
@@ -76,10 +94,19 @@
 </style>
 
 {#if artwork.filetype && artwork.filetype.includes('video')}
-  <video class="lazy" autoplay muted playsinline loop bind:this={vid}>
-    <source data-src={preview || path} />
-    Your browser does not support HTML5 video.
-  </video>
+  <div class="relative" on:mouseover={over} on:mouseout={out}>
+    <video class="lazy" autoplay muted playsinline loop bind:this={vid}>
+      <source data-src={preview || path} />
+      Your browser does not support HTML5 video.
+    </video>
+    <button
+      class="absolute bottom-2 right-2 text-primary"
+      class:invisible
+      type="button"
+      on:click={toggleSound}>
+      <Fa icon={muted ? faVolumeMute : faVolumeUp} size="1.5x" />
+    </button>
+  </div>
 {:else}
   <div class:cover class:contain>
     <img
