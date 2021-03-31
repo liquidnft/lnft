@@ -119,7 +119,9 @@
         if (e.message.startsWith("No")) {
           tx = await fundUnconfidential();
           contract = await createIssuance(artwork, domain, tx);
-        } 
+        } else { 
+          throw e;
+        }
       } 
 
       try {

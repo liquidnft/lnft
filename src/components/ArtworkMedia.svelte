@@ -8,6 +8,7 @@
   export let loaded = false;
   export let thumb = true;
   export let preview = false;
+  export let popup = false;
 
   let img, vid;
   $: path =
@@ -64,7 +65,7 @@
   onMount(loadVideo);
   $: loadVideo(preview);
   $: reloadVideo(artwork);
-  let reloadVideo = () => !preview && loadVideo();
+  let reloadVideo = () => (vid && vid.currentTime) || loadVideo();
 
   let muted = true;
   let invisible = true;
@@ -95,17 +96,26 @@
 
 {#if artwork.filetype && artwork.filetype.includes('video')}
   <div class="relative" on:mouseover={over} on:mouseout={out}>
-    <video class="lazy" autoplay muted playsinline loop bind:this={vid}>
+    <video
+      class="lazy"
+      autoplay
+      muted
+      playsinline
+      loop
+      bind:this={vid}
+      controls={popup}>
       <source data-src={preview || path} />
       Your browser does not support HTML5 video.
     </video>
-    <button
-      class="absolute bottom-2 right-2 text-primary"
-      class:invisible
-      type="button"
-      on:click={toggleSound}>
-      <Fa icon={muted ? faVolumeMute : faVolumeUp} size="1.5x" />
-    </button>
+    {#if !popup}
+      <button
+        class="absolute bottom-2 right-2 text-primary"
+        class:invisible
+        type="button"
+        on:click|stopPropagation|preventDefault={toggleSound}>
+        <Fa icon={muted ? faVolumeMute : faVolumeUp} size="1.5x" />
+      </button>
+    {/if}
   </div>
 {:else}
   <div class:cover class:contain>

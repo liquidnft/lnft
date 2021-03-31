@@ -14,6 +14,7 @@
   export let activityPage = false;
   export let loaded = false;
   export let thumb = true;
+  export let popup = false;
 
   $: [sats, val, ticker] = units(artwork.asking_asset);
 
@@ -49,7 +50,7 @@
   in:fade>
   <a href={`/${artwork.slug}`}>
     <div class="flex justify-center">
-      <ArtworkMedia {artwork} {showDetails} bind:loaded bind:thumb />
+      <ArtworkMedia {artwork} {showDetails} {loaded} {thumb} {popup} />
     </div>
   </a>
   {#if showDetails}

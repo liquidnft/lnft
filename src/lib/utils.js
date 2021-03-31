@@ -35,8 +35,7 @@ const publicPages = [
 ];
 
 const addressUser = (a) =>
-  get(users) &&
-  get(users).find((u) => u.address === a || u.multisig === a);
+  get(users) && get(users).find((u) => u.address === a || u.multisig === a);
 
 const addressLabel = (address) => {
   let $users = get(users);

@@ -425,7 +425,7 @@
           class:showPopup
           class="popup">
           <span class="closeButton"><i class="fas fa-times" /></span>
-          <Card {artwork} columns={1} showDetails={false} thumb={false} />
+          <Card {artwork} columns={1} showDetails={false} thumb={false} popup={true} />
         </div>
         <div class="flex pt-4 w-full">
           <div class="ml-auto" />
