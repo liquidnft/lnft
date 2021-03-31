@@ -95,7 +95,7 @@
 </style>
 
 {#if artwork.filetype && artwork.filetype.includes('video')}
-  <div class="relative" on:mouseover={over} on:mouseout={out}>
+  <div class:cover class:contain class="relative" on:mouseover={over} on:mouseout={out}>
     <video
       class="lazy"
       autoplay
@@ -109,7 +109,7 @@
     </video>
     {#if !popup}
       <button
-        class="absolute bottom-2 right-2 text-primary"
+        class="absolute hidden md:block right-2 top-36 lg:top-24 text-primary"
         class:invisible
         type="button"
         on:click|stopPropagation|preventDefault={toggleSound}>

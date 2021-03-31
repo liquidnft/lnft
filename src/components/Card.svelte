@@ -50,7 +50,7 @@
   in:fade>
   <a href={`/${artwork.slug}`}>
     <div class="flex justify-center">
-      <ArtworkMedia {artwork} {showDetails} {loaded} {thumb} {popup} />
+      <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
     </div>
   </a>
   {#if showDetails}
