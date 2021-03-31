@@ -151,12 +151,12 @@ const err = (e) => {
   } catch {}
   if (!msg) msg = "An error occurred";
   if (msg.includes("Insufficient")) return;
-  snack.set({ msg, type: "error" });
+  setTimeout(() => snack.set({ msg, type: "error" }), 100);
   if (e.stack) console.log(e.stack);
 };
 
 const info = (msg) => {
-  snack.set({ msg, type: "info" });
+  setTimeout(() => snack.set({ msg, type: "info" }), 100);
 };
 
 const fullscreen = (elem) => {

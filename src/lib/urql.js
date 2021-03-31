@@ -11,6 +11,7 @@ import { get } from "svelte/store";
 import { role } from "$lib/store";
 import { expired } from "$lib/auth";
 import schema from "$lib/schema";
+import { getUser } from "$queries/users";
 import { getArtworks } from "$queries/artworks";
 import { getRecentActivity, getLatestPieces } from "$queries/transactions";
 
@@ -19,8 +20,8 @@ if (import.meta && import.meta.env && import.meta.env !== "production") {
   url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
   wsUrl = import.meta.env.SNOWPACK_PUBLIC_WS;
 } else {
-  url = "https://raretoshi.com/v1/graphql";
-  wsUrl = "wss://raretoshi.com/v1/graphql";
+  url = "https://staging.raretoshi.com/v1/graphql";
+  wsUrl = "wss://staging.raretoshi.com/v1/graphql";
 }
 
 export const setupUrql = (token) => {
@@ -40,6 +41,17 @@ export const setupUrql = (token) => {
     storage,
     updates: {
       Mutation: {
+        update_users_by_pk(result, args, cache, info) {
+          cache.updateQuery({ query: getUser }, (data) => {
+            try {
+              data.currentuser[0] = {
+                ...data.currentuser[0],
+                ...result.update_users_by_pk,
+              };
+            } catch {}
+            return data;
+          });
+        },
         insert_transactions_one(result, args, cache, info) {
           cache.updateQuery({ query: getRecentActivity(20) }, (data) => {
             try {
@@ -65,7 +77,7 @@ export const setupUrql = (token) => {
         insert_artworks_one(result, args, cache, info) {
           cache.updateQuery({ query: getArtworks }, (data) => {
             try {
-            data.artworks.push(result.insert_artworks_one);
+              data.artworks.push(result.insert_artworks_one);
             } catch {}
             return data;
           });
