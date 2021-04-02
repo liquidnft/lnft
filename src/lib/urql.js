@@ -55,14 +55,16 @@ export const setupUrql = (token) => {
         insert_transactions_one(result, args, cache, info) {
           cache.updateQuery({ query: getRecentActivity(20) }, (data) => {
             try {
-              data.recentactivity.unshift(result.insert_transactions_one).pop();
+              data.recentactivity.unshift(result.insert_transactions_one);
+              data.recentactivity.pop();
             } catch {}
             return data;
           });
 
           cache.updateQuery({ query: getRecentActivity(3) }, (data) => {
             try {
-              data.recentactivity.unshift(result.insert_transactions_one).pop();
+              data.recentactivity.unshift(result.insert_transactions_one);
+              data.recentactivity.pop();
             } catch {}
             return data;
           });
