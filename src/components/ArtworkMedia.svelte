@@ -85,11 +85,11 @@
     padding-bottom: 100%;
   }
 
-  .contain * {
+  .contain video, .contain img {
     @apply h-full absolute object-cover rounded-t-lg;
   }
 
-  .cover * {
+  .cover video, .cover img {
     @apply w-full object-contain rounded-t-lg;
   }
 </style>
@@ -109,9 +109,9 @@
     </video>
     {#if !popup}
       <button
-        class="absolute hidden md:block right-2 top-36 lg:top-24 text-primary"
-        class:invisible
+        class="absolute hidden md:block bottom-2 right-2 text-primary"
         type="button"
+        class:invisible
         on:click|stopPropagation|preventDefault={toggleSound}>
         <Fa icon={muted ? faVolumeMute : faVolumeUp} size="1.5x" />
       </button>
