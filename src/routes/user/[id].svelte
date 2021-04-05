@@ -8,7 +8,7 @@
   import { getUserById } from "$queries/users";
   import { createFollow, deleteFollow } from "$queries/follows";
   import Menu from "./_menu";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
+  import { query, mutation, subscription, operationStore } from "@urql/svelte";
   import { fade } from "svelte/transition";
   import { requireLogin } from "$lib/auth";
 
@@ -18,7 +18,8 @@
   $: pageChange($page);
 
   const pageChange = ({ params }) => {
-    if (params.id) ({ id } = params);
+    if (params.id) ({ id } = params)
+    else ({ id } = subject)
   };
 
   let collection = [];
@@ -27,7 +28,7 @@
 
   let artworks;
   $: if (id) query(operationStore(getUserArtworks(id))).subscribe(
-    ({ data }) => data && (artworks = data.artworks) && console.log(data)
+    ({ data }) => data && (artworks = data.artworks)
   );
 
   $: applyFilters(artworks, subject);

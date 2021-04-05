@@ -203,10 +203,16 @@ export const singlesig = (key) => {
     network,
   });
 
+
+  let blindkey;
+  try {
+    blindkey = blindingKey(key).publicKey;
+  } catch(e) {}
+
   return payments.p2sh({
     redeem,
     network,
-    blindkey: blindingKey(key).publicKey,
+    blindkey
   });
 };
 
@@ -269,7 +275,7 @@ const fund = async (
   amount,
   sighashType = 1,
   multisig = false,
-  confidential = true
+  includeConfidential = true
 ) => {
   let { address, redeem, output } = out;
 
@@ -307,8 +313,8 @@ const fund = async (
 
   utxos = shuffle(
     all
-      .filter((o) => confidential || !o.assetBuffer)
-      .filter((o) => o.assetBuffer || confidential !== "only")
+      .filter((o) => includeConfidential || !o.assetBuffer)
+      .filter((o) => o.assetBuffer || includeConfidential !== "only")
   );
 
   let i = 0;
@@ -316,7 +322,7 @@ const fund = async (
 
   while (total < amount) {
     if (i >= utxos.length) {
-      if (!confidential && all.length > utxos.length)
+      if (!includeConfidential && all.length > utxos.length)
         throw { message: "No confidential" };
       throw { message: "Insufficient funds", amount, asset, total };
     }
@@ -340,6 +346,8 @@ const fund = async (
     if (prevout.assetcommitment) {
       blinded[j] = true;
       input.witnessUtxo = tx.outs[prevout.vout];
+      input.witnessUtxo.asset = Buffer.concat([Buffer.from('01', 'hex'), reverse(Buffer.from(prevout.asset, 'hex'))]);
+      input.witnessUtxo.value = confidential.satoshiToConfidentialValue(prevout.value);
     } else {
       input.nonWitnessUtxo = Buffer.from(hex, "hex");
     }
@@ -794,6 +802,7 @@ export const createOffer = async (artwork, amount) => {
   }
 
   await fund(p, out, asset, total);
+
   addFee(p);
 
   return p;

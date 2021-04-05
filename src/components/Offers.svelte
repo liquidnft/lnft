@@ -4,7 +4,7 @@
   import { snack, prompt, psbt, token } from "$lib/store";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { getOffers, acceptOffer } from "$queries/transactions";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
+  import { mutation, query, operationStore } from "@urql/svelte";
   import { broadcast } from "$lib/wallet";
   import { goto, val, ticker } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
@@ -13,9 +13,8 @@
   let offers = [];
   let comp;
 
-  subscription(operationStore(getOffers), (a, b) => {
-    offers = b.offers;
-  });
+  query(operationStore(getOffers)).subscribe(({ data }) => data && (offers = data.offers)
+  );
 </script>
 
 <style>

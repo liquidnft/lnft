@@ -97,7 +97,7 @@ export const getLatestPieces = (limit = 3) => `query {
   }
 }`;
 
-export const getOffers = `subscription {
+export const getOffers = `query {
   offers {
     transaction {
       ${fields}

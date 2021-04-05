@@ -72,7 +72,7 @@ export const getArtworks = `query {
 }`;
 
 export const getUserArtworks = (id) => `query {
- artworks(where: { _or: { artist_id: { _eq: "${id}" }}, { owner_id: { _eq: { "${id}" }}}, { favorited: { _eq: true }}})  {
+ artworks(where: { _or: [{ artist_id: { _eq: "${id}" }}, { owner_id: { _eq: "${id}" }}]}) {
     ${fields}
     tags {
       tag
