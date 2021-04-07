@@ -12,7 +12,7 @@
   export let withdrawing = false;
 
   let amount;
-  let to = "AzpkhPrKwPmRy48BZ1EuTjk31557T4kMuDRWwfYBLJoJsDDFf4QC1hNpRcHvL6rwSr9seDTqjB3MfTvB";
+  let to;
   let loading;
   let artwork;
 
@@ -24,7 +24,7 @@
 
   $: clearForm($asset);
   let clearForm = () => {
-    amount = 0.001;
+    amount = 0;
   };
 
   let send = async (e) => {

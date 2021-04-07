@@ -14,10 +14,10 @@
 
   let filtered = [];
 
-  let a = operationStore(getArtworks);
   let o = { requestPolicy: "cache-and-network" };
+  let a = operationStore(getArtworks, {}, o);
 
-  query(a, {}, o).subscribe(({ data }) => {
+  query(a).subscribe(({ data }) => {
     if (data) {
       $artworks = data.artworks;
     }

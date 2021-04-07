@@ -52,15 +52,15 @@
   $: setup($role, $token);
 
   let o = { requestPolicy: "cache-and-network" };
-  let artworksQuery = operationStore(getArtworks);
-  query(artworksQuery, {}, o).subscribe(({ data }) => {
+  let artworksQuery = operationStore(getArtworks, {}, o);
+  query(artworksQuery).subscribe(({ data }) => {
     if (data) {
       $artworks = data.artworks;
     }
   });
 
-  let usersQuery = operationStore(getUsersAddresses);
-  query(usersQuery, {}, o).subscribe(({ data }) => {
+  let usersQuery = operationStore(getUsersAddresses, {}, o);
+  query(usersQuery).subscribe(({ data }) => {
     if (data) {
       $users = data.users;
     }

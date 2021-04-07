@@ -11,7 +11,7 @@
     unblind,
   } from "$lib/wallet";
   import { requirePassword } from "$lib/auth";
-  import { Psbt } from "@asoltys/liquidjs-lib";
+  import { Psbt, Transaction } from "@asoltys/liquidjs-lib";
   import {
     explorer,
     addressLabel,
@@ -48,7 +48,7 @@
       try {
         tx = p.extractTransaction();
       } catch (e) {
-        tx = p.__CACHE.__TX;
+        tx = Transaction.fromHex(p.data.globalMap.unsignedTx.toBuffer().toString('hex'))
       }
     }
 
@@ -143,10 +143,24 @@
     lock = false;
   };
 
+  let parse = () => (base64 = x);
+
   let base64;
+  let x;
   $: read(base64);
-  let read = (base64) => base64 && ($psbt = Psbt.fromBase64(base64));
+  let read = (base64) => {
+    if (base64) {
+      tx = undefined;
+      $psbt = Psbt.fromBase64(base64);
+      init($psbt, $user);
+    }
+  };
 </script>
+
+<!--
+<textarea bind:value={x} class="w-full" rows={20} />
+<button on:click={parse}>Parse</button>
+-->
 
 {#if tx}
   <div class="w-full mx-auto">

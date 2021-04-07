@@ -154,6 +154,21 @@ export const destroyArtwork = (artwork) => ({
     }`,
 });
 
+export const getArtworkSub = (id) => `subscription {
+  artworks_by_pk(id: "${id}") {
+    ${fields}
+    tags {
+      tag
+    },
+    num_favorites,
+    favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
+      aggregate {
+        count
+      }
+    }
+  }
+}`;
+
 export const getArtwork = (id) => `query {
   artworks_by_pk(id: "${id}") {
     ${fields}

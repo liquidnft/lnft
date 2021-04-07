@@ -6,7 +6,11 @@
   import { tick } from "svelte";
   import { prompt, password, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
-  import { getArtwork, getArtworksByArtist } from "$queries/artworks";
+  import {
+    getArtworkSub,
+    getArtwork,
+    getArtworksByArtist,
+  } from "$queries/artworks";
   import {
     createTransaction,
     getArtworkTransactions,
@@ -24,6 +28,7 @@
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { api } from "$lib/api";
   import Head from "$components/Head";
+  import ArtworkQuery from "$components/ArtworkQuery";
 
   export let id;
 
@@ -52,34 +57,40 @@
       (a, b) => (transactions = b.transactions)
     );
 
+    subscription(
+      operationStore(getArtworkSub(id)),
+      (a, b) => (artwork = b.artworks_by_pk)
+    );
+
     query(operationStore(getArtwork(id)), {}, { requestPolicy }).subscribe(
       (r) => {
         if (r.data) {
           artwork = r.data.artworks_by_pk;
 
-          let count = () => {
-            clearTimeout(timeout);
-            now = new Date();
-            if (!artwork) return;
-            start_counter = countdown(parseISO(artwork.auction_start));
-            end_counter = countdown(parseISO(artwork.auction_end));
-            timeout = setTimeout(count, 1000);
-          };
-          count();
         }
       }
     );
+
   };
 
-  $: if (artwork)
-    query(operationStore(getArtworksByArtist(artwork.artist_id))).subscribe(
-      ({ data }) =>
-        data &&
-        data.artworks &&
-        (others = data.artworks
-          .filter((a) => artwork && a.id !== artwork.id)
-          .slice(0, 4))
-    );
+  $: update(artwork);
+  let update = () => {
+    if (!artwork) return;
+
+    let count = () => {
+      clearTimeout(timeout);
+      now = new Date();
+      if (!artwork) return;
+      start_counter = countdown(parseISO(artwork.auction_start));
+      end_counter = countdown(parseISO(artwork.auction_end));
+      timeout = setTimeout(count, 1000);
+    };
+    count();
+
+    [sats, val, ticker] = units(artwork && artwork.asking_asset);
+    list_price = artwork.list_price;
+    list_price = val(artwork.list_price);
+  };
 
   let others = [];
 
@@ -89,14 +100,7 @@
   let val, sats, ticker;
   let amount;
 
-  $: [sats, val, ticker] = units(artwork && artwork.asking_asset);
-
-  $: if (artwork) {
-    list_price = artwork.list_price;
-    list_price = val(artwork.list_price);
-  }
-
-  $: transaction.amount = sats(amount);
+  $: transaction.amount = sats && sats(amount);
 
   let makeOffer = async (e) => {
     if (e) e.preventDefault();
@@ -290,6 +294,10 @@
   }
 </style>
 
+{#if artwork}
+  <ArtworkQuery id={artwork.id} />
+  {/if}
+
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork && !loading}
     <Head {artwork} />
@@ -425,7 +433,12 @@
           class:showPopup
           class="popup">
           <span class="closeButton"><i class="fas fa-times" /></span>
-          <Card {artwork} columns={1} showDetails={false} thumb={false} popup={true} />
+          <Card
+            {artwork}
+            columns={1}
+            showDetails={false}
+            thumb={false}
+            popup={true} />
         </div>
         <div class="flex pt-4 w-full">
           <div class="ml-auto" />

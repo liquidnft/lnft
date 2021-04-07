@@ -13,25 +13,25 @@
   let featuredArtworkId = "shadow-self-7897c";
 
   let artists = [];
-  query(operationStore(topArtists(3)), {}, { requestPolicy }).subscribe(
+  query(operationStore(topArtists(3), {}, { requestPolicy })).subscribe(
     ({ data }) =>
       data && (artists = data.artists.map((u) => ({ user: u, value: u.sold })))
   );
 
   let collectors = [];
-  query(operationStore(topCollectors(3)), {}, { requestPolicy }).subscribe(
+  query(operationStore(topCollectors(3), {}, { requestPolicy })).subscribe(
     ({ data }) =>
       data &&
       (collectors = data.collectors.map((u) => ({ user: u, value: u.owned })))
   );
 
   let recent = [];
-  query(operationStore(getRecentActivity(3)), {}, { requestPolicy }).subscribe(
+  query(operationStore(getRecentActivity(3), {}, { requestPolicy })).subscribe(
     ({ data }) => data && (recent = data.recentactivity)
   );
 
   let latest = [];
-  query(operationStore(getLatestPieces(3)), {}, { requestPolicy }).subscribe(
+  query(operationStore(getLatestPieces(3), {}, { requestPolicy })).subscribe(
     ({ data }) => data && (latest = data.transactions)
   );
 </script>

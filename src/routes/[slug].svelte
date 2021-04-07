@@ -17,14 +17,14 @@
     user = undefined;
 
     una && una();
-    a = operationStore(getArtworkBySlug(slug));
-    una = query(a, {}, { requestPolicy }).subscribe(
+    a = operationStore(getArtworkBySlug(slug), {}, { requestPolicy });
+    una = query(a).subscribe(
       ({ data }) => data && (artwork = data.artworks[0])
     );
 
     unu && unu();
-    u = operationStore(getUserByUsername(slug));
-    unu = query(u, {}, { requestPolicy }).subscribe(
+    u = operationStore(getUserByUsername(slug), {}, { requestPolicy });
+    unu = query(u).subscribe(
       ({ data }) => data && (user = data.users[0])
     );
   };

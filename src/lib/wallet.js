@@ -203,16 +203,15 @@ export const singlesig = (key) => {
     network,
   });
 
-
   let blindkey;
   try {
     blindkey = blindingKey(key).publicKey;
-  } catch(e) {}
+  } catch (e) {}
 
   return payments.p2sh({
     redeem,
     network,
-    blindkey
+    blindkey,
   });
 };
 
@@ -346,8 +345,15 @@ const fund = async (
     if (prevout.assetcommitment) {
       blinded[j] = true;
       input.witnessUtxo = tx.outs[prevout.vout];
-      input.witnessUtxo.asset = Buffer.concat([Buffer.from('01', 'hex'), reverse(Buffer.from(prevout.asset, 'hex'))]);
-      input.witnessUtxo.value = confidential.satoshiToConfidentialValue(prevout.value);
+      /*
+      input.witnessUtxo.asset = Buffer.concat([
+        Buffer.from("01", "hex"),
+        reverse(Buffer.from(prevout.asset, "hex")),
+      ]);
+      input.witnessUtxo.value = confidential.satoshiToConfidentialValue(
+        prevout.value
+      );
+      */
     } else {
       input.nonWitnessUtxo = Buffer.from(hex, "hex");
     }
@@ -361,7 +367,8 @@ const fund = async (
 
   if (total > amount)
     if (total - amount > DUST || asset !== btc) {
-      let index = p.data.outputs.length;
+      let changeIndex = p.data.outputs.length;
+
       p.addOutput({
         asset,
         nonce: Buffer.alloc(1),
@@ -369,22 +376,96 @@ const fund = async (
         value: total - amount,
       });
 
-      let inputs = Object.keys(blinded);
-      let inputMap = new Map();
-      inputs.map((i) => {
-        let o = { ...utxos[i] };
-        o.asset = utxos[i].assetBuffer;
-        o.value = utxos[i].valueString;
-        inputMap.set(parseInt(i), o);
-      });
-
-      let outputMap = new Map().set(index, blindingKey().publicKey);
-
-      if (inputs.length && !p.data.inputs.find((i) => i.issuance)) {
-        await p.blindOutputsByIndex(inputMap, outputMap);
-      }
+      if (Object.keys(blinded).length > 0) p = await blind(p, [changeIndex]);
     } else bumpFee(total - amount);
 };
+
+const blind = async (
+  pset,
+  outputsToBlind,
+  outputsPubKeys,
+  inputsBlindingDataLike
+) => {
+  const inputsData = new Map();
+  const outputsKeys = new Map();
+
+  const transaction = pset.__CACHE.__TX;
+
+  // set the outputs map
+  for (const index of outputsToBlind) {
+    if (outputsPubKeys && outputsPubKeys.has(index)) {
+      const pubKey = Buffer.from(outputsPubKeys.get(index), "hex");
+      outputsKeys.set(index, pubKey);
+      continue;
+    }
+
+    const { script } = transaction.outs[index];
+    const pubKey = blindingKey().publicKey;
+    outputsKeys.set(index, pubKey);
+  }
+
+  // set the inputs map
+
+  for (let index = 0; index < pset.data.inputs.length; index++) {
+    const input = pset.data.inputs[index];
+    let script = undefined;
+
+    // continue if the input witness is unconfidential
+    if (input.witnessUtxo) {
+      if (!isConfidentialOutput(input.witnessUtxo)) {
+        continue;
+      }
+
+      script = input.witnessUtxo.script;
+    }
+
+    if (input.nonWitnessUtxo) {
+      const vout = transaction.ins[index].index;
+      const witness = Transaction.fromBuffer(input.nonWitnessUtxo).outs[vout];
+      if (!isConfidentialOutput(witness)) {
+        continue;
+      }
+
+      script = witness.script;
+    }
+
+    // check if blindingDataLike is specified
+    if (inputsBlindingDataLike && inputsBlindingDataLike.has(index)) {
+      inputsData.set(index, inputsBlindingDataLike.get(index));
+      continue;
+    }
+
+    if (!script) {
+      throw new Error("no witness script for input #" + index);
+    }
+
+    // else, get the private blinding key and use it as blindingDataLike
+    const privKey = blindingKey().privateKey;
+    const blinders = await confidential.unblindOutputWithKey(
+      input.witnessUtxo,
+      privKey
+    );
+
+    inputsData.set(index, blinders);
+  }
+
+  const blinded = await pset.blindOutputsByIndex(inputsData, outputsKeys);
+  return blinded;
+};
+
+const emptyNonce = Buffer.from("0x00", "hex");
+
+function bufferNotEmptyOrNull(buffer) {
+  return buffer != null && buffer.length > 0;
+}
+
+export function isConfidentialOutput({ rangeProof, surjectionProof, nonce }) {
+  return (
+    bufferNotEmptyOrNull(rangeProof) &&
+    bufferNotEmptyOrNull(surjectionProof) &&
+    nonce !== emptyNonce
+  );
+}
 
 const addFee = (p) =>
   p.addOutput({
@@ -534,6 +615,7 @@ export const fundUnconfidential = async () => {
   let out = singlesig();
   let p = new Psbt();
   await fund(p, out, btc, DUST + get(fee), 1, false, "only");
+
   p.addOutput({
     asset: btc,
     nonce: Buffer.alloc(1),
@@ -542,6 +624,7 @@ export const fundUnconfidential = async () => {
   });
   addFee(p);
   psbt.set(p);
+
   p = await signAndBroadcast();
   return p.extractTransaction();
 };
