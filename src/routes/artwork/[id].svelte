@@ -66,11 +66,9 @@
       (r) => {
         if (r.data) {
           artwork = r.data.artworks_by_pk;
-
         }
       }
     );
-
   };
 
   $: update(artwork);
@@ -180,7 +178,7 @@
 </script>
 
 <style>
-  a.disabled {
+  .disabled {
     @apply text-gray-400 border-gray-400;
   }
 
@@ -296,10 +294,10 @@
 
 {#if artwork}
   <ArtworkQuery id={artwork.id} />
-  {/if}
+{/if}
 
 <div class="container mx-auto mt-10 md:mt-20">
-  {#if artwork && !loading}
+  {#if artwork}
     <Head {artwork} />
     <div class="flex justify-between flex-wrap">
       <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
@@ -331,7 +329,9 @@
 
         <Sidebar bind:artwork />
 
-        {#if $user && $user.id === artwork.owner_id}
+        {#if loading}
+          <ProgressLinear />
+        {:else if $user && $user.id === artwork.owner_id}
           <div class="w-full mb-2">
             <a
               href={disabled ? '' : `/artwork/${id}/auction`}
@@ -340,7 +340,11 @@
           </div>
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
-            <button on:click={buyNow} class="secondary-btn">Buy now</button>
+            <button
+              on:click={buyNow}
+              class="secondary-btn"
+              {disabled}
+              class:disabled>Buy now</button>
           {/if}
           {#if bidding}
             <form on:submit={makeOffer}>
@@ -363,7 +367,11 @@
               <button type="submit" class="secondary-btn">Submit</button>
             </form>
           {:else}
-            <button on:click={startBidding} class="secondary-btn">Make an offer</button>
+            <button
+              on:click={startBidding}
+              class="secondary-btn"
+              {disabled}
+              class:disabled>Make an offer</button>
           {/if}
         {/if}
 

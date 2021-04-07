@@ -544,7 +544,7 @@ export const sign = (sighash = 1) => {
         .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
         .finalizeInput(i);
     } catch (e) {
-      // console.log("failed to sign", e.message);
+      // console.log("failed to sign", e.message, i, sighash);
     }
   });
 
