@@ -195,6 +195,11 @@
     }
   }
 
+  .social-share a{
+    color: #2D2E32;
+    font-size: 16px;
+  }
+
   span {
     cursor: pointer;
   }
@@ -304,7 +309,7 @@
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || 'Untitled'}
         </h1>
-        <div class="flex mb-6">
+        <div class="flex mt-4 mb-10">
           <div class="my-auto">
             Edition
             {artwork.edition}
@@ -448,12 +453,11 @@
             thumb={false}
             popup={true} />
         </div>
-        <div class="flex pt-4 w-full">
+        <div class="flex pt-4 w-full social-share">
           <div class="ml-auto" />
           {#if artwork.instagram}
             <div class="mr-8">
               <a
-                class="secondary-color"
                 href={artwork.instagram}
                 target="_blank">
                 <span class="uppercase mr-1">Like it</span>
@@ -463,7 +467,6 @@
           {/if}
           <div class="mr-8">
             <a
-              class="secondary-color"
               href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}"
               target="_blank">
               <span class="uppercase mr-1">Tweet it</span>

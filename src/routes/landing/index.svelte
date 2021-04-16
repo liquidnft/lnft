@@ -49,6 +49,18 @@
     background-repeat: no-repeat;
      */
   }
+
+  .container.more{
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    margin-bottom: 100px;
+  }
+
+  .more .secondary-btn {
+    width: 180px;
+  }
+
   .header-button {
     width: 170px;
     border: 1px solid white;
@@ -113,7 +125,7 @@
     <RecentActivityCard {transaction} />
   {/each}
 </div>
-<div class="mx-auto container text-center px-8 mb-20 pb-10">
+<div class="container more">
   <a class="secondary-btn" href={'/activity'}>View more</a>
 </div>
 
@@ -125,7 +137,7 @@
     <LatestPiecesCard {transaction} />
   {/each}
 </div>
-<div class="mx-auto container text-center mb-20">
+<div class="container more">
   <a class="secondary-btn" href={'/market'}>View gallery</a>
 </div>
 

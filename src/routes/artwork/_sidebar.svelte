@@ -14,6 +14,21 @@
     margin: 50px 0;
   }
 
+  .art-likes-container {
+    display: flex;
+    margin: 30px 0;
+  }
+
+  .art-likes{
+    display: flex;
+    align-items: center;
+    margin-right: 15%;
+  }
+
+  .art-likes p{
+    margin-left: 8px;
+  }
+
   @media only screen and (max-width: 1023px) {
     .sidebar {
       width: 100%;
@@ -77,23 +92,13 @@
   </div>
 {/if}
 
-<div class="flex flex-wrap justify-between mb-10">
-  <div class="flex">
+<div class="art-likes-container">
+  <div class="art-likes">
     <Heart {artwork} />
-    <div class="w-2/3 ml-4">
-      <div>{artwork.num_favorites}</div>
-      <div class="text-xs text-gray-600">Favorites</div>
-    </div>
+    <p>{artwork.num_favorites}</p>
   </div>
-  <div class="flex">
-    <div class="w-1/3 flex mr-4">
-      <div class="my-auto mt-3">
-        <Eye />
-      </div>
-    </div>
-    <div class="w-2/3">
-      <div>{artwork.views}</div>
-      <div class="text-xs text-gray-600">Views</div>
-    </div>
+  <div class="art-likes">
+    <Eye />
+    <p>{artwork.views}</p>
   </div>
 </div>
