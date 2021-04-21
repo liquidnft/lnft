@@ -637,11 +637,10 @@ export const createIssuance = async (
   let out = singlesig();
 
   let p = new Psbt()
-    // op_return
     .addOutput({
       asset: btc,
       nonce: Buffer.alloc(1),
-      script: payments.embed({ data: [bs58.decode(file)] }).output,
+      script: payments.embed({ data: [Buffer.alloc(1)] }).output,
       value: 0,
     });
 
