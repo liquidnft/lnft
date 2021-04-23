@@ -1,10 +1,11 @@
 <script>
   import { api, hasura } from "$lib/api";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import decode from "jwt-decode";
   import {
     artworks,
     error,
+    loggedIn,
     poll,
     prompt,
     results,
@@ -24,6 +25,7 @@
   import InsufficientFunds from "$components/InsufficientFunds";
   import { etag, publicPages, err, info } from "$lib/utils";
   import { createWallet } from "$lib/wallet";
+  import Session from "$components/Session";
 
   onMount(async () => {
     refreshToken();
@@ -46,7 +48,7 @@
 
   $: pageChange($page);
 
-  let id, initialized;
+  let id;
 
   setupUrql();
   $: setup($role, $token);
@@ -83,26 +85,22 @@
     );
   };
 
-  let updateUserQuery, userQuery;
-  $: if ($token) {
-    updateUserQuery = mutation(updateUser);
-    userQuery = operationStore(getUser);
-
-    query(userQuery, {}, o).subscribe(async ({ data }) => {
-      if (data && data.currentuser) {
-        $user = data.currentuser[0];
+  let updateUserQuery = mutation(updateUser);
+  let setup = async (r, t) => {
+    if (t) {
+      if (!$loggedIn) {
+        id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
+        setupUrql(t);
+        console.log("loggedIn!");
+        $loggedIn = true;
       }
-    });
-  }
-
-  let setup = (r, t) => {
-    if (t && !initialized) {
-      id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-      setupUrql(t);
-      initialized = true;
     }
   };
 </script>
+
+{#if $loggedIn}
+  <Session />
+{/if}
 
 <div in:fade>
   <slot />

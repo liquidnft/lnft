@@ -15,6 +15,7 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import "@fortawesome/fontawesome-free/js/all.js";
+  import { publicPages } from "$lib/utils";
 
   let open = false;
   let ready;
@@ -36,7 +37,7 @@
 <Snack />
 
 {#if ready}
-  {#if !['/', '/login', '/register'].includes($page.path)}
+  {#if !publicPages.includes($page.path)}
     <Sidebar bind:open />
     <div class={y > 50 ? 'sticky' : ''} in:fade>
       <Navbar bind:sidebar={open} />

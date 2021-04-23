@@ -2,7 +2,7 @@ import { api } from "$lib/api";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { password as pw, poll, prompt, user, token } from "$lib/store";
+import { loggedIn, password as pw, poll, prompt, user, token } from "$lib/store";
 import PasswordPrompt from "$components/PasswordPrompt";
 import { goto, err } from "$lib/utils";
 
@@ -53,20 +53,19 @@ export const refreshToken = () =>
     });
 
 export const logout = () => {
+  loggedIn.set(false);
+  window.sessionStorage.removeItem("password");
+  window.sessionStorage.removeItem("token");
+  window.sessionStorage.removeItem("user");
+  indexedDB.deleteDatabase("graphcache-v3");
+  token.set(null);
+  user.set(null);
   get(poll).map((p) => clearInterval(p.interval));
 
   api
     .url("/auth/logout")
     .post()
-    .res(() => {
-      window.sessionStorage.removeItem("password");
-      window.sessionStorage.removeItem("token");
-      window.sessionStorage.removeItem("user");
-      indexedDB.deleteDatabase('graphcache-v3');
-      token.set(null);
-      user.set(null);
-      tick().then(() => goto("/login"));
-    });
+    .res(() => goto("/login"));
 };
 
 export const login = (email, password) => {
@@ -79,6 +78,7 @@ export const login = (email, password) => {
     .unauthorized(err)
     .badRequest(err)
     .json(({ jwt_token: t }) => {
+      loggedIn.set(false);
       token.set(t);
       window.sessionStorage.setItem("token", t);
       pw.set(password);

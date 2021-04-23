@@ -42,8 +42,7 @@
       form.avatar_url = await upload(file, progress);
     }
 
-    if (form.email && !validateEmail(form.email))
-      return err("Invalid email");
+    if (form.email && !validateEmail(form.email)) return err("Invalid email");
 
     if (form.twitter) form.twitter = form.twitter.replace(/@/g, "");
     if (form.instagram) form.instagram = form.instagram.replace(/@/g, "");
@@ -66,11 +65,18 @@
       pubkey,
       wallet_initialized,
       mnemonic,
-      ...user
+      ...rest
     } = form;
-    updateUser$({ user, id }).then((r) => {
-      info("Profile updated");
-      goto(`/${user.username}`);
+    $user = { ...$user, ...rest };
+    updateUser$({ user: rest, id }).then((r) => {
+      if (r.error) {
+        if (r.error.message.includes('Uniqueness')) err('Username taken')
+        else err(r.error);
+      } 
+      else {
+        info("Profile updated");
+        goto(`/${rest.username}`);
+      }
     });
   };
 </script>

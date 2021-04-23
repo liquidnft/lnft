@@ -7,6 +7,7 @@
   import { tick } from "svelte";
   import { keypair, singlesig, multisig } from "$lib/wallet";
   import { login } from "$lib/auth";
+  import { user } from "$lib/store";
 
   let username = "";
   let password = "";
@@ -14,6 +15,8 @@
   let usernameInput;
   let pageChange = () => setTimeout(() => usernameInput && usernameInput.select(), 50);
   $: if (usernameInput) pageChange($page);
+
+  $: if ($user) goto('/landing');
 </script>
 
 <style>
