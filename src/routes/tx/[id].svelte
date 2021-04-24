@@ -1,7 +1,9 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
-import reverse from "buffer-reverse";
-import { Buffer } from "buffer";
+  import reverse from "buffer-reverse";
+  import { Buffer } from "buffer";
   import { onMount } from "svelte";
   import { electrs } from "$lib/api";
   import { query, operationStore } from "@urql/svelte";
@@ -33,7 +35,7 @@ import { Buffer } from "buffer";
           $psbt.addOutput(output);
         });
 
-        $psbt = $psbt
+        $psbt = $psbt;
       }
     });
 </script>
@@ -43,7 +45,12 @@ import { Buffer } from "buffer";
     <a
       on:click|preventDefault={() => window.history.back()}
       href="#"
-      class="text-midblue"><i class="fas fa-chevron-left mr-2" />Back</a>
+      class="text-midblue">
+      <div class="flex">
+        <Fa icon={faChevronLeft} class="my-auto mr-1" />
+        <div>Back</div>
+      </div>
+    </a>
     <h3 class="py-4">Transaction details</h3>
   </div>
   {#if $psbt}

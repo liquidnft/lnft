@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
   import { page } from "$app/stores";
   import { tick } from "svelte";
   import Select from "svelte-select";
@@ -117,7 +119,9 @@
   <div class="flex flex-col mb-4">
     <label>Ticker
       <span class="tooltip">
-        <i class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
+        <i class="ml-3 text-midblue text-xl tooltip">
+        <Fa icon="faQuestionCircle" />
+      </i>
         <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">The ticker is
           a short 3-5 character identifier for your asset that you'll see in
           other wallets and explorers.</span>

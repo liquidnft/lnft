@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { onMount, tick } from "svelte";
   import { user, token } from "$lib/store";
   import { info, goto } from "$lib/utils";
@@ -157,8 +159,12 @@
   {#if form}
     <div
       class="mb-4 w-full max-w-5xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row bg-white">
-      <a class="block mb-6 text-midblue" href={`/${$user.username}`}><i
-          class="fas fa-chevron-left mr-3" />Back</a>
+      <a class="block mb-6 text-midblue" href={`/${$user.username}`}>
+        <div class="flex">
+          <Fa icon={faChevronLeft} class="my-auto mr-1" />
+          <div>Back</div>
+        </div>
+      </a>
       <h2 class="mb-10">Become an artist</h2>
       {#if submitted}
         <div>
@@ -183,7 +189,7 @@
                 bind:value={form.full_name} />
             </div>
             <div class="flex flex-col mb-4">
-              <i class="far fa-envelope icon" />
+              <Fa icon={faEnvelope} />
               <input placeholder="Your email" bind:value={form.email} />
             </div>
             <div class="flex flex-col mb-4">
@@ -192,11 +198,11 @@
                 bind:value={form.username} />
             </div>
             <div class="flex flex-col mb-4">
-              <i class="fab fa-instagram icon" />
+              <Fa icon={faInstagram} />
               <input placeholder="@instagram" bind:value={form.instagram} />
             </div>
             <div class="flex flex-col mb-4">
-              <i class="fas fa-link icon" />
+              <Fa icon={faLink} />
               <input placeholder="@twitter" bind:value={form.twitter} />
             </div>
             <div class="flex flex-col mb-4">

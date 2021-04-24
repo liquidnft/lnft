@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
   import { v4 } from "uuid";
   import { hasura } from "$lib/api";
@@ -320,7 +322,10 @@
       class="block mb-6 text-midblue"
       href="#"
       on:click|preventDefault={() => window.history.back()}>
-      <i class="fas fa-chevron-left mr-3" />Back
+        <div class="flex">
+          <Fa icon={faChevronLeft} class="my-auto mr-1" />
+          <div>Back</div>
+        </div>
     </a>
     <h2>Submit artwork</h2>
     <div class="flex flex-wrap flex-col-reverse lg:flex-row">

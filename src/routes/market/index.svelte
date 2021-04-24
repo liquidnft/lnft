@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
   import { artworks, show, user, results } from "$lib/store";
   import { query, operationStore } from "@urql/svelte";
   import { getArtworks } from "$queries/artworks";
@@ -35,11 +37,6 @@
     background-size: 20px;
   }
 
-  .filters {
-    display: none;
-    cursor: pointer;
-  }
-
   @media only screen and (max-width: 1023px) {
     .search :global(input) {
       width: 90%;
@@ -54,10 +51,6 @@
       margin-top: -20px;
       text-transform: uppercase;
       font-weight: bold;
-    }
-
-    .filters {
-      display: block;
     }
   }
 
@@ -92,12 +85,14 @@
     <div
       class="w-full lg:w-auto mb-3 flex filter-container justify-between pt-10 xl:py-10 xl:pb-30 mt-50">
       <div class="switch">
-        <p
-          class="filters mb-8 font-bold"
+        <div
+          class="flex cursor-pointer lg:hidden mb-8 font-bold"
           on:click={() => (showFilters = !showFilters)}>
-          FILTERS
-          <i class="fas fa-sliders-h ml-3" />
-        </p>
+          <div>FILTERS</div>
+          <div class="my-auto">
+            <Fa icon={faSlidersH} class="ml-3" />
+          </div>
+        </div>
       </div>
       <Sort bind:filtered />
     </div>

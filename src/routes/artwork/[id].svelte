@@ -1,4 +1,8 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faInstagram, faTwitter } from "@fortawesome/free-brands-svg-icons";
+  import { faTimes } from "@fortawesome/free-solid-svg-icons";
+  import { faHeart, faImage } from "@fortawesome/free-regular-svg-icons";
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
   import { Activity, Avatar, Card, ProgressLinear } from "$comp";
@@ -195,13 +199,9 @@
     }
   }
 
-  .social-share a{
-    color: #2D2E32;
+  .social-share a {
+    color: #2d2e32;
     font-size: 16px;
-  }
-
-  span {
-    cursor: pointer;
   }
 
   .popup {
@@ -319,7 +319,7 @@
           {#if artwork.is_physical}
             <div
               class="flex ml-auto py-1 px-4 bg-gray-100 rounded rounded-full my-auto">
-              <div class="my-auto"><i class="far fa-image mr-1" /></div>
+              <div class="my-auto"><Fa icon={faImage} class="mr-1" /></div>
               <div class="my-auto mb-1">
                 <span class="text-sm">Physical artwork</span>
               </div>
@@ -445,7 +445,7 @@
           on:click={() => (showPopup = !showPopup)}
           class:showPopup
           class="popup">
-          <span class="closeButton"><i class="fas fa-times" /></span>
+          <span class="closeButton"><Fa icon={faTimes} /></span>
           <Card
             {artwork}
             columns={1}
@@ -456,24 +456,30 @@
         <div class="flex pt-4 w-full social-share">
           <div class="ml-auto" />
           {#if artwork.instagram}
-            <div class="mr-8">
-              <a
-                href={artwork.instagram}
-                target="_blank">
+            <div class="mr-8 flex">
+              <div>
+              <a href={artwork.instagram} target="_blank">
                 <span class="uppercase mr-1">Like it</span>
               </a>
-              <span class="fab fa-instagram" />
+            </div>
+            <div class="my-auto">
+              <Fa icon={faInstagram} />
+            </div>
             </div>
           {/if}
-          <div class="mr-8">
-            <a
-              href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}"
-              target="_blank">
-              <span class="uppercase mr-1">Tweet it</span>
-            </a>
-            <span class="fab fa-twitter" />
+          <div class="mr-8 flex">
+            <div>
+              <a
+                href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}"
+                target="_blank">
+                <span class="uppercase mr-1">Tweet it</span>
+              </a>
+            </div>
+            <div class="my-auto">
+              <Fa icon={faTwitter} />
+            </div>
           </div>
-          <div><a href="/"><i class="far fa-heart" /></a></div>
+          <div class="my-auto"><a href="/"><Fa icon={faHeart} /></a></div>
         </div>
         {#if others.length}
           <div class="w-full mt-28">

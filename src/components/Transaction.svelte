@@ -1,4 +1,9 @@
 <script>
+  import Fa from "svelte-fa";
+  import {
+    faChevronDown,
+    faChevronUp,
+  } from "@fortawesome/free-solid-svg-icons";
   import Avatar from "$components/Avatar";
   import { psbt, user } from "$lib/store";
   import reverse from "buffer-reverse";
@@ -48,7 +53,9 @@
       try {
         tx = p.extractTransaction();
       } catch (e) {
-        tx = Transaction.fromHex(p.data.globalMap.unsignedTx.toBuffer().toString('hex'))
+        tx = Transaction.fromHex(
+          p.data.globalMap.unsignedTx.toBuffer().toString("hex")
+        );
       }
     }
 
@@ -262,15 +269,19 @@
       <div
         class="text-xs my-6 cursor-pointer"
         on:click={() => (showDetails = !showDetails)}>
-        Hide details
-        <i class="fas fa-chevron-up ml-2" />
+        <div class="flex">
+          <div>Hide details</div>
+          <div class="my-auto ml-1"><Fa icon={faChevronUp} /></div>
+        </div>
       </div>
     {:else}
       <div
         class="text-xs my-6 cursor-pointer"
         on:click={() => (showDetails = !showDetails)}>
-        View details
-        <i class="fas fa-chevron-down ml-2" />
+        <div class="flex">
+          <div>Show details</div>
+          <div class="my-auto ml-1"><Fa icon={faChevronDown} /></div>
+        </div>
       </div>
     {/if}
 

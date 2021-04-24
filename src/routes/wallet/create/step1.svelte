@@ -1,10 +1,20 @@
 <script>
   import { goto } from "$lib/utils";
+  import Fa from "svelte-fa";
+  import {
+    faLock,
+    faStickyNote,
+    faWallet,
+  } from "@fortawesome/free-solid-svg-icons";
 </script>
 
 <style>
-  li{margin-bottom: 30px;}
-  li span{margin-left: 20px;}
+  li {
+    margin-bottom: 30px;
+  }
+  li span {
+    margin-left: 20px;
+  }
 </style>
 
 <div class="lg:w-3/4">
@@ -15,18 +25,24 @@
 
   <ul class="flex flex-col mb-10">
     <li class="flex">
-      <i class="fas fa-sticky-note text-lightblue"></i>
-      <span class="-mt-1">Write on actual paper instead of keeping it in a digital format in your
-      device.</span>
+      <i class="text-lightblue">
+        <Fa icon={faStickyNote} /></i>
+      <span class="-mt-1">Write on actual paper instead of keeping it in a
+        digital format in your device.</span>
     </li>
     <li class="flex">
-      <i class="fa fa-lock text-lightblue"></i>
-      <span class="-mt-1">Wait until you are in a personal device and in a private environment.</span>
+      <i class="text-lightblue">
+        <Fa icon={faLock} />
+      </i>
+      <span class="-mt-1">Wait until you are in a personal device and in a
+        private environment.</span>
     </li>
     <li class="flex">
-      <i class="fas fa-wallet text-lightblue"></i>
-      <span class="-mt-1">The backup phrase is essential to restore your wallet. Make sure its
-      accurate and kept safe.</span>
+      <i class="text-lightblue">
+        <Fa icon={faWallet} />
+      </i>
+      <span class="-mt-1">The backup phrase is essential to restore your wallet.
+        Make sure its accurate and kept safe.</span>
     </li>
   </ul>
 

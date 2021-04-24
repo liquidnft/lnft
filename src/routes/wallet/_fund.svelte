@@ -1,4 +1,12 @@
 <script>
+  import Fa from "svelte-fa";
+  import {
+    faUserSecret,
+    faChevronUp,
+    faChevronDown,
+    faTimes,
+  } from "@fortawesome/free-solid-svg-icons";
+  import { faClone } from "@fortawesome/free-solid-svg-icons";
   import qrcode from "qrcode-generator-es6";
   import { asset, user, token } from "$lib/store";
   import { btc, copy, err } from "$lib/utils";
@@ -20,7 +28,7 @@
     confidential = !confidential;
     if (confidential) address = $user.confidential;
     else address = $user.address;
-  } 
+  };
 
   $: updateAddress(address);
 
@@ -105,14 +113,15 @@
   }
 </style>
 
-
 {#if $user && funding}
   <div class="dark mb-2 rounded-lg">
     <div class="flex justify-between place-items-center text-gray-400">
       <p>Fund Wallet</p>
       <button
         class="text-gray-400 text-xl w-auto"
-        on:click={() => (funding = false)}><i class="fas fa-times" /></button>
+        on:click={() => (funding = false)}>
+        <Fa icon={faTimes} size="2x" />
+      </button>
     </div>
 
     {#if $asset === btc}
@@ -143,17 +152,18 @@
             {address}
           </div>
           {#if tab === 'liquid'}
-        <button
-          on:click={toggleConfidential}
-          class:secondary-color={confidential}>
-          <i class="fas fa-user-secret ml-2" /></button>
-        {/if}
+            <button
+              on:click={toggleConfidential}
+              class:secondary-color={confidential}>
+              <Fa icon={faUserSecret} class="ml-2" />
+            </button>
+          {/if}
           {#if tab === 'lightning' && !showInvoice}
             <div
               class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
               on:click={toggle}>
               Show invoice
-              <i class="fa fa-chevron-down" />
+              <Fa icon={faChevronDown} />
             </div>
           {/if}
         </div>
@@ -162,14 +172,19 @@
             class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
             on:click={toggle}>
             Hide invoice
-            <i class="fa fa-chevron-up" />
+            <Fa icon={faChevronUp} />
           </div>
         {/if}
         <button
           on:click={() => copy(address)}
-          class="center font-medium secondary-color uppercase mt-4">Copy
-          {tab === 'lightning' ? 'invoice' : 'address'}
-          <i class="far fa-clone ml-2" /></button>
+          class="mx-auto font-medium secondary-color uppercase mt-4">
+          <div class="flex">
+            <div>Copy {tab === 'lightning' ? 'invoice' : 'address'}</div>
+            <div class="my-auto">
+              <Fa icon={faClone} class="ml-2" />
+            </div>
+          </div>
+        </button>
       </div>
     {/if}
   </div>

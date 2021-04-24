@@ -1,4 +1,7 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+  import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { Buffer } from "buffer";
   import { tick } from "svelte";
@@ -152,7 +155,11 @@
     if (stale) tx = $psbt.extractTransaction();
     await requirePassword();
 
-    $psbt = await createSwap(artwork, sats(artwork.asking_asset, list_price), tx);
+    $psbt = await createSwap(
+      artwork,
+      sats(artwork.asking_asset, list_price),
+      tx
+    );
 
     await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
@@ -210,7 +217,9 @@
       });
 
       artwork.list_price_tx = (await signOver(artwork, tx)).toBase64();
-      artwork.auction_release_tx = (await createRelease(artwork, tx)).toBase64();
+      artwork.auction_release_tx = (
+        await createRelease(artwork, tx)
+      ).toBase64();
     }
 
     artwork.auction_start = start;
@@ -382,9 +391,13 @@
 <div class="container mx-auto md:p-20">
   <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
     {#if artwork}
-    <a class="block mb-6 text-midblue" href={`/artwork/${artwork.id}`}><i
-        class="fas fa-chevron-left mr-3" />Back</a>
-  {/if}
+      <a class="block mb-6 text-midblue" href={`/artwork/${artwork.id}`}>
+        <div class="flex">
+          <Fa icon={faChevronLeft} class="my-auto mr-1" />
+          <div>Back</div>
+        </div>
+      </a>
+    {/if}
     <h2>List artwork</h2>
 
     {#if loading}
@@ -416,11 +429,12 @@
           </div>
         </div>
         <div class="flex w-full sm:w-3/4 mb-4">
-          <div class="relative mt-1 rounded-md w-2/3 mr-2">
+          <div class="relative mt-1 rounded-md w-2/3 mr-6">
             <label>Price
               <span class="tooltip">
-                <i
-                  class="far fa-question-circle text-midblue text-xl tooltip" />
+                <i class="text-midblue text-xl tooltip">
+                  <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
+                </i>
                 <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
                   Setting a listing price is optional. If you choose to set one,
                   a pre-signed swap transaction will be generated from your
@@ -446,8 +460,9 @@
             <div class="relative mt-1 rounded-md">
               <label>Royalty Rate
                 <span class="tooltip">
-                  <i
-                    class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
+                  <i class="ml-3 text-midblue text-xl tooltip">
+                    <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
+                  </i>
                   <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
                     Setting a royalty involves transferring the artwork to a
                     2-of-2 multisig address with Raretoshi. Our server will
@@ -528,14 +543,16 @@
             <div class="flex flex-col mb-4">
               <div>
                 <div class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm">
-                  <label>Reserve price
+                  <label>
+                    Reserve price
                     <span class="tooltip">
-                      <i
-                        class="far fa-question-circle ml-3 text-midblue text-xl tooltip" />
+                      <i class="ml-3 text-midblue text-xl tooltip">
+                        <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
+                      </i>
                       <span
                         class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                        Reserve price is the minimum price that you'll accept
-                        for the artwork. Setting one is optional.
+                        Reserve price is the minimum price that you'll
+                        accept for the artwork. Setting one is optional.
                       </span>
                     </span>
                     <input

@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
   import { border, bg } from "./_colors";
   import { page } from "$app/stores";
   import { electrs } from "$lib/api";
@@ -18,12 +20,12 @@
   $: requireLogin($page);
 
   let balance;
-  balances.subscribe((b) => b && (balance = val($asset, b[$asset] || 0)))
+  balances.subscribe((b) => b && (balance = val($asset, b[$asset] || 0)));
 
   let loading = true;
   if (!$asset) $asset = btc;
   let name = (a) => {
-    return tickers[a] ? tickers[a].name : assetLabel(a)
+    return tickers[a] ? tickers[a].name : assetLabel(a);
   };
 
   let ticker = (a) => {
@@ -58,21 +60,33 @@
 </script>
 
 <style>
-  .dark-red { background: #2b0208; } 
-  .dark-green { background: #082527; }
-  .dark-gray { background: #31373e; }
-  .border-blue { border-color: #6ed8e0; }
+  .dark-red {
+    background: #2b0208;
+  }
+  .dark-green {
+    background: #082527;
+  }
+  .dark-gray {
+    background: #31373e;
+  }
+  .border-blue {
+    border-color: #6ed8e0;
+  }
 
-  .bg-btc { background: #3e6d79; } 
-  .border-btc { border-color: #30bfad; } 
+  .bg-btc {
+    background: #3e6d79;
+  }
+  .border-btc {
+    border-color: #30bfad;
+  }
 
   .active {
     @apply border-t-2 border-b-2 border-r-2 text-white;
-  } 
+  }
 
   button:disabled {
     @apply text-gray-400 border-gray-400;
-  } 
+  }
 </style>
 
 {#if loading}
@@ -83,9 +97,14 @@
   <div class="w-full xl:w-3/4 max-w-lg">
     {#if $assets.length > 1}
       <div class="mb-5">
-        <a class="secondary-color" href="/wallet/asset">{$assets.length}
-          assets available in this wallet
-          <i class="fas fa-chevron-right ml-3" /></a>
+        <a class="secondary-color" href="/wallet/asset">
+          <div class="flex">
+            <div>{$assets.length} assets available in this wallet</div>
+            <div class="my-auto ml-1">
+              <Fa icon={faChevronRight} />
+            </div>
+          </div>
+        </a>
       </div>
     {/if}
 
@@ -105,7 +124,8 @@
       <div class="m-6">
         <div class="text-sm text-gray-400">Pending</div>
         <div class="flex mt-3">
-          <span class="text-gray-400 mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
+          <span
+            class="text-gray-400 mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
           <span class="text-gray-400">{assetLabel($asset)}</span>
         </div>
       </div>
@@ -115,7 +135,8 @@
           class="button-trans-gray w-full mr-2">Fund</button>
         <button
           on:click={toggleWithdrawing}
-          class="button-trans-gray w-full ml-2" disabled={!balance}>Withdraw</button>
+          class="button-trans-gray w-full ml-2"
+          disabled={!balance}>Withdraw</button>
       </div>
     </div>
     <div>

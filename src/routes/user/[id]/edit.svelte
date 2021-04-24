@@ -1,4 +1,13 @@
 <script>
+  import Fa from "svelte-fa";
+  import {
+    faImage,
+    faChevronLeft,
+    faEnvelope,
+    faLink,
+    faMapMarkerAlt,
+  } from "@fortawesome/free-solid-svg-icons";
+  import { faTwitter, faInstagram } from "@fortawesome/free-brands-svg-icons";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { err, info, goto, validateEmail } from "$lib/utils";
@@ -70,10 +79,9 @@
     $user = { ...$user, ...rest };
     updateUser$({ user: rest, id }).then((r) => {
       if (r.error) {
-        if (r.error.message.includes('Uniqueness')) err('Username taken')
+        if (r.error.message.includes("Uniqueness")) err("Username taken");
         else err(r.error);
-      } 
-      else {
+      } else {
         info("Profile updated");
         goto(`/${rest.username}`);
       }
@@ -123,8 +131,12 @@
   {#if form}
     <div
       class="mb-4 w-full sm:max-w-3xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row  bg-white">
-      <a class="block mb-6 text-midblue" href={`/${$user.username}`}><i
-          class="fas fa-chevron-left mr-3" />Back</a>
+      <a class="block mb-6 text-midblue" href={`/${$user.username}`}>
+        <div class="flex">
+          <Fa icon={faChevronLeft} class="my-auto mr-1" />
+          <div>Back</div>
+        </div>
+      </a>
       <h2 class="mb-10">Edit Profile</h2>
       <div class="flex mt-4 m-auto flex-col-reverse lg:flex-row">
         <form
@@ -140,23 +152,33 @@
             <input placeholder="Username" bind:value={form.username} />
           </div>
           <div class="flex flex-col mb-4">
-            <i class="far fa-envelope icon" />
+            <i class="icon">
+              <Fa icon={faEnvelope} class="mt-1" />
+            </i>
             <input placeholder="email@example.com" bind:value={form.email} />
           </div>
           <div class="flex flex-col mb-4">
-            <i class="fab fa-twitter icon" />
+            <i class="icon">
+              <Fa icon={faTwitter} class="mt-1" />
+            </i>
             <input placeholder="@twitter" bind:value={form.twitter} />
           </div>
           <div class="flex flex-col mb-4">
-            <i class="fab fa-instagram icon" />
+            <i class="icon">
+              <Fa icon={faInstagram} class="mt-1" />
+            </i>
             <input placeholder="@instagram" bind:value={form.instagram} />
           </div>
           <div class="flex flex-col mb-4">
-            <i class="fas fa-map-marker-alt icon" />
+            <i class="icon">
+              <Fa icon={faMapMarkerAlt} class="mt-1" />
+            </i>
             <input placeholder="Vancouver, Canada" bind:value={form.location} />
           </div>
           <div class="flex flex-col mb-4">
-            <i class="fas fa-link icon" />
+            <i class="icon">
+              <Fa icon={faLink} class="mt-1" />
+            </i>
             <input placeholder="example.com" bind:value={form.website} />
           </div>
           <div class="flex flex-col mb-4">
@@ -173,7 +195,7 @@
           on:click={() => fileInput.click()}>
           <Avatar size="xl" src={preview || $user.avatar_url} />
           <button class="text-lightblue mt-5">CHANGE AVATAR
-            <i class="far fa-image ml-2" /></button>
+            <Fa icon={faImage} pull="right" class="mt-1 ml-2" /></button>
 
           <input
             class="hidden"

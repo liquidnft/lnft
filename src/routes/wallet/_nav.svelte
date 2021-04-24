@@ -1,6 +1,8 @@
 <script>
   import { assets, user } from "$lib/store";
   import { goto } from "$lib/utils";
+  import Fa from "svelte-fa";
+  import { faChevronLeft, faCog, faDollarSign } from "@fortawesome/free-solid-svg-icons";
 </script>
 
 <style>
@@ -56,18 +58,24 @@
 
   <div class="wallet-nav flex flex-col">
     <a href={`/${$user.username}`}>
-      <i class="fas fa-chevron-left"></i>
-      <span>Back to Profile</span>
+      <div class="flex">
+        <Fa icon={faChevronLeft} class="my-auto mr-4" />
+        <div>Back to profile</div>
+      </div>
     </a>
     {#if $assets.length > 1}
     <a href="/wallet/asset">
-      <i class="fas fa-dollar-sign"></i>
-      <span>Change Asset</span>
+      <div class="flex">
+        <Fa icon={faDollarSign} class="my-auto mr-4" />
+      <div>Change Asset</div>
+    </div>
     </a>
   {/if}
     <a href="/wallet/setup">
-      <i class="fas fa-cog"></i>
-      <span>Settings</span>
+      <div class="flex">
+      <Fa icon={faCog} class="my-auto mr-4" />
+      <div>Settings</div>
+    </div>
     </a>
   </div>
 </div>

@@ -14,7 +14,6 @@
   import { show, user, password, token } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import "@fortawesome/fontawesome-free/js/all.js";
   import { publicPages } from "$lib/utils";
 
   let open = false;

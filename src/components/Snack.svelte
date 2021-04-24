@@ -1,5 +1,7 @@
 <script>
   import { snack } from "$lib/store";
+  import Fa from "svelte-fa";
+  import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
   let info, error;
   let receivedSnack = (s) => {
@@ -40,7 +42,9 @@
   <div class="snack-container flex">
     <div class="snack"  class:info class:error>
       <div class="flex-grow mr-2">{$snack.msg}</div>
-      <button class="ml-auto my-auto w-auto" on:click={() => $snack = undefined}><i class="fa fa-times text-2xl" /></button>
+      <button class="ml-auto my-auto w-auto" on:click={() => $snack = undefined}>
+        <Fa icon={faTimes} />
+      </button>
     </div>
   </div>
 {/if}

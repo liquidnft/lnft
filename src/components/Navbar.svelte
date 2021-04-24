@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faSearch } from "@fortawesome/free-solid-svg-icons";
   import Hamburger from "./Hamburger.svelte";
   import Menu from "./Menu.svelte";
 
@@ -42,8 +44,9 @@
     <a href="/landing">
       <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-48" /></a>
   </div>
-  <a class="mobileSearch" href="/market"><i
-      class="fas fa-search text-2xl" /></a>
+  <a class="mobileSearch" href="/market">
+    <Fa icon={faSearch} />
+  </a>
   <nav class="hidden text-bold lg:block">
     <Menu />
   </nav>

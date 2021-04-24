@@ -1,4 +1,11 @@
 <script>
+  import Fa from "svelte-fa";
+  import {
+    faChevronDown,
+    faChevronUp,
+    faTimes,
+  } from "@fortawesome/free-solid-svg-icons";
+  import { faClone } from "@fortawesome/free-regular-svg-icons";
   import ProgressLinear from "$components/ProgressLinear";
   import { onMount, tick } from "svelte";
   import qrcode from "qrcode-generator-es6";
@@ -137,7 +144,9 @@
     <h3 class="text-2xl flex-grow text-left">Add funds</h3>
     <button
       class="text-xl ml-auto font-thin w-10 h-10 bg-gray-100 rounded rounded-full"
-      on:click={() => ($prompt = undefined)}><i class="fa fa-times" /></button>
+      on:click={() => ($prompt = undefined)}>
+      <Fa icon={faTimes} />
+    </button>
   </div>
   {#if incoming}
     <div class="text-xs mt-6">Unconfirmed Payment Detected</div>
@@ -200,8 +209,12 @@
             <div
               class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
               on:click={toggle}>
-              Show invoice
-              <i class="fa fa-chevron-down" />
+              <div class="flex">
+                <div>Show invoice</div>
+                <div class="my-auto ml-1">
+                  <Fa icon={faChevronDown} />
+                </div>
+              </div>
             </div>
           {/if}
         </div>
@@ -209,15 +222,22 @@
           <div
             class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
             on:click={toggle}>
-            Hide invoice
-            <i class="fa fa-chevron-up" />
+            <div class="flex">
+              <div>Hide invoice</div>
+              <div class="my-auto ml-1">
+                <Fa icon={faChevronUp} />
+              </div>
+            </div>
           </div>
         {/if}
         <button
           on:click={() => copy(address)}
-          class="center font-medium secondary-color uppercase mt-4">Copy
-          {tab === 'lightning' ? 'invoice' : 'address'}
-          <i class="far fa-clone ml-2" /></button>
+          class="justify-center flex center font-medium secondary-color uppercase mt-4">
+          <div>Copy {tab === 'lightning' ? 'invoice' : 'address'}</div>
+          <div class="my-auto ml-2">
+            <Fa icon={faClone} />
+          </div>
+        </button>
       {/if}
     </div>
   {/if}

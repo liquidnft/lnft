@@ -14,6 +14,8 @@
   import { sign } from "$lib/wallet";
   import { copy, err } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
+  import Fa from "svelte-fa";
+  import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 
   export let submit = async (e) => {
     await requirePassword();
@@ -36,7 +38,7 @@
 
 <div class="flex justify-between">
   <h1 class="font-black text-4xl primary-color">Sign transaction</h1>
-  <i class="far fa-times-circle text-4xl" />
+  <Fa icon={faTimesCircle} size="2x" />
 </div>
 <div class="flex my-6">
   <div class="w-1/3 flex flex-col">

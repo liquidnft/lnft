@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faCircle } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
   import { user } from "$lib/store";
   import { getMnemonic } from "$lib/wallet";
@@ -60,10 +62,8 @@
   {/each}
 
   <div class="flex justify-center text-center mt-5">
-    <button on:click={() => (offset = 0)} class="pagination w-auto" class:active={offset === 0}><i
-        class="fas fa-circle" /></button>
-    <button on:click={() => (offset = 6)} class="pagination w-auto" class:active={offset === 6}><i
-        class="fas fa-circle" /></button>
+    <button on:click={() => (offset = 0)} class="pagination w-auto" class:active={offset === 0}><Fa icon={faCircle} /></button>
+    <button on:click={() => (offset = 6)} class="pagination w-auto" class:active={offset === 6}><Fa icon={faCircle} /></button>
   </div>
 
   <div class="flex justify-center text-center mt-5">

@@ -1,4 +1,7 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faEnvelope, faLink, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+  import { faTwitter, faInstagram } from "@fortawesome/free-brands-svg-icons";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
@@ -18,8 +21,8 @@
   $: pageChange($page);
 
   const pageChange = ({ params }) => {
-    if (params.id) ({ id } = params)
-    else ({ id } = subject)
+    if (params.id) ({ id } = params);
+    else ({ id } = subject);
   };
 
   let collection = [];
@@ -27,9 +30,10 @@
   let favorites = [];
 
   let artworks;
-  $: if (id) query(operationStore(getUserArtworks(id))).subscribe(
-    ({ data }) => data && (artworks = data.artworks)
-  );
+  $: if (id)
+    query(operationStore(getUserArtworks(id))).subscribe(
+      ({ data }) => data && (artworks = data.artworks)
+    );
 
   $: applyFilters(artworks, subject);
 
@@ -118,32 +122,52 @@
           <div class="social-details">
             {#if subject.instagram}
               <a href={`https://instagram.com/${subject.instagram}`}>
-                <i class="fab fa-instagram" />
-                <span>@{subject.instagram}</span>
+                <div class="flex">
+                  <div class="my-auto">
+                    <Fa icon={faInstagram} />
+                  </div>
+                  <div><span>@{subject.instagram}</span></div>
+                </div>
               </a>
             {/if}
             {#if subject.twitter}
               <a href={`https://twitter.com/${subject.twitter}`}>
-                <i class="fab fa-twitter" />
-                <span>@{subject.twitter}</span>
+                <div class="flex">
+                  <div class="my-auto">
+                    <Fa icon={faTwitter} />
+                  </div>
+                  <div><span>@{subject.twitter}</span></div>
+                </div>
               </a>
             {/if}
             {#if subject.email}
               <a href={`mailto:${subject.email}`}>
-                <i class="far fa-envelope" />
-                <span>{subject.email}</span>
+                <div class="flex">
+                  <div class="my-auto">
+                    <Fa icon={faEnvelope} />
+                  </div>
+                  <div><span>{subject.email}</span></div>
+                </div>
               </a>
             {/if}
             {#if subject.website}
               <a href={`https://${subject.website}`}>
-                <i class="fas fa-link" />
-                <span>{subject.website}</span>
+                <div class="flex">
+                  <div class="my-auto">
+                    <Fa icon={faLink} />
+                  </div>
+                  <div><span>{subject.website}</span></div>
+                </div>
               </a>
             {/if}
             {#if subject.location}
               <a href="#">
-                <i class="fas fa-map-marker-alt" />
-                <span>{subject.location}</span>
+                <div class="flex">
+                  <div class="my-auto">
+                    <Fa icon={faMapMarkerAlt} />
+                  </div>
+                  <div><span>{subject.location}</span></div>
+                </div>
               </a>
             {/if}
           </div>

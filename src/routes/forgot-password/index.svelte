@@ -1,5 +1,7 @@
 <script>
   import { page } from "$app/stores";
+  import Fa from "svelte-fa";
+  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
   let email;
   let forgot;
@@ -55,14 +57,21 @@
     on:submit|preventDefault={() => forgot(email)}
     autocomplete="off">
     <h2 class="mb-8">Recover password</h2>
-    <p class="my-4">We'll send a recovery link to the email associated with your account.</p>
+    <p class="my-4">
+      We'll send a recovery link to the email associated with your account.
+    </p>
     <div class="flex flex-col mb-4">
       <label class="mb-2 font-medium text-gray-600" for="email">Email</label>
       <input placeholder="Email" bind:value={email} bind:this={ref} />
     </div>
     <div class="flex">
-    <button class="primary-btn ml-auto mb-4" type="submit">Send</button>
-  </div>
-    <a href="/login" class="text-midblue"><i class="fa fa-chevron-left mr-2" /> Back to sign in</a>
+      <button class="primary-btn ml-auto mb-4" type="submit">Send</button>
+    </div>
+    <a href="/login" class="text-midblue">
+      <div class="flex">
+      <Fa icon={faChevronLeft} class="my-auto mr-1" />
+      <div>Back to sign in</div>
+    </div>
+    </a>
   </form>
 </div>

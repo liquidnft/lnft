@@ -1,5 +1,8 @@
 <script>
   import { createEventDispatcher } from "svelte";
+  import Fa from "svelte-fa";
+  import { faCloudUploadAlt } from "@fortawesome/free-solid-svg-icons";
+
   const dispatch = createEventDispatcher();
 
   export let title = "Upload Your Artwork";
@@ -84,8 +87,9 @@
     <form class="text-center">
       <div class="flex justify-center flex-col align-center h-full">
         <span class="uppercase">{title}</span>
-        <i
-          class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-5xl text-lightblue" />
+        <span class="mx-auto text-center mt-4 text-5xl text-lightblue">
+          <Fa icon={faCloudUploadAlt} />
+        </span>
       </div>
       <input
         bind:this={fileInput}
@@ -98,14 +102,12 @@
   </div>
 {:else}
   <a on:click={open} class="secondary-color cursor-pointer">{title}
-    <i
-      class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-lightblue" />
+    <Fa icon={faCloudUploadAlt} />
   </a>
   <form class="text-center invisible">
     <div class="flex justify-center flex-col align-center h-full">
       <span class="uppercase">{title}</span>
-      <i
-        class="fas fa-cloud-upload-alt mx-auto text-center mt-4 text-5xl text-lightblue" />
+      <Fa icon={faCloudUploadAlt} />
     </div>
     <input
       bind:this={fileInput}

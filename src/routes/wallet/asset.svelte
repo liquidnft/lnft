@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { goto } from "$lib/utils";
   import { page } from "$app/stores";
   import { asset, assets, balances, user } from "$lib/store";
@@ -13,9 +15,15 @@
 </script>
 
 <style>
-  .bg-btc { background: #3f6777; } 
-  .outer-btc { background: #30bfad; } 
-  .border-btc { border-color: #30bfad; } 
+  .bg-btc {
+    background: #3f6777;
+  }
+  .outer-btc {
+    background: #30bfad;
+  }
+  .border-btc {
+    border-color: #30bfad;
+  }
 
   .dark-red {
     background: #2b0208;
@@ -41,9 +49,11 @@
 {#if $balances}
   <div class="container mx-auto">
     <div class="mb-5">
-      <a href="/wallet" class="text-midblue"><i
-          class="fas fa-chevron-left mr-2" />
-        Back</a>
+      <a href="/wallet" class="text-midblue">        <div class="flex">
+          <Fa icon={faChevronLeft} class="my-auto mr-1" />
+          <div>Back</div>
+        </div>
+      </a>
     </div>
     <div class="bg-black p-4 rounded-lg">
       {#each $assets as a}

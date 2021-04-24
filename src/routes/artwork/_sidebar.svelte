@@ -1,4 +1,8 @@
 <script>
+  import Fa from "svelte-fa";
+  import {
+    faChevronDown,
+  } from "@fortawesome/free-solid-svg-icons";
   import Avatar from "$components/Avatar";
   import Eye from "$components/Eye";
   import Heart from "$components/Heart";
@@ -19,13 +23,13 @@
     margin: 30px 0;
   }
 
-  .art-likes{
+  .art-likes {
     display: flex;
     align-items: center;
     margin-right: 15%;
   }
 
-  .art-likes p{
+  .art-likes p {
     margin-left: 8px;
   }
 
@@ -71,8 +75,12 @@
   <div
     class="text-xs my-6 cursor-pointer"
     on:click={() => (showDetails = true)}>
-    View asset details
-    <i class="fas fa-chevron-down ml-2" />
+    <div class="flex">
+      <div>View asset details</div>
+      <div class="my-auto ml-1">
+        <Fa icon={faChevronDown} />
+      </div>
+    </div>
   </div>
 {/if}
 

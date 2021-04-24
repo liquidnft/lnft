@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faSearch } from "@fortawesome/free-solid-svg-icons";
   import { err, go, goto } from "$lib/utils";
   import { hasura } from "$lib/api";
   import { results, token } from "$lib/store";
@@ -61,19 +63,22 @@
     if (keys.length === 1 && $results[keys[0]].length === 1) {
       go($results[keys[0]][0]);
       $results = [];
-    }
-    else if (keys.length > 0) goto("/market");
+    } else if (keys.length > 0) goto("/market");
     else err("Nothing matched that search string");
   };
 </script>
 
 <div class="relative w-full search">
   <form on:submit|preventDefault={submit}>
-    <input
-      class="lg:w-1/3 border-0 border-b-2 rounded-none border-lightblue"
-      placeholder="Search..."
-      on:input={({ target: { value } }) => debounce(value)} />
-    <i class="fas fa-search text-2xl" />
+    <div class="flex">
+      <input
+        class="lg:w-1/3 border-0 border-b-2 rounded-none border-lightblue"
+        placeholder="Search..."
+        on:input={({ target: { value } }) => debounce(value)} />
+      <div class="my-auto ml-2">
+        <Fa icon={faSearch} />
+      </div>
+    </div>
 
     {#if suggest}
       {#await search(debounced) then r}
