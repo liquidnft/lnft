@@ -73,21 +73,21 @@
 
   <div class="wallet-nav flex flex-col uppercase">
     <a href={`/${$user.username}`}>
-      <div class="flex">
+      <div class="flex flex-wrap justify-center px-5 items-center h-full">
         <Fa icon={faChevronLeft} class="my-auto mr-4" />
         <div>Back to profile</div>
       </div>
     </a>
     {#if $assets.length > 1}
     <a href="/wallet/asset">
-      <div class="flex">
+      <div class="flex flex-wrap justify-center px-5 items-center h-full">
         <Fa icon={faDollarSign} class="my-auto mr-4" />
       <div>Change Asset</div>
     </div>
     </a>
   {/if}
     <a href="/wallet/setup">
-      <div class="flex">
+      <div class="flex flex-wrap justify-center px-5 items-center h-full">
       <Fa icon={faCog} class="my-auto mr-4" />
       <div>Settings</div>
     </div>
