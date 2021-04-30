@@ -24,7 +24,7 @@
     $error.asset,
     $error.asset === btc ? Math.max($error.amount, 1000) + fee : $error.amount
   );
-  let url = `liquidnetwork:${$user.address}?amount=${amount}`;
+  let url = `liquidnetwork:${$user.confidential}?amount=${amount}`;
 
   let img;
 
@@ -96,7 +96,7 @@
   let liquid = () => {
     tab = "liquid";
     fee = 0;
-    address = $user.address;
+    address = $user.confidential;
   };
 
   let lightning = async () => {
@@ -120,7 +120,7 @@
   };
 
   let address;
-  $: if ($user) address = $user.address;
+  $: if ($user) address = $user.confidential;
 </script>
 
 <style>
@@ -200,7 +200,7 @@
         <div class="flex">
           <div
             class="break-all text-sm text-gray-500"
-            class:truncate={!showInvoice}
+            class:truncate={!showInvoice && tab === 'lightning'}
             class:invisible={loading}
             class:mx-auto={tab !== 'lightning'}>
             {address}
