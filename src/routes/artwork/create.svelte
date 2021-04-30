@@ -119,7 +119,6 @@
         contract = await createIssuance(artwork, domain, tx);
       } catch(e) {
         if (e.message.startsWith("No")) {
-          console.log("heeee");
           tx = await fundUnconfidential();
           contract = await createIssuance(artwork, domain, tx);
         } else { 

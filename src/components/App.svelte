@@ -91,7 +91,6 @@
       if (!$loggedIn) {
         id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
         setupUrql(t);
-        console.log("loggedIn!");
         $loggedIn = true;
       }
     }

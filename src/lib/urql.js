@@ -22,8 +22,8 @@ if (import.meta && import.meta.env && import.meta.env !== "production") {
   url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
   wsUrl = import.meta.env.SNOWPACK_PUBLIC_WS;
 } else {
-  url = "https://staging.raretoshi.com/v1/graphql";
-  wsUrl = "wss://staging.raretoshi.com/v1/graphql";
+  url = "https://bid2.nftglee.com/v1/graphql";
+  wsUrl = "wss://bid2.nftglee.com/v1/graphql";
 }
 
 export const setupUrql = async () => {
@@ -44,11 +44,23 @@ export const setupUrql = async () => {
       storage,
       updates: {
         Mutation: {
+          update_users_by_pk(result, args, cache, info) {
+            cache.updateQuery({ query: getUser }, (data) => {
+              try {
+                data.currentuser[0] = {
+                  ...data.currentuser[0],
+                  ...result.update_users_by_pk,
+                };
+              } catch {}
+              return data;
+            });
+          },
           insert_transactions_one(result, args, cache, info) {
             cache.updateQuery({ query: getRecentActivity(20) }, (data) => {
               try {
-                data.recentactivity.unshift(result.insert_transactions_one);
-                data.recentactivity.pop();
+                data.recentactivity
+                  .unshift(result.insert_transactions_one)
+                  .pop();
               } catch {}
               return data;
             });
@@ -77,9 +89,9 @@ export const setupUrql = async () => {
             });
           },
         },
-      },
-      optimistic: {
-        /* ... */
+        optimistic: {
+          /* ... */
+        },
       },
     });
 
@@ -120,9 +132,9 @@ export const setupUrql = async () => {
 
     const addAuthToOperation = ({ authState, operation }) => {
       if (operation.query)
-      if (!authState || !authState.token) {
-        return operation;
-      }
+        if (!authState || !authState.token) {
+          return operation;
+        }
 
       const fetchOptions =
         typeof operation.context.fetchOptions === "function"

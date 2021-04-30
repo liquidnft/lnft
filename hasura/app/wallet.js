@@ -12,11 +12,14 @@ const {
 const { electrs } = require("./api");
 const reverse = require("buffer-reverse");
 
-// const network = networks.liquid;
-const network = networks.regtest;
+let network;
+if (process.env.LIQUID_ELECTRS_URL.includes("blockstream")) {
+  network = networks.liquid;
+} else {
+  network = networks.regtest;
+}
 
-const mnemonic =
-  process.env.SIGNING_SERVER_MNEMONIC;
+const mnemonic = process.env.SIGNING_SERVER_MNEMONIC;
 
 const path = "m/84'/0'/0'/0/0";
 
@@ -31,17 +34,17 @@ const keypair = () => {
 
 const release = (a) => {
   return Psbt.fromBase64(a);
-} 
+};
 
 const combine = (a, b) => {
   let c = Psbt.fromBase64(b);
-  a = Psbt.fromBase64(a)
+  a = Psbt.fromBase64(a);
   b = Psbt.fromBase64(b);
   b.data.inputs[0] = a.data.inputs[0];
   let d = c.combine(b);
   d.data.inputs[0].sighashType = undefined;
   return d.toBase64();
-} 
+};
 
 const sign = (psbt, sighash = 1, privkey) => {
   if (!privkey) ({ privkey } = keypair());
@@ -56,7 +59,7 @@ const sign = (psbt, sighash = 1, privkey) => {
         .signInput(i, ECPair.fromPrivateKey(privkey), sighashTypes)
         .finalizeInput(i);
     } catch (e) {
-      // console.log("SIGNING ERROR", e.message); 
+      // console.log("SIGNING ERROR", e.message);
     }
   });
 
@@ -74,13 +77,10 @@ let parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 let parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 const unblind = (hex, vout, blindkey) => {
-  let tx = Transaction.fromHex(hex)
+  let tx = Transaction.fromHex(hex);
   let output = tx.outs[vout];
 
-  return confidential.unblindOutputWithKey(
-    output,
-    blindkey
-  );
+  return confidential.unblindOutputWithKey(output, blindkey);
 };
 
 module.exports = {
@@ -91,23 +91,25 @@ module.exports = {
 
   parse(psbt) {
     psbt = Psbt.fromBase64(psbt);
-    return [psbt.__CACHE.__TX.getId(), psbt.__CACHE.__TX.outs.map((o) => {
-      let address;
+    return [
+      psbt.__CACHE.__TX.getId(),
+      psbt.__CACHE.__TX.outs.map((o) => {
+        let address;
 
-      try {
-        address = Address.fromOutputScript(o.script, network);
-      } catch (e) {}
+        try {
+          address = Address.fromOutputScript(o.script, network);
+        } catch (e) {}
 
-      return {
-        ...o,
-        asset: parseAsset(o.asset),
-        value: parseVal(o.value),
-        address,
-      };
-    })];
+        return {
+          ...o,
+          asset: parseAsset(o.asset),
+          value: parseVal(o.value),
+          address,
+        };
+      }),
+    ];
   },
 
   release,
   sign,
 };
-
