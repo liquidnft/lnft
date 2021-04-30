@@ -43,34 +43,35 @@
     ),
   ];
 </script>
+<div class="px-5 sm:px-0">
+  {#if txns.length}
+    <div class="my-7 flex">
+      <div class="flex-1">Show all history</div>
+      <ToggleSwitch
+        id="toggle"
+        label={`Show only ${assetLabel($asset)}`}
+        on:change={(e) => {
+          show = !show;
+        }} />
+    </div>
 
-{#if txns.length}
-  <div class="my-7 flex">
-    <div class="flex-1">Show all history</div>
-    <ToggleSwitch
-      id="toggle"
-      label={`Show only ${assetLabel($asset)}`}
-      on:change={(e) => {
-        show = !show;
-      }} />
-  </div>
+    {#each txns as tx}
+      {#if !show || tx.asset === $asset}
+        <a href={`/tx/${tx.id}`}>
+          <div class="w-full mb-4">
+            <div class="flex">
+              <div class="flex-grow text-sm text-gray-500">
+                {format(parseISO(tx.created_at), 'MMM do, yyyy')}
+              </div>
+              <div class:text-green-500={tx.amount > 0}>
+                {tx.amount > 0 ? '+' : ''}{val(tx.asset, tx.amount)}
+              </div>
+            </div>
 
-  {#each txns as tx}
-    {#if !show || tx.asset === $asset}
-      <a href={`/tx/${tx.id}`}>
-        <div class="w-full mb-4">
-          <div class="flex">
-            <div class="flex-grow text-sm text-gray-500">
-              {format(parseISO(tx.created_at), 'MMM do, yyyy')}
-            </div>
-            <div class:text-green-500={tx.amount > 0}>
-              {tx.amount > 0 ? '+' : ''}{val(tx.asset, tx.amount)}
-            </div>
+            <div class="">{assetLabel(tx.asset)}</div>
           </div>
-
-          <div class="">{assetLabel(tx.asset)}</div>
-        </div>
-      </a>
-    {/if}
-  {/each}
-{/if}
+        </a>
+      {/if}
+    {/each}
+  {/if}
+</div>

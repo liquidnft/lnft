@@ -11,12 +11,36 @@
     @apply bg-black text-white border;
     border-color: #3ba5ac;
   }
+
+  .wallet-container{
+   display: flex;
+   justify-content: center;
+   width: 100%;
+   position: relative;
+  }
+
+  .wallet-content{
+    width: 412px;
+  }
+
+  @media (max-width: 1023px) { 
+    .container{
+      flex-wrap: wrap;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .wallet-content{
+      width: 100%;
+    }
+
+  }
 </style>
 
-<div class="container mx-auto flex flex-wrap justify-between py-10 md:py-20">
+<div class="container mx-auto flex py-10 md:py-20">
   <Nav />
-  <div class="w-full lg:w-3/4">
-    <div class="w-full xl:w-1/2">
+  <div class="wallet-container">
+    <div class="wallet-content">
       <slot />
     </div>
   </div>

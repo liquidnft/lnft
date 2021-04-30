@@ -55,7 +55,7 @@
         </div>
       </a>
     </div>
-    <div class="bg-black p-4 rounded-lg">
+    <div class="dark-bg p-4 rounded-lg">
       {#each $assets as a}
         <div
           class="flex mb-2 cursor-pointer"

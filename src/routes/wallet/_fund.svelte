@@ -114,13 +114,13 @@
 </style>
 
 {#if $user && funding}
-  <div class="dark mb-2 rounded-lg">
+  <div class="dark-bg mb-2 md:rounded-lg p-5">
     <div class="flex justify-between place-items-center text-gray-400">
       <p>Fund Wallet</p>
       <button
         class="text-gray-400 text-xl w-auto"
         on:click={() => (funding = false)}>
-        <Fa icon={faTimes} size="2x" />
+        <Fa icon={faTimes} />
       </button>
     </div>
 

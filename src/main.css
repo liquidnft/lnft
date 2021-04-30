@@ -60,6 +60,12 @@ h3 {
   line-height: 30px;
 }
 
+
+.dark-bg {
+  background-color: #445268;
+  color: #f4f4f4;
+}
+
 /* Big Screen  desktops */
 @media (min-width: 768px) {
   h1 {

@@ -110,7 +110,7 @@
     }
   }
 </style>
-
+<div class="p-5">
 <div class="flex flex-col">
   <p>Enter your backup phrase in the correct order:</p>
 
@@ -193,3 +193,4 @@
       all at once</a>
   {/if}
 </p>
+</div>

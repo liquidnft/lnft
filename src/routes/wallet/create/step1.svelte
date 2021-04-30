@@ -17,7 +17,7 @@
   }
 </style>
 
-<div class="lg:w-3/4">
+<div class="w-full px-5 md:px-0">
   <p class="text-xl mb-10">
     You'll need to know your backup phrase to start. Some things to have in
     mind:

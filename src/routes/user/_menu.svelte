@@ -11,6 +11,7 @@
   .menu {
     display: flex;
     flex-direction: column;
+    font-size: 15px;
   }
   .menu a {
     margin: 10px 0;

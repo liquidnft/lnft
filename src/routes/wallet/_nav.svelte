@@ -7,6 +7,16 @@
 
 <style>
 
+  .wallet-nav-container{
+    position: absolute;
+    z-index: 2;
+    margin-left: 5%;
+  }
+
+  .wallet-nav{
+    font-size: 15px;
+  }
+
   .wallet-nav a{
     margin-bottom: 20px;
   }
@@ -20,6 +30,11 @@
   }
 
   @media (max-width: 1023px) { 
+
+  .wallet-nav-container{
+    position: relative;
+    margin-left:0;
+  }
     .wallet-nav{
       display: flex;
       flex-direction: row;
@@ -53,10 +68,10 @@
 
 
 {#if $user}
-<div class="text-left w-full lg:w-1/4 uppercase">
-  <h2 class="mb-5"><a href="/wallet">Wallet</a></h2>
+<div class="wallet-nav-container">
+  <h2 class="mb-5 px-5 md:px-0"><a href="/wallet">Wallet</a></h2>
 
-  <div class="wallet-nav flex flex-col">
+  <div class="wallet-nav flex flex-col uppercase">
     <a href={`/${$user.username}`}>
       <div class="flex">
         <Fa icon={faChevronLeft} class="my-auto mr-4" />

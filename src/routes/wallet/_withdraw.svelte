@@ -54,22 +54,22 @@
 
 <style>
   input {
-    @apply rounded-lg p-2;
+    @apply rounded-lg p-2 text-black;
     margin-top: 10px;
   }
 </style>
 
 {#if $user && withdrawing}
-  <form class="dark w-full flex flex-col" on:submit|preventDefault={send} autocomplete="off">
+  <form class="dark-bg md:rounded-lg p-5 w-full flex flex-col" on:submit|preventDefault={send} autocomplete="off">
     {#if loading}
       <ProgressLinear />
     {:else}
       <div class="flex flex-col mb-4">
         <label>Amount</label>
-        <div class="flex justify-between">
+        <div class="flex justify-between text-black">
           <input placeholder={val($asset, 0)} bind:value={amount} />
           <select
-            class="rounded-full bg-gray-200 appearance-none py-0"
+            class="rounded-full bg-gray-200 appearance-none py-0 ml-5"
             bind:value={$asset}>
             {#each $assets as asset}
               <option value={asset.asset}>{assetLabel(asset.asset)}</option>

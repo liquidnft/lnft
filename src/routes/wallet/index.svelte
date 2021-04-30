@@ -74,10 +74,14 @@
   }
 
   .bg-btc {
-    background: #3e6d79;
+    background:rgba(52, 190, 171, 0.25)
   }
   .border-btc {
     border-color: #30bfad;
+  }
+
+  .light-color{
+    color: #f4f4f4;
   }
 
   .active {
@@ -94,12 +98,12 @@
     <ProgressLinear />
   </div>
 {:else if $balances && $pending}
-  <div class="w-full xl:w-3/4 max-w-lg">
+  <div class="w-full">
     {#if $assets.length > 1}
       <div class="mb-5">
         <a class="secondary-color" href="/wallet/asset">
           <div class="flex">
-            <div>{$assets.length} assets available in this wallet</div>
+            <div class="px-5 md:px-0">{$assets.length} assets available in this wallet</div>
             <div class="my-auto ml-1">
               <Fa icon={faChevronRight} />
             </div>
@@ -108,24 +112,24 @@
       </div>
     {/if}
 
-    <div class="bg-black mb-2 pt-1 rounded-lg">
+    <div class="dark-bg mb-2 pt-1 sm:rounded-lg">
       <div
-        class={`border-l-8 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5 ${border($asset)} ${bg($asset)}`}>
+        class={`border-l-8 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5 font-bold ${border($asset)} ${bg($asset)}`}>
         {name($asset)}
       </div>
 
       <div class="m-6">
-        <div class="text-sm text-gray-400">Balance</div>
+        <div class="text-sm light-color">Balance</div>
         <div class="flex mt-3">
           <span class="text-4xl text-white mr-3">{balance}</span>
           <span class="text-gray-400 mt-3.5">{assetLabel($asset)}</span>
         </div>
       </div>
       <div class="m-6">
-        <div class="text-sm text-gray-400">Pending</div>
+        <div class="text-sm light-color">Pending</div>
         <div class="flex mt-3">
           <span
-            class="text-gray-400 mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
+            class="light-color mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
           <span class="text-gray-400">{assetLabel($asset)}</span>
         </div>
       </div>
