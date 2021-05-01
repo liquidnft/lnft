@@ -17,31 +17,30 @@
 
   let tx;
   let done;
-  
-  $: if (id)
-    query(operationStore(getTransaction(id))).subscribe(async ({ data }) => {
-      if (done || !data) return;
-      let transaction = data.transactions_by_pk;
-      let { psbt: p } = transaction;
 
-      if (p) $psbt = Psbt.fromBase64(p);
-      else if (!$psbt) {
-        tx = await getTx(transaction.hash);
-        $psbt = new Psbt();
+  query(operationStore(getTransaction(id))).subscribe(async ({ data }) => {
+    if (done || !data) return;
+    let transaction = data.transactions_by_pk;
+    let { psbt: p } = transaction;
 
-        for (let i = 0; i < tx.ins.length; i++) {
-          $psbt.addInput(tx.ins[i]);
-        }
+    if (p) $psbt = Psbt.fromBase64(p);
+    else if (!$psbt) {
+      tx = await getTx(transaction.hash);
+      p = new Psbt();
 
-        tx.outs.map((output) => {
-          $psbt.addOutput(output);
-        });
-
-        $psbt = $psbt;
+      for (let i = 0; i < tx.ins.length; i++) {
+        p.addInput(tx.ins[i]);
       }
 
-      done = true;
-    });
+      tx.outs.map((output) => {
+        p.addOutput(output);
+      });
+
+      $psbt = p;
+    }
+
+    done = true;
+  });
 </script>
 
 <div class="container mx-auto px-10 mt-16 max-w-4xl">

@@ -35,11 +35,12 @@
 
   let ins, outs, totals, senders, recipients, showDetails, users, lock, pp, uu;
   $: init($psbt, $user);
+  let retries = 0;
   let init = async (p, u) => {
     pp = JSON.stringify(p);
     uu = JSON.stringify(u);
-    if (lock) {
-      if (JSON.stringify(p) !== pp || JSON.stringify(u) !== uu)
+    if (++retries < 5 && lock) {
+      if (JSON.stringify(p) !== pp || JSON.stringify(u) !== uu) 
         setTimeout(() => init(p, u), 50);
       return;
     }
