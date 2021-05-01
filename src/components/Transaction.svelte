@@ -77,9 +77,9 @@
         } catch (e) {}
       }
 
-      input.signed =
-        !!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig;
-      input.pSig = !!p.data.inputs[i].partialSig;
+      input.signed = p.data.inputs[i] && (
+        !!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig);
+      input.pSig = p.data.inputs[i] && !!p.data.inputs[i].partialSig;
       input.txid = txid;
       input.index = index;
 

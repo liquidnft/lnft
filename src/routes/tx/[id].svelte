@@ -16,9 +16,11 @@
   const { id } = $page.params;
 
   let tx;
+  let done;
+  
   $: if (id)
     query(operationStore(getTransaction(id))).subscribe(async ({ data }) => {
-      if (!data) return;
+      if (done || !data) return;
       let transaction = data.transactions_by_pk;
       let { psbt: p } = transaction;
 
@@ -37,6 +39,8 @@
 
         $psbt = $psbt;
       }
+
+      done = true;
     });
 </script>
 
