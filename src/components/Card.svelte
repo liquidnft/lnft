@@ -43,6 +43,10 @@
   .card video {
     border-radius: 10px 10px 0 0;
   }
+
+  .price{
+    font-size: 18px;
+  }
 </style>
 
 <div
@@ -66,7 +70,7 @@
       </div>
       <div class="flex mb-4">
         <div class="1/2 flex-1">
-          <div class="text-xl">
+          <div class="price">
             {#if artwork.list_price}{val(artwork.list_price)}{:else}&mdash;{/if}
             {ticker}
           </div>
@@ -74,7 +78,7 @@
         </div>
         {#if artwork.bid[0].user}
           <div class="1/2 flex-1">
-            <div class="text-xl">{val(artwork.bid[0].amount)} {ticker}</div>
+            <div class="price">{val(artwork.bid[0].amount)} {ticker}</div>
             <div class="text-sm font-medium">
               Current bid by
               <a

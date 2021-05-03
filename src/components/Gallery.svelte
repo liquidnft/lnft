@@ -39,6 +39,10 @@
     });
 </script>
 
+<style>
+  
+</style>
+
 <div class="flex flex-wrap" bind:clientWidth={w}>
   {#each artworks as artwork, i (artwork.id)}
     {#if i % offset === 0}

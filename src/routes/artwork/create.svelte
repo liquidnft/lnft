@@ -299,9 +299,9 @@
     max-width: 100%;
   }
 
-  :global(.cover){
+  :global(.cover img){
     height: 320px !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
   }
 
   button {
