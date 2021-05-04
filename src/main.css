@@ -214,7 +214,7 @@ button:hover {
 input,
 textarea,
 select {
-  @apply border p-4 bg-white focus:outline-none;
+  @apply border bg-white focus:outline-none;
   overflow-y: auto;
 }
 

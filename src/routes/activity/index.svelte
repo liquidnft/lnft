@@ -18,6 +18,7 @@
   );
 
   let show = false;
+  console.log(transactions)
 </script>
 
 <style>

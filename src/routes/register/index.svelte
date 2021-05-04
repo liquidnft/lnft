@@ -48,7 +48,9 @@
   }
 
   input {
-    @apply appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
+    @apply appearance-none border rounded text-gray-700 leading-tight;
+    padding: 0;
+    padding: 10px;
   }
 
   span {
