@@ -41,7 +41,7 @@
     width: 90%;
   }
   .secondary-header {
-    height: 600px;
+    height: 600px !important;
     /*
     background-image: url("/secondary-header.jpg");
     background-position: center;
@@ -71,7 +71,7 @@
 
   @media only screen and (max-width: 500px) {
     .secondary-header {
-      height: 400px;
+      height: 400px !important;
     }
   }
 </style>

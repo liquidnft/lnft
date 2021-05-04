@@ -29,7 +29,7 @@
 <AcceptOffer bind:this={comp} />
 <div class="flex flex-wrap px-6">
   {#each offers as offer}
-    <div class="w-1/2 p-4">
+    <div class="w-full md:w-1/2 p-4">
       <Card
         artwork={offer.transaction.artwork}
         columns={1}
