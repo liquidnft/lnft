@@ -39,8 +39,8 @@
     @apply shadow-md;
   }
 
-  .card img,
-  .card video {
+  .card :global(img),
+  .card :global(video) {
     border-radius: 10px 10px 0 0;
   }
 

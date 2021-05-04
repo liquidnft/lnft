@@ -230,7 +230,7 @@ select {
 }
 
 .box-shadow {
-  box-shadow: 1px 1px 10px 1px #cbcbcb;
+  box-shadow: 1px 0px 5px 0px #cbcbcb;
 }
 
 .sticky {
