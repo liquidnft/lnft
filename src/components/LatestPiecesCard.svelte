@@ -32,7 +32,7 @@
 </style>
 
 <div
-  class="w-full lg:w-1/3 px-4 mb-10"
+  class="w-full lg:w-1/3 mb-10 pr-10"
   on:click={() => goto(`/${artwork.slug}`)}>
   <div class="h-full box-shadow rounded-lg recentCard">
     <div class="thumb">

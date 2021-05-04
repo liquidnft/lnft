@@ -7,7 +7,7 @@
   export let items = [];
 </script>
 
-<div class="w-full md:w-full lg:w-1/2 px-6 mb-10">
+<div class="w-full md:w-full lg:w-1/2 sm:pr-10 mb-10">
   <div class="border-gray-400 border-b-2 flex justify-between">
     <p class="text-xl">{title}</p>
     <div class="mb-4">{stat}</div>

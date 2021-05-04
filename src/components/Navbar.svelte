@@ -27,6 +27,7 @@
 
     .mobileSearch {
       display: block;
+      font-size: 28px;
     }
 
     nav {

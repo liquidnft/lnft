@@ -40,6 +40,14 @@
 </script>
 
 <style>
+  .invisible{
+    height: 0;
+  }
+
+  .contain, .cover{
+    height: 350px;
+  }
+
   
 </style>
 
@@ -50,7 +58,7 @@
         <h4 class="mx-auto mb-12" id={`artwork-${i}`}>{i / offset + 1}</h4>
       </div>
     {/if}
-    <div class="w-full md:w-1/2 md:p-5 lg:w-1/3 xl:w-1/4 lg:px-5 xl:px-8 mb-20">
+    <div class="w-full md:w-1/2 sm:pr-10 lg:w-1/3 xl:w-1/4 mb-20">
       {#if artwork}
         {#if !loaded[artwork.id]}
           <LoadingPlaceholder />

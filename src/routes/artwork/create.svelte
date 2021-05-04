@@ -299,7 +299,7 @@
     max-width: 100%;
   }
 
-  :global(.cover img){
+  :global(.cover, .cover img){
     height: 320px !important;
     object-fit: cover !important;
   }

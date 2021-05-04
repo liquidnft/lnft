@@ -85,13 +85,10 @@
     padding-bottom: 100%;
   }
 
-  .contain video, .contain img {
-    @apply h-full absolute object-cover rounded-t-lg;
+  img{
+    width: 100%;
   }
 
-  .cover video, .cover img {
-    @apply w-full object-contain rounded-t-lg;
-  }
 </style>
 
 {#if artwork.filetype && artwork.filetype.includes('video')}

@@ -44,16 +44,27 @@
     border-radius: 10px 10px 0 0;
   }
 
+  .card-link{
+    height: 350px;
+    width: 100%;
+  }
+
+  .card-link :global(img), .card-link :global(video){
+    height: 350px;
+    width: 100%;
+    object-fit: cover;
+  }
+
   .price{
-    font-size: 18px;
+    font-size: 15px;
   }
 </style>
 
 <div
   class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
   in:fade>
-  <a href={`/${artwork.slug}`}>
-    <div class="flex justify-center">
+  <a class="card-link" href={`/${artwork.slug}`}>
+    <div class="flex">
       <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
     </div>
   </a>

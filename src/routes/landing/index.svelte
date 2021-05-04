@@ -62,7 +62,7 @@
   }
 
   .header-button {
-    width: 170px;
+    width: 200px;
     border: 1px solid white;
     color: white;
     border-radius: 30px;
