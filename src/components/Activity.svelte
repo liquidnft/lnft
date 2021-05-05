@@ -23,7 +23,7 @@
   .activity-card :global(img), .activity-card :global(video){
    object-fit: cover !important;
    height: 400px;
-   width: 450px !important;
+   width: 500px !important;
    box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
    border-radius: 10px;
   }

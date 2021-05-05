@@ -11,7 +11,7 @@
   }
 
   .large {
-    @apply w-20 h-20;
+    @apply w-16 h-16;
   }
 
   .xl {
