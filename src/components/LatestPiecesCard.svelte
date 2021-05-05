@@ -17,9 +17,9 @@
     height: 300px;
   }
 
-  .latest-container :global(video), .latest-container :global(img){
+  .latest-container .thumb :global(video), .latest-container .thumb :global(img){
     width: 100%;
-    height: 100%;
+    height: 320px;
     border-radius: 10px 10px 0 0;
     object-fit: cover !important;
   }

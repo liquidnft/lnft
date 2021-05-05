@@ -70,7 +70,7 @@
 
 <style>
 
-  .gallery-tab :global(img), .gallery-tab :global(video){
+  .gallery-tab :global(.card-link img), .gallery-tab :global(.card-link video){
     height: 350px;
   }
 

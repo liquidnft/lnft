@@ -44,7 +44,7 @@
     height: 0;
   }
 
-  .market-gallery :global(img), .market-gallery :global(video){
+  .market-gallery :global(.card-link img), .market-gallery :global(.card-link video){
     height: 350px;
   }
 
