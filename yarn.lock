@@ -3595,6 +3595,13 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
+wretch-middlewares@^0.1.12:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/wretch-middlewares/-/wretch-middlewares-0.1.12.tgz#8d244349d07d767b1a1400e5750ed6ea43f00d9f"
+  integrity sha512-63jr03dH8H++i53N9FFNCG7HhJZdfyKNsK8VjcuuqnDq+SSWk7O83V2cSxzsAdDpx6l55iPTdoKZJwB/wh2UPQ==
+  dependencies:
+    wretch "^1.7.4"
+
 wretch@^1.7.4:
   version "1.7.4"
   resolved "https://registry.yarnpkg.com/wretch/-/wretch-1.7.4.tgz#d71fc16ed01a8fd549df6cd06f205c6d13e2cf73"

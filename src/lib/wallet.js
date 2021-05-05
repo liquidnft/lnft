@@ -2,6 +2,7 @@ import bs58 from "bs58";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { api, electrs } from "$lib/api";
+import { retry } from "wretch-middlewares";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
@@ -556,7 +557,7 @@ export const broadcast = async () => {
   let tx = get(psbt).extractTransaction();
   let hex = tx.toHex();
 
-  return electrs.url("/tx").body(hex).post().text();
+  electrs.middlewares([retry()]).url("/tx").body(hex).post().text();
 };
 
 export const signAndBroadcast = async () => {
@@ -636,13 +637,12 @@ export const createIssuance = async (
 ) => {
   let out = singlesig();
 
-  let p = new Psbt()
-    .addOutput({
-      asset: btc,
-      nonce: Buffer.alloc(1),
-      script: payments.embed({ data: [Buffer.alloc(1)] }).output,
-      value: 0,
-    });
+  let p = new Psbt().addOutput({
+    asset: btc,
+    nonce: Buffer.alloc(1),
+    script: payments.embed({ data: [Buffer.alloc(1)] }).output,
+    value: 0,
+  });
 
   if (tx) {
     let index = tx.outs.findIndex(
