@@ -127,7 +127,7 @@
   }
 </style>
 
-<div class="container mx-auto py-20">
+<div class="container mx-auto pt-5 md:pt-20">
   {#if form}
     <div
       class="mb-4 w-full sm:max-w-3xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row  bg-white">

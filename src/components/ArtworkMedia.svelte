@@ -82,7 +82,6 @@
 <style>
   .contain {
     @apply relative w-full;
-    padding-bottom: 100%;
   }
 
   img{

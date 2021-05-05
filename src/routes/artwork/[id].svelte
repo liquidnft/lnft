@@ -236,6 +236,7 @@
     border-radius: 100%;
     background: whitesmoke;
     padding:11px 15px;
+    cursor: pointer;
   }
 
   .mobileImage {
@@ -273,8 +274,8 @@
   }
 
   .desktopImage span:nth-child(1) :global(img), .desktopImage span:nth-child(1) :global(video) {
-    width: 70vw !important;
     height: 50vh;
+    width: 70vw;
     object-fit: cover !important;
   }
 
