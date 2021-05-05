@@ -51,7 +51,7 @@
     height: 600px !important;
     width: 100%;
     object-fit: cover;
-    
+
     /*
     background-image: url("/secondary-header.jpg");
     background-position: center;
