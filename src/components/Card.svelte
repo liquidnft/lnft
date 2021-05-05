@@ -44,13 +44,8 @@
     border-radius: 10px 10px 0 0;
   }
 
-  .card-link{
-    height: 350px;
-    width: 100%;
-  }
 
   .card-link :global(img), .card-link :global(video){
-    height: 350px;
     width: 100%;
     object-fit: cover;
   }

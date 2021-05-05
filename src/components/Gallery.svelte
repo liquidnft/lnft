@@ -44,7 +44,7 @@
     height: 0;
   }
 
-  .contain, .cover{
+  .market-gallery :global(.card-link img), .market-gallery :global(.card-link video){
     height: 350px;
   }
 
@@ -58,7 +58,7 @@
         <h4 class="mx-auto mb-12" id={`artwork-${i}`}>{i / offset + 1}</h4>
       </div>
     {/if}
-    <div class="w-full md:w-1/2 sm:pr-10 lg:w-1/3 xl:w-1/4 mb-20">
+    <div class="market-gallery w-full md:w-1/2 sm:pr-10 lg:w-1/3 xl:w-1/4 mb-20">
       {#if artwork}
         {#if !loaded[artwork.id]}
           <LoadingPlaceholder />

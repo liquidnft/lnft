@@ -69,6 +69,11 @@
 </script>
 
 <style>
+
+  .gallery-tab :global(.card-link img), .gallery-tab :global(.card-link video){
+    height: 350px;
+  }
+
   .hover {
     @apply border-b-2;
     border-bottom: 3px solid #6ed8e0;
@@ -215,7 +220,7 @@
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">
               {#each creations as artwork (artwork.id)}
-                <div class="w-full lg:w-1/2 px-5 mb-10">
+                <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>
               {:else}
@@ -227,7 +232,7 @@
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">
               {#each collection as artwork (artwork.id)}
-                <div class="w-full lg:w-1/2 px-5 mb-10">
+                <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>
               {:else}
@@ -241,7 +246,7 @@
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">
               {#each favorites as artwork (artwork.id)}
-                <div class="w-full lg:w-1/2 px-0 md:px-5 mb-10">
+                <div class="gallery-tab w-full lg:w-1/2 px-0 md:px-5 mb-10">
                   <Card {artwork} showDetails={false} />
                 </div>
               {:else}
