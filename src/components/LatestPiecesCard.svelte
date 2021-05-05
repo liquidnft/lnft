@@ -17,8 +17,9 @@
     height: 300px;
   }
 
-  .thumb :global(video, img, .cover){
+  .latest-container :global(video), .latest-container :global(img){
     width: 100%;
+    height: 100%;
     border-radius: 10px 10px 0 0;
     object-fit: cover !important;
   }
@@ -32,7 +33,7 @@
 </style>
 
 <div
-  class="w-full lg:w-1/3 mb-10 pr-10"
+  class="latest-container w-full lg:w-1/3 mb-10 pr-10"
   on:click={() => goto(`/${artwork.slug}`)}>
   <div class="h-full box-shadow rounded-lg recentCard">
     <div class="thumb">

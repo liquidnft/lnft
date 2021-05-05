@@ -18,8 +18,9 @@
     height: 300px;
   }
 
-  .thumb :global(video, img, .cover){
+  .recent-container :global(video), .recent-container :global(img){
     width: 100%;
+    height: 100%;
     object-fit: cover !important;
   }
 
@@ -30,7 +31,7 @@
   }
 </style>
 {#if artwork}
-<div class="flex flex-col pr-10 mb-10 lg:w-1/3">
+<div class="recent-container flex flex-col pr-10 mb-10 lg:w-1/3">
   <div class="recentCard flex-grow flex mb-10">
     <div class="mt-2 mr-4">
       <Avatar user={transaction.user} />
