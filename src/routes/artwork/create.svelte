@@ -299,8 +299,14 @@
     max-width: 100%;
   }
 
+  .upload-button{
+    width: 100%;
+    height: 320px;
+  }
+
   .upload-button :global(img), .upload-button :global(video){
     height: 320px !important;
+    width: 100%;
     object-fit: cover !important;
   }
 
