@@ -299,7 +299,7 @@
     max-width: 100%;
   }
 
-  :global(.cover, .cover img){
+  .upload-button :global(img), .upload-button :global(video){
     height: 320px !important;
     object-fit: cover !important;
   }
@@ -309,6 +309,11 @@
   }
 
   @media only screen and (max-width: 1023px) {
+
+    .upload-button{
+      margin-top: 25px;
+    }
+
     .submitArtwork {
       box-shadow: none;
     }
@@ -342,7 +347,7 @@
       </div>
       {#if percent}
         <div class="ml-2 flex-1 flex">
-          <div class="mx-auto">
+          <div class="upload-button mx-auto">
             <ArtworkMedia {artwork} {preview} showDetails={false} thumb={false} />
             <div class="w-full bg-grey-light p-8">
               <div
