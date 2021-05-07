@@ -16,6 +16,7 @@
     overflow: hidden;
     cursor: pointer;
     height: 300px;
+    margin-top: 20px;
   }
 
   .recent-container :global(video), .recent-container :global(img){
@@ -31,8 +32,8 @@
   }
 </style>
 {#if artwork}
-<div class="recent-container flex flex-col pr-10 mb-10 lg:w-1/3">
-  <div class="recentCard flex-grow flex mb-10">
+<div class="recent-container flex flex-col pr-10 lg:w-1/3">
+  <div class="recentCard flex-grow flex">
     <div class="mt-2 mr-4">
       <Avatar user={transaction.user} />
     </div>
@@ -47,7 +48,7 @@
   </div>
   <a href={`/${artwork.slug}`}>
     <div
-      class="mb-5 w-full flex rounded-lg box-shadow thumb">
+      class="w-full flex rounded-lg box-shadow thumb">
       <ArtworkMedia {artwork} showDetails={false} />
     </div>
   </a>

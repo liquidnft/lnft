@@ -39,11 +39,19 @@
 <style>
   .header {
     width: 90%;
+    margin-top: 128px;
   }
+
+  .header p{
+    margin-top: 24px;
+    margin-bottom: 34px;
+  }
+
   .secondary-header {
     height: 600px !important;
     width: 100%;
     object-fit: cover;
+    
     /*
     background-image: url("/secondary-header.jpg");
     background-position: center;
@@ -56,7 +64,7 @@
     display: flex;
     justify-content: center;
     margin: 0 auto;
-    margin-bottom: 100px;
+    margin-top: 36px;
   }
 
   .more .secondary-btn {
@@ -71,16 +79,42 @@
     padding: 0.7rem 1.5rem !important;
   }
 
+  h3{
+    margin-bottom: 36px;
+  }
+
+  .marg-bottom{
+    margin-bottom: 128px !important;
+  }
+
   @media only screen and (max-width: 500px) {
+    .header-container.marg-bottom{
+      margin-bottom: 64px !important;
+    }
+
+    .header{
+      margin-top: 64px;
+    }
+
+    .header p{
+      margin-top: 24px;
+      margin-bottom: 24px;
+    }
+
+    .header .primary-btn{
+      display: block;
+      width: 100%;
+    }
+
     .secondary-header {
       height: 400px !important;
     }
   }
 </style>
 
-<div class="flex mx-auto justify-center">
-  <div class="header mt-10 md:mt-20 text-center">
-    <h1 class="mb-10 text-left md:text-center w-2/3 md:w-full">
+<div class="flex header-container mx-auto justify-center marg-bottom">
+  <div class="header text-center">
+    <h1 class="text-left md:text-center md:w-full">
       Raretoshi
       <br />digital art
     </h1>
@@ -88,13 +122,11 @@
       Upload, collect, and transact rare digital artworks as secure assets in
       the Liquid Network
     </p>
-    <div class="mt-10">
       <a class="primary-btn" href={`/market`}>Start exploring</a>
-    </div>
   </div>
 </div>
 
-<div class="flex secondary-header mt-20 mb-20 text-white">
+<div class="flex secondary-header text-white marg-bottom">
   <div
     class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
     <h2 class="mb-3 text-white">cryptograffiti <br />x loudsqueak</h2>
@@ -119,7 +151,7 @@
 </div>
 
 
-<div class="container mx-auto px-10 mb-8">
+<div class="container mx-auto px-10">
   <h3>Recent Activity</h3>
 </div>
 <div class="container mx-auto flex overflow-x-auto">
@@ -127,26 +159,26 @@
     <RecentActivityCard {transaction} />
   {/each}
 </div>
-<div class="container more">
+<div class="container more marg-bottom">
   <a class="secondary-btn" href={'/activity'}>View more</a>
 </div>
 
-<div class="container mx-auto px-10 mb-8">
+<div class="container mx-auto px-10">
   <h3>Latest Pieces</h3>
 </div>
-<div class="container mx-auto flex pb-10 overflow-x-auto">
+<div class="container mx-auto flex pb-1 overflow-x-auto">
   {#each latest as transaction}
     <LatestPiecesCard {transaction} />
   {/each}
 </div>
-<div class="container more">
+<div class="container more marg-bottom">
   <a class="secondary-btn" href={'/market'}>View gallery</a>
 </div>
 
-<div class="container mx-auto px-10 mb-10">
+<div class="container mx-auto px-10">
   <h3>Watch the market move</h3>
 </div>
-<div class="container mx-auto flex flex-wrap mb-20">
+<div class="container mx-auto flex flex-wrap marg-bottom">
   <Summary
     title="Top Collectors"
     stat="Works collected"

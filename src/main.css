@@ -31,9 +31,8 @@ body {
     /* Firefox supports this but not yet `system-ui` */ "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-weight: normal;
-
-  font-size: 17px;
-  color: #525252;
+  font-size: 18px;
+  color: #2D2E32;
 }
 
 h1,
@@ -56,7 +55,7 @@ h2 {
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 26px;
   line-height: 30px;
 }
 
@@ -79,7 +78,7 @@ h3 {
   }
 
   h3 {
-    font-size: 36px;
+    font-size: 32px;
     line-height: 40px;
   }
 }
@@ -160,6 +159,11 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.secondary-btn:hover{
+  border: 1px solid #6B6B6B;
+  color: #6B6B6B;
 }
 
 .button-trans-gray {
