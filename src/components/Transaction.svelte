@@ -40,7 +40,7 @@
     pp = JSON.stringify(p);
     uu = JSON.stringify(u);
     if (++retries < 5 && lock) {
-      if (JSON.stringify(p) !== pp || JSON.stringify(u) !== uu) 
+      if (JSON.stringify(p) !== pp || JSON.stringify(u) !== uu)
         setTimeout(() => init(p, u), 50);
       return;
     }
@@ -78,8 +78,9 @@
         } catch (e) {}
       }
 
-      input.signed = p.data.inputs[i] && (
-        !!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig);
+      input.signed =
+        p.data.inputs[i] &&
+        (!!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig);
       input.pSig = p.data.inputs[i] && !!p.data.inputs[i].partialSig;
       input.txid = txid;
       input.index = index;
@@ -272,7 +273,9 @@
         on:click={() => (showDetails = !showDetails)}>
         <div class="flex">
           <div>Hide details</div>
-          <div class="my-auto ml-1"><Fa icon={faChevronUp} /></div>
+          <div class="my-auto ml-1">
+            <Fa icon={faChevronUp} />
+          </div>
         </div>
       </div>
     {:else}
@@ -281,7 +284,9 @@
         on:click={() => (showDetails = !showDetails)}>
         <div class="flex">
           <div>Show details</div>
-          <div class="my-auto ml-1"><Fa icon={faChevronDown} /></div>
+          <div class="my-auto ml-1">
+            <Fa icon={faChevronDown} />
+          </div>
         </div>
       </div>
     {/if}
@@ -331,13 +336,15 @@
 
                 <div class="mb-2">Prevout: {input.txid}:{input.index}</div>
 
-                <div class="mb-2">
-                  {input.value}
-                  units of
-                  <a
-                    href={`${explorer}/asset/${input.asset}`}
-                    class="secondary-color">{input.asset}</a>
-                </div>
+                {#if input.value && input.asset}
+                  <div class="mb-2">
+                    {input.value}
+                    units of
+                    <a
+                      href={`${explorer}/asset/${input.asset}`}
+                      class="secondary-color">{input.asset}</a>
+                  </div>
+                {/if}
 
                 <div class="mb-2">
                   <a
