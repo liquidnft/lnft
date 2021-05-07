@@ -1,8 +1,8 @@
 # LNFT
 
-LNFT is a web-based platform for issuing non-fungible tokens on the [Bitcoin Liquid Network](https://blockstream.com/liquid/). Blockstream sponsored its development and is hosting an exemplary curated instance of it for use by Bitcoin artists at [Raretoshi](https://raretoshi.com)<sup>*</sup>. 
+LNFT is a web-based platform for issuing and transacting with non-fungible tokens on the [Bitcoin Liquid Network](https://blockstream.com/liquid/). Blockstream is sponsoring its development and hosting an exemplary curated instance of it for use by Bitcoin artists at [Raretoshi](https://raretoshi.com). 
 
-<sup>*</sup> The plan is to separate out any Raretoshi-specific features from the core platform functionality so that anyone can adapt the platform to host their own Liquid-based NFT site but that's currently a work in progress
+The plan is to separate out any Raretoshi-specific features from the core platform functionality so that anyone can adapt the platform to host their own Liquid-based NFT site but that's currently a work in progress
 
 ## Features
 
@@ -24,29 +24,30 @@ LNFT is a web-based platform for issuing non-fungible tokens on the [Bitcoin Liq
 ## Tech stack summary
 
 ### Front-end
-[Svelte Kit](https://github.com/sveltejs/kit) reactive component framework
-[Tailwind CSS](https://tailwindcss.com/) UI utility classes
-[Urql](https://formidable.com/open-source/urql/) GraphQL client 
-[LiquidJS](https://github.com/vulpemventures/liquidjs-lib) for liquid wallet functionality
+
+ - [Svelte Kit](https://github.com/sveltejs/kit) reactive component framework
+ - [Tailwind CSS](https://tailwindcss.com/) UI utility classes
+ - [Urql](https://formidable.com/open-source/urql/) GraphQL client 
+ - [LiquidJS](https://github.com/vulpemventures/liquidjs-lib) for liquid wallet functionality
 
 ### Back-end
 
-[Postgres/Hasura](https://hasura.io) for storing relational app data
-[Hasura backend plus](https://github.com/nhost/hasura-backend-plus) for JWT-based user auth
-[IPFS](https://ipfs.io) for media storage and hash-based content addressing
-[Fastify](https://www.fastify.io/) NodeJS api/app server
+ - [Postgres/Hasura](https://hasura.io) for storing relational app data
+ - [Hasura backend plus](https://github.com/nhost/hasura-backend-plus) for JWT-based user auth
+ - [IPFS](https://ipfs.io) for media storage and hash-based content addressing
+ - [Fastify](https://www.fastify.io/) NodeJS api/app server
 
 ### 3rd-party APIs:
 
-  [Esplora](https://github.com/Blockstream/esplora/blob/master/API.md) for Liquid blockchain data
-  [Liquid asset registry](https://docs.blockstream.com/liquid/developer-guide/proof-of-issuance.html) for token metadata
-  [coinos](https://coinos.io/) BTC/LNBTC <-> L-BTC conversion
+ - [Esplora](https://github.com/Blockstream/esplora/blob/master/API.md) for Liquid blockchain data
+ - [Liquid asset registry](https://docs.blockstream.com/liquid/developer-guide/proof-of-issuance.html) for token metadata
+ - [coinos](https://coinos.io/) BTC/LNBTC <-> L-BTC conversion
 
 ## Installation pre-requisites
 
-- Yarn: https://yarnpkg.com/
-- Docker: https://docs.docker.com/get-docker/
-- Hasura CLI: https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cli.html#install-hasura-cli
+ - Yarn: https://yarnpkg.com/
+ - Docker: https://docs.docker.com/get-docker/
+ - Hasura CLI: https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cli.html#install-hasura-cli
 
 ## Install
 
