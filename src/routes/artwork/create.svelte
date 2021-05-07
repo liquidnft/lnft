@@ -304,10 +304,8 @@
     height: 320px;
   }
 
-  .upload-button :global(img), .upload-button :global(video){
-    height: 320px !important;
+  .upload-button img, .upload-button video {
     width: 100%;
-    object-fit: cover !important;
   }
 
   button {
