@@ -21,6 +21,11 @@
   }
 
   @media only screen and (max-width: 1023px) {
+
+    header {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
     .hambuger {
       display: block;
     }

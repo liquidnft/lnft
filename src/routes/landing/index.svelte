@@ -42,7 +42,10 @@
     margin-top: 128px;
   }
 
-  .header p{
+  .header h5{
+    font-size: 22px;
+    line-height: 36px;
+    color: #2D2E32;
     margin-top: 24px;
     margin-bottom: 34px;
   }
@@ -87,16 +90,20 @@
     margin-bottom: 128px !important;
   }
 
-  @media only screen and (max-width: 500px) {
+  @media only screen and (max-width: 768px) {
     .header-container.marg-bottom{
-      margin-bottom: 64px !important;
+      margin-bottom: 96px !important;
     }
 
     .header{
       margin-top: 64px;
     }
 
-    .header p{
+    h3{
+      margin-bottom: 32px;
+    }
+
+    .header h5{
       margin-top: 24px;
       margin-bottom: 24px;
     }
@@ -109,6 +116,14 @@
     .secondary-header {
       height: 400px !important;
     }
+
+    .container.more{
+      margin-top: 48px;
+    }
+
+    .marg-bottom{
+      margin-bottom: 96px !important;
+    }
   }
 </style>
 
@@ -118,10 +133,10 @@
       Raretoshi
       <br />digital art
     </h1>
-    <p class="md:max-w-md mx-auto text-left md:text-center">
+    <h5 class="md:max-w-lg mx-auto text-left md:text-center">
       Upload, collect, and transact rare digital artworks as secure assets in
       the Liquid Network
-    </p>
+    </h5>
       <a class="primary-btn" href={`/market`}>Start exploring</a>
   </div>
 </div>

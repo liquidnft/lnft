@@ -4,8 +4,9 @@
 
 <style>
   svg {
-    min-height: 24px;
+    min-height: 20px;
     transition: transform 0.3s ease-in-out;
+    color: #2D2E32;
   }
 
   svg line {
@@ -15,11 +16,11 @@
   }
 
   .open svg {
-    transform: scale(0.7);
+    transform: scale(1);
   }
 
   .open #top {
-    transform: translate(6px, 0px) rotate(45deg);
+    transform: translate(3px, 0px) rotate(45deg);
   }
 
   .open #middle {
@@ -27,7 +28,7 @@
   }
 
   .open #bottom {
-    transform: translate(-12px, 9px) rotate(-45deg);
+    transform: translate(-9px, 9px) rotate(-45deg);
   }
 </style>
 
@@ -35,9 +36,9 @@
   class="text-gray-500 hover:text-gray-700 cursor-pointer border-none focus:outline-none p-0"
   class:open
   on:click={() => (open = !open)}>
-  <svg width="32" height="24">
+  <svg width="20" height="20">
     <line id="top" x1="0" y1="2" x2="32" y2="2" />
-    <line id="middle" x1="0" y1="12" x2="32" y2="12" />
-    <line id="bottom" x1="0" y1="22" x2="32" y2="22" />
+    <line id="middle" x1="0" y1="8" x2="32" y2="8" />
+    <line id="bottom" x1="0" y1="14" x2="32" y2="14" />
   </svg>
 </span>

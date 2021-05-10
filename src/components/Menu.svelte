@@ -27,7 +27,12 @@
     border: 1px solid lightgray;
     border-radius: 30px;
     margin-right: 15px;
-    width: 200px;
+    width: 250px;
+  }
+
+  .menu :global(.search):focus-within {
+    border: 1px solid #5C5D60;
+    border-radius: 30px;
   }
 
   .menu :global(input) {
@@ -52,13 +57,13 @@
     .menu {
       flex-direction: column;
       align-items: flex-start;
-      margin-top: 70px;
+      margin-top: 50px;
       border-top: 1px solid gray;
       width: 100%;
     }
 
     .menu a {
-      margin: 20px 0 0 20px;
+      margin: 25px 0 0 0px;
     }
     .menu .search {
       margin: 40px 0 0 45px;
