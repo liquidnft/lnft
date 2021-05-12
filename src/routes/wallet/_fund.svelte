@@ -62,10 +62,23 @@
     loading = false;
   };
 
-  let liquid = () => {
+  let liquid = async () => {
     tab = "liquid";
     fee = 0;
-    address = $user.confidential;
+    loading = true;
+    try {
+      ({ address, fee } = await api
+        .url("/liquid")
+        .auth(`Bearer ${$token}`)
+        .post({
+          amount: 10000,
+          liquidAddress: $user.address,
+        })
+        .json());
+    } catch (e) {
+      err(e);
+    }
+    loading = false;
   };
 
   let lightning = async () => {

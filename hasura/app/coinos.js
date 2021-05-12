@@ -14,7 +14,7 @@ app.post("/bitcoin", auth, async (req, res) => {
 
   let { tx } = await coinos
     .url("/liquid/fee")
-    .post({ address: liquidAddress, asset: btc, amount, feeRate: 1000 })
+    .post({ address: liquidAddress, asset: btc, amount, feeRate: 100 })
     .json();
 
   let fee = Math.round(100000000 * tx.fee);
@@ -35,6 +35,42 @@ app.post("/bitcoin", auth, async (req, res) => {
     .json();
   
     return { address, fee };
+});
+
+app.post("/liquid", auth, async (req, res) => {
+  let network = "liquid";
+  let { liquidAddress, amount } = req.body;
+
+  let { address, confidentialAddress } = await coinos
+    .url("/address")
+    .query({ network, type: "bech32" })
+    .get()
+    .json();
+
+  let { tx } = await coinos
+    .url("/liquid/fee")
+    .post({ address: liquidAddress, asset: btc, amount, feeRate: 100 })
+    .json();
+
+  let fee = Math.round(100000000 * tx.fee);
+  amount += fee;
+
+  await coinos
+    .url("/invoice")
+    .post({
+      liquidAddress,
+      tx,
+      invoice: {
+        unconfidential: address,
+        address: confidentialAddress,
+        network,
+        text: address,
+        amount,
+      },
+    })
+    .json();
+  
+    return { address: confidentialAddress, fee };
 });
 
 app.post("/lightning", auth, async (req, res) => {
