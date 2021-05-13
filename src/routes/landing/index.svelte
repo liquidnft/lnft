@@ -76,8 +76,7 @@
 
   .header-button {
     width: 200px;
-    border: 1px solid white;
-    color: white;
+    border: 1px solid;
     border-radius: 30px;
     padding: 0.7rem 1.5rem !important;
   }
@@ -141,13 +140,13 @@
   </div>
 </div>
 
-<div class="flex secondary-header text-white marg-bottom">
+<div class="flex secondary-header marg-bottom">
   <div
     class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
-    <h2 class="mb-3 text-white">cryptograffiti <br />x loudsqueak</h2>
+    <h2 class="mb-3">cryptograffiti <br />x loudsqueak</h2>
     <p>Strikes Twice</p>
     <button
-      class="button-transparent header-button text-white border mt-10"
+      class="button-transparent header-button border mt-10"
       on:click={() => goto(`/artwork/${featuredArtworkId}`)}>
       View Artwork</button>
   </div>
