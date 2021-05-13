@@ -41,6 +41,7 @@
       bind:value={attempt}
       placeholder="Password"
       class="mb-2"
+      type="password"
       bind:this={input} />
   </div>
 </form>
