@@ -373,7 +373,7 @@
                   {percent}%
                 {:else if artwork.filename}
                   Upload complete!
-                {:else}Processing video...{/if}
+                {:else}Processing...{/if}
               </div>
             </div>
           </div>

@@ -95,7 +95,7 @@
 
 {#if loading}
   <div class="absolute top-0 w-full left-0">
-    <ProgressLinear />
+    <ProgressLinear app={true} />
   </div>
 {:else if $balances && $pending}
   <div class="w-full">
