@@ -46,7 +46,7 @@
       </p>
     </div>
   </div>
-  <a href={`/${artwork.slug}`}>
+  <a href={`/a/${artwork.slug}`}>
     <div
       class="w-full flex rounded-lg box-shadow thumb">
       <ArtworkMedia {artwork} showDetails={false} />

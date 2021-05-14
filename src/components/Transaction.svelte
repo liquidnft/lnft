@@ -190,7 +190,7 @@
                       {/if}
                     </div>
                     <div class="my-auto ml-2">
-                      <a href={`/${username.replace(' + us', '')}`} class="secondary-color">
+                      <a href={`/u/${username.replace(' + us', '')}`} class="secondary-color">
                         {username}
                       </a>
                     </div>
@@ -232,7 +232,7 @@
                 <div class="my-auto ml-2">
                   {#if users[username]}
                     <div class="my-auto">
-                      <a href={`/${username.replace(' + us', '')}`} class="secondary-color">
+                      <a href={`/u/${username.replace(' + us', '')}`} class="secondary-color">
                         {username}
                       </a>
                     </div>

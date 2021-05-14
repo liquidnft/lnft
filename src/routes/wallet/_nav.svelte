@@ -72,7 +72,7 @@
   <h2 class="mb-5 px-5 md:px-0"><a href="/wallet">Wallet</a></h2>
 
   <div class="wallet-nav flex flex-col uppercase">
-    <a href={`/${$user.username}`}>
+    <a href={`/u/${$user.username}`}>
       <div class="flex flex-wrap justify-center sm:justify-start px-5 sm:px-0 items-center sm:items-start h-full">
         <Fa icon={faChevronLeft} class="my-auto mr-4" />
         <div>Back to profile</div>

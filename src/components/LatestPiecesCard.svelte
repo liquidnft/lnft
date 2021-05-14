@@ -34,7 +34,7 @@
 
 <div
   class="latest-container w-full lg:w-1/3 pr-10"
-  on:click={() => goto(`/${artwork.slug}`)}>
+  on:click={() => goto(`/a/${artwork.slug}`)}>
   <div class="h-full box-shadow rounded-lg recentCard">
     <div class="thumb">
       <ArtworkMedia {artwork} showDetails={false} />
@@ -47,13 +47,13 @@
       <div class="flex">
         <div
           class="my-auto cursor-pointer"
-          on:click|stopPropagation={() => goto(`/${artwork.artist.username}`)}>
+          on:click|stopPropagation={() => goto(`/u/${artwork.artist.username}`)}>
           <Avatar user={transaction.artwork.artist} size="large" />
         </div>
         <div class="ml-5 my-auto">
           <p
             class="cursor-pointer hover:underline"
-            on:click|stopPropagation={() => goto(`/${artwork.artist.username}`)}>
+            on:click|stopPropagation={() => goto(`/u/${artwork.artist.username}`)}>
             {artwork.artist.username}
           </p>
           <p class="text-sm text-gray-500">Artist</p>

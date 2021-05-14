@@ -50,7 +50,7 @@
           <div class="flex">
             <Avatar user={item} />
             <div class="ml-2 my-auto font-bold">
-              <a href={`/${item.username}`}>@{item.username}</a>
+              <a href={`/u/${item.username}`}>@{item.username}</a>
             </div>
           </div>
         </td>

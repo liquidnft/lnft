@@ -5,7 +5,7 @@
 
 <div>
   <a
-    href={`/${transaction.user.username}`}
+    href={`/u/${transaction.user.username}`}
     class="secondary-color">@{transaction.user.username}</a>
   {#if transaction.type === 'bid'}
     offered
@@ -44,11 +44,11 @@
     {ticker(transaction.asset)}
     from
     <a
-      href={`/${transaction.bid.user.username}`}
+      href={`/u/${transaction.bid.user.username}`}
       class="secondary-color">@{transaction.bid.user.username}</a>
     for
   {/if}
   <a
-    href={`/${transaction.artwork.slug}`}
+    href={`/a/${transaction.artwork.slug}`}
     class="secondary-color">{transaction.artwork.title || 'Untitled'}</a>
 </div>

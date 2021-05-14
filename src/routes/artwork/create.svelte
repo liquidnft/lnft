@@ -289,7 +289,7 @@
       }
 
       $prompt = undefined;
-      goto(`/${artwork.slug}`);
+      goto(`/a/${artwork.slug}`);
     } catch (e) {
       err(e);
       loading = false;

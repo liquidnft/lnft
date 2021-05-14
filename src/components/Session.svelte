@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { getUser } from "$queries/users";
-  import { query, operationStore } from "@urql/svelte";
   import { hasura } from "$lib/api";
 
   onMount(async () => {

@@ -52,7 +52,7 @@
 <div
   class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
   in:fade>
-  <a href={`/${artwork.slug}`}>
+  <a href={`/a/${artwork.slug}`}>
     <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
   </a>
   {#if showDetails}
@@ -80,14 +80,14 @@
             <div class="text-sm font-medium">
               Current bid by
               <a
-                href={`/${artwork.bid[0].user.username}`}>@{artwork.bid[0].user.username}</a>
+                href={`/u/${artwork.bid[0].user.username}`}>@{artwork.bid[0].user.username}</a>
             </div>
           </div>
         {/if}
       </div>
       <div class="flex">
         <div>
-          <a href={`/${artwork.artist.username}`}>
+          <a href={`/u/${artwork.artist.username}`}>
             <div class="flex">
               <Avatar user={artwork.artist} />
               <div class="ml-2">
@@ -100,7 +100,7 @@
 
         {#if artwork.owner.id !== artwork.artist.id}
           <div class="ml-auto">
-            <a href={`/${artwork.artist.username}`}>
+            <a href={`/u/${artwork.artist.username}`}>
               <div class="flex">
                 <Avatar user={artwork.owner} />
                 <div class="ml-2">

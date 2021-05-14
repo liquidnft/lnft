@@ -39,7 +39,7 @@
         artwork: { description, title },
         id,
       }).then(() => {
-        goto(`/${artwork.slug}`);
+        goto(`/a/${artwork.slug}`);
       });
     });
   };

@@ -83,7 +83,7 @@
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
     {/if}
-    <a href={`/${$user.username}`}>
+    <a href={`/u/${$user.username}`}>
       <button on:click={toggle} class="flex">
         <Avatar user={$user} />
         <div class="my-auto ml-2">{$user.full_name}</div>
