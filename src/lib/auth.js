@@ -2,7 +2,14 @@ import { api } from "$lib/api";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { loggedIn, password as pw, poll, prompt, user, token } from "$lib/store";
+import {
+  loggedIn,
+  password as pw,
+  poll,
+  prompt,
+  user,
+  token,
+} from "$lib/store";
 import PasswordPrompt from "$components/PasswordPrompt";
 import { goto, err } from "$lib/utils";
 
@@ -43,14 +50,15 @@ export const requirePassword = async () => {
   await tick();
 };
 
-export const refreshToken = () =>
-  api
+export const refreshToken = () => {
+  return api
     .url("/auth/token/refresh")
     .get()
     .json(({ jwt_token }) => {
       token.set(jwt_token);
       window.sessionStorage.setItem("token", jwt_token);
     });
+};
 
 export const logout = () => {
   loggedIn.set(false);

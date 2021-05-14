@@ -107,6 +107,7 @@
     if (
       !list_price ||
       royalty ||
+      artwork.auction_end ||
       parseInt(artwork.list_price || 0) ===
         sats(artwork.asking_asset, list_price)
     )
@@ -144,8 +145,8 @@
 
   const setupSwaps = async () => {
     if (
-      !stale &&
-      (!list_price ||
+      !list_price ||
+      (!stale &&
         parseInt(artwork.list_price || 0) ===
           sats(artwork.asking_asset, list_price))
     )
@@ -201,8 +202,8 @@
     if (newAuction) {
       await requirePassword();
       $psbt = await sendToMultisig(artwork);
-
-      await signAndBroadcast();
+      $psbt = await signAndBroadcast();
+      let base64 = $psbt.toBase64();
       let tx = $psbt.extractTransaction();
 
       await createTransaction$({
@@ -220,6 +221,8 @@
       artwork.auction_release_tx = (
         await createRelease(artwork, tx)
       ).toBase64();
+
+      $psbt = Psbt.fromBase64(base64);
     }
 
     artwork.auction_start = start;
@@ -229,13 +232,13 @@
   let stale;
   let setupRoyalty = async () => {
     if (artwork.royalty || !royalty) return true;
-
     artwork.royalty = royalty;
-    await requirePassword();
 
-    $psbt = await sendToMultisig(artwork);
-
-    await signAndBroadcast();
+    if (!artwork.auction_end) {
+      await requirePassword();
+      $psbt = await sendToMultisig(artwork);
+      await signAndBroadcast();
+    }
 
     await createTransaction$({
       transaction: {
@@ -551,8 +554,8 @@
                       </i>
                       <span
                         class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                        Reserve price is the minimum price that you'll
-                        accept for the artwork. Setting one is optional.
+                        Reserve price is the minimum price that you'll accept
+                        for the artwork. Setting one is optional.
                       </span>
                     </span>
                     <input

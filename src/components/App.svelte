@@ -29,7 +29,7 @@
 
   onMount(async () => {
     refreshToken();
-    setInterval(refreshToken, 600000);
+    setInterval(refreshToken, 120000);
   });
 
   $: if ($error && $error.message && $error.message.includes("Insufficient")) {

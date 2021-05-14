@@ -121,7 +121,7 @@
         {/if}
       </div>
     </div>
-    {#if Date.parse(artwork.auction_end) > new Date()}
+    {#if end_counter}
       <div class="p-3 rounded-b-lg lightblue-grad text-black">
         Time left:
         {end_counter}

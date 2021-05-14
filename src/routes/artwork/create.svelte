@@ -28,7 +28,7 @@
     keypair,
   } from "$lib/wallet";
   import reverse from "buffer-reverse";
-  import  ArtworkMedia  from "$components/ArtworkMedia";
+  import ArtworkMedia from "$components/ArtworkMedia";
 
   import Form from "./_form";
   import Issuing from "./_issuing";
@@ -108,7 +108,10 @@
   let hash, tx;
   const issue = async (ticker) => {
     let contract;
-    let domain = $user.username === 'raretoshi' ? 'raretoshi.com' : `${$user.username}.raretoshi.com`;
+    let domain =
+      $user.username === "raretoshi"
+        ? "raretoshi.com"
+        : `${$user.username}.raretoshi.com`;
 
     let error, success;
 
@@ -117,14 +120,14 @@
 
       try {
         contract = await createIssuance(artwork, domain, tx);
-      } catch(e) {
+      } catch (e) {
         if (e.message.startsWith("No")) {
           tx = await fundUnconfidential();
           contract = await createIssuance(artwork, domain, tx);
-        } else { 
+        } else {
           throw e;
         }
-      } 
+      }
 
       try {
         success = await signAndBroadcast();
@@ -178,7 +181,9 @@
     if (!data.errors && data.artworks && data.artworks.length) {
       let tickers = data.artworks.sort(({ ticker: a }, { ticker: b }) =>
         b.length < a.length
-        ? 1 : b.length > a.length ? -1 
+          ? 1
+          : b.length > a.length
+          ? -1
           : a.charCodeAt(a.length - 1) - b.charCodeAt(b.length - 1)
       );
 
@@ -299,12 +304,13 @@
     max-width: 100%;
   }
 
-  .upload-button{
+  .upload-button {
     width: 100%;
     height: 320px;
   }
 
-  .upload-button img, .upload-button video {
+  .upload-button img,
+  .upload-button video {
     width: 100%;
   }
 
@@ -313,8 +319,7 @@
   }
 
   @media only screen and (max-width: 1023px) {
-
-    .upload-button{
+    .upload-button {
       margin-top: 25px;
     }
 
@@ -335,24 +340,29 @@
       class="block mb-6 text-midblue"
       href="#"
       on:click|preventDefault={() => window.history.back()}>
-        <div class="flex">
-          <Fa icon={faChevronLeft} class="my-auto mr-1" />
-          <div>Back</div>
-        </div>
+      <div class="flex">
+        <Fa icon={faChevronLeft} class="my-auto mr-1" />
+        <div>Back</div>
+      </div>
     </a>
     <h2>Submit artwork</h2>
     <div class="flex flex-wrap flex-col-reverse lg:flex-row">
       <div class="w-full lg:w-1/2 lg:pr-10">
-        {#if loading}
+        <div class:invisible={!loading}>
           <ProgressLinear />
-        {:else}
+        </div>
+        <div class:invisible={loading}>
           <Form bind:artwork bind:focus on:submit={submit} bind:title />
-        {/if}
+        </div>
       </div>
       {#if percent}
         <div class="ml-2 flex-1 flex">
           <div class="upload-button mx-auto">
-            <ArtworkMedia {artwork} {preview} showDetails={false} thumb={false} />
+            <ArtworkMedia
+              {artwork}
+              {preview}
+              showDetails={false}
+              thumb={false} />
             <div class="w-full bg-grey-light p-8">
               <div
                 class="font-light p-4 mx-auto max-w-xs text-center"
@@ -361,7 +371,9 @@
                 style={width}>
                 {#if percent < 100}
                   {percent}%
-                {:else if artwork.filename}Upload complete!{:else}Processing video...{/if}
+                {:else if artwork.filename}
+                  Upload complete!
+                {:else}Processing video...{/if}
               </div>
             </div>
           </div>

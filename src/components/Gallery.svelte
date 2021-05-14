@@ -12,7 +12,7 @@
   let w;
   let hidden;
   let maxPages = 7;
-  $: columns = 3;
+  $: columns = w >= 1024 ? 3 : w >= 640 ? 2 : 1;
 
   $: offset =
     artworks &&

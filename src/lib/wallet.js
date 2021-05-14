@@ -318,8 +318,9 @@ const fund = async (
 
   while (total < amount) {
     if (i >= utxos.length) {
-      if (!includeConfidential && all.length > utxos.length)
+      if (!includeConfidential && all.length > utxos.length) {
         throw { message: "No confidential" };
+      }
       throw { message: "Insufficient funds", amount, asset, total };
     }
     total += utxos[i].value;
