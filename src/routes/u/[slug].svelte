@@ -2,16 +2,15 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { getUserByUsername } from "$queries/users";
-  import { hasura } from "$lib/api";
   import User from "../user/[id].svelte";
+  import { hasura } from "$lib/api";
   import { token } from "$lib/store";
 
-  const requestPolicy = "cache-and-network";
+  let user;
 
-  let user, unsubscribe;
-
-  $: update($page);
+  $: update($page, $token);
   let update = async (slug) => {
+    if (!slug) return;
     user = (
       await hasura
         .auth(`Bearer ${$token}`)
