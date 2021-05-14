@@ -64,7 +64,7 @@ app.post("/register", async (req, res) => {
 
   if (
     !email.includes("blockstream.com") &&
-    !data.invitees.map((i) => i.email).includes(email)
+    !data.invitees.map((i) => i.email.toLowerCase()).includes(email.toLowerCase())
   )
     throw new Error("Registration is invite-only at this time");
 
