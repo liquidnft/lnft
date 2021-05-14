@@ -14,6 +14,11 @@
 
 <style>
 
+  .secondary-btn{
+    background-color: whitesmoke;
+    border: 1px solid whitesmoke;
+  }
+
   @media only screen and (max-width: 640px){
     .dialog-container{
       padding: 0;
@@ -59,7 +64,7 @@
               bind:this={ok}
               on:click={comp.submit}
               class="primary-btn mb-2 sm:mb-0 sm:ml-2">
-              Ok
+              Continue
             </button>
             <button
               type="button"

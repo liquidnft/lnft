@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import { onMount, tick } from "svelte";
   import Card from "$components/Card";
   import { snack, prompt, psbt, token } from "$lib/store";
@@ -40,7 +42,7 @@
         {ticker(offer.transaction.artwork.asking_asset)}
         from @{offer.transaction.artwork.bid[0].user.username}
         <a href={`/tx/${offer.id}`} class="text-xs text-green-400">
-          [view tx]
+          <Fa class="text-xl mx-2" icon={faInfoCircle} />
         </a>
         <button on:click={() => comp.accept(offer.transaction)}>Accept</button>
       </div>

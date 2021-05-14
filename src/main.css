@@ -141,7 +141,11 @@ button {
 
 .primary-btn {
   border-radius: 30px;
-  padding: 0.8rem 1.5rem !important;
+  height: 48px;
+  padding: 0 30px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: #444444;
   font-weight: bold;
   background: rgb(143, 238, 245);

@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import { user } from "$lib/store";
   import {
     isWithinInterval,
@@ -8,6 +10,7 @@
   } from "date-fns";
   import AcceptOffer from "$components/AcceptOffer";
   export let transaction;
+  
 
   let comp;
 
@@ -38,13 +41,13 @@
 </style>
 
 <AcceptOffer bind:this={comp} />
-<div>
+<div class="flex items-center mt-2">
   <span class="font-medium text-gray-600 text-xs">
     {formatDistanceStrict(new Date(transaction.created_at), new Date())}
     ago
   </span>
   <a href={`/tx/${transaction.id}`} class="text-sm secondary-color">
-    [view tx]
+    <Fa class="text-xl mx-2" icon={faInfoCircle} />
   </a>
   {#if canAccept(transaction)}
     <a

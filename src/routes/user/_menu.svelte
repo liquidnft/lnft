@@ -22,7 +22,7 @@
 </style>
 
 <div class="mt-10 mb-5">
-  <a class="primary-btn" href={`/user/${$user.id}/edit`}>Edit Profile</a>
+  <a class="primary-btn w-1/2" href={`/user/${$user.id}/edit`}>Edit Profile</a>
 </div>
 
 <div class="menu uppercase">

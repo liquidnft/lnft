@@ -42,6 +42,11 @@
     margin-top: 128px;
   }
 
+  .header .primary-btn{
+      width: 240px;
+      margin: 0 auto;
+    }
+
   .header h5{
     font-size: 22px;
     line-height: 36px;
@@ -108,7 +113,6 @@
     }
 
     .header .primary-btn{
-      display: block;
       width: 100%;
     }
 
