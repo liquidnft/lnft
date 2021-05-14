@@ -23,7 +23,7 @@
     showInvoice = !showInvoice;
   };
 
-  let confidential = true;
+  let confidential = false;
   let toggleConfidential = () => {
     confidential = !confidential;
     if (confidential) address = $user.confidential;
@@ -53,7 +53,7 @@
         .auth(`Bearer ${$token}`)
         .post({
           amount: 10000,
-          liquidAddress: $user.confidential,
+          liquidAddress: $user.address,
         })
         .json());
     } catch (e) {
@@ -91,7 +91,7 @@
         .auth(`Bearer ${$token}`)
         .post({
           amount: 10000,
-          liquidAddress: $user.confidential,
+          liquidAddress: $user.address,
         })
         .json());
     } catch (e) {
@@ -102,11 +102,11 @@
   };
 
   let address;
-  $: if ($user) address = $user.confidential;
+  $: if ($user) address = $user.address;
 
-  $: if ($user && $user.confidential) {
+  $: if ($user && $user.address) {
     const qr = new qrcode(0, "H");
-    qr.addData($user.confidential);
+    qr.addData($user.address);
     qr.make();
     img = qr.createSvgTag({});
   }
@@ -158,46 +158,53 @@
         </div>
         <div class="flex">
           <div
-            class="break-all text-sm text-gray-300"
+            class="break-all text-sm"
             class:truncate={tab === 'lightning' && !showInvoice}
             class:invisible={loading}
             class:mx-auto={tab !== 'lightning'}>
             {address}
           </div>
-          {#if tab === 'liquid'}
-            <button
-              on:click={toggleConfidential}
-              class:secondary-color={confidential}>
-              <Fa icon={faUserSecret} class="ml-2" />
-            </button>
-          {/if}
           {#if tab === 'lightning' && !showInvoice}
             <div
-              class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
+              class="flex w-1/4 ml-2 text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
               on:click={toggle}>
               Show invoice
-              <Fa icon={faChevronDown} />
+              <div class="my-auto ml-1">
+                <Fa icon={faChevronDown} />
+              </div>
             </div>
           {/if}
         </div>
         {#if tab === 'lightning' && showInvoice}
           <div
-            class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
+            class="flex w-1/4 mx-auto mt-2 text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
             on:click={toggle}>
             Hide invoice
-            <Fa icon={faChevronUp} />
-          </div>
-        {/if}
-        <button
-          on:click={() => copy(address)}
-          class="mx-auto font-medium secondary-color uppercase mt-4">
-          <div class="flex">
-            <div>Copy {tab === 'lightning' ? 'invoice' : 'address'}</div>
-            <div class="my-auto">
-              <Fa icon={faClone} class="ml-2" />
+            <div class="my-auto ml-1">
+              <Fa icon={faChevronUp} />
             </div>
           </div>
-        </button>
+        {/if}
+        <div class="flex justify-center">
+          {#if tab === 'liquid'}
+            <button
+              class="justify-center flex center font-medium secondary-color uppercase mt-4 mr-4"
+              on:click={toggleConfidential}>
+              <div class="my-auto mr-1">
+                <Fa icon={faUserSecret} />
+              </div>
+              <div>{confidential ? 'Unconfidential' : 'Confidential'}</div>
+            </button>
+          {/if}
+          <button
+            on:click={() => copy(address)}
+            class="justify-center flex center font-medium secondary-color uppercase mt-4">
+            <div>Copy {tab === 'lightning' ? 'invoice' : 'address'}</div>
+            <div class="my-auto ml-2">
+              <Fa icon={faClone} />
+            </div>
+          </button>
+        </div>
       </div>
     {/if}
   </div>

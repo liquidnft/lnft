@@ -1,6 +1,7 @@
 <script>
   import Fa from "svelte-fa";
   import {
+    faUserSecret,
     faChevronDown,
     faChevronUp,
     faTimes,
@@ -24,7 +25,7 @@
     $error.asset,
     $error.asset === btc ? Math.max($error.amount, 1000) + fee : $error.amount
   );
-  let url = `liquidnetwork:${$user.confidential}?amount=${amount}`;
+  let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
   let img;
 
@@ -49,6 +50,13 @@
     await getBalances();
     await tick();
   });
+
+  let confidential = false;
+  let toggleConfidential = () => {
+    confidential = !confidential;
+    if (confidential) address = $user.confidential;
+    else address = $user.address;
+  };
 
   let confirming;
   let confirmed;
@@ -135,7 +143,7 @@
   };
 
   let address;
-  $: if ($user) address = $user.confidential;
+  $: if ($user) address = $user.address;
 </script>
 
 <style>
@@ -249,6 +257,18 @@
             </div>
           </div>
         {/if}
+        <div class="flex justify-center">
+          {#if tab === 'liquid'}
+            <button
+ class="justify-center flex center font-medium secondary-color uppercase mt-4 mr-4"
+              on:click={toggleConfidential}
+              >
+              <div class="my-auto mr-1">
+              <Fa icon={faUserSecret} />
+            </div>
+              <div>{ confidential ? 'Unconfidential' : 'Confidential' }</div>
+            </button>
+          {/if}
         <button
           on:click={() => copy(address)}
           class="justify-center flex center font-medium secondary-color uppercase mt-4">
@@ -257,6 +277,7 @@
             <Fa icon={faClone} />
           </div>
         </button>
+      </div>
       {/if}
     </div>
   {/if}
