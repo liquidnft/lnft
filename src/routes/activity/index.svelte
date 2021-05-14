@@ -50,18 +50,21 @@
 <div class="container mx-auto my-10 md:my-20">
   <h2>Activity</h2>
   <div class="flex flex-wrap justify-between mt-10 lg:mt-20">
+    <!--
     <div class="tabs flex w-full justify-center border-b-2 mb-8">
       <button on:click={() => (show = false)} class="w-1/2 pb-3">Feed</button>
       <button
         on:click={() => (show = true)}
         class="w-1/2 pb-3">Rankings</button>
     </div>
-    <div class:showFeed={show} class="w-full lg:max-w-lg">
+    -->
+    <div class:showFeed={show} class="w-full lg:max-w-lg mx-auto">
       {#each transactions as transaction}
         <Activity {transaction} showImage={true} />
       {/each}
     </div>
 
+    <!--
     <div class:showRank={show} class="w-full lg:w-1/3 flex flex-col hide">
       <div class="boxShadow p-4 mb-10 rounded-lg">
         <p>Top Collectors</p>
@@ -96,5 +99,6 @@
           full ranking</a>
       </div>
     </div>
+    -->
   </div>
 </div>

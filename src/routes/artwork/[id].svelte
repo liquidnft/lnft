@@ -124,7 +124,8 @@
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-    await createTransaction$({ transaction });
+    let result = await createTransaction$({ transaction });
+    if (result.error) return err(`Problem placing bid, minimum bid is ${val(artwork.bid[0].amount + 1000)}`);
     if (transaction.type === "purchase") info("Sold! Congratulations!");
     if (transaction.type === "bid") info("Bid placed!");
     bidding = false;
@@ -235,7 +236,7 @@
     height: 40px;
     border-radius: 100%;
     background: whitesmoke;
-    padding:11px 15px;
+    padding: 11px 15px;
     cursor: pointer;
   }
 
@@ -244,7 +245,7 @@
     margin-bottom: 40px;
   }
 
-  .mobileImage :global(.cover){
+  .mobileImage :global(.cover) {
     width: 100%;
   }
 
@@ -259,7 +260,7 @@
     height: auto;
   }
 
-  .popup :global(.card-link){
+  .popup :global(.card-link) {
     height: auto !important;
   }
 
@@ -268,12 +269,12 @@
     object-fit: contain !important;
   }
 
-
-  .desktopImage span:nth-child(1) :global(.card-link){
+  .desktopImage span:nth-child(1) :global(.card-link) {
     height: auto;
   }
 
-  .desktopImage span:nth-child(1) :global(img), .desktopImage span:nth-child(1) :global(video) {
+  .desktopImage span:nth-child(1) :global(img),
+  .desktopImage span:nth-child(1) :global(video) {
     width: 70vw;
     object-fit: cover !important;
   }
@@ -307,7 +308,8 @@
   }
 
   @media only screen and (max-width: 500px) {
-    .popup :global(img), .popup :global(video) {
+    .popup :global(img),
+    .popup :global(video) {
       height: auto;
       width: 100%;
     }
@@ -336,7 +338,9 @@
           {#if artwork.is_physical}
             <div
               class="flex ml-auto py-1 px-4 bg-gray-100 rounded rounded-full my-auto">
-              <div class="my-auto"><Fa icon={faImage} class="mr-1" /></div>
+              <div class="my-auto">
+                <Fa icon={faImage} class="mr-1" />
+              </div>
               <div class="my-auto mb-1">
                 <span class="text-sm">Physical artwork</span>
               </div>
@@ -347,7 +351,7 @@
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
           </span>
-          <SocialShare {artwork}/>
+          <SocialShare {artwork} />
         </div>
 
         <Sidebar bind:artwork />
@@ -408,10 +412,7 @@
           {#if artwork.reserve_price}
             <div class="my-2">
               <div class="text-sm mt-auto">Reserve Price</div>
-              <div class="flex-1 text-lg">
-                {artwork.reserve_price}
-                {ticker}
-              </div>
+              <div class="flex-1 text-lg">{artwork.reserve_price} {ticker}</div>
             </div>
           {/if}
           {#if artwork.bid[0].amount}
@@ -458,7 +459,7 @@
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
           </span>
-          <SocialShare {artwork}/>
+          <SocialShare {artwork} />
         </div>
         <div
           on:click={() => (showPopup = !showPopup)}
@@ -472,7 +473,7 @@
             thumb={false}
             popup={true} />
         </div>
-         
+
         {#if others.length}
           <div class="w-full mt-28">
             <h2 class="text-2xl font-bold primary-color py-10 px-0 md:px-5">
