@@ -1,6 +1,6 @@
 <script>
-   import Fa from "svelte-fa";
-   import { faTimes } from "@fortawesome/free-solid-svg-icons";
+  import Fa from "svelte-fa";
+  import { faTimes } from "@fortawesome/free-solid-svg-icons";
   import { prompt } from "$lib/store";
   import { onMount, tick } from "svelte";
   let comp;
@@ -13,17 +13,16 @@
 </script>
 
 <style>
-
-  .secondary-btn{
+  .secondary-btn {
     background-color: whitesmoke;
     border: 1px solid whitesmoke;
   }
 
-  @media only screen and (max-width: 640px){
-    .dialog-container{
+  @media only screen and (max-width: 640px) {
+    .dialog-container {
       padding: 0;
     }
-    .dialog{
+    .dialog {
       width: 100%;
       padding: 0;
       margin: 0;
