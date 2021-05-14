@@ -224,6 +224,8 @@
 
   let submit = async (e) => {
     e.preventDefault();
+    if (!artwork.title) return err("Please enter a title");
+    if (!artwork.ticker) return err("Please enter a ticker symbol");
 
     if (!artwork.filename)
       return err("File not uploaded or hasn't finished processing");

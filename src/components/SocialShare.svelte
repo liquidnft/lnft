@@ -20,17 +20,5 @@ export let artwork;
     </div>
     </div>
   {/if}
-<div class="mr-8 flex">
-    <div>
-      <a
-        href="https://twitter.com/intent/tweet?text={artwork.title || 'Untitled'} {window.location.origin + window.location.pathname}"
-        target="_blank">
-        <span class="uppercase mr-1">Tweet it</span>
-      </a>
-    </div>
-    <div class="my-auto">
-      <Fa icon={faTwitter} />
-    </div>
-</div>
   <div class="my-auto"><a href="/"><Fa icon={faHeart} /></a></div>
 </div>

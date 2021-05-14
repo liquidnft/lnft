@@ -81,17 +81,23 @@
 
 <style>
   .contain {
-    @apply relative w-full;
-  }
+    position: relative;
+  } 
 
-  img{
+  .contain img, .contain video {
+    height: 350px;
     width: 100%;
-  }
+    object-fit: cover;
+  } 
 
+  img, video {
+    @apply mx-auto;
+    max-height: 70vh;
+  } 
 </style>
 
 {#if artwork.filetype && artwork.filetype.includes('video')}
-  <div class:cover class:contain class="relative" on:mouseover={over} on:mouseout={out}>
+  <div class:cover class:contain on:mouseover={over} on:mouseout={out}>
     <video
       class="lazy"
       autoplay

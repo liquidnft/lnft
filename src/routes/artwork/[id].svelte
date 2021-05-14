@@ -269,20 +269,6 @@
     object-fit: contain !important;
   }
 
-  .desktopImage span:nth-child(1) :global(.card-link) {
-    height: auto;
-  }
-
-  .desktopImage span:nth-child(1) :global(img),
-  .desktopImage span:nth-child(1) :global(video) {
-    width: 70vw;
-    object-fit: cover !important;
-  }
-
-  .desktopImage :global(img) {
-    object-fit: contain !important;
-  }
-
   @keyframes zoom {
     0% {
       transform: scale(0.6);
@@ -351,7 +337,6 @@
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
           </span>
-          <SocialShare {artwork} />
         </div>
 
         <Sidebar bind:artwork />
@@ -454,12 +439,11 @@
         </div>
       </div>
 
-      <div class="w-full lg:w-2/3 xl:w-1/4 mx-auto">
+      <div class="w-full lg:w-2/3 mx-auto">
         <div class="desktopImage">
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
           </span>
-          <SocialShare {artwork} />
         </div>
         <div
           on:click={() => (showPopup = !showPopup)}
