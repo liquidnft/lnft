@@ -71,8 +71,6 @@
       confirming = false;
     }
 
-    console.log("new balance", current, $error.amount);
-
     if (current >= $error.amount) {
       $prompt = undefined;
     }

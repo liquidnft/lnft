@@ -186,11 +186,11 @@
                       {#if users[username]}
                         <Avatar
                           user={users[username]}
-                          overlay={username.includes('+ us') && '/logo-graphic.png'} />
+                          overlay={username.includes('2of2') && '/logo-graphic.png'} />
                       {/if}
                     </div>
                     <div class="my-auto ml-2">
-                      <a href={`/u/${username.replace(' + us', '')}`} class="secondary-color">
+                      <a href={`/u/${username.replace(' 2of2', '')}`} class="secondary-color">
                         {username}
                       </a>
                     </div>
@@ -226,13 +226,13 @@
                   {#if users[username]}
                     <Avatar
                       user={users[username]}
-                      overlay={username.includes('+ us') && '/logo-graphic.png'} />
+                      overlay={username.includes('2of2') && '/logo-graphic.png'} />
                   {/if}
                 </div>
                 <div class="my-auto ml-2">
                   {#if users[username]}
                     <div class="my-auto">
-                      <a href={`/u/${username.replace(' + us', '')}`} class="secondary-color">
+                      <a href={`/u/${username.replace(' 2of2', '')}`} class="secondary-color">
                         {username}
                       </a>
                     </div>
@@ -364,6 +364,7 @@
               {#if out}
                 <div class="break-all mb-2 p-4">
                   <div class="mb-2">Index: {i}</div>
+                  {#if out.value && out.asset}
                   <div class="mb-2">
                     {out.value}
                     units of
@@ -371,6 +372,7 @@
                       href={`${explorer}/asset/${out.asset}`}
                       class="secondary-color">{out.asset}</a>
                   </div>
+                {/if}
                   <div>
                     {#if out.address === 'Fee'}
                       Fee

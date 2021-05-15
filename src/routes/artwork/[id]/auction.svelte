@@ -302,7 +302,7 @@
         },
         id,
       });
-      goto(`/artwork/${artwork.id}`);
+      goto(`/a/${artwork.slug}`);
     } catch (e) {
       err(e);
     }
