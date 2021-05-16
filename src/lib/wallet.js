@@ -554,7 +554,7 @@ export const createIssuance = async (
   tx
 ) => {
   let out = singlesig();
-  fee.set(300);
+  fee.set(50);
 
   let p = new Psbt().addOutput({
     asset: btc,

@@ -29,7 +29,7 @@ if (import.meta && import.meta.env && import.meta.env !== "production") {
 export const setupUrql = async () => {
   return new Promise((resolve) => {
     const storage = makeDefaultStorage({
-      idbName: "graphcache-v3", // The name of the IndexedDB database
+      idbName: "raretoshi", // The name of the IndexedDB database
       maxAge: 7, // The maximum age of the persisted data in days
     });
 

@@ -60,12 +60,21 @@ export const refreshToken = () => {
     });
 };
 
+const clearCache = () => {
+  let req = indexedDB.deleteDatabase("raretoshi");
+  req.onblocked = async (e) => {
+    setTimeout(clearCache, 500);
+  };
+};
+
 export const logout = () => {
   loggedIn.set(false);
   window.sessionStorage.removeItem("password");
   window.sessionStorage.removeItem("token");
   window.sessionStorage.removeItem("user");
-  indexedDB.deleteDatabase("graphcache-v3");
+
+  clearCache();
+
   token.set(null);
   user.set(null);
   get(poll).map((p) => clearInterval(p.interval));
