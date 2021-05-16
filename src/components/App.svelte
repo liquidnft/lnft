@@ -16,7 +16,7 @@
     users,
   } from "$lib/store";
   import { fade } from "svelte/transition";
-  import { getUser, getUsersAddresses, updateUser } from "$queries/users";
+  import { getUser, subscribeAddresses, updateUser } from "$queries/users";
   import { subscribeArtworks } from "$queries/artworks";
   import { setupUrql } from "$lib/urql";
   import { mutation, subscription, query, operationStore } from "@urql/svelte";
@@ -53,15 +53,11 @@
   setupUrql();
   $: setup($role, $token);
 
-  let op = operationStore(subscribeArtworks);
-  subscription(op, (a, b) => b && ($artworks = b.artworks));
+  let ao = operationStore(subscribeArtworks);
+  subscription(ao, (a, b) => b && ($artworks = b.artworks));
 
-  let usersQuery = operationStore(getUsersAddresses);
-  query(usersQuery).subscribe(({ data }) => {
-    if (data) {
-      $users = data.users;
-    }
-  });
+  let uo = operationStore(subscribeAddresses);
+  subscription(uo, (a, b) => b && ($users = b.users));
 
   $: setupConfidential($user);
   let setupConfidential = async (u) => {
