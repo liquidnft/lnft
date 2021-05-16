@@ -16,7 +16,8 @@
   export let thumb = true;
   export let popup = false;
 
-  $: [sats, val, ticker] = units(artwork.asking_asset);
+  let sats, val, ticker;
+  $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
 
   let width = "full";
   if (columns > 1) {
@@ -49,6 +50,7 @@
   }
 </style>
 
+{#if artwork}
 <div
   class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
   in:fade>
@@ -123,3 +125,4 @@
     {/if}
   {/if}
 </div>
+{/if}

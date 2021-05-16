@@ -10,7 +10,6 @@
   } from "date-fns";
   import AcceptOffer from "$components/AcceptOffer";
   export let transaction;
-  
 
   let comp;
 
@@ -24,7 +23,7 @@
       e &&
       isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
 
-    return isCurrent(artwork) && isOwner(artwork) && !underway(artwork);
+    return artwork && isCurrent(artwork) && isOwner(artwork) && !underway(artwork);
   };
 </script>
 
@@ -41,23 +40,26 @@
 </style>
 
 <AcceptOffer bind:this={comp} />
-<div class="flex items-center mt-2">
-  <span class="font-medium text-gray-600 text-xs">
-    {formatDistanceStrict(new Date(transaction.created_at), new Date())}
-    ago
-  </span>
-  <a href={`/tx/${transaction.id}`} class="text-sm secondary-color">
-    <Fa class="text-xl mx-2" icon={faInfoCircle} />
-  </a>
-  {#if canAccept(transaction)}
-    <a
-      href="#"
-      on:click={() => comp.accept(transaction)}
-      class="text-sm secondary-color">
-      [accept]
+
+{#if transaction}
+  <div class="flex items-center mt-2">
+    <span class="font-medium text-gray-600 text-xs">
+      {formatDistanceStrict(new Date(transaction.created_at), new Date())}
+      ago
+    </span>
+    <a href={`/tx/${transaction.id}`} class="text-sm secondary-color">
+      <Fa class="text-xl mx-2" icon={faInfoCircle} />
     </a>
-  {/if}
-  {#if ['creation', 'purchase', 'accept', 'royalty', 'auction', 'release', 'cancel'].includes(transaction.type) && !transaction.confirmed}
-    <span class="pending">Pending</span>
-  {/if}
-</div>
+    {#if canAccept(transaction)}
+      <a
+        href="#"
+        on:click={() => comp.accept(transaction)}
+        class="text-sm secondary-color">
+        [accept]
+      </a>
+    {/if}
+    {#if ['creation', 'purchase', 'accept', 'royalty', 'auction', 'release', 'cancel'].includes(transaction.type) && !transaction.confirmed}
+      <span class="pending">Pending</span>
+    {/if}
+  </div>
+{/if}

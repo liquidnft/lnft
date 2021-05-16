@@ -32,6 +32,7 @@
   }
 </style>
 
+{#if artwork}
 <div
   class="latest-container w-full lg:w-1/3 pr-10"
   on:click={() => goto(`/a/${artwork.slug}`)}>
@@ -62,3 +63,4 @@
     </div>
   </div>
 </div>
+{/if}

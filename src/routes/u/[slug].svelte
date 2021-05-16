@@ -11,14 +11,14 @@
   $: update($page, $token);
   let update = async (slug) => {
     if (!slug) return;
-    user = (
-      await hasura
-        .auth(`Bearer ${$token}`)
-        .post({
-          query: getUserByUsername($page.params.slug),
-        })
-        .json()
-    ).data.users[0];
+    let { data } = await hasura
+      .auth(`Bearer ${$token}`)
+      .post({
+        query: getUserByUsername($page.params.slug),
+      })
+      .json();
+
+    if (data) user = data.users[0];
   };
 </script>
 
