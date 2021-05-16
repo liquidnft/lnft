@@ -296,7 +296,12 @@
       - favorited
       - last_active
       - num_favorites
-      filter: {}
+      filter:
+        _or:
+        - owner_id:
+            _eq: X-Hasura-User-Id
+        - asking_asset:
+            _is_null: false
       allow_aggregations: true
   update_permissions:
   - role: user

@@ -48,7 +48,9 @@
       class="secondary-color">@{transaction.bid.user.username}</a>
     for
   {/if}
+  {#if transaction.artwork}
   <a
     href={`/a/${transaction.artwork.slug}`}
     class="secondary-color">{transaction.artwork.title || 'Untitled'}</a>
+{/if}
 </div>
