@@ -71,8 +71,26 @@ export const getArtworks = `query {
   }
 }`;
 
+export const subscribeArtworks = `subscription {
+ artworks {
+    ${fields}
+    tags {
+      tag
+    } 
+  }
+}`;
+
 export const getUserArtworks = (id) => `query {
  artworks(where: { _or: [{ artist_id: { _eq: "${id}" }}, { owner_id: { _eq: "${id}" }}]}) {
+    ${fields}
+    tags {
+      tag
+    } 
+  }
+}`;
+
+export const getArtworksByOwner = (id) => `query {
+ artworks(where: { { owner_id: { _eq: "${id}" }}}) {
     ${fields}
     tags {
       tag

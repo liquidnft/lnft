@@ -3,11 +3,11 @@
   import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
   import { border, bg } from "./_colors";
   import { page } from "$app/stores";
-  import { electrs } from "$lib/api";
+  import { electrs, hasura } from "$lib/api";
   import { onMount, tick } from "svelte";
-  import { asset, assets, balances, pending, password, user } from "$lib/store";
+  import { asset, assets, balances, pending, password, user, token } from "$lib/store";
   import { ProgressLinear } from "$comp";
-  import { getArtworks } from "$queries/artworks";
+  import { getArtworksByOwner } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { assetLabel, btc, sats, tickers, val } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
@@ -48,15 +48,20 @@
   };
 
   let artworks = [];
-  $: if ($user)
-    subscription(operationStore(getArtworks), async (_, data) => {
-      await new Promise((resolve) =>
-        user.subscribe((value) => value && resolve())
-      );
-      artworks = data.artworks.filter((a) => a.owner_id === $user.id);
-      getBalances();
-      loading = false;
-    });
+  $: init($user);
+  let init = async (u) => {
+    if (!u) return;
+    let { data } = await hasura
+      .auth(`Bearer ${$token}`)
+      .post({
+        query: getArtworksByOwner($user.id),
+      })
+      .json();
+
+    if (data) ({ artworks } = data);
+    getBalances();
+    loading = false;
+  };
 </script>
 
 <style>
@@ -74,13 +79,13 @@
   }
 
   .bg-btc {
-    background:rgba(52, 190, 171, 0.25)
+    background: rgba(52, 190, 171, 0.25);
   }
   .border-btc {
     border-color: #30bfad;
   }
 
-  .light-color{
+  .light-color {
     color: #f4f4f4;
   }
 
@@ -103,7 +108,10 @@
       <div class="mb-5">
         <a class="secondary-color" href="/wallet/asset">
           <div class="flex">
-            <div class="px-5 md:px-0">{$assets.length} assets available in this wallet</div>
+            <div class="px-5 md:px-0">
+              {$assets.length}
+              assets available in this wallet
+            </div>
             <div class="my-auto ml-1">
               <Fa icon={faChevronRight} />
             </div>

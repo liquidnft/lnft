@@ -17,9 +17,9 @@
   } from "$lib/store";
   import { fade } from "svelte/transition";
   import { getUser, getUsersAddresses, updateUser } from "$queries/users";
-  import { getArtworks } from "$queries/artworks";
+  import { subscribeArtworks } from "$queries/artworks";
   import { setupUrql } from "$lib/urql";
-  import { mutation, query, operationStore } from "@urql/svelte";
+  import { mutation, subscription, query, operationStore } from "@urql/svelte";
   import { page } from "$app/stores";
   import { requireLogin, refreshToken, requirePassword } from "$lib/auth";
   import InsufficientFunds from "$components/InsufficientFunds";
@@ -53,15 +53,10 @@
   setupUrql();
   $: setup($role, $token);
 
-  let o = { requestPolicy: "cache-and-network" };
-  let artworksQuery = operationStore(getArtworks, {}, o);
-  query(artworksQuery).subscribe(({ data }) => {
-    if (data) {
-      $artworks = data.artworks;
-    }
-  });
+  let op = operationStore(subscribeArtworks);
+  subscription(op, (a, b) => b && ($artworks = b.artworks));
 
-  let usersQuery = operationStore(getUsersAddresses, {}, o);
+  let usersQuery = operationStore(getUsersAddresses);
   query(usersQuery).subscribe(({ data }) => {
     if (data) {
       $users = data.users;

@@ -2,8 +2,6 @@
   import Fa from "svelte-fa";
   import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
   import { artworks, show, user, results } from "$lib/store";
-  import { query, operationStore } from "@urql/svelte";
-  import { getArtworks } from "$queries/artworks";
   import { info, err, goto } from "$lib/utils";
   import Gallery from "$components/Gallery";
   import Results from "$components/Results";
@@ -15,15 +13,6 @@
   export let showFilters = true;
 
   let filtered = [];
-
-  let o = { requestPolicy: "cache-and-network" };
-  let a = operationStore(getArtworks, {}, o);
-
-  query(a).subscribe(({ data }) => {
-    if (data) {
-      $artworks = data.artworks;
-    }
-  });
 </script>
 
 <style>
