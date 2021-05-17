@@ -340,6 +340,8 @@
       //end_time = format(addSeconds(new Date(), 90), "HH:mm");
     }
   };
+
+  $: listingCurrencies = artwork && artwork.transferred_at ? Object.keys(tickers) : [...Object.keys(tickers), undefined]
 </script>
 
 <style>
@@ -407,7 +409,7 @@
 <div class="container mx-auto md:p-20">
   <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
     {#if artwork}
-      <a class="block mb-6 text-midblue" href={`/artwork/${artwork.id}`}>
+      <a class="block mb-6 text-midblue" href={`/a/${artwork.slug}`}>
         <div class="flex">
           <Fa icon={faChevronLeft} class="my-auto mr-1" />
           <div>Back</div>
@@ -429,7 +431,7 @@
         <div class="flex flex-col mt-4">
           <p>Listing currency</p>
           <div class="flex">
-            {#each [...Object.keys(tickers), undefined] as asset}
+            {#each  listingCurrencies as asset}
               <label class="ml-2 mr-6 flex items-center">
                 <input
                   class="form-radio h-6 w-6 mt-4 mr-2"

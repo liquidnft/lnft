@@ -29,6 +29,7 @@ const fields = `
   instagram
   ticker
   views
+  transferred_at
   owner {
     id
     username
