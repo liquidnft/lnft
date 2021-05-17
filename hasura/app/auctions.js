@@ -121,6 +121,7 @@ setInterval(async () => {
           console.log("Problem releasing", e);
         }
 
+        /*
         await hasura
           .post({
             query: close,
@@ -133,6 +134,7 @@ setInterval(async () => {
             },
           })
           .json();
+          */
       }
     }
   } catch (e) {

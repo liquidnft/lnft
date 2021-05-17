@@ -83,8 +83,8 @@
       clearTimeout(timeout);
       now = new Date();
       if (!artwork) return;
-      start_counter = countdown(parseISO(artwork.auction_start));
-      end_counter = countdown(parseISO(artwork.auction_end));
+      start_counter = countdown(parseISO(artwork.auction_start)) || '';
+      end_counter = countdown(parseISO(artwork.auction_end)) || '';
       timeout = setTimeout(count, 1000);
     };
     count();
@@ -378,7 +378,7 @@
               </div>
               <button type="submit" class="secondary-btn">Submit</button>
             </form>
-          {:else}
+          {:else if !artwork.auction_start || compareAsc(now, parseISO(artwork.auction_start)) === 1}
             <button
               on:click={startBidding}
               class="secondary-btn"
