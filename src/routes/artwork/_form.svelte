@@ -12,7 +12,7 @@
   const debounce = (v) => {
     loading = true;
     artwork.title = v;
-    artwork.ticker = '';
+    artwork.ticker = "";
     clearTimeout(timer);
     timer = setTimeout(() => {
       title = v;
@@ -49,7 +49,7 @@
     cursor: pointer;
   }
   .tooltip .tooltip-text {
-    visibility: hidden;
+    display: none;
     padding: 15px;
     position: absolute;
     z-index: 100;
@@ -57,7 +57,7 @@
     font-style: normal;
   }
   .tooltip:hover .tooltip-text {
-    visibility: visible;
+    display: block;
   }
   input[type="checkbox"]:checked {
     appearance: none;
@@ -73,18 +73,10 @@
   textarea {
     @apply rounded-lg;
   }
-
-  label {
-    @apply mb-4;
-  }
-
-  div {
-    margin-bottom: 30px;
-  }
 </style>
 
 <form class="flex flex-col w-full mb-6 mt-20" on:submit autocomplete="off">
-  <div class="flex flex-col mb-4">
+  <div class="flex flex-col mb-6">
     <input
       class="border-0 border-b-2"
       style="border-radius: 0 !important"
@@ -92,7 +84,7 @@
       on:input={({ target: { value } }) => debounce(value)}
       bind:this={input} />
   </div>
-  <div class="toggle">
+  <div class="toggle mb-6">
     <label class="inline-flex items-center">
       <input
         class="form-checkbox h-6 w-6"
@@ -102,7 +94,7 @@
     </label>
   </div>
   {#if !artwork.id}
-    <div class="flex flex-col mb-4">
+    <div class="flex flex-col mb-6">
       <label>Number of editions</label>
       <input
         placeholder="Editions"
@@ -110,26 +102,31 @@
         class="w-1/2" />
     </div>
   {/if}
-  <div class="flex flex-col mb-4">
+  <div class="flex flex-col mb-6">
     <label>Description</label>
     <textarea
       placeholder="How would you describe it?"
       bind:value={artwork.description} />
   </div>
-  <div class="flex flex-col mb-4">
-    <label>Ticker
-      <span class="tooltip">
-        <i class="ml-3 text-midblue text-xl tooltip">
-        <Fa icon="faQuestionCircle" />
-      </i>
-        <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">The ticker is
-          a short 3-5 character identifier for your asset that you'll see in
-          other wallets and explorers.</span>
-      </span>
-    </label>
+  <div class="flex flex-col mb-6">
+    <div class="mb-0">
+      <label class="flex">
+        <div class="mr-2">Ticker</div>
+        <div class="mt-1 mb-0">
+          <span class="tooltip">
+            <i class="text-midblue text-xl">
+              <Fa icon={faQuestionCircle} />
+            </i>
+            <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">The
+              ticker is a short 3-5 character identifier for your asset that
+              you'll see in other wallets and explorers.</span>
+          </span>
+        </div>
+      </label>
+    </div>
     <input class="w-1/2" bind:value={artwork.ticker} maxlength="5" />
   </div>
-  <div class="flex flex-col mb-4">
+  <div class="flex flex-col mb-6">
     <label>Tags
       <span class="text-gray-400">(e.g. Abstract, monochromatic, etc)</span></label>
     <Select
@@ -139,10 +136,6 @@
       on:select={handle}
       {selectedValue}
       isCreatable={true} />
-  </div>
-  <div class="flex flex-col mb-4">
-    <label>Instagram post</label>
-    <input bind:value={artwork.instagram} placeholder="Want to share a link?" />
   </div>
   <div class="flex">
     <button type="submit" class="primary-btn">Submit</button>
