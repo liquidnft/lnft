@@ -17,8 +17,8 @@ import { getArtworks } from "$queries/artworks";
 import { getRecentActivity, getLatestPieces, getArtworkTransactions } from "$queries/transactions";
 import { makeOperation } from "@urql/core";
 
-url = "https://raretoshi.com/v1/graphql";
-wsUrl = "wss://raretoshi.com/v1/graphql";
+let url = "https://raretoshi.com/v1/graphql";
+let wsUrl = "wss://raretoshi.com/v1/graphql";
 
 export const setupUrql = async () => {
   return new Promise((resolve) => {
