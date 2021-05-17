@@ -1,4 +1,5 @@
 <script>
+  import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { activate } from "$lib/auth";
   import ProgressLinear from "$components/ProgressLinear";
@@ -8,7 +9,7 @@
   let success;
   onMount(async () => {
     try {
-      await activate(window.location.search.split("=")[1]);
+      await activate($page.params.ticket);
       success = true;
     } catch (e) {
       err(e);

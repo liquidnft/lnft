@@ -58,10 +58,6 @@ app.post("/register", async (req, res) => {
     blindkey,
   } = req.body;
 
-  let { data } = await hasura
-    .post({ query: `query { invitees { email }}` })
-    .json();
-
   try {
     let response = await hbp
       .url("/auth/register")
@@ -91,7 +87,7 @@ app.post("/register", async (req, res) => {
           },
         },
       })
-      .json()
+      .json(console.log)
       .catch(console.log);
 
     if (response.errors) {
@@ -130,3 +126,9 @@ app.get("/activate", async (req, res) => {
   const { ticket } = req.query;
   res.send(await hbp.url("/auth/activate").query({ ticket }).get().res());
 });
+
+app.post("/change-password", async (req, res) => {
+  const { new_password, ticket } = req.query;
+  res.send(await hbp.url("/auth/change-password").post({ new_password, ticket }).res());
+});
+

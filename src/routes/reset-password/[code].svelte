@@ -4,15 +4,21 @@
   import { api } from "$lib/api";
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+  import { err } from "$lib/utils";
 
   let password;
   let reset = async () => {
     let email = window.localStorage.getItem("email");
 
-    api
-      .url("/auth/change-password/change")
-      .post({ ticket: $page.params.code, new_password: password })
-      .res(() => login(email, password));
+    try {
+      let res = await api
+        .url("/change-password")
+        .post({ ticket: $page.params.code, new_password: password })
+        .res();
+      await login(email, password);
+    } catch (e) {
+      err(e.message);
+    }
   };
 
   let ref;
