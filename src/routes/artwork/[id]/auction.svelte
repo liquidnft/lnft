@@ -9,6 +9,7 @@
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
+  import { api } from "$lib/api";
   import {
     fee,
     password,
@@ -308,7 +309,7 @@
       api.url("/asset/register").post({
         asset_id,
         contract,
-      }).catch(console.log);
+      }).json().catch(console.log);
 
       goto(`/a/${artwork.slug}`);
     } catch (e) {

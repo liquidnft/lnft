@@ -39,7 +39,7 @@ import { requirePassword } from "$lib/auth";
 const DUST = 1000;
 
 // const SERVER_PUBKEY = "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b";
-const SERVER_PUBKEY = "02e4520146cb2536acc5431d2e786f89470aa8ed3e2c61afecfc8d1e858e01eaa8";
+const SERVER_PUBKEY = Buffer.from("02e4520146cb2536acc5431d2e786f89470aa8ed3e2c61afecfc8d1e858e01eaa8", "hex");
 
 //const network = networks.liquid;
 const network = networks.regtest;
@@ -697,7 +697,7 @@ export const createSwap = async (
   tx
 ) => {
   if (asking_asset === btc && amount < DUST)
-    throw new Error(`Minimum BTC asking price is ${DUST} sats`);
+    throw new Error(`Minimum asking price is ${(DUST / 100000000).toFixed(8)} L-BTC`);
 
   let p = new Psbt().addOutput({
     asset: asking_asset,

@@ -1,8 +1,6 @@
 <script>
   import Fa from "svelte-fa";
-  import {
-    faChevronDown,
-  } from "@fortawesome/free-solid-svg-icons";
+  import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
   import Avatar from "$components/Avatar";
   import Eye from "$components/Eye";
   import Heart from "$components/Heart";
@@ -14,6 +12,10 @@
 </script>
 
 <style>
+  :global(.description a) {
+    @apply text-secondary;
+  }
+
   hr {
     margin: 50px 0;
   }
@@ -69,7 +71,10 @@
       class="secondary-color text-sm font-bold uppercase mr-5">#{tag}</a>{' '}
   {/each}
 </div>
-<div class="text-sm text-gray-600">{artwork.description}</div>
+
+<div class="description text-sm text-gray-600 whitespace-pre-wrap">
+  {@html artwork.description}
+</div>
 
 {#if !showDetails}
   <div
