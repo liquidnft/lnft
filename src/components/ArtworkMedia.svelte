@@ -111,7 +111,7 @@
     </video>
     {#if !popup}
       <button
-        class="absolute hidden md:block bottom-2 right-2 text-primary"
+        class="absolute hidden md:block bottom-2 right-2 secondary-color"
         type="button"
         class:invisible
         on:click|stopPropagation|preventDefault={toggleSound}>
