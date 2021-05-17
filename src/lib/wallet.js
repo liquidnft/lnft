@@ -37,7 +37,7 @@ import { requirePassword } from "$lib/auth";
 
 const DUST = 1000;
 
-const SERVER_PUBKEY = Buffer.from("032d9ec3121b743d737af64817381059984979a52ff688bc8bafb9c125d9626537", "hex");
+const SERVER_PUBKEY = Buffer.from("034c99ddc3ba57f0c87de177dd646ef71e065319f9c5fceb1764948d34ddd7efe3", "hex");
 const network = networks.liquid;
 
 const singleAnyoneCanPay =
