@@ -37,11 +37,8 @@ import { requirePassword } from "$lib/auth";
 
 const DUST = 1000;
 
-const SERVER_PUBKEY = Buffer.from(
-  "02e4520146cb2536acc5431d2e786f89470aa8ed3e2c61afecfc8d1e858e01eaa8",
-  "hex"
-);
-const network = networks.regtest;
+const SERVER_PUBKEY = Buffer.from("032d9ec3121b743d737af64817381059984979a52ff688bc8bafb9c125d9626537", "hex");
+const network = networks.liquid;
 
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
