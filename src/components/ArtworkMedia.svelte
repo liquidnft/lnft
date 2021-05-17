@@ -80,7 +80,7 @@
 </script>
 
 <style>
-  .contain {
+  .contain, .cover {
     position: relative;
   } 
 

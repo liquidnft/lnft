@@ -1,3 +1,7 @@
+<script>
+  export let showDetails = true;
+</script>
+
 <style>
   .card {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
@@ -14,7 +18,7 @@
     padding: 30px;
   }
 
-  .card-content h3{
+  .card-content h3 {
     margin-bottom: 10px;
   }
 
@@ -43,9 +47,11 @@
 
 <div class="card">
   <div class="card-header animated-bg" id="header">&nbsp;</div>
-  <div class="card-content">
-    <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
-    <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
-    <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
-  </div>
+  {#if showDetails}
+    <div class="card-content">
+      <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
+      <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
+      <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
+    </div>
+  {/if}
 </div>

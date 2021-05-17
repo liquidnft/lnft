@@ -3,7 +3,7 @@ node_modules
 /.svelte
 /build
 /functions
-deploy.sh
+deploy*
 hasura/liquidregtest/config/regtest/
 hasura/liquidregtest/liquid-config/liquidregtest/
 hasura/db

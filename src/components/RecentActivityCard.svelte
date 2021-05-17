@@ -55,6 +55,6 @@
 </div>
 {:else}
 <div class="flex flex-col px-4 mb-20 lg:w-1/3">
-  <LoadingPlaceholder />
+  <LoadingPlaceholder showDetails={false} />
 </div>
 {/if}
