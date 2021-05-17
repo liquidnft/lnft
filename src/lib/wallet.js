@@ -272,7 +272,7 @@ const fund = async (
   amount,
   sighashType = 1,
   multisig = false,
-  includeConfidential = true
+  includeConfidential = false
 ) => {
   let { address, redeem, output } = out;
 

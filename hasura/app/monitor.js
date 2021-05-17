@@ -90,8 +90,6 @@ const transferOwnership = async ({
       .json();
   }
 
-  if (transaction.type === "creation") await registerAsset(transaction);
-
   hasura.post({
     query: updateArtwork,
     variables: {
@@ -134,20 +132,23 @@ const query = `
 setInterval(() => hasura.post({ query }).json(confirmTransactions), 2000);
 
 proofs = {};
-const registerAsset = async ({ asset: asset_id, contract, user }) => {
+app.post("/asset/register", async (req, res) => {
+  let { asset_id, contract } = req.body;
   proofs[asset_id] = true;
 
-  await new Promise((r) => setTimeout(r, 30000));
-
   try {
-    await registry
-      .post({
-        asset_id,
-        contract: JSON.parse(contract),
-      })
-      .json();
-  } catch (e) {}
-};
+    res.send(
+      await registry
+        .post({
+          asset_id,
+          contract: JSON.parse(contract),
+        })
+        .json()
+    );
+  } catch (e) {
+    res.code(500).send(`Asset registration failed ${e.message}`);
+  }
+});
 
 app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
   let {
@@ -219,7 +220,9 @@ app.get("/transactions", auth, async (req, res) => {
         }
 
         if (asset) {
-          total[asset] ? (total[asset] -= parseInt(value)) : (total[asset] = parseInt(-value));
+          total[asset]
+            ? (total[asset] -= parseInt(value))
+            : (total[asset] = parseInt(-value));
         }
       }
     }
@@ -245,7 +248,9 @@ app.get("/transactions", auth, async (req, res) => {
         }
 
         if (asset) {
-          total[asset] ? (total[asset] += parseInt(value)) : (total[asset] = parseInt(value));
+          total[asset]
+            ? (total[asset] += parseInt(value))
+            : (total[asset] = parseInt(value));
         }
       }
     }
