@@ -54,7 +54,7 @@
   let confidential = false;
   let toggleConfidential = () => {
     confidential = !confidential;
-    if (confidential) address = $user.confidential;
+    if (confidential) liquid();
     else address = $user.address;
   };
 

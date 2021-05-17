@@ -59,23 +59,6 @@
   let uo = operationStore(subscribeAddresses);
   subscription(uo, (a, b) => b && ($users = b.users));
 
-  $: setupConfidential($user);
-  let setupConfidential = async (u) => {
-    if (!u || u.confidential) return;
-    info(
-      "Looks like your account doesn't have a confidential address, let's fix that"
-    );
-    await requirePassword();
-
-    let { confidential, blindkey } = createWallet();
-    updateUserQuery({ user: { confidential, blindkey }, id: u.id }).then(
-      (r) => {
-        if (r.error) return err(r.error.message);
-        if (r.data) info("Your confidential address has been enabled");
-      }
-    );
-  };
-
   let updateUserQuery = mutation(updateUser);
   let setup = async (r, t) => {
     if (t) {
