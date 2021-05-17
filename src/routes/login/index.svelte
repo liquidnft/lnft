@@ -16,7 +16,10 @@
   let pageChange = () => setTimeout(() => usernameInput && usernameInput.select(), 50);
   $: if (usernameInput) pageChange($page);
 
-  $: if ($user) goto('/landing');
+  $: if ($user) {
+    if ($user.wallet_initialized) goto('/landing');
+    else goto('/wallet/setup');
+  } 
 </script>
 
 <style>

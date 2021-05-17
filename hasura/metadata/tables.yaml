@@ -905,6 +905,7 @@
       - pubkey
       - twitter
       - username
+      - wallet_initialized
       - website
       computed_fields:
       - followed
@@ -934,8 +935,10 @@
       - location
       - mnemonic
       - multisig
+      - pubkey
       - twitter
       - username
+      - wallet_initialized
       - website
       filter:
         id:

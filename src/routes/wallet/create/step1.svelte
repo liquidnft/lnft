@@ -19,7 +19,7 @@
 
 <div class="w-full px-5 md:px-0">
   <p class="text-xl mb-10">
-    You'll need to know your backup phrase to start. Some things to have in
+    You'll need to know your backup phrase. Some things to have in
     mind:
   </p>
 
@@ -34,7 +34,7 @@
       <i class="text-lightblue">
         <Fa icon={faLock} />
       </i>
-      <span class="-mt-1">Wait until you are in a personal device and in a
+      <span class="-mt-1">Wait until you are on a personal device and in a
         private environment.</span>
     </li>
     <li class="flex">

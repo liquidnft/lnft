@@ -3,12 +3,13 @@
   import { onMount, tick } from "svelte";
   import bip39 from "bip39";
   import ToggleSwitch from "$components/ToggleSwitch";
-  import { password, user } from "$lib/store";
+  import { password, token, user } from "$lib/store";
   import { err, goto, info } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import { createWallet } from "$lib/wallet";
   import { updateUser } from "$queries/users";
   import { mutation } from "@urql/svelte";
+  import { hasura } from "$lib/api";
 
   let update = mutation(updateUser);
 
@@ -20,10 +21,27 @@
     await requirePassword();
 
     try {
-      await update({ id: $user.id, user: { ...createWallet(mnemonic), wallet_initialized: true } });
-      info("Wallet updated");
+      let params = createWallet(mnemonic);
+      params.wallet_initialized = true;
+
+      await hasura
+        .auth(`Bearer ${$token}`)
+        .post({
+          query: updateUser,
+          variables: {
+            user: params,
+            id: $user.id,
+          },
+        })
+        .json();
+
+      info("Wallet is ready!");
+
+      $user.wallet_initialized = true;
+
       setTimeout(() => goto("/wallet"), 50);
     } catch (e) {
+      console.log(e);
       err(e);
     }
   };
@@ -38,7 +56,7 @@
       else if (typed)
         words = [
           ...typed.split(" "),
-          ...new Array(24 - typed.split(" ").length),
+          ...new Array(12 - typed.split(" ").length),
         ];
       curr = words.findIndex((w) => !w);
       if (inputs[curr]) inputs[curr].select();
@@ -110,87 +128,90 @@
     }
   }
 </style>
+
 <div class="p-5">
-<div class="flex flex-col">
-  <p>Enter your backup phrase in the correct order:</p>
+  <div class="flex flex-col">
+    <p>Enter your backup phrase in the correct order:</p>
 
-  <div class="text-right mt-5">
-    <ToggleSwitch
-      id="list-price"
-      label="Show words"
-      on:change={(e) => (show = e.target.checked)}
-      checked={show} />
+    {#if !bulk}
+      <div class="text-right mt-5">
+        <ToggleSwitch
+          id="list-price"
+          label="Show words"
+          on:change={(e) => (show = e.target.checked)}
+          checked={show} />
+      </div>
+    {/if}
   </div>
-</div>
 
-{#if bulk}
-  <textarea
-    bind:value={typed}
-    placeholder="Type or paste your seed here."
-    class="my-4 w-full"
-    on:blur={setMnemonic}
-    autofocus />
-{:else}
-  <div class="flex flex-wrap mb-2">
-    <div class="mr-2 sm:mr-0 flex-grow w-1/4 sm:w-1/2">
-      {#each words.slice(0, 6) as word, i (i)}
-        <div class="flex">
-          <div class="my-auto w-1/12">{i + 1}.</div>
-          {#if show}
-            <input
-              bind:value={words[i]}
-              on:keydown={(e) => keyup(i, e)}
-              key={i}
-              bind:this={inputs[i]} />
-          {:else}
-            <input
-              bind:value={words[i]}
-              on:keydown={(e) => keyup(i, e)}
-              key={i }
-              bind:this={inputs[i]}
-              type="password" />
-          {/if}
-        </div>
-      {/each}
-    </div>
-    <div class="flex-grow w-1/4 sm:w-1/2">
-      {#each words.slice(6, 12) as word, i (i)}
-        <div class="flex">
-          <div class="my-auto w-1/12">{i + 6 + 1}.</div>
-          {#if show}
-            <input
-              bind:value={words[i + 6]}
-              on:keydown={(e) => keyup(i + 6, e)}
-              bind:this={inputs[i + 6]}
-              key={i + 6} />
-          {:else}
-            <input
-              bind:value={words[i + 6]}
-              on:keydown={(e) => keyup(i + 6, e)}
-              bind:this={inputs[i + 6]}
-              key={i + 6}
-              type="password" />
-          {/if}
-        </div>
-      {/each}
-    </div>
-  </div>
-  <div class="suggestions mt-8 flex flex-wrap justify-center">
-    {#each suggestions as suggestion}
-      <button
-        class="primary-btn w-auto border m-1"
-        on:click={() => take(suggestion)}>{suggestion}</button>
-    {/each}
-  </div>
-{/if}
-
-<p class="my-4">
   {#if bulk}
-    <a class="secondary-color m-2" href="" on:click={toggle}>I want to enter my seed
-      one word at a time</a>
+    <textarea
+      bind:value={typed}
+      placeholder="Type or paste your seed here"
+      class="my-4 w-full"
+      on:blur={setMnemonic}
+      autofocus />
   {:else}
-    <a class="secondary-color m-2" href="" on:click={toggle}>I want to enter my seed
-      all at once</a>
+    <div class="flex flex-wrap mb-2">
+      <div class="mr-2 sm:mr-0 flex-grow w-1/4 sm:w-1/2">
+        {#each words.slice(0, 6) as word, i (i)}
+          <div class="flex">
+            <div class="my-auto w-1/12">{i + 1}.</div>
+            {#if show}
+              <input
+                bind:value={words[i]}
+                on:keydown={(e) => keyup(i, e)}
+                key={i}
+                bind:this={inputs[i]} />
+            {:else}
+              <input
+                bind:value={words[i]}
+                on:keydown={(e) => keyup(i, e)}
+                key={i}
+                bind:this={inputs[i]}
+                type="password" />
+            {/if}
+          </div>
+        {/each}
+      </div>
+      <div class="flex-grow w-1/4 sm:w-1/2">
+        {#each words.slice(6, 12) as word, i (i)}
+          <div class="flex">
+            <div class="my-auto w-1/12">{i + 6 + 1}.</div>
+            {#if show}
+              <input
+                bind:value={words[i + 6]}
+                on:keydown={(e) => keyup(i + 6, e)}
+                bind:this={inputs[i + 6]}
+                key={i + 6} />
+            {:else}
+              <input
+                bind:value={words[i + 6]}
+                on:keydown={(e) => keyup(i + 6, e)}
+                bind:this={inputs[i + 6]}
+                key={i + 6}
+                type="password" />
+            {/if}
+          </div>
+        {/each}
+      </div>
+    </div>
+    <div class="suggestions mt-8 flex flex-wrap justify-center">
+      {#each suggestions as suggestion}
+        <button
+          class="primary-btn w-auto border m-1"
+          on:click={() => take(suggestion)}>{suggestion}</button>
+      {/each}
+    </div>
   {/if}
-</p>
+
+  <p class="my-4">
+    {#if bulk}
+      <a class="secondary-color my-2" href="" on:click={toggle}>I want to enter
+        one word at a time</a>
+    {:else}
+      <a class="secondary-color my-2" href="" on:click={toggle}>I want to type
+        in a text box</a>
+    {/if}
+  </p>
 </div>

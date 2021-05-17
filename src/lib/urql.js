@@ -51,7 +51,9 @@ export const setupUrql = async () => {
                   ...data.currentuser[0],
                   ...result.update_users_by_pk,
                 };
-              } catch {}
+              } catch(e) {
+                console.log(e);
+              }
               return data;
             });
           },

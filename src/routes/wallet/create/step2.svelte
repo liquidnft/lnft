@@ -66,6 +66,10 @@
     <button on:click={() => (offset = 6)} class="pagination w-auto" class:active={offset === 6}><Fa icon={faCircle} /></button>
   </div>
 
+  <p class="my-4">
+    <a class="secondary-color" href="" on:click={() => copy(mnemonic)}>Copy to clipboard</a>
+  </p>
+
   <div class="flex justify-center text-center mt-5">
     <button
       on:click={() => (offset === 0 ? goto('/wallet/create/step1') : (offset -= 6))}
@@ -75,7 +79,4 @@
       class="w-2/4 primary-btn m-2">Next</button>
   </div>
 
-  <p class="my-4">
-    <a class="secondary-color" href="" on:click={() => copy(mnemonic)}>Copy mnemonic to clipboard</a>
-  </p>
 {/if}
