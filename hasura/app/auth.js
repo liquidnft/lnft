@@ -62,12 +62,6 @@ app.post("/register", async (req, res) => {
     .post({ query: `query { invitees { email }}` })
     .json();
 
-  if (
-    !email.includes("blockstream.com") &&
-    !data.invitees.map((i) => i.email.toLowerCase()).includes(email.toLowerCase())
-  )
-    throw new Error("Registration is invite-only at this time");
-
   try {
     let response = await hbp
       .url("/auth/register")

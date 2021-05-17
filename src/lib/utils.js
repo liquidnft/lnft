@@ -29,6 +29,7 @@ const publicPages = [
   "/login",
   "/register",
   "/forgot-password",
+  "/reset-password",
   "/terms-and-conditions",
   "/privacy-policy",
   "/activate",

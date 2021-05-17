@@ -1,10 +1,16 @@
 <script>
   import { page } from "$app/stores";
+  import { api } from "$lib/api";
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
+  let sending;
   let email;
-  let forgot;
+  let forgot = () => {
+    window.localStorage.setItem("email", email);
+    api.url("/auth/change-password/request").post({ email });
+    sending = true;
+  };
   let ref;
   let pageChange = () => setTimeout(() => ref && ref.select(), 50);
   $: if (ref) pageChange($page);
@@ -54,26 +60,29 @@
 </style>
 
 <div class="form-container bg-lightblue" key={$page.path}>
-  <form
-    class="mb-6"
-    on:submit|preventDefault={() => forgot(email)}
-    autocomplete="off">
+  <form class="mb-6" on:submit|preventDefault={forgot} autocomplete="off">
     <h2 class="mb-8">Recover password</h2>
-    <p class="my-4">
-      We'll send a recovery link to the email associated with your account.
-    </p>
-    <div class="flex flex-col mb-4">
-      <label class="mb-2 font-medium text-gray-600" for="email">Email</label>
-      <input placeholder="Email" bind:value={email} bind:this={ref} />
-    </div>
+    {#if sending}
+      <p class="my-4">
+        Thank you, please check your email for the recovery link.
+      </p>
+    {:else}
+      <p class="my-4">
+        We'll send a recovery link to the email associated with your account.
+      </p>
+      <div class="flex flex-col mb-4">
+        <label class="mb-2 font-medium text-gray-600" for="email">Email</label>
+        <input placeholder="Email" bind:value={email} bind:this={ref} />
+      </div>
     <div class="flex">
       <button class="primary-btn ml-auto mb-4" type="submit">Send</button>
     </div>
+    {/if}
     <a href="/login" class="text-midblue">
       <div class="flex">
-      <Fa icon={faChevronLeft} class="my-auto mr-1" />
-      <div>Back to sign in</div>
-    </div>
+        <Fa icon={faChevronLeft} class="my-auto mr-1" />
+        <div>Back to sign in</div>
+      </div>
     </a>
   </form>
 </div>

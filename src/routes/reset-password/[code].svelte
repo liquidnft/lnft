@@ -1,10 +1,22 @@
 <script>
   import { page } from "$app/stores";
+  import { login } from "$lib/auth";
+  import { api } from "$lib/api";
+  import Fa from "svelte-fa";
+  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
   let password;
-  let forgot;
+  let reset = async () => {
+    let email = window.localStorage.getItem("email");
+
+    api
+      .url("/auth/change-password/change")
+      .post({ ticket: $page.params.code, new_password: password })
+      .res(() => login(email, password));
+  };
+
   let ref;
-  let pageChange = () => setTimeout(() => ref.select(), 50);
+  let pageChange = () => setTimeout(() => ref && ref.select(), 50);
   $: if (ref) pageChange($page);
 </script>
 
@@ -50,16 +62,22 @@
 </style>
 
 <div class="form-container bg-lightblue">
-  <form
-    class="mb-6"
-    on:submit|preventDefault={() => forgot(password)}
-    autocomplete="off">
+  <form class="mb-6" on:submit|preventDefault={reset} autocomplete="off">
     <h2 class="mb-8">Reset password</h2>
     <div class="flex flex-col mb-4">
       <label class="mb-2 font-medium text-gray-600" for="password">New password</label>
-      <input placeholder="Password" bind:value={password} bind:this={ref} />
+      <input
+        type="password"
+        placeholder="Password"
+        bind:value={password}
+        bind:this={ref} />
     </div>
-    <button class="primary-btn w-full" type="submit">Confirm</button>
-    <a href="/login" class="text-midblue">&lt; Back to sign in</a>
+    <button class="primary-btn w-full mb-4" type="submit">Confirm</button>
+    <a href="/login" class="text-midblue">
+      <div class="flex">
+        <Fa icon={faChevronLeft} class="my-auto mr-1" />
+        <div>Back to sign in</div>
+      </div>
+    </a>
   </form>
 </div>
