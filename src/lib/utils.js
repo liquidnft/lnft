@@ -14,14 +14,9 @@ import { tick } from "svelte";
 
 let cad, btc, usd;
 
-btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
-cad = "1cedcd3f9122601a7e3ad4a3c5402256b4e7a5de7a057632e0dd03147372fb10";
-usd = "473788ca8362a542c73f11cfd3f92162457467e9e052b92ab8a2e794e0ccf228";
-/*
 btc = "6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d";
 cad = "0e99c1a6da379d1f4151fb9df90449d40d0608f6cb33a5bcbfc8c265f42bab0a";
 usd = "ce091c998b83c78bb71a632313ba3760f1763d9cfcffae02258ffa9865a37bd2";
-*/
 
 const fade = (n, o) => svelteFade(n, { ...o, duration: 50 });
 
