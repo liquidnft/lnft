@@ -131,6 +131,7 @@ export const setupUrql = async () => {
     };
 
     const addAuthToOperation = ({ authState, operation }) => {
+      const token = window.sessionStorage.getItem("token");
       if (operation.query)
         if (!authState || !authState.token) {
           return operation;
@@ -147,7 +148,7 @@ export const setupUrql = async () => {
           ...fetchOptions,
           headers: {
             ...fetchOptions.headers,
-            Authorization: `Bearer ${authState.token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       });
