@@ -9,6 +9,13 @@
 
   export let artwork;
   let showDetails = false;
+
+  function linkify(text) {
+    var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+    return text.replace(urlRegex, function (url) {
+      return '<a href="' + url + '">' + url + "</a>";
+    });
+  }
 </script>
 
 <style>
@@ -73,7 +80,7 @@
 </div>
 
 <div class="description text-sm text-gray-600 whitespace-pre-wrap">
-  {@html artwork.description}
+  {@html linkify(artwork.description)}
 </div>
 
 {#if !showDetails}
