@@ -129,6 +129,6 @@ app.get("/activate", async (req, res) => {
 
 app.post("/change-password", async (req, res) => {
   const { new_password, ticket } = req.query;
-  res.send(await hbp.url("/auth/change-password").post({ new_password, ticket }).res());
+  res.send(await hbp.url("/auth/change-password/change").post({ new_password, ticket }).res());
 });
 
