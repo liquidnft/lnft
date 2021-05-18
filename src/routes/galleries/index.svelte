@@ -5,13 +5,9 @@
   import { getTags } from "$queries/artworks";
   import { Card } from "$comp";
   import { token } from "$lib/store";
+  import galleries from "$lib/galleries";
 
   let tags = [];
-
-  let galleries = ["bitcoin2021"];
-  let titles = {
-    bitcoin2021: "Bitcoin 2021",
-  };
 
   onMount(async () => {
     if ($token) {
@@ -31,8 +27,8 @@
   <div class="px-8">
     <h2>Galleries</h2>
 
-    {#each galleries as gallery}
-      <h2 class="text-xl mb-6 m-6 px-4">{titles[gallery]}</h2>
+    {#each Object.keys(galleries) as gallery}
+      <h2 class="text-xl mb-6 m-6 px-4"><a href={`/gallery/${gallery}`}>{galleries[gallery]}</a></h2>
       <div class="flex flex-wrap">
         {#each tags.filter((t) => t.tag === gallery) as tag}
           <div class="w-full lg:w-1/3 px-10 mb-20">

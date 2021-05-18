@@ -1,6 +1,10 @@
 <script>
   import Fa from "svelte-fa";
-  import { faEnvelope, faLink, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faEnvelope,
+    faLink,
+    faMapMarkerAlt,
+  } from "@fortawesome/free-solid-svg-icons";
   import { faTwitter, faInstagram } from "@fortawesome/free-brands-svg-icons";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
@@ -69,8 +73,8 @@
 </script>
 
 <style>
-
-  .gallery-tab :global(.card-link img), .gallery-tab :global(.card-link video){
+  .gallery-tab :global(.card-link img),
+  .gallery-tab :global(.card-link video) {
     height: 350px;
   }
 
@@ -217,7 +221,7 @@
           {/if}
         </div>
         {#if tab === 'creations'}
-          <div class="w-full flex justify-center">
+          <div class="w-full justify-center">
             <div class="w-full flex flex-wrap">
               {#each creations as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
@@ -226,6 +230,12 @@
               {:else}
                 <div class="mx-auto">No creations yet</div>
               {/each}
+            </div>
+            <div class="w-1/2 mx-auto mb-4 mt-0">
+              {#if $user && $user.is_artist && $user.id === subject.id}
+                <a href="/artwork/create" class="primary-btn">Submit a new
+                  artwork</a>
+              {/if}
             </div>
           </div>
         {:else if tab === 'collection'}

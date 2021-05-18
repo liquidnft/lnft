@@ -13,6 +13,7 @@
 
   $: pageChange($page);
   let pageChange = async () => {
+    if (!$user.is_admin) goto('/market');
     $role = "approver";
     samples = operationStore(getSamples);
     samples.subscribe((res) => {

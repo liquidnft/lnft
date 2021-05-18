@@ -3,6 +3,7 @@
   import { operationStore, subscription } from "@urql/svelte";
   import { getArtworksByTag } from "$queries/artworks";
   import { Card } from "$comp";
+  import galleries from "$lib/galleries";
 
   let { tag } = $page.params;
   let artworks = [];
@@ -11,7 +12,7 @@
 </script>
 
 <div class="container mx-auto mt-10 md:mt-20">
-  <h3 class="mb-10">#{tag}</h3>
+  <h3 class="mb-10">{galleries[tag] ? galleries[tag] : `#${tag}` }</h3>
 
   <div class="flex flex-wrap">
     {#each artworks as artwork (artwork.id)}

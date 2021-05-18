@@ -1,6 +1,12 @@
 <script>
   import Fa from "svelte-fa";
-  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+  import { faTwitter, faInstagram } from "@fortawesome/free-brands-svg-icons";
+  import {
+    faEnvelope,
+    faChevronLeft,
+    faLink,
+    faMapMarkerAlt,
+  } from "@fortawesome/free-solid-svg-icons";
   import { onMount, tick } from "svelte";
   import { user, token } from "$lib/store";
   import { info, goto } from "$lib/utils";
@@ -10,13 +16,7 @@
   import { updateUser } from "$queries/users";
   import { mutation } from "@urql/svelte";
 
-  let initialize = (user) => {
-    if (!(form && form.id) && user) form = { ...user };
-  };
-
-  $: initialize($user);
-
-  let form;
+  let form = {};
   let fileInput;
   let preview;
   let file;
@@ -114,8 +114,8 @@
 <style>
   .container {
     background-color: #ecf6f7;
+    height: auto;
     min-height: 100vh;
-    width: 100% !important;
     margin: 0;
     max-width: 100%;
   }
@@ -123,12 +123,6 @@
   input,
   textarea {
     @apply appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
-  }
-
-  .name-input {
-    border: none;
-    border-bottom: 1px solid #e5e7eb;
-    border-radius: 0;
   }
 
   label {
@@ -142,7 +136,7 @@
     position: absolute;
     pointer-events: none;
     right: 15px;
-    top: 25px;
+    top: 15px;
     font-size: 20px;
     color: #6ed8e0;
   }
@@ -188,23 +182,36 @@
                 placeholder="What's your name?"
                 bind:value={form.full_name} />
             </div>
-            <div class="flex flex-col mb-4">
-              <Fa icon={faEnvelope} />
-              <input placeholder="Your email" bind:value={form.email} />
-            </div>
-            <div class="flex flex-col mb-4">
-              <input
-                placeholder="http://example.com"
-                bind:value={form.username} />
-            </div>
-            <div class="flex flex-col mb-4">
-              <Fa icon={faInstagram} />
-              <input placeholder="@instagram" bind:value={form.instagram} />
-            </div>
-            <div class="flex flex-col mb-4">
-              <Fa icon={faLink} />
-              <input placeholder="@twitter" bind:value={form.twitter} />
-            </div>
+          <div class="flex flex-col mb-4">
+            <i class="icon">
+              <Fa icon={faEnvelope} class="mt-1" />
+            </i>
+            <input placeholder="email@example.com" bind:value={form.email} />
+          </div>
+          <div class="flex flex-col mb-4">
+            <i class="icon">
+              <Fa icon={faTwitter} class="mt-1" />
+            </i>
+            <input placeholder="@twitter" bind:value={form.twitter} />
+          </div>
+          <div class="flex flex-col mb-4">
+            <i class="icon">
+              <Fa icon={faInstagram} class="mt-1" />
+            </i>
+            <input placeholder="@instagram" bind:value={form.instagram} />
+          </div>
+          <div class="flex flex-col mb-4">
+            <i class="icon">
+              <Fa icon={faMapMarkerAlt} class="mt-1" />
+            </i>
+            <input placeholder="Vancouver, Canada" bind:value={form.location} />
+          </div>
+          <div class="flex flex-col mb-4">
+            <i class="icon">
+              <Fa icon={faLink} class="mt-1" />
+            </i>
+            <input placeholder="example.com" bind:value={form.website} />
+          </div>
             <div class="flex flex-col mb-4">
               <label>Extra information</label>
               <textarea placeholder="" bind:value={form.info} />
