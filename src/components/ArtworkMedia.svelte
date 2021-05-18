@@ -32,6 +32,15 @@
       });
   };
 
+  function hasAudio(v) {
+    if (!v) return false;
+    return (
+      v.mozHasAudio ||
+      Boolean(v.webkitAudioDecodedByteCount) ||
+      Boolean(v.audioTracks && v.audioTracks.length)
+    );
+  }
+
   let loadVideo = () => {
     if (!vid) return;
     if ("IntersectionObserver" in window) {
@@ -70,7 +79,7 @@
   let muted = true;
   let invisible = true;
 
-  let over = () => (invisible = false);
+  let over = () => vid && hasAudio(vid) && (invisible = false);
   let out = () => (invisible = true);
 
   let toggleSound = () => {
@@ -80,24 +89,36 @@
 </script>
 
 <style>
-  .contain, .cover {
+  .contain,
+  .cover {
     position: relative;
-  } 
+  }
 
-  .contain img, .contain video {
+  .contain img,
+  .contain video {
     height: 350px;
     width: 100%;
     object-fit: cover;
-  } 
+  }
 
-  img, video {
+  img,
+  video {
     @apply mx-auto;
     max-height: 70vh;
-  } 
+  }
+
+  video {
+    width: auto;
+  }
 </style>
 
 {#if artwork.filetype && artwork.filetype.includes('video')}
-  <div class:cover class:contain on:mouseover={over} on:mouseout={out}>
+  <div
+    class="inline-block"
+    class:cover
+    class:contain
+    on:mouseover={over}
+    on:mouseout={out}>
     <video
       class="lazy"
       autoplay
