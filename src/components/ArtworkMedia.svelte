@@ -114,7 +114,7 @@
 
 {#if artwork.filetype && artwork.filetype.includes('video')}
   <div
-    class="inline-block"
+    class:inline-block={!popup}
     class:cover
     class:contain
     on:mouseover={over}

@@ -431,7 +431,7 @@
       <form class="w-full mb-6 mt-12" on:submit={update} autocomplete="off">
         <div class="flex flex-col mt-4">
           <p>Listing currency</p>
-          <div class="flex">
+          <div class="flex flex-wrap">
             {#each  listingCurrencies as asset}
               <label class="ml-2 mr-6 flex items-center">
                 <input
@@ -442,7 +442,7 @@
                   bind:group={artwork.asking_asset}
                   on:change={clearPrice}
                   disabled={auction_underway} />
-                <p class="mb-2">{asset ? assetLabel(asset) : 'Unlisted'}</p>
+                <p class="mb-2 whitespace-nowrap">{asset ? assetLabel(asset) : 'Unlisted'}</p>
               </label>
             {/each}
           </div>
