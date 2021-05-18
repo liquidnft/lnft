@@ -99,6 +99,8 @@ setInterval(async () => {
           })
           .json();
       } catch (e) {
+        if (artwork.royalty) return;
+
         try {
           let psbt = await sign(artwork.auction_release_tx);
           await broadcast(psbt);
