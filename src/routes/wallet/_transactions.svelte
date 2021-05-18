@@ -63,7 +63,7 @@
               <div class="flex-grow text-sm text-gray-500">
                 {format(parseISO(tx.created_at), 'MMM do, yyyy')}
               </div>
-              <div class:text-green-500={tx.amount > 0}>
+              <div class:text-secondary={tx.amount > 0}>
                 {tx.amount > 0 ? '+' : ''}{val(tx.asset, tx.amount)}
               </div>
             </div>
