@@ -38,39 +38,38 @@ const releaseQuery = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amo
 setInterval(async () => {
   try {
     const query = `query {
-    artworks(where: { auction_end: { _lte: "${formatISO(new Date())}"}}) {
-
-      id
-      title
-      filename
-      filetype
-      asking_asset
-      royalty
-      auction_end
-      transferred_at
-      list_price_tx
-      auction_release_tx
-      artist {
+      artworks(where: { auction_end: { _lte: "${formatISO(new Date())}"}}) {
         id
-        username
-        avatar_url
-      } 
-      owner {
-        id
-        username
-        avatar_url
-      } 
-      bid {
-        id
-        amount
-        psbt
-        user {
+        title
+        filename
+        filetype
+        asking_asset
+        royalty
+        auction_end
+        transferred_at
+        list_price_tx
+        auction_release_tx
+        artist {
           id
           username
+          avatar_url
+        } 
+        owner {
+          id
+          username
+          avatar_url
+        } 
+        bid {
+          id
+          amount
+          psbt
+          user {
+            id
+            username
+          } 
         } 
       } 
-    } 
-  }`;
+    }`;
 
     let { artworks } = (await hasura.post({ query }).json()).data;
     for (let i = 0; i < artworks.length; i++) {
@@ -121,22 +120,20 @@ setInterval(async () => {
             .json();
         } catch (e) {
           console.log("Problem releasing", e);
-        }
 
-        /*
-        await hasura
-          .post({
-            query: close,
-            variables: {
-              id: artwork.id,
-              artwork: {
-                auction_start: null,
-                auction_end: null,
+          await hasura
+            .post({
+              query: close,
+              variables: {
+                id: artwork.id,
+                artwork: {
+                  auction_start: null,
+                  auction_end: null,
+                },
               },
-            },
-          })
-          .json();
-          */
+            })
+            .json();
+        }
       }
     }
   } catch (e) {

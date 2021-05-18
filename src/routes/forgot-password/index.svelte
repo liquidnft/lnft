@@ -74,9 +74,9 @@
         <label class="mb-2 font-medium text-gray-600" for="email">Email</label>
         <input placeholder="Email" bind:value={email} bind:this={ref} />
       </div>
-    <div class="flex">
-      <button class="primary-btn ml-auto mb-4" type="submit">Send</button>
-    </div>
+      <div class="flex">
+        <button class="primary-btn ml-auto mb-4" type="submit">Send</button>
+      </div>
     {/if}
     <a href="/login" class="text-midblue">
       <div class="flex">
