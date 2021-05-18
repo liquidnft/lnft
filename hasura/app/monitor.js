@@ -58,45 +58,50 @@ const insertTransaction = `mutation ($transaction: transactions_insert_input!) {
 const transferOwnership = async ({
   data: { update_transactions_by_pk: transaction },
 }) => {
-  let owner_id;
+  try {
+    let owner_id;
 
-  if (transaction.type === "accept") owner_id = transaction.bid.user_id;
+    if (transaction.type === "accept") owner_id = transaction.bid.user_id;
 
-  if (transaction.type === "purchase") {
-    owner_id = transaction.user_id;
+    if (transaction.type === "purchase") {
+      owner_id = transaction.user_id;
 
-    let {
-      artwork_id,
-      hash,
-      psbt,
-      artwork: { asset },
-    } = transaction;
+      let {
+        artwork_id,
+        hash,
+        psbt,
+        artwork: { asset },
+      } = transaction;
 
-    await hasura
-      .post({
-        query: insertTransaction,
-        variables: {
-          transaction: {
-            type: "receipt",
-            user_id: transaction.artwork.owner_id,
-            artwork_id,
-            hash,
-            psbt,
-            amount: 1,
-            asset,
+      await hasura
+        .post({
+          query: insertTransaction,
+          variables: {
+            transaction: {
+              type: "receipt",
+              user_id: transaction.artwork.owner_id,
+              artwork_id,
+              hash,
+              psbt,
+              amount: 1,
+              asset,
+            },
           },
-        },
-      })
-      .json();
-  }
+        })
+        .json()
+        .catch(console.log);
+    }
 
-  hasura.post({
-    query: updateArtwork,
-    variables: {
-      id: transaction.artwork_id,
-      owner_id,
-    },
-  });
+    hasura.post({
+      query: updateArtwork,
+      variables: {
+        id: transaction.artwork_id,
+        owner_id,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 const confirmTransactions = ({ data: { transactions } }) => {
@@ -110,7 +115,9 @@ const confirmTransactions = ({ data: { transactions } }) => {
           hasura
             .post({ query: setConfirmed, variables: { id: tx.id } })
             .json(transferOwnership)
-      );
+            .catch(console.log)
+      )
+      .catch(console.log);
   });
 };
 
