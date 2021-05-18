@@ -10,8 +10,7 @@
   import Sort from "./_sort";
   import { requirePassword } from "$lib/auth";
 
-  export let showFilters = true;
-
+  export let showFilters;
   let filtered = [];
 </script>
 
