@@ -5,7 +5,6 @@
   import Card from "$components/Card";
   import TransactionText from "$components/TransactionText";
   import TransactionTime from "$components/TransactionTime";
-  import LoadingPlaceholder from "$components/LoadingPlaceholder";
   export let transaction;
 
   let { artwork } = transaction;
@@ -19,7 +18,8 @@
     margin-top: 20px;
   }
 
-  .recent-container :global(video), .recent-container :global(img){
+  .recent-container :global(video),
+  .recent-container :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover !important;
@@ -31,30 +31,26 @@
     }
   }
 </style>
+
 {#if artwork}
-<div class="recent-container flex flex-col pr-10 lg:w-1/3">
-  <div class="recentCard flex-grow flex">
-    <div class="mt-2 mr-4">
-      <Avatar user={transaction.user} />
+  <div class="recent-container flex flex-col pr-10 lg:w-1/3">
+    <div class="recentCard flex-grow flex">
+      <div class="mt-2 mr-4">
+        <Avatar user={transaction.user} />
+      </div>
+      <div class="flex flex-col">
+        <p class="mt-2 break-words">
+          <TransactionText {transaction} />
+        </p>
+        <p class="text-sm">
+          <TransactionTime {transaction} />
+        </p>
+      </div>
     </div>
-    <div class="flex flex-col">
-      <p class="mt-2 break-words">
-        <TransactionText {transaction} />
-      </p>
-      <p class="text-sm">
-        <TransactionTime {transaction} />
-      </p>
-    </div>
+    <a href={`/a/${artwork.slug}`}>
+      <div class="w-full flex rounded-lg box-shadow thumb">
+        <ArtworkMedia {artwork} showDetails={false} />
+      </div>
+    </a>
   </div>
-  <a href={`/a/${artwork.slug}`}>
-    <div
-      class="w-full flex rounded-lg box-shadow thumb">
-      <ArtworkMedia {artwork} showDetails={false} />
-    </div>
-  </a>
-</div>
-{:else}
-<div class="flex flex-col px-4 mb-20 lg:w-1/3">
-  <LoadingPlaceholder showDetails={false} />
-</div>
 {/if}

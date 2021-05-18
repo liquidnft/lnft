@@ -33,7 +33,7 @@
     loading = true;
     try {
       if ($asset !== btc && !artwork) artwork = { asset: $asset };
-      $psbt = await pay(artwork, to, sats($asset, amount));
+      $psbt = await pay(artwork, to.trim(), sats($asset, amount));
       await sign();
 
       if (artwork && (artwork.auction_end || artwork.royalty)) {

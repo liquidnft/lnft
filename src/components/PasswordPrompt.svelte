@@ -68,5 +68,9 @@
       class="mb-2"
       type="password"
       bind:this={input} />
+    <div class="text-right text-sm">
+      <a href="/forgot-password" class="block w-full text-midblue">Forgot
+        password?</a>
+    </div>
   </div>
 </form>
