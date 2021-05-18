@@ -48,6 +48,10 @@
     height: 350px;
   }
 
+  .market-gallery{
+    height: 619px;
+  }
+
   
 </style>
 

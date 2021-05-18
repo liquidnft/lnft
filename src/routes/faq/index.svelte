@@ -61,7 +61,7 @@
       <div class="contact boxShadow">
         <p>Need more help?</p>
         <h5>Contact us through</h5>
-        <a href="/">Support@raretoshi.com</a>
+        <a href="mailto:support@raretoshi.com" target="_blank">support@raretoshi.com</a>
       </div>
     </div>
   </div>
@@ -71,9 +71,13 @@
   h3 { @apply mt-8 }
   p, h3 { @apply mb-4 }
 
-  h3{font-weight: normal;}
+  
   .faq-content{
     display: flex;
+  }
+
+  .faq-content p{
+    margin-bottom: 80px;
   }
 
   .contact{
