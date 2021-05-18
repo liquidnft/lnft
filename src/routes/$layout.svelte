@@ -36,7 +36,7 @@
 <Snack />
 
 {#if ready}
-  {#if !publicPages.includes($page.path)}
+  {#if !publicPages.includes($page.path.split('/')[1])}
     <Sidebar bind:open />
     <div class={y > 50 ? 'sticky' : ''} in:fade>
       <Navbar bind:sidebar={open} />

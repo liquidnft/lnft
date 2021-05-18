@@ -38,7 +38,10 @@
 
   let lastPage;
   let pageChange = (p) => {
-    // if (!publicPages.includes(p.path.replace(/\?.*/, ""))) requireLogin();
+    console.log(p.path);
+    console.log(p.path.split('/'));
+    console.log(p.path.split('/')[1])
+    if (!publicPages.includes(p.path.split('/')[1])) requireLogin();
     if (lastPage === "/market") $results = [];
     $poll.map((p) => clearInterval(p.interval));
     lastPage = p.path;

@@ -26,13 +26,14 @@ usd = "8026fa969633b7b6f504f99dde71335d633b43d18314c501055fcd88b9fcb8de";
 const fade = (n, o) => svelteFade(n, { ...o, duration: 50 });
 
 const publicPages = [
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-  "/terms-and-conditions",
-  "/privacy-policy",
-  "/activate",
+  "login",
+  "register",
+  "activate",
+  "forgot-password",
+  "reset-password",
+  "terms-and-conditions",
+  "privacy-policy",
+  "activate",
 ];
 
 const addressUser = (a) =>
