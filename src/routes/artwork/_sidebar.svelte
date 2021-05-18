@@ -79,7 +79,7 @@
   {/each}
 </div>
 
-<div class="description text-sm text-gray-600 whitespace-pre-wrap">
+<div class="description text-sm text-gray-600 whitespace-pre-wrap break-words">
   {@html linkify(artwork.description)}
 </div>
 

@@ -318,6 +318,7 @@
       goto(`/a/${artwork.slug}`);
     } catch (e) {
       err(e);
+      console.log(e);
     }
     loading = false;
   };

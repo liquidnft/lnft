@@ -11,7 +11,7 @@ import {
 
 export default (d) => {
   let now = new Date();
-  if (differenceInSeconds(d, now) <= 1) return;
+  if (differenceInSeconds(d, now) < 1) return;
 
   let days = differenceInDays(d, now);
   d = subDays(d, days);

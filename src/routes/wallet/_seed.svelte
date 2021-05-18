@@ -24,16 +24,13 @@
       let params = createWallet(mnemonic);
       params.wallet_initialized = true;
 
-      await hasura
-        .auth(`Bearer ${$token}`)
-        .post({
-          query: updateUser,
-          variables: {
-            user: params,
-            id: $user.id,
-          },
-        })
-        .json();
+      let query = updateUser;
+      query.variables = {
+        user: params,
+        id: $user.id,
+      };
+
+      await hasura.auth(`Bearer ${$token}`).post(updateUser).json(console.log);
 
       info("Wallet is ready!");
 

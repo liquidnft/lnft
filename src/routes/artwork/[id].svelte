@@ -408,14 +408,14 @@
           {/if}
         </div>
 
-        {#if compareAsc(parseISO(artwork.auction_start), now) === 1}
+        {#if compareAsc(parseISO(artwork.auction_start), now) === 1 && start_counter}
           <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
             <div class="mt-auto text-sm">Auction starts in</div>
             <div class="mt-1">{start_counter}</div>
           </div>
         {/if}
 
-        {#if compareAsc(parseISO(artwork.auction_end), now) === 1}
+        {#if compareAsc(parseISO(artwork.auction_end), now) === 1 && end_counter}
           <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
             <div class="mt-auto text-sm">Auction closes in</div>
             <div class="mt-1">{end_counter}</div>
