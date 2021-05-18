@@ -1,11 +1,12 @@
 <script>
+  import { ProgressLinear } from "$comp";
   import Fa from "svelte-fa";
   import {
     faChevronDown,
     faChevronUp,
   } from "@fortawesome/free-solid-svg-icons";
   import Avatar from "$components/Avatar";
-  import { psbt, user } from "$lib/store";
+  import { psbt, user, users as addresses } from "$lib/store";
   import reverse from "buffer-reverse";
   import { electrs } from "$lib/api";
   import {
@@ -34,14 +35,15 @@
   export let tx;
 
   let ins, outs, totals, senders, recipients, showDetails, users, lock, pp, uu;
-  $: init($psbt, $user);
+  let loading;
+  $: init($psbt, $user, $addresses);
   let retries = 0;
   let init = async (p, u) => {
     pp = JSON.stringify(p);
     uu = JSON.stringify(u);
     if (++retries < 5 && lock) {
       if (JSON.stringify(p) !== pp || JSON.stringify(u) !== uu)
-        setTimeout(() => init(p, u), 50);
+        setTimeout(() => init(p, u), 10);
       return;
     }
     lock = true;
@@ -171,7 +173,7 @@
 <button on:click={parse}>Parse</button>
 -->
 
-{#if tx}
+{#if $addresses && tx}
   <div class="w-full mx-auto">
     <div class="flex flex-wrap">
       <div class="w-full sm:w-1/2">
@@ -395,4 +397,6 @@
       </div>
     {/if}
   </div>
+{:else}
+    <ProgressLinear />
 {/if}
