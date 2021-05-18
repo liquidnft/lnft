@@ -129,7 +129,7 @@ const query = `
   }
 `;
 
-setInterval(() => hasura.post({ query }).json(confirmTransactions), 2000);
+setInterval(() => hasura.post({ query }).json(confirmTransactions).catch(console.log), 2000);
 
 proofs = {};
 app.post("/asset/register", async (req, res) => {
@@ -165,7 +165,8 @@ app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
 });
 
 app.get("/transactions", auth, async (req, res) => {
-  let query = `query {
+  try {
+    let query = `query {
       currentuser {
         id
         address
@@ -174,93 +175,89 @@ app.get("/transactions", auth, async (req, res) => {
       } 
     }`;
 
-  let { data } = await api(req.headers).post({ query }).json();
-  let user = data.currentuser[0];
+    let { data } = await api(req.headers).post({ query }).json();
+    let user = data.currentuser[0];
 
-  let get = (addr) => electrs.url(`/address/${addr}/txs`).get().json();
-  let txns = [...(await get(user.address)), ...(await get(user.multisig))];
+    let get = (addr) => electrs.url(`/address/${addr}/txs`).get().json();
+    let txns = [...(await get(user.address)), ...(await get(user.multisig))];
 
-  query = `query {
+    query = `query {
       transactions(where: { user_id: {_eq: "${user.id}"}})  {
         hash
       }
     }`;
 
-  let { transactions } = (await hasura.post({ query }).json()).data;
+    let { transactions } = (await hasura.post({ query }).json()).data;
 
-  let unseen = txns.filter(
-    (tx) => !transactions.find((t) => tx.txid === t.hash)
-  );
+    let unseen = txns.filter(
+      (tx) => !transactions.find((t) => tx.txid === t.hash)
+    );
 
-  for (let i = 0; i < unseen.length; i++) {
-    let { txid, vin, vout, status } = unseen[i];
-    let total = {};
+    for (let i = 0; i < unseen.length; i++) {
+      let { txid, vin, vout, status } = unseen[i];
+      let total = {};
 
-    for (let j = 0; j < vin.length; j++) {
-      let { txid, vout } = vin[j];
-      let tx = await electrs.url(`/tx/${txid}`).get().json().catch(console.log);
-      let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
+      for (let j = 0; j < vin.length; j++) {
+        let { txid, vout } = vin[j];
+        let tx = await electrs.url(`/tx/${txid}`).get().json();
+        let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
 
-      if ([user.address, user.multisig].includes(a)) {
-        if (!asset) {
-          hex = await electrs
-            .url(`/tx/${txid}/hex`)
-            .get()
-            .text()
-            .catch(console.log);
-          try {
-            ({ asset, value, address: a } = await unblind(
-              hex,
-              vout,
-              Buffer.from(user.blindkey, "hex")
-            ));
+        if ([user.address, user.multisig].includes(a)) {
+          if (!asset) {
+            hex = await electrs.url(`/tx/${txid}/hex`).get().text();
+            try {
+              ({ asset, value, address: a } = await unblind(
+                hex,
+                vout,
+                Buffer.from(user.blindkey, "hex")
+              ));
 
-            asset = reverse(asset).toString("hex");
-          } catch (e) {}
-        }
+              asset = reverse(asset).toString("hex");
+            } catch (e) {}
+          }
 
-        if (asset) {
-          total[asset]
-            ? (total[asset] -= parseInt(value))
-            : (total[asset] = parseInt(-value));
+          if (asset) {
+            total[asset]
+              ? (total[asset] -= parseInt(value))
+              : (total[asset] = parseInt(-value));
+          }
         }
       }
-    }
 
-    for (let k = 0; k < vout.length; k++) {
-      let { asset, value, scriptpubkey_address: a } = vout[k];
+      for (let k = 0; k < vout.length; k++) {
+        let { asset, value, scriptpubkey_address: a } = vout[k];
 
-      if ([user.address, user.multisig].includes(a)) {
-        if (!asset) {
-          hex = await electrs
-            .url(`/tx/${txid}/hex`)
-            .get()
-            .text()
-            .catch(console.log);
-          try {
-            ({ asset, value, address: a } = await unblind(
-              hex,
-              k,
-              Buffer.from(user.blindkey, "hex")
-            ));
-            asset = reverse(asset).toString("hex");
-          } catch (e) {}
-        }
+        if ([user.address, user.multisig].includes(a)) {
+          if (!asset) {
+            hex = await electrs
+              .url(`/tx/${txid}/hex`)
+              .get()
+              .text()
+              .catch(console.log);
+            try {
+              ({ asset, value, address: a } = await unblind(
+                hex,
+                k,
+                Buffer.from(user.blindkey, "hex")
+              ));
+              asset = reverse(asset).toString("hex");
+            } catch (e) {}
+          }
 
-        if (asset) {
-          total[asset]
-            ? (total[asset] += parseInt(value))
-            : (total[asset] = parseInt(value));
+          if (asset) {
+            total[asset]
+              ? (total[asset] += parseInt(value))
+              : (total[asset] = parseInt(value));
+          }
         }
       }
-    }
 
-    let assets = Object.keys(total);
+      let assets = Object.keys(total);
 
-    for (let l = 0; l < assets.length; l++) {
-      let asset = assets[l];
-      let type = total[asset] < 0 ? "withdrawal" : "deposit";
-      query = `mutation {
+      for (let l = 0; l < assets.length; l++) {
+        let asset = assets[l];
+        let type = total[asset] < 0 ? "withdrawal" : "deposit";
+        query = `mutation {
           insert_transactions_one(object: {
             asset: "${asset}",
             type: "${type}",
@@ -271,10 +268,10 @@ app.get("/transactions", auth, async (req, res) => {
           }
         }`;
 
-      let insert = await api(req.headers).post({ query }).json();
+        let insert = await api(req.headers).post({ query }).json();
 
-      if (status.block_time) {
-        query = `mutation {
+        if (status.block_time) {
+          query = `mutation {
             update_transactions_by_pk(
               pk_columns: { id: "${insert.data.insert_transactions_one.id}" }, 
               _set: { created_at: "${formatISO(
@@ -285,10 +282,14 @@ app.get("/transactions", auth, async (req, res) => {
             }
           }`;
 
-        await hasura.post({ query }).json();
+          await hasura.post({ query }).json();
+        }
       }
     }
-  }
 
-  res.send({});
+    res.send({});
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
+  }
 });

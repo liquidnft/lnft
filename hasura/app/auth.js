@@ -87,8 +87,7 @@ app.post("/register", async (req, res) => {
           },
         },
       })
-      .json(console.log)
-      .catch(console.log);
+      .json();
 
     if (response.errors) {
       let deleteQuery = `mutation { 
