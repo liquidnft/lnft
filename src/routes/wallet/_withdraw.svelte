@@ -53,7 +53,7 @@
 </script>
 
 <style>
-  input {
+  textarea {
     @apply rounded-lg p-2 text-black;
     margin-top: 10px;
   }
@@ -79,7 +79,7 @@
       </div>
       <div class="flex flex-col mb-4">
         <label>Recipient Address</label>
-        <input placeholder="Address" bind:value={to} />
+        <textarea  style="overflow:auto" placeholder="Address" bind:value={to} rows={4} />
       </div>
       <button type="submit" class="primary-btn w-full mt-5">Complete withdraw</button>
     {/if}
