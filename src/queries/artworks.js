@@ -203,7 +203,7 @@ export const getArtwork = (id) => `query {
   }
 }`;
 
-export const getTags = `subscription {
+export const getTags = `query {
   tags {
     tag
     artwork {
