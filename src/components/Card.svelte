@@ -54,7 +54,7 @@
 <div
   class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between"
   in:fade>
-  <a href={`/a/${artwork.slug}`}>
+  <a href={`/a/${artwork.slug}`} class="mx-auto">
     <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
   </a>
   {#if showDetails}

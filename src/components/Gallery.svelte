@@ -60,12 +60,18 @@
     {/if}
     <div class="market-gallery w-full mb-20">
       {#if artwork}
+        <!--
         {#if !loaded[artwork.id]}
-          <LoadingPlaceholder />
+          <a href={`/a/${artwork.slug}`}>
+            <LoadingPlaceholder />
+          </a>
         {/if}
         <div class:invisible={!loaded[artwork.id]}>
-          <Card {artwork} bind:loaded={loaded[artwork.id]} />
-        </div>
+        -->
+        <Card {artwork} bind:loaded={loaded[artwork.id]} />
+        <!--
+      </div>
+      -->
       {/if}
     </div>
   {/each}
