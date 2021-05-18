@@ -65,6 +65,7 @@ app.post("/register", async (req, res) => {
     username,
   } = req.body;
 
+  if (!(email.includes("@blockstream.io") || email.includes("@coinos.io"))) throw new Error("Registration is not open at this time")
   try {
     let response = await hbp
       .url("/auth/register")
