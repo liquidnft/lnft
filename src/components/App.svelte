@@ -38,9 +38,6 @@
 
   let lastPage;
   let pageChange = (p) => {
-    console.log(p.path);
-    console.log(p.path.split('/'));
-    console.log(p.path.split('/')[1])
     if (!publicPages.includes(p.path.split('/')[1])) requireLogin();
     if (lastPage === "/market") $results = [];
     $poll.map((p) => clearInterval(p.interval));
