@@ -21,7 +21,6 @@
   import { btc, fade, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
-    fundUnconfidential,
     createIssuance,
     signAndBroadcast,
     parseAsset,
@@ -117,17 +116,7 @@
 
     for (let i = 0; i < 1; i++) {
       await requirePassword();
-
-      try {
-        contract = await createIssuance(artwork, domain, tx);
-      } catch (e) {
-        if (e.message.startsWith("No")) {
-          tx = await fundUnconfidential();
-          contract = await createIssuance(artwork, domain, tx);
-        } else {
-          throw e;
-        }
-      }
+      contract = await createIssuance(artwork, domain, tx);
 
       try {
         success = await signAndBroadcast();

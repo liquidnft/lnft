@@ -1,6 +1,5 @@
 const { api, hasura, electrs, registry } = require("./api");
 const { formatISO } = require("date-fns");
-const { unblind } = require("./wallet");
 const reverse = require("buffer-reverse");
 
 const setConfirmed = `
@@ -171,7 +170,6 @@ app.get("/transactions", auth, async (req, res) => {
         id
         address
         multisig
-        blindkey
       } 
     }`;
 
@@ -203,19 +201,6 @@ app.get("/transactions", auth, async (req, res) => {
         let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
 
         if ([user.address, user.multisig].includes(a)) {
-          if (!asset) {
-            hex = await electrs.url(`/tx/${txid}/hex`).get().text();
-            try {
-              ({ asset, value, address: a } = await unblind(
-                hex,
-                vout,
-                Buffer.from(user.blindkey, "hex")
-              ));
-
-              asset = reverse(asset).toString("hex");
-            } catch (e) {}
-          }
-
           if (asset) {
             total[asset]
               ? (total[asset] -= parseInt(value))
@@ -228,22 +213,6 @@ app.get("/transactions", auth, async (req, res) => {
         let { asset, value, scriptpubkey_address: a } = vout[k];
 
         if ([user.address, user.multisig].includes(a)) {
-          if (!asset) {
-            hex = await electrs
-              .url(`/tx/${txid}/hex`)
-              .get()
-              .text()
-              .catch(console.log);
-            try {
-              ({ asset, value, address: a } = await unblind(
-                hex,
-                k,
-                Buffer.from(user.blindkey, "hex")
-              ));
-              asset = reverse(asset).toString("hex");
-            } catch (e) {}
-          }
-
           if (asset) {
             total[asset]
               ? (total[asset] += parseInt(value))

@@ -2,7 +2,7 @@ import decode from "jwt-decode";
 import { operationStore, query } from "@urql/svelte";
 
 let fields =
-  "id, username, location, bio, email, full_name, website, twitter, instagram, avatar_url, address, multisig, pubkey, confidential";
+  "id, username, location, bio, email, full_name, website, twitter, instagram, avatar_url, address, multisig, pubkey";
 
 let privateFields = "is_artist, mnemonic, wallet_initialized, is_admin, info";
 
