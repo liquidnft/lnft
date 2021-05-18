@@ -90,19 +90,21 @@
         <label
           class="mb-2 font-medium text-gray-600"
           for="first_name">Email</label>
-        <input placeholder="Email" bind:value={email} bind:this={ref} />
+        <input id="email" name="email" placeholder="Email" bind:value={email} bind:this={ref} />
       </div>
       <div class="flex flex-col mb-4">
         <label
           class="mb-2 font-medium text-gray-600"
           for="first_name">Username</label>
-        <input placeholder="Username" bind:value={username} />
+        <input id="username" name="username" placeholder="Username" bind:value={username} />
       </div>
       <div class="flex flex-col mb-4">
         <label
           class="mb-2 font-medium text-gray-600"
           for="last_name">Password</label>
         <input
+          id="password"
+          name="password"
           placeholder="At least 8 characters."
           type="password"
           bind:value={password} />
