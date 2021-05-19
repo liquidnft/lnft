@@ -118,12 +118,13 @@
       await requirePassword();
       contract = await createIssuance(artwork, domain, tx);
 
+      await new Promise((r) => setTimeout(r, 5000));
       try {
         success = await signAndBroadcast();
         break;
       } catch (e) {
         error = e.message;
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 5000));
       }
     }
 

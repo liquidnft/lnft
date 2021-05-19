@@ -371,7 +371,7 @@ export const broadcast = async () => {
   let tx = get(psbt).extractTransaction();
   let hex = tx.toHex();
 
-  electrs.middlewares([retry()]).url("/tx").body(hex).post().text();
+  electrs.url("/tx").body(hex).post().text();
 };
 
 export const signAndBroadcast = async () => {
