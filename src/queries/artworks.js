@@ -3,7 +3,6 @@ import { fields as txfields } from "./transactions";
 const fields = `
   id,
   asset
-  contract
   edition
   editions
   title
