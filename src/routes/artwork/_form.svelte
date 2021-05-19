@@ -5,11 +5,15 @@
   import { tick } from "svelte";
   import Select from "svelte-select";
   import { mutation, subscription, operationStore } from "@urql/svelte";
+  import { onMount } from "svelte";
 
+  export let artwork;
   export let title;
-  let loading;
-  let timer;
+
+  let input, items, loading, timer;
+
   const debounce = (v) => {
+    console.log(v);
     loading = true;
     artwork.title = v;
     artwork.ticker = "";
@@ -20,9 +24,9 @@
     }, 550);
   };
 
-  export let artwork;
-  let input;
-  let items;
+  onMount(() => {
+    if (artwork.title) input.value = artwork.title;
+  });
 
   $: focus($page);
   export let focus = (p) => p && tick().then(() => input && input.select());
@@ -108,6 +112,7 @@
       placeholder="How would you describe it?"
       bind:value={artwork.description} />
   </div>
+  {#if !artwork.id}
   <div class="flex flex-col mb-6">
     <div class="mb-0">
       <label class="flex">
@@ -126,6 +131,7 @@
     </div>
     <input class="w-1/2" bind:value={artwork.ticker} maxlength="5" />
   </div>
+{/if}
   <div class="flex flex-col mb-6">
     <label>Tags
       <span class="text-gray-400">(e.g. Abstract, monochromatic, etc)</span></label>

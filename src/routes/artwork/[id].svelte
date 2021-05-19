@@ -350,6 +350,14 @@
               class="block text-center text-sm secondary-btn w-full"
               class:disabled>List</a>
           </div>
+          {#if $user.id === artwork.artist_id}
+          <div class="w-full mb-2">
+            <a
+              href={`/artwork/${id}/edit`}
+              class="block text-center text-sm secondary-btn w-full"
+              class:disabled>Edit</a>
+          </div>
+        {/if}
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
             <button

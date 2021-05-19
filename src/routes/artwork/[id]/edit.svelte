@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import { page } from "$app/stores";
   import Form from "../_form";
@@ -16,6 +18,7 @@
   let artwork;
   subscription(operationStore(getArtwork(id)), (a, b) => {
     artwork = b.artworks_by_pk;
+    console.log(artwork);
   });
 
   const updateArtwork$ = mutation(updateArtwork);
@@ -45,10 +48,19 @@
   };
 </script>
 
-<div class="container mx-auto px-8">
-  <div class="w-full xl:w-1/3 mx-auto">
+<div class="container mx-auto md:p-20">
+  <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
     {#if artwork}
-      <Form bind:artwork on:submit={update} />
+      <a class="block mb-6 text-midblue" href={`/a/${artwork.slug}`}>
+        <div class="flex">
+          <Fa icon={faChevronLeft} class="my-auto mr-1" />
+          <div>Back</div>
+        </div>
+      </a>
+    {/if}
+    <h2>Edit artwork</h2>
+    {#if artwork}
+      <Form bind:artwork title={artwork.title} on:submit={update} />
     {/if}
   </div>
 </div>
