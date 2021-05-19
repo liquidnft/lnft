@@ -148,7 +148,9 @@
       </div>
     {/if}
     {#if loading}
-      <ProgressLinear />
+      <div class="my-8">
+        <ProgressLinear />
+      </div>
     {:else}
       <div class="mb-2 flex justify-center flex-col">
         <div class="flex mb-2">
