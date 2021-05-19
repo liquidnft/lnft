@@ -31,17 +31,26 @@ app.post("/login", async (req, res) => {
     }
   }`;
 
-  let users = await hasura.post({ query, variables: { email } }).json();
-  email = users.data.users[0].display_name;
-
   try {
+    let user;
+    let { data } = await hasura.post({ query, variables: { email } }).json();
+
+    if (data && data.users && data.users.length) {
+      user = data.users[0];
+      email = data.users[0].display_name;
+    } else {
+      throw new Error();
+    } 
+
     let response = await hbp.url("/auth/login").post({ email, password }).res();
     Array.from(response.headers.entries()).forEach(([k, v]) =>
       res.header(k, v)
     );
     res.send(await response.json());
   } catch (e) {
-    res.code(401).send("Login failed");
+    let msg = "Login failed";
+    if (e.message.includes("activated")) msg = "Account not activated, check email for a confirmation link";
+    res.code(401).send(msg);
   }
 });
 
@@ -124,6 +133,10 @@ app.get("/activate", async (req, res) => {
 
 app.post("/change-password", async (req, res) => {
   const { new_password, ticket } = req.body;
-  res.send(await hbp.url("/auth/change-password/change").post({ new_password, ticket }).res());
+  res.send(
+    await hbp
+      .url("/auth/change-password/change")
+      .post({ new_password, ticket })
+      .res()
+  );
 });
-

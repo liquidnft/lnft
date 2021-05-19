@@ -102,7 +102,9 @@ export const login = (email, password) => {
       prompt.set(false);
       goto("/landing");
     })
-    .catch(() => err("Login failed"));
+    .catch(() => {
+      err("Login failed")
+    });
 };
 
 export const activate = (ticket) => {
