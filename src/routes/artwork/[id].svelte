@@ -405,7 +405,7 @@
           {#if artwork.reserve_price}
             <div class="my-2">
               <div class="text-sm mt-auto">Reserve Price</div>
-              <div class="flex-1 text-lg">{artwork.reserve_price} {ticker}</div>
+              <div class="flex-1 text-lg">{val(artwork.reserve_price)} {ticker}</div>
             </div>
           {/if}
           {#if artwork.bid[0].amount}
