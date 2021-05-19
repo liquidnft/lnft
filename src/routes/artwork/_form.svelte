@@ -13,7 +13,6 @@
   let input, items, loading, timer;
 
   const debounce = (v) => {
-    console.log(v);
     loading = true;
     artwork.title = v;
     artwork.ticker = "";
