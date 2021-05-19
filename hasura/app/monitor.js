@@ -128,22 +128,52 @@ const query = `
   }
 `;
 
-setInterval(() => hasura.post({ query }).json(confirmTransactions).catch(console.log), 2000);
+setInterval(
+  () => hasura.post({ query }).json(confirmTransactions).catch(console.log),
+  2000
+);
 
 proofs = {};
 app.post("/asset/register", async (req, res) => {
-  let { asset_id, contract } = req.body;
-  proofs[asset_id] = true;
+  let { asset } = req.body;
+  proofs[asset] = true;
+
+  let query = `query transactions($asset: String!) {
+    transactions(where: {
+      _and: [{
+          artwork: {
+            asset: { _eq: $asset }
+          }
+        },
+        {
+          type: {
+            _eq: "creation"
+          }
+        }
+      ]
+    }) {
+      contract
+    } 
+  }`;
 
   try {
-    res.send(
-      await registry
-        .post({
-          asset_id,
-          contract: JSON.parse(contract),
-        })
-        .json()
-    );
+    let r = await hasura
+      .post({ query, variables: { asset } })
+      .json()
+      .catch(console.log);
+
+    if (!r.data) throw new Error();
+
+    let { contract } = r.data.transactions[0];
+
+    r = await registry
+      .post({
+        asset_id: asset,
+        contract: JSON.parse(contract),
+      })
+      .json();
+
+    res.send(r);
   } catch (e) {
     res.code(500).send(`Asset registration failed ${e.message}`);
   }

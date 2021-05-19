@@ -273,8 +273,7 @@
         asking_asset,
         auction_start,
         auction_end,
-        contract,
-        asset: asset_id,
+        asset,
         description,
         filename,
         reserve_price,
@@ -308,10 +307,7 @@
 
       api
         .url("/asset/register")
-        .post({
-          asset_id,
-          contract,
-        })
+        .post({ asset })
         .json()
         .catch(console.log);
 
