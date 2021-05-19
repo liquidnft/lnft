@@ -1,6 +1,7 @@
 const { api, hasura, electrs, registry } = require("./api");
 const { formatISO } = require("date-fns");
 const reverse = require("buffer-reverse");
+const fs = require("fs");
 
 const setConfirmed = `
   mutation setConfirmed($id: uuid!) {
@@ -133,10 +134,16 @@ setInterval(
   2000
 );
 
-proofs = {};
 app.post("/asset/register", async (req, res) => {
   let { asset } = req.body;
+
+  let proofs = {};
+  try {
+    proofs = require('./proofs.json');
+  } catch(e) {};
+
   proofs[asset] = true;
+  fs.writeFileSync('proofs.json', JSON.stringify(proofs));
 
   let query = `query transactions($asset: String!) {
     transactions(where: {
@@ -180,6 +187,11 @@ app.post("/asset/register", async (req, res) => {
 });
 
 app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
+  let proofs = {};
+  try {
+    proofs = require('./proofs.json');
+  } catch(e) {};
+
   let {
     headers: { host },
     params: { asset },

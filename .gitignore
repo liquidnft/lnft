@@ -19,3 +19,4 @@ hasura/data/nginx/.lapasswd
 hasura/gdk-server/__pycache__
 hasura/ipfs
 hasura/ghost-data
+hasura/app/proofs.json
