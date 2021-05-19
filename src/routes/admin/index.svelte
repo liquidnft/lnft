@@ -1,19 +1,21 @@
 <script>
-  import { onDestroy } from "svelte";
+  import { tick, onDestroy } from "svelte";
   import { page } from "$app/stores";
   import ArtworkMedia from "$components/ArtworkMedia";
   import { query, mutation, operationStore, subscription } from "@urql/svelte";
   import { getSamples, updateUser } from "$queries/users";
-  import { role } from "$lib/store";
+  import { role, user } from "$lib/store";
   import { api } from "$lib/api";
-  import { info } from "$lib/utils";
+  import { goto, info } from "$lib/utils";
+  import { requireLogin } from "$lib/auth";
 
   let users = [];
   let samples;
 
   $: pageChange($page);
   let pageChange = async () => {
-    if (!$user.is_admin) goto('/market');
+    await requireLogin();
+    if (!($user.is_admin)) goto('/market');
     $role = "approver";
     samples = operationStore(getSamples);
     samples.subscribe((res) => {

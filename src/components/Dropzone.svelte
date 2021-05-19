@@ -101,8 +101,13 @@
     </form>
   </div>
 {:else}
-  <a on:click={open} class="secondary-color cursor-pointer">{title}
-    <Fa icon={faCloudUploadAlt} />
+  <a on:click={open} class="secondary-color cursor-pointer">
+    <div class="flex">
+      <div>{title}</div>
+      <div class="ml-1 my-auto">
+        <Fa icon={faCloudUploadAlt} />
+      </div>
+    </div>
   </a>
   <form class="text-center invisible">
     <div class="flex justify-center flex-col align-center h-full">

@@ -150,7 +150,7 @@
 </style>
 
 <div class="container mx-auto py-20">
-  {#if form}
+  {#if form && $user}
     <div
       class="mb-4 w-full max-w-5xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row bg-white">
       <a class="block mb-6 text-midblue" href={`/u/${$user.username}`}>
