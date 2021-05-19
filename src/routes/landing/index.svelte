@@ -10,7 +10,7 @@
   import { getRecentActivity, getLatestPieces } from "$queries/transactions";
 
   const requestPolicy = "cache-and-network";
-  let featuredArtworkId = "shadow-self-7897c";
+  let featuredArtworkId = "strikes-twice-1-7cfba";
 
   let artists = [];
   query(operationStore(topArtists(3), {}, { requestPolicy })).subscribe(
