@@ -100,7 +100,7 @@ export const login = (email, password) => {
       window.sessionStorage.setItem("token", t);
       pw.set(password);
       prompt.set(false);
-      goto("/landing");
+      goto("/");
     })
     .catch(() => {
       err("Login failed")
