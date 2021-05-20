@@ -15,9 +15,8 @@
   import { getUserById } from "$queries/users";
   import { createFollow, deleteFollow } from "$queries/follows";
   import Menu from "./_menu";
-  import { query, mutation, subscription, operationStore } from "@urql/svelte";
+  import { query, mutation, operationStore } from "@urql/svelte";
   import { fade } from "svelte/transition";
-  import { requireLogin } from "$lib/auth";
 
   export let id;
   export let subject;
@@ -111,8 +110,8 @@
 </style>
 
 <div class="container mx-auto lg:px-16 mt-5 md:mt-20">
-  {#if $user && subject}
-    <div class="flex justify-between flex-wrap" in:fade>
+  {#if subject}
+    <div class="flex justify-between flea-wrap" in:fade>
       <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
         <div>
           <div class="flex flex-col">
@@ -184,7 +183,7 @@
             <p>{subject.bio}</p>
           {/if}
           <div>
-            {#if $user.id === subject.id}
+            {#if $user && $user.id === subject.id}
               <Menu />
             {:else}
               <button class="p-2 primary-btn follow mt-8" on:click={follow}>
@@ -207,7 +206,7 @@
             on:click={() => (tab = 'collection')}>
             Collection
           </div>
-          {#if $user.id === id}
+          {#if $user && $user.id === id}
             <div
               class:hover={tab === 'offers'}
               on:click={() => (tab = 'offers')}>

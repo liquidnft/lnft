@@ -21,7 +21,7 @@
   import { setupUrql } from "$lib/urql";
   import { mutation, subscription, query, operationStore } from "@urql/svelte";
   import { page } from "$app/stores";
-  import { requireLogin, refreshToken, requirePassword } from "$lib/auth";
+  import { refreshToken } from "$lib/auth";
   import InsufficientFunds from "$components/InsufficientFunds";
   import { etag, publicPages, err, info } from "$lib/utils";
   import { createWallet } from "$lib/wallet";

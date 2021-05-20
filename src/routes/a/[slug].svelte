@@ -11,14 +11,16 @@
   $: update($page.params.slug, $token);
   let update = async (slug) => {
     if (!slug) return;
-    artwork = (
-      await hasura
-        .auth(`Bearer ${$token}`)
-        .post({
-          query: getArtworkBySlug($page.params.slug),
-        })
-        .json()
-    ).data.artworks[0];
+    let h = $token ? hasura.auth(`Bearer ${$token}`) : hasura;
+
+    let result = await h
+      .post({
+        query: getArtworkBySlug($page.params.slug),
+      })
+      .json();
+
+    if (result.data) artwork = result.data.artworks[0];
+    else console.log(result);
   };
 </script>
 

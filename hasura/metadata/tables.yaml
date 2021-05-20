@@ -261,7 +261,12 @@
       - favorited
       - last_active
       - num_favorites
-      filter: {}
+      filter:
+        _or:
+        - asking_asset:
+            _is_null: false
+        - transferred_at:
+            _is_null: false
   - role: user
     permission:
       columns:

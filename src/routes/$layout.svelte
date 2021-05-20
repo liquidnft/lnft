@@ -30,29 +30,24 @@
 </script>
 
 <style global src="../main.css" />
-
 <svelte:window bind:scrollY={y} />
 
 <Snack />
 
 {#if ready}
-  {#if $user || !publicPages.includes($page.path.split('/')[1])}
-    <Sidebar bind:open />
-    <div class={y > 50 ? 'sticky' : ''} in:fade>
-      <Navbar bind:sidebar={open} />
-    </div>
-    <Dialog />
-  {/if}
+  <Sidebar bind:open />
+  <div class={y > 50 ? 'sticky' : ''} in:fade>
+    <Navbar bind:sidebar={open} />
+  </div>
+  <Dialog />
 
   <main>
     <div class="mx-auto min-h-screen">
       <App>
-        <slot/>
+        <slot />
       </App>
     </div>
   </main>
 
-  {#if !['/', '/login', '/register'].includes($page.path)}
-    <Footer />
-  {/if}
+  <Footer />
 {/if}
