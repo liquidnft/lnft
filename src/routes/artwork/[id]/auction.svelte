@@ -288,12 +288,12 @@
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
 
-      await updateArtwork$({
+      let result = await updateArtwork$({
         artwork: {
           list_price: sats(artwork.asking_asset, list_price),
           list_price_tx,
           auction_release_tx,
-          reserve_price,
+          reserve_price: sats(artwork.asking_asset, reserve_price),
           auction_start,
           auction_end,
           asking_asset,
@@ -305,11 +305,14 @@
         id,
       });
 
-      api
-        .url("/asset/register")
-        .post({ asset })
-        .json()
-        .catch(console.log);
+      console.log(result);
+      if (result.error) {
+        throw new Error(
+          `Problem updating artwork record ${result.error.message}`
+        );
+      }
+
+      api.url("/asset/register").post({ asset }).json().catch(console.log);
 
       goto(`/a/${artwork.slug}`);
     } catch (e) {
@@ -338,7 +341,10 @@
     }
   };
 
-  $: listingCurrencies = artwork && artwork.transferred_at ? Object.keys(tickers) : [...Object.keys(tickers), undefined]
+  $: listingCurrencies =
+    artwork && artwork.transferred_at
+      ? Object.keys(tickers)
+      : [...Object.keys(tickers), undefined];
 </script>
 
 <style>
@@ -428,7 +434,7 @@
         <div class="flex flex-col mt-4">
           <p>Listing currency</p>
           <div class="flex flex-wrap">
-            {#each  listingCurrencies as asset}
+            {#each listingCurrencies as asset}
               <label class="ml-2 mr-6 flex items-center">
                 <input
                   class="form-radio h-6 w-6 mt-4 mr-2"
@@ -438,7 +444,9 @@
                   bind:group={artwork.asking_asset}
                   on:change={clearPrice}
                   disabled={auction_underway} />
-                <p class="mb-2 whitespace-nowrap">{asset ? assetLabel(asset) : 'Unlisted'}</p>
+                <p class="mb-2 whitespace-nowrap">
+                  {asset ? assetLabel(asset) : 'Unlisted'}
+                </p>
               </label>
             {/each}
           </div>
@@ -453,11 +461,14 @@
                     <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
                   </i>
                   <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                    Setting a listing price will create a partially signed
-                    atomic swap transaction, allowing potential collectors to
+                    Setting a price is optional. If you set one, your wallet
+                    will generate a partially signed atomic swap transaction. If
+                    you run an auction, this price will be the "buy it now" or
+                    buyout price that lets people skip the bidding process and
                     immediately purchase the artwork.
                     <br /><br />
                     Changing the price involves sending an on-chain cancellation
+                    transaction to invalidate your half of the atomic swap
                     transaction and will incur a transaction fee.
                   </span>
                 </span></label>
@@ -482,8 +493,8 @@
                     <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
                       Setting a royalty involves transferring the artwork to a
                       2-of-2 multisig address with Raretoshi. Our server will
-                      co-sign on transfers if they pay the specified royalty
-                      to the original artist.
+                      co-sign on transfers if they pay the specified royalty to
+                      the original artist.
                     </span>
                   </span></label>
                 <input

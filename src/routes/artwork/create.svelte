@@ -114,22 +114,14 @@
 
     let error, success;
 
-    for (let i = 0; i < 1; i++) {
-      await requirePassword();
+    await requirePassword();
+
+    try {
       contract = await createIssuance(artwork, domain, tx);
 
-      await new Promise((r) => setTimeout(r, 5000));
-      try {
-        success = await signAndBroadcast();
-        break;
-      } catch (e) {
-        error = e.message;
-        await new Promise((r) => setTimeout(r, 5000));
-      }
-    }
-
-    if (!success) {
-      throw new Error("Issuance failed: " + error);
+      success = await signAndBroadcast();
+    } catch (e) {
+      throw new Error("Issuance failed: " + e.message);
     }
 
     tx = success.extractTransaction();
@@ -241,7 +233,10 @@
       if (artwork.editions > 1) $prompt = Issuing;
 
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
-        if ($edition > 1) artwork.ticker = tickers[$edition - 1];
+        if ($edition > 1) {
+          artwork.ticker = tickers[$edition - 1];
+          await new Promise((r) => setTimeout(r, 5000));
+        }
         artwork.ticker = artwork.ticker.toUpperCase();
 
         let contract = await issue();

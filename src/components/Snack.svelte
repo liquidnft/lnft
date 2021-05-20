@@ -19,10 +19,10 @@
 
 <style>
   .snack-container {
-    @apply fixed z-20 mt-6;
+    @apply fixed z-20 mt-10;
     width: 300px;
     right: 10%;
-    top: 3em;
+    top: 3.25em;
   }
 
   .snack {

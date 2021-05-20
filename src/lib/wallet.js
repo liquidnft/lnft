@@ -231,9 +231,11 @@ const fund = async (
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
 
-  utxos = shuffle(utxos.filter(
-    (o) => o.asset === asset && (o.asset !== btc || o.value > DUST)
-  ));
+  utxos = shuffle(
+    utxos.filter(
+      (o) => o.asset === asset && (o.asset !== btc || o.value > DUST)
+    )
+  );
 
   let i = 0;
   let total = 0;
@@ -371,7 +373,17 @@ export const broadcast = async () => {
   let tx = get(psbt).extractTransaction();
   let hex = tx.toHex();
 
-  electrs.url("/tx").body(hex).post().text();
+  electrs
+    .url("/tx")
+    .middlewares([
+      retry({
+        delayTimer: 6000,
+        maxAttempts: 3,
+      }),
+    ])
+    .body(hex)
+    .post()
+    .text();
 };
 
 export const signAndBroadcast = async () => {
