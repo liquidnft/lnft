@@ -71,7 +71,7 @@ app.post("/liquid", auth, async (req, res) => {
 app.post("/lightning", auth, async (req, res) => {
   let { liquidAddress, amount } = req.body;
 
-  let text = await coinos.url("/lightning/invoice").post({ amount }).text();
+  let text = await coinos.url("/lightning/invoice").post({ amount: 0 }).text();
 
   await coinos
     .url("/invoice")
