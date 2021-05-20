@@ -9,7 +9,7 @@
     left: -100%;
     top: 0;
     transition: left 0.3s ease-in-out;
-    z-index: 10;
+    z-index: 20;
     background-color: white;
     
   }

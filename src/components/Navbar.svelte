@@ -32,7 +32,7 @@
 
     .mobileSearch {
       display: block;
-      font-size: 28px;
+      font-size: 20px;
     }
 
     nav {

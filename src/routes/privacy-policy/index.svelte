@@ -9,6 +9,12 @@
   p,
   h3 {
     @apply mb-4;
+    text-align: left;
+  }
+
+  h4{
+    font-weight: bold;
+    margin: 20px 0 10px 0;
   }
 
   .faq-content {
@@ -27,12 +33,19 @@
     font-size: 22px;
     border-radius: 10px;
   }
-  .contact h5 {
-    margin-bottom: 10px;
-  }
 
   .contact a {
     color: #3ba5ac;
+  }
+
+  ul{
+    list-style: disc;
+    padding: 0 20px;
+  }
+
+  ul li{
+    margin-bottom: 20px;
+    text-align: left;
   }
 
   @media only screen and (max-width: 1023px) {
@@ -49,14 +62,8 @@
   }
 </style>
 
-<div class="max-w-2xl container mx-auto sm:justify-between mt-10 md:mt-20">
+<div class="max-w-4xl container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
-    <a href="/" class="text-midblue">
-      <div class="flex mb-8">
-        <Fa icon={faChevronLeft} class="my-auto mr-1" />
-        <div>Back</div>
-      </div>
-    </a>
     <h2 class="mb-10">Raretoshi Privacy Policy</h2>
     <div class="faq-content">
       <div class="faq">
@@ -70,7 +77,7 @@
           bound by the terms and conditions described in this document and also
           by any terms and conditions incorporated by reference.
         </p>
-        <h3>1. SCOPE AND DEFINITIONS</h3>
+        <h3>1. Scope of definitions</h3>
         <p>
           This Privacy Policy applies to all information (including personal
           information) collected through our sites.
@@ -105,7 +112,7 @@
           in your country. By providing your data, you consent to such transfer.
         </p>
 
-        <h3>2. WHAT INFORMATION DO WE COLLECT?</h3>
+        <h3>2. What information do we collect?</h3>
 
         <h4>Active Collection of Information</h4>
 
@@ -185,7 +192,7 @@
           support@raretoshi.com.
         </p>
 
-        <h3>3. WHAT DO WE USE THIS INFORMATION FOR?</h3>
+        <h3>3. What do we use this information for?</h3>
         <p>
           We use web visit information to measure interest in and develop
           Raretoshi and marketing plans, customize the content you view on your
@@ -201,7 +208,7 @@
           services when you sign up on our Platform.
         </p>
 
-        <h3>4. DISCLOSURE OF PERSONAL INFORMATION</h3>
+        <h3>4. Disclosure of personal information</h3>
 
         <p>
           Personal information we gather is for internal use only. We will not
@@ -226,7 +233,7 @@
             Copyright Act
           </li>
         </ul>
-        <h3>5. SECURITY OF YOUR INFORMATION</h3>
+        <h3>5. Security of your information</h3>
         <p>
           We use various security measures to protect your personal information
           (including preventing the loss, misuse, unauthorized access,
@@ -236,14 +243,14 @@
           third-party we work with. However, we cannot guarantee the absolute
           security and safety of your Personal Information.
         </p>
-        <h3>6. INQUIRIES OR COMPLAINTS</h3>
+        <h3>6. Inquiries or complaints</h3>
         <p>
           If you have a question or complaint about this Privacy Policy or our
           information collection practices, please contact us at
           support@raretoshi.com.
         </p>
 
-        <h3>7. CHANGES</h3>
+        <h3>7. Changes</h3>
 
         <p>
           We may change this Privacy Policy from time to time. If we make a
@@ -255,7 +262,7 @@
           subject to the updated Privacy Policy.
         </p>
 
-        <p class="w-full text-center">
+        <p class="w-full text-center italic mt-10">
           This Privacy Policy was last updated on May 19th, 2021.
         </p>
       </div>
