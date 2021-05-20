@@ -9,6 +9,7 @@ if (process.env.LIQUID_ELECTRS_URL.includes("blockstream")) {
 }
 
 const btc = network.assetHash;
+  const fee = 100;
 
 app.post("/bitcoin", auth, async (req, res) => {
   let network = "bitcoin";
@@ -20,19 +21,12 @@ app.post("/bitcoin", auth, async (req, res) => {
     .get()
     .json();
 
-  let { tx } = await coinos
-    .url("/liquid/fee")
-    .post({ address: liquidAddress, asset: btc, amount, feeRate: 100 })
-    .json();
-
-  let fee = Math.round(100000000 * tx.fee);
   amount += fee;
 
   await coinos
     .url("/invoice")
     .post({
       liquidAddress,
-      tx,
       invoice: {
         address,
         network,
@@ -55,19 +49,12 @@ app.post("/liquid", auth, async (req, res) => {
     .get()
     .json();
 
-  let { tx } = await coinos
-    .url("/liquid/fee")
-    .post({ address: liquidAddress, asset: btc, amount, feeRate: 100 })
-    .json();
-
-  let fee = Math.round(100000000 * tx.fee);
   amount += fee;
 
   await coinos
     .url("/invoice")
     .post({
       liquidAddress,
-      tx,
       invoice: {
         unconfidential: address,
         address: confidentialAddress,
@@ -84,13 +71,6 @@ app.post("/liquid", auth, async (req, res) => {
 app.post("/lightning", auth, async (req, res) => {
   let { liquidAddress, amount } = req.body;
 
-  let { tx } = await coinos
-    .url("/liquid/fee")
-    .post({ address: liquidAddress, asset: btc, amount, feeRate: 1000 })
-    .json()
-    .catch(console.log);
-
-  let fee = Math.round(100000000 * tx.fee);
   amount += fee;
 
   let text = await coinos.url("/lightning/invoice").post({ amount }).text();
