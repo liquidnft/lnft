@@ -148,7 +148,7 @@
     <p>Strikes Twice</p>
     <button
       class="button-transparent header-button border mt-10"
-      on:click={() => goto(`/artwork/${featuredArtworkId}`)}>
+      on:click={() => goto(`/a/${featuredArtworkId}`)}>
       View Artwork</button>
   </div>
 
