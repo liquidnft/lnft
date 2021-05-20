@@ -111,7 +111,7 @@
 
 <div class="container mx-auto lg:px-16 mt-5 md:mt-20">
   {#if subject}
-    <div class="flex justify-between flea-wrap" in:fade>
+    <div class="flex justify-between flex-wrap" in:fade>
       <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
         <div>
           <div class="flex flex-col">
