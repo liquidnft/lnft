@@ -79,7 +79,6 @@ app.post("/lightning", auth, async (req, res) => {
     .url("/invoice")
     .post({
       liquidAddress,
-      tx,
       invoice: {
         network: "lightning",
         text,
