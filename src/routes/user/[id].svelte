@@ -183,11 +183,13 @@
             <p>{subject.bio}</p>
           {/if}
           <div>
-            {#if $user && $user.id === subject.id}
-              <Menu />
-            {:else}
-              <button class="p-2 primary-btn follow mt-8" on:click={follow}>
-                {subject.followed ? 'Unfollow' : 'Follow'}</button>
+            {#if $user}
+              {#if $user.id === subject.id}
+                <Menu />
+              {:else}
+                <button class="p-2 primary-btn follow mt-8" on:click={follow}>
+                  {subject.followed ? 'Unfollow' : 'Follow'}</button>
+              {/if}
             {/if}
           </div>
         </div>
