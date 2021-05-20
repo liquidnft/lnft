@@ -104,6 +104,12 @@
   let liquid = async () => {
     tab = "liquid";
     fee = 0;
+
+    if (!confidential) {
+      address = $user.address;
+      return;
+    }
+
     loading = true;
     try {
       ({ address, fee } = await api
