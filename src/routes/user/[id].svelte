@@ -232,7 +232,7 @@
                 <div class="mx-auto">No creations yet</div>
               {/each}
             </div>
-            <div class="w-3/4 md:w-1/3 mx-auto mb-4 mt-14">
+            <div class="w-full max-w-sm mx-auto mb-4 mt-14">
               {#if $user && $user.is_artist && $user.id === subject.id}
                 <a href="/artwork/create" class="primary-btn">Submit a new
                   artwork</a>

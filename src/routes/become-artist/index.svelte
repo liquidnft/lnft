@@ -222,7 +222,7 @@
                 class="primary-btn">Submit profile</button>
             </div>
           </form>
-          <div class="w-1/2">
+          <div class="mb-10 w-full sm:w-1/2">
             {#each files as file}
               <div class="ml-2 flex mb-2">
                 <div>
