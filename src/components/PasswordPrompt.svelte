@@ -8,8 +8,9 @@
 
   let attempt = "";
   let input;
+  let loaded;
 
-  let focus = (p) => p && tick().then(() => input.select());
+  let focus = (p) => !loaded && p && tick().then(() => input.select() && (loaded = true));
   $: focus($prompt);
 
   export let submit = (e) => {
