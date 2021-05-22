@@ -111,7 +111,7 @@
 
 <div class="container mx-auto lg:px-16 mt-5 md:mt-20">
   {#if subject}
-    <div class="flex justify-between flea-wrap" in:fade>
+    <div class="flex justify-between flex-wrap" in:fade>
       <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
         <div>
           <div class="flex flex-col">
@@ -232,7 +232,7 @@
                 <div class="mx-auto">No creations yet</div>
               {/each}
             </div>
-            <div class="w-3/4 md:w-1/3 mx-auto mb-4 mt-14">
+            <div class="w-full max-w-sm mx-auto mb-4 mt-14">
               {#if $user && $user.is_artist && $user.id === subject.id}
                 <a href="/artwork/create" class="primary-btn">Submit a new
                   artwork</a>
