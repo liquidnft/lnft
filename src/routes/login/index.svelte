@@ -17,7 +17,7 @@
   $: if (usernameInput) pageChange($page);
 
   $: if ($user) {
-    if ($user.wallet_initialized) goto('/landing');
+    if ($user.wallet_initialized) goto('/');
     else goto('/wallet/setup');
   } 
 </script>
