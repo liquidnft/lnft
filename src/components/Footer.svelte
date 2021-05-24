@@ -3,7 +3,7 @@
     <div
       class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first">
       <a href="/"><img src="/logo-white.svg" alt="logo" class="w-48" /></a>
-      <p class="mt-4">@2021 Raretoshi</p>
+      <p class="mt-4">&copy;2021 Raretoshi</p>
     </div>
     <div class="w-full lg:w-1/4 mb-10">
       <h4 class="font-bold mb-4">Follow US</h4>
