@@ -42,11 +42,12 @@
   };
 
   let fee = 0;
-  let loading;
+  let loading, explainer;
   let bitcoin = async () => {
     tab = "bitcoin";
     fee = 0;
     loading = true;
+    explainer = true;
     try {
       ({ address, fee } = await api
         .url("/bitcoin")
@@ -68,8 +69,11 @@
 
     if (!confidential) {
       address = $user.address;
+      explainer = false;
       return;
     }
+
+    explainer = true;
 
     loading = true;
     try {
@@ -91,6 +95,7 @@
     tab = "lightning";
     fee = 0;
     loading = true;
+    explainer = true;
     try {
       ({ address, fee } = await api
         .url("/lightning")
@@ -142,6 +147,35 @@
         <Fa icon={faTimes} />
       </button>
     </div>
+
+    {#if explainer}
+      <p class="text-sm my-4">
+        L-BTC and other liquid assets can be sent directly to your
+        non-confidential liquid address.
+      </p>
+
+      <p class="text-sm my-4">
+        Funding through a confidential address, bitcoin address, or lightning
+        invoice can be achieved by converting to non-confidential L-BTC through
+        <a href="https://coinos.io" style="color: #6ed8e0">coinos.io</a>
+        and will be handled automatically if you select one of these options.
+      </p>
+
+      <p class="text-sm my-4">
+        Liquid and bitcoin deposits require one on-chain confirmation before
+        they will be converted. No pending deposit indication will be shown
+        while the conversion is underway. The minimum amount to convert is
+        0.00001 BTC and the maximum is 0.01 BTC.
+      </p>
+
+      <p class="text-sm my-4">
+        See
+        <a
+          href="https://help.blockstream.com/hc/en-us/articles/900000630846-How-do-I-get-Liquid-Bitcoin-L-BTC-"
+          style="color: #6ed8e0">this article</a>
+        for other methods of acquiring L-BTC.
+      </p>
+    {/if}
 
     {#if $asset === btc}
       <div
