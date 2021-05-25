@@ -64,6 +64,7 @@
 
     .menu a {
       margin: 25px 0 0 0px;
+      width: 100%;
     }
     .menu .search {
       margin: 40px 0 0 45px;
