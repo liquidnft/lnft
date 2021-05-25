@@ -1,6 +1,7 @@
 const { api, hasura } = require("./api");
-const { formatISO } = require("date-fns");
+const { formatISO, compareAsc, parseISO } = require("date-fns");
 const { combine, release, sign, broadcast } = require("./wallet");
+const { check } = require("./signing");
 
 const close = `mutation update_artwork($id: uuid!, $artwork: artworks_set_input!) {
   update_artworks_by_pk(
@@ -76,9 +77,12 @@ setInterval(async () => {
       let artwork = artworks[i];
 
       try {
-        if (!artwork.bid[0].psbt) throw new Error("No bid");
+        if (!artwork.bid[0].psbt || compareAsc(parseISO(artwork.bid[0].created_at), parseISO(artwork.auction_end))) throw new Error("No bid");
 
         let combined = combine(artwork.list_price_tx, artwork.bid[0].psbt);
+
+        await check(combined);
+
         let psbt = await sign(combined);
         await broadcast(psbt);
 
@@ -98,7 +102,7 @@ setInterval(async () => {
           })
           .json();
       } catch (e) {
-        if (artwork.royalty) return;
+        if (artwork.royalty) continue;
 
         try {
           let psbt = await sign(artwork.auction_release_tx);

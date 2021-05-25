@@ -282,7 +282,6 @@ app.get("/transactions", auth, async (req, res) => {
         let insert = await api(req.headers).post({ query }).json();
 
         if (!insert.data) {
-          console.log(insert);
           continue;
         } 
 

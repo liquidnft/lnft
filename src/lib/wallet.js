@@ -514,6 +514,14 @@ export const createIssuance = async (
 export const signOver = async ({ asset }, tx) => {
   let p = new Psbt();
 
+  if (!tx) {
+    console.log(multisig());
+    let utxos = await electrs.url(`/address/${multisig().address}/utxo`).get().json();
+    let prevout = utxos.find(o => o.asset === asset);
+    let hex = await getHex(prevout.txid);
+    tx = Transaction.fromHex(hex);
+  }
+
   let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
 
   p.addInput({
@@ -600,6 +608,9 @@ export const createSwap = async (
 
   let ms = !!(royalty || auction_end);
 
+  console.log("creating", ms, tx);
+  debugger;
+
   if (tx) {
     let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
 
@@ -639,8 +650,8 @@ export const createOffer = async (artwork, amount) => {
   if (asset === btc && amount < DUST)
     throw new Error(`Minimum bid is ${(DUST / 100000000).toFixed(8)} L-BTC`);
 
-  let out = singlesig();
   let ms = !!(auction_end || royalty);
+  let out = singlesig();
 
   let p = new Psbt().addOutput({
     asset,
@@ -669,7 +680,7 @@ export const createOffer = async (artwork, amount) => {
     p.addOutput({
       asset: artwork.asset,
       nonce: Buffer.alloc(1),
-      script: out.output,
+      script: royalty ? multisig().output : singlesig().output,
       value: 1,
     });
 

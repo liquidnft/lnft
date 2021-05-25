@@ -51,23 +51,32 @@ app.get("/pubkey", async (req, res) => {
 
 app.post("/sign", auth, async (req, res) => {
   const userapi = wretch().url(`${HASURA_URL}/v1/graphql`).headers(req.headers);
-  const multisig = (
-    await hasura.post({ query: allMultisig }).json().catch(console.log)
-  ).data.users.map((u) => u.multisig);
 
   try {
     const { psbt } = req.body;
+
+    await check(psbt);
+
+    res.send({ base64: sign(psbt).toBase64() });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(e.message);
+  }
+});
+
+module.exports = {
+  async check(psbt) {
     const [txid, outputs] = parse(psbt);
+
+    const multisig = (
+      await hasura.post({ query: allMultisig }).json().catch(console.log)
+    ).data.users.map((u) => u.multisig);
+
     let variables = { assets: outputs.map((o) => o.asset) };
 
     let {
       data: { artworks },
     } = await hasura.post({ query, variables }).json();
-
-    let {
-      data: { currentuser },
-    } = await userapi.post({ query: userQuery }).json();
-    let user = currentuser[0];
 
     artworks.map(
       ({
@@ -117,10 +126,5 @@ app.post("/sign", auth, async (req, res) => {
         }
       }
     );
-
-    res.send({ base64: sign(psbt).toBase64() });
-  } catch (e) {
-    console.log(e);
-    res.status(500).send(e.message);
-  }
-});
+  },
+};

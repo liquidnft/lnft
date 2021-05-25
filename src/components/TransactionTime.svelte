@@ -58,7 +58,7 @@
         [accept]
       </a>
     {/if}
-    {#if ['creation', 'purchase', 'accept', 'royalty', 'auction', 'release', 'cancel'].includes(transaction.type) && !transaction.confirmed}
+    {#if ['creation', 'purchase', 'accept', 'royalty', 'auction', 'release', 'cancel'].includes(transaction.type) && !(transaction.type === 'auction' && transaction.artwork.royalty) && !transaction.confirmed}
       <span class="pending">Pending</span>
     {/if}
   </div>
