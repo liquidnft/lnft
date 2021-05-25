@@ -610,6 +610,9 @@ export const createSwap = async (
 
   let ms = !!(royalty || auction_end);
 
+  console.log("creating", ms, tx);
+  debugger;
+
   if (tx) {
     let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
 
