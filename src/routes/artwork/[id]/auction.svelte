@@ -221,7 +221,6 @@
         ).toBase64();
       }
 
-
       await createTransaction$({
         transaction: {
           amount: 1,
