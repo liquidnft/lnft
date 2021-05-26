@@ -410,6 +410,8 @@ export const executeSwap = async (artwork) => {
   let script = (royalty ? multisig() : singlesig()).output;
   let total = list_price;
 
+  fee.set(100);
+
   p.addOutput({
     asset,
     nonce: Buffer.alloc(1),
@@ -515,7 +517,6 @@ export const signOver = async ({ asset }, tx) => {
   let p = new Psbt();
 
   if (!tx) {
-    console.log(multisig());
     let utxos = await electrs.url(`/address/${multisig().address}/utxo`).get().json();
     let prevout = utxos.find(o => o.asset === asset);
     let hex = await getHex(prevout.txid);
@@ -534,7 +535,8 @@ export const signOver = async ({ asset }, tx) => {
   });
 
   psbt.set(p);
-  return sign(noneAnyoneCanPay);
+  sign(noneAnyoneCanPay);
+  return tx;
 };
 
 export const createRelease = async ({ asset, owner }, tx) => {
@@ -607,9 +609,6 @@ export const createSwap = async (
   });
 
   let ms = !!(royalty || auction_end);
-
-  console.log("creating", ms, tx);
-  debugger;
 
   if (tx) {
     let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
