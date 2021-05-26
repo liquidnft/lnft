@@ -206,19 +206,21 @@
       let base64, tx;
       if (artwork.royalty) {
         tx = await signOver(artwork, tx);
+        artwork.list_price_tx = $psbt.toBase64();
       } else {
         $psbt = await sendToMultisig(artwork);
         $psbt = await signAndBroadcast();
         base64 = $psbt.toBase64();
         tx = $psbt.extractTransaction();
+
         tx = (await signOver(artwork, tx));
+        artwork.list_price_tx = $psbt.toBase64();
 
         artwork.auction_release_tx = (
           await createRelease(artwork, tx)
         ).toBase64();
       }
 
-      artwork.list_price_tx = $psbt.toBase64();
 
       await createTransaction$({
         transaction: {
