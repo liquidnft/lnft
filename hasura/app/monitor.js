@@ -146,11 +146,13 @@ app.post("/asset/register", async (req, res) => {
 
   let proofs = {};
   try {
-    proofs = require('./proofs.json');
-  } catch(e) {};
+    proofs = JSON.parse(fs.readFileSync("./proofs.json"));
+  } catch (e) {
+    console.log(e);
+  }
 
   proofs[asset] = true;
-  fs.writeFileSync('proofs.json', JSON.stringify(proofs));
+  fs.writeFileSync("proofs.json", JSON.stringify(proofs));
 
   let query = `query transactions($asset: String!) {
     transactions(where: {
@@ -196,8 +198,10 @@ app.post("/asset/register", async (req, res) => {
 app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
   let proofs = {};
   try {
-    proofs = require('./proofs.json');
-  } catch(e) {};
+    proofs = JSON.parse(fs.readFileSync("./proofs.json"));
+  } catch (e) {
+    console.log(e);
+  }
 
   let {
     headers: { host },
@@ -290,7 +294,7 @@ app.get("/transactions", auth, async (req, res) => {
 
         if (!insert.data) {
           continue;
-        } 
+        }
 
         if (status.block_time) {
           query = `mutation {
