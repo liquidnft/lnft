@@ -104,7 +104,6 @@
 
   img,
   video {
-    @apply mx-auto;
     max-height: 70vh;
   }
 
