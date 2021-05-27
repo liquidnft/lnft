@@ -94,7 +94,7 @@
           <input class="w-full" type="password" bind:value={password} autocapitalize="off" />
         {/if}
         <button
-          class="absolute p-2 right-1 top-1"
+          class="absolute h-full px-3 right-0 top-0"
           type="button"
           on:click|preventDefault|stopPropagation={() => (show = !show)}>
           <Fa icon={show ? faEyeSlash : faEye} class="my-auto mr-1" />
