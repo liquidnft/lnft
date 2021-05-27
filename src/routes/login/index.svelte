@@ -1,4 +1,6 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
   import { err, goto } from "$lib/utils";
   import { api } from "$lib/api";
@@ -9,17 +11,19 @@
   import { login } from "$lib/auth";
   import { user } from "$lib/store";
 
+  let show;
   let username = "";
   let password = "";
 
   let usernameInput;
-  let pageChange = () => setTimeout(() => usernameInput && usernameInput.select(), 50);
+  let pageChange = () =>
+    setTimeout(() => usernameInput && usernameInput.select(), 50);
   $: if (usernameInput) pageChange($page);
 
   $: if ($user) {
-    if ($user.wallet_initialized) goto('/');
-    else goto('/wallet/setup');
-  } 
+    if ($user.wallet_initialized) goto("/");
+    else goto("/wallet/setup");
+  }
 </script>
 
 <style>
@@ -76,13 +80,26 @@
         username</label>
       <input
         bind:value={username}
-        bind:this={usernameInput} />
+        bind:this={usernameInput}
+        autocapitalize="off" />
     </div>
     <div class="flex flex-col mb-4">
       <label
         class="mb-2 font-medium text-gray-600"
         for="last_name">Password</label>
-      <input type="password" bind:value={password} />
+      <div class="relative">
+        {#if show}
+          <input class="w-full" bind:value={password} autocapitalize="off" />
+        {:else}
+          <input class="w-full" type="password" bind:value={password} autocapitalize="off" />
+        {/if}
+        <button
+          class="absolute p-2 right-1 top-1"
+          type="button"
+          on:click|preventDefault|stopPropagation={() => (show = !show)}>
+          <Fa icon={show ? faEyeSlash : faEye} class="my-auto mr-1" />
+        </button>
+      </div>
     </div>
     <a href="/forgot-password" class="block w-full text-midblue">Forgot
       password?</a>
@@ -92,4 +109,3 @@
     <a href="/register" class="text-midblue">Don't have an account? Sign up</a>
   </form>
 </div>
-
