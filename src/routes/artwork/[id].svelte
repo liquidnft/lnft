@@ -282,6 +282,7 @@
   }
 
   .popup :global(img) {
+    margin: 0 auto;
     height: 95vh;
     object-fit: contain !important;
   }
@@ -350,7 +351,7 @@
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || 'Untitled'}
         </h1>
-        <div class="flex mt-4 mb-10">
+        <div class="flex mt-4 mb-6">
           <div class="my-auto">
             Edition
             {artwork.edition}
@@ -369,13 +370,55 @@
             </div>
           {/if}
         </div>
+
+        <div class="flex flex-wrap justify-between text-left">
+          <a href={`/u/${artwork.artist.username}`}>
+            <div class="flex mb-6">
+              <Avatar user={artwork.artist} />
+              <div class="ml-2 secondary-color">
+                <div>@{artwork.artist.username}</div>
+                <div class="text-xs text-gray-600">Artist</div>
+              </div>
+            </div>
+          </a>
+          <a href={`/u/${artwork.owner.username}`}>
+            <div class="flex mb-6 secondary-color">
+              <Avatar user={artwork.owner} />
+              <div class="ml-2">
+                <div>@{artwork.owner.username}</div>
+                <div class="text-xs text-gray-600">Owner</div>
+              </div>
+            </div>
+          </a>
+        </div>
+        
         <div class="mobileImage">
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
           </span>
         </div>
 
-        <Sidebar bind:artwork />
+        <div class="flex justify-between mb-6">
+          {#if artwork.list_price}
+            <div class="my-2">
+              <div class="text-sm mt-auto">List Price</div>
+              <div class="text-lg">{list_price} {ticker}</div>
+            </div>
+          {/if}
+          {#if artwork.reserve_price}
+            <div class="my-2">
+              <div class="text-sm mt-auto">Reserve Price</div>
+              <div class="flex-1 text-lg">{val(artwork.reserve_price)} {ticker}</div>
+            </div>
+          {/if}
+          {#if artwork.bid.length && artwork.bid[0].amount}
+            <div class="my-2">
+              <div class="text-sm mt-auto">Current bid</div>
+              <div class="text-lg">{val(artwork.bid[0].amount)} {ticker}</div>
+            </div>
+          {/if}
+        </div>
+
 
         {#if loading}
           <ProgressLinear />
@@ -431,41 +474,21 @@
           {/if}
         {/if}
 
-        <div class="flex justify-between">
-          {#if artwork.list_price}
-            <div class="my-2">
-              <div class="text-sm mt-auto">List Price</div>
-              <div class="text-lg">{list_price} {ticker}</div>
-            </div>
-          {/if}
-          {#if artwork.reserve_price}
-            <div class="my-2">
-              <div class="text-sm mt-auto">Reserve Price</div>
-              <div class="flex-1 text-lg">{val(artwork.reserve_price)} {ticker}</div>
-            </div>
-          {/if}
-          {#if artwork.bid.length && artwork.bid[0].amount}
-            <div class="my-2">
-              <div class="text-sm mt-auto">Current bid</div>
-              <div class="text-lg">{val(artwork.bid[0].amount)} {ticker}</div>
-            </div>
-          {/if}
-        </div>
 
         {#if compareAsc(parseISO(artwork.auction_start), now) === 1 && start_counter}
-          <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
+          <div class="bg-gray-100 px-4 p-1 mt-6 rounded">
             <div class="mt-auto text-sm">Auction starts in</div>
             <div class="mt-1">{start_counter}</div>
           </div>
         {/if}
 
         {#if compareAsc(parseISO(artwork.auction_end), now) === 1 && end_counter}
-          <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
+          <div class="bg-gray-100 px-4 p-1 mt-6 rounded">
             <div class="mt-auto text-sm">Auction closes in</div>
             <div class="mt-1">{end_counter}</div>
           </div>
         {:else if artwork.auction_end}
-          <div class="bg-gray-100 px-4 p-1 mt-2 rounded">
+          <div class="bg-gray-100 px-4 p-1 mt-6 rounded">
             <div class="mt-auto text-sm">Auction ended at</div>
             <div class="mt-1">
               {format(parseISO(artwork.auction_end), 'yyyy-MM-dd HH:mm')}
@@ -473,8 +496,10 @@
           </div>
         {/if}
 
+        <Sidebar bind:artwork />
+
         <div class="mob-desc description text-gray-600 whitespace-pre-wrap break-words">
-          <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
+          <h4 class="mt-10 font-bold">About this artwork</h4>
           <div class="desc-text {showMore ? 'openDesc' : ''}">{@html linkify(artwork.description)}</div>
           <div class="show-more" on:click={() => (showMore = !showMore)}>SHOW {showMore ? "LESS -" : "MORE +"}</div>
         </div>
@@ -489,7 +514,7 @@
         </div>
       </div>
 
-      <div class="w-full lg:w-2/3 pl-28">
+      <div class="w-full lg:w-2/3 pl-40">
         <div class="desktopImage">
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
