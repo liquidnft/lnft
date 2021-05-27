@@ -91,6 +91,7 @@
 <style>
   .contain,
   .cover {
+    width: 100%;
     position: relative;
   }
 
