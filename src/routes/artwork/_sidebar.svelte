@@ -10,12 +10,6 @@
   export let artwork;
   let showDetails = false;
 
-  function linkify(text) {
-    var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-    return text.replace(urlRegex, function (url) {
-      return '<a href="' + url + '">' + url + "</a>";
-    });
-  }
 </script>
 
 <style>
@@ -77,10 +71,6 @@
       href={`/tag/${tag}`}
       class="secondary-color text-sm font-bold uppercase mr-5">#{tag}</a>{' '}
   {/each}
-</div>
-
-<div class="description text-sm text-gray-600 whitespace-pre-wrap break-words">
-  {@html linkify(artwork.description)}
 </div>
 
 {#if !showDetails}

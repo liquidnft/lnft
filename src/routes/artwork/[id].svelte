@@ -34,6 +34,13 @@
   import ArtworkQuery from "$components/ArtworkQuery";
   import SocialShare from "$components/SocialShare";
 
+  function linkify(text) {
+    var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+    return text.replace(urlRegex, function (url) {
+      return '<a href="' + url + '">' + url + "</a>";
+    });
+  }
+  
   export let id;
 
   const requestPolicy = "cache-and-network";
@@ -180,9 +187,15 @@
   };
 
   let showPopup = false;
+  let showMore = false
 </script>
 
 <style>
+
+  :global(.description a) {
+    color: #3ba5ac;
+  }
+
   .disabled {
     @apply text-gray-400 border-gray-400;
   }
@@ -240,6 +253,10 @@
     cursor: pointer;
   }
 
+  .mob-desc{
+    display: none;
+  }
+
   .mobileImage {
     display: none;
     margin-bottom: 40px;
@@ -279,11 +296,30 @@
   }
 
   @media only screen and (max-width: 1023px) {
-    .desktopImage {
+
+    .desc-text{
+      height: 150px;
+      overflow: hidden;
+    }
+
+    .openDesc{
+      height: auto !important;
+      overflow: visible;
+    }
+
+    .show-more{
+      color: #3ba5ac;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .desktopImage, .desk-desc {
       display: none;
     }
 
-    .mobileImage {
+    .mobileImage, .mob-desc {
       display: block;
     }
 
@@ -309,7 +345,7 @@
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork}
     <Head {artwork} />
-    <div class="flex justify-between flex-wrap">
+    <div class="flex flex-wrap">
       <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || 'Untitled'}
@@ -437,6 +473,12 @@
           </div>
         {/if}
 
+        <div class="mob-desc description text-gray-600 whitespace-pre-wrap break-words">
+          <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
+          <div class="desc-text {showMore ? 'openDesc' : ''}">{@html linkify(artwork.description)}</div>
+          <div class="show-more" on:click={() => (showMore = !showMore)}>SHOW {showMore ? "LESS -" : "MORE +"}</div>
+        </div>
+
         <p class="font-bold mt-20">History</p>
         <div class="flex mt-5">
           <div class="w-full">
@@ -447,11 +489,15 @@
         </div>
       </div>
 
-      <div class="w-full lg:w-2/3 mx-auto">
+      <div class="w-full lg:w-2/3 pl-28">
         <div class="desktopImage">
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
           </span>
+        </div>
+        <div class="desk-desc description text-gray-600 whitespace-pre-wrap break-words">
+          <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
+          {@html linkify(artwork.description)}
         </div>
         <div
           on:click={() => (showPopup = !showPopup)}
