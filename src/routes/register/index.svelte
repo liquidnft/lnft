@@ -1,9 +1,12 @@
 <script>
+  import Fa from "svelte-fa";
+  import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { err } from "$lib/utils";
   import { page } from "$app/stores";
   import { register } from "$lib/register";
   import ProgressLinear from "$components/ProgressLinear";
 
+  let show;
   let username = "";
   let password = "";
   let email = "";
@@ -90,24 +93,54 @@
         <label
           class="mb-2 font-medium text-gray-600"
           for="first_name">Email</label>
-        <input id="email" name="email" placeholder="Email" bind:value={email} bind:this={ref} />
+        <input
+          id="email"
+          name="email"
+          placeholder="Email"
+          bind:value={email}
+          bind:this={ref} />
       </div>
       <div class="flex flex-col mb-4">
         <label
           class="mb-2 font-medium text-gray-600"
           for="first_name">Username</label>
-        <input id="username" name="username" placeholder="Username" bind:value={username} />
+        <input
+          id="username"
+          name="username"
+          placeholder="Username"
+          autocapitalize="off"
+          bind:value={username} />
       </div>
       <div class="flex flex-col mb-4">
         <label
           class="mb-2 font-medium text-gray-600"
           for="last_name">Password</label>
-        <input
-          id="password"
-          name="password"
-          placeholder="At least 8 characters."
-          type="password"
-          bind:value={password} />
+        <div class="relative">
+          {#if show}
+            <input
+              class="w-full"
+              bind:value={password}
+              autocapitalize="off"
+              id="password"
+              name="password"
+              placeholder="At least 8 characters." />
+          {:else}
+            <input
+              class="w-full"
+              type="password"
+              bind:value={password}
+              autocapitalize="off"
+              id="password"
+              name="password"
+              placeholder="At least 8 characters." />
+          {/if}
+          <button
+            class="absolute h-full px-3 right-0 top-0"
+            type="button"
+            on:click|preventDefault|stopPropagation={() => (show = !show)}>
+            <Fa icon={show ? faEyeSlash : faEye} class="my-auto mr-1" />
+          </button>
+        </div>
       </div>
       <span class="block w-full">By signing up, you agree to the
         <a href="/terms-and-conditions" class="text-midblue">Terms and
