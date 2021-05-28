@@ -93,8 +93,7 @@
           GreenAddressIT Limited (“Operator”, “we”or “us”), a company registered
           and incorporated under the laws of Malta with company number C62738
           and whose registered office is Vincenti Buildings 28/19 (Suite 1405),
-          Strait Street, VLT1432 Valletta, Malta and a wholly-owned, indirect
-          subsidiary of Blockstream Corporation Inc, and operating the Raretoshi
+          Strait Street, VLT1432 Valletta, Malta operating the Raretoshi
           website (“Website”) located at Raretoshi.com (“Site”).
         </p>
 
@@ -489,7 +488,7 @@
         <h3>Fans and Artists</h3>
         <p>
           By registering to use the Website, each Fan and Artist agrees with
-          Blockstream that:
+          the Operator that:
         </p>
         <ul>
           <li>
