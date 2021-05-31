@@ -189,8 +189,10 @@ app.post("/asset/register", async (req, res) => {
 app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
   let proofs = {};
   try {
-    proofs = require('./proofs.json');
-  } catch(e) {};
+    proofs = JSON.parse(fs.readFileSync("/export/proofs.json"));
+  } catch (e) {
+    console.log(e);
+  }
 
   let {
     headers: { host },
