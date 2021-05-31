@@ -1,6 +1,10 @@
 <script>
   import Fa from "svelte-fa";
-  import { faTimes } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faChevronDown,
+    faChevronUp,
+    faTimes,
+  } from "@fortawesome/free-solid-svg-icons";
   import { faHeart, faImage } from "@fortawesome/free-regular-svg-icons";
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
@@ -40,7 +44,7 @@
       return '<a href="' + url + '">' + url + "</a>";
     });
   }
-  
+
   export let id;
 
   const requestPolicy = "cache-and-network";
@@ -65,7 +69,7 @@
   let setup = () => {
     subscription(
       operationStore(getArtworkTransactions(id)),
-      (a, b) => (transactions = b.transactions)
+      (a, b) => (transactions = b.transactions) && console.log(transactions)
     );
 
     subscription(
@@ -90,8 +94,8 @@
       clearTimeout(timeout);
       now = new Date();
       if (!artwork) return;
-      start_counter = countdown(parseISO(artwork.auction_start)) || '';
-      end_counter = countdown(parseISO(artwork.auction_end)) || '';
+      start_counter = countdown(parseISO(artwork.auction_start)) || "";
+      end_counter = countdown(parseISO(artwork.auction_end)) || "";
       timeout = setTimeout(count, 1000);
     };
     count();
@@ -132,7 +136,12 @@
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
     let result = await createTransaction$({ transaction });
-    if (result.error) return err(`Problem placing bid, minimum bid is ${val(artwork.bid[0].amount + 1000)}`);
+    if (result.error)
+      return err(
+        `Problem placing bid, minimum bid is ${val(
+          artwork.bid[0].amount + 1000
+        )}`
+      );
     if (transaction.type === "purchase") info("Sold! Congratulations!");
     if (transaction.type === "bid") info("Bid placed!");
     bidding = false;
@@ -187,11 +196,11 @@
   };
 
   let showPopup = false;
-  let showMore = false
+  let showMore = false;
+  let showActivity = false;
 </script>
 
 <style>
-
   :global(.description a) {
     color: #3ba5ac;
   }
@@ -253,7 +262,7 @@
     cursor: pointer;
   }
 
-  .mob-desc{
+  .mob-desc {
     display: none;
   }
 
@@ -297,18 +306,17 @@
   }
 
   @media only screen and (max-width: 1023px) {
-
-    .desc-text{
+    .desc-text {
       height: 150px;
       overflow: hidden;
     }
 
-    .openDesc{
+    .openDesc {
       height: auto !important;
       overflow: visible;
     }
 
-    .show-more{
+    .show-more {
       color: #3ba5ac;
       font-weight: bold;
       text-align: right;
@@ -316,11 +324,13 @@
       cursor: pointer;
     }
 
-    .desktopImage, .desk-desc {
+    .desktopImage,
+    .desk-desc {
       display: none;
     }
 
-    .mobileImage, .mob-desc {
+    .mobileImage,
+    .mob-desc {
       display: block;
     }
 
@@ -391,7 +401,7 @@
             </div>
           </a>
         </div>
-        
+
         <div class="mobileImage">
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
@@ -408,7 +418,10 @@
           {#if artwork.reserve_price}
             <div class="my-2">
               <div class="text-sm mt-auto">Reserve Price</div>
-              <div class="flex-1 text-lg">{val(artwork.reserve_price)} {ticker}</div>
+              <div class="flex-1 text-lg">
+                {val(artwork.reserve_price)}
+                {ticker}
+              </div>
             </div>
           {/if}
           {#if artwork.bid.length && artwork.bid[0].amount}
@@ -418,7 +431,6 @@
             </div>
           {/if}
         </div>
-
 
         {#if loading}
           <ProgressLinear />
@@ -430,13 +442,13 @@
               class:disabled>List</a>
           </div>
           {#if $user.id === artwork.artist_id}
-          <div class="w-full mb-2">
-            <a
-              href={`/artwork/${id}/edit`}
-              class="block text-center text-sm secondary-btn w-full"
-              class:disabled>Edit</a>
-          </div>
-        {/if}
+            <div class="w-full mb-2">
+              <a
+                href={`/artwork/${id}/edit`}
+                class="block text-center text-sm secondary-btn w-full"
+                class:disabled>Edit</a>
+            </div>
+          {/if}
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
             <button
@@ -474,7 +486,6 @@
           {/if}
         {/if}
 
-
         {#if compareAsc(parseISO(artwork.auction_start), now) === 1 && start_counter}
           <div class="bg-gray-100 px-4 p-1 mt-6 rounded">
             <div class="mt-auto text-sm">Auction starts in</div>
@@ -498,18 +509,36 @@
 
         <Sidebar bind:artwork />
 
-        <div class="mob-desc description text-gray-600 whitespace-pre-wrap break-words">
-          <h4 class="mt-10 font-bold">About this artwork</h4>
-          <div class="desc-text {showMore ? 'openDesc' : ''}">{@html linkify(artwork.description)}</div>
-          <div class="show-more" on:click={() => (showMore = !showMore)}>SHOW {showMore ? "LESS -" : "MORE +"}</div>
-        </div>
+        {#if artwork.description}
+          <div
+            class="mob-desc description text-gray-600 whitespace-pre-wrap break-words">
+            <h4 class="mt-10 font-bold">About this artwork</h4>
+            <div class="desc-text {showMore ? 'openDesc' : ''}">
+              {@html linkify(artwork.description)}
+            </div>
+            <div class="show-more" on:click={() => (showMore = !showMore)}>
+              SHOW
+              {showMore ? 'LESS -' : 'MORE +'}
+            </div>
+          </div>
+        {/if}
 
         <p class="font-bold mt-20">History</p>
         <div class="flex mt-5">
           <div class="w-full">
-            {#each transactions as transaction}
+            {#each transactions.slice(0, showActivity ? transactions.length : 3) as transaction}
               <Activity {transaction} />
             {/each}
+            {#if transactions.length > 3}
+              <div
+                class="flex text-xs cursor-pointer"
+                on:click={() => (showActivity = !showActivity)}>
+                <div>View {showActivity ? 'less' : 'more'}</div>
+                <div class="my-auto ml-1">
+                  <Fa icon={showActivity ? faChevronUp : faChevronDown} />
+                </div>
+              </div>
+            {/if}
           </div>
         </div>
       </div>
@@ -520,10 +549,15 @@
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
           </span>
         </div>
-        <div class="desk-desc description text-gray-600 whitespace-pre-wrap break-words">
-          <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
-          {@html linkify(artwork.description)}
-        </div>
+
+        {#if artwork.description}
+          <div
+            class="desk-desc description text-gray-600 whitespace-pre-wrap break-words">
+            <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
+            {@html linkify(artwork.description)}
+          </div>
+        {/if}
+
         <div
           on:click={() => (showPopup = !showPopup)}
           class:showPopup
