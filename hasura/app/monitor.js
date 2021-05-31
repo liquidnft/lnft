@@ -146,13 +146,13 @@ app.post("/asset/register", async (req, res) => {
 
   let proofs = {};
   try {
-    proofs = JSON.parse(fs.readFileSync("./proofs.json"));
+    proofs = JSON.parse(fs.readFileSync("/export/proofs.json"));
   } catch (e) {
     console.log(e);
   }
 
   proofs[asset] = true;
-  fs.writeFileSync("proofs.json", JSON.stringify(proofs));
+  fs.writeFileSync("/export/proofs.json", JSON.stringify(proofs));
 
   let query = `query transactions($asset: String!) {
     transactions(where: {
