@@ -296,6 +296,10 @@
     object-fit: contain !important;
   }
 
+  .desktopImage :global(img), .desktopImage :global(video){
+    margin: 0 auto;
+  }
+
   @keyframes zoom {
     0% {
       transform: scale(0.6);
