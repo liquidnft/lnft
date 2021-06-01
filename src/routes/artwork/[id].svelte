@@ -322,6 +322,7 @@
       text-align: right;
       margin-top: 10px;
       cursor: pointer;
+      white-space: normal;
     }
 
     .desktopImage,
