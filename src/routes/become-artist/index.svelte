@@ -26,6 +26,10 @@
 
   let files = [];
 
+  onMount(() => {
+    ({ ...form } = $user);
+  }); 
+
   $: width = `width: ${percent}%`;
 
   const uploadFile = async ({ detail: file }) => {
@@ -86,19 +90,19 @@
   let submitted;
   let submit = async () => {
     let {
+      id,
       is_artist,
       is_admin,
       num_followers,
       num_follows,
       followed,
-      id,
       balance,
       pubkey,
       wallet_initialized,
-      ...user
+      ...rest
     } = form;
-
-    await updateUser$({ user, id });
+    
+    await updateUser$({ user: rest, id });
 
     let samples = files.map((f) => ({
       user_id: id,
