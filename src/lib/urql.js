@@ -138,6 +138,7 @@ export const setupUrql = async () => {
           headers: {
             ...fetchOptions.headers,
             Authorization: `Bearer ${token}`,
+            'X-Hasura-Role': get(role),
           },
         },
       });
