@@ -309,6 +309,16 @@
             _is_null: false
         - transferred_at:
             _is_null: false
+        - _exists:
+            _where:
+              _and:
+              - id:
+                  _eq: X-Hasura-User-Id
+              - is_admin:
+                  _eq: true
+            _table:
+              schema: public
+              name: users
       allow_aggregations: true
   update_permissions:
   - role: user
@@ -772,6 +782,8 @@
               _is_null: false
           - asking_asset:
               _is_null: false
+          - artist_id:
+              _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: users

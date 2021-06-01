@@ -202,10 +202,24 @@
 
     if (newAuction) {
       await requirePassword();
-      $psbt = await sendToMultisig(artwork);
-      $psbt = await signAndBroadcast();
-      let base64 = $psbt.toBase64();
-      let tx = $psbt.extractTransaction();
+
+      let base64, tx;
+      if (artwork.royalty) {
+        tx = await signOver(artwork, tx);
+        artwork.list_price_tx = $psbt.toBase64();
+      } else {
+        $psbt = await sendToMultisig(artwork);
+        $psbt = await signAndBroadcast();
+        base64 = $psbt.toBase64();
+        tx = $psbt.extractTransaction();
+
+        tx = (await signOver(artwork, tx));
+        artwork.list_price_tx = $psbt.toBase64();
+
+        artwork.auction_release_tx = (
+          await createRelease(artwork, tx)
+        ).toBase64();
+      }
 
       await createTransaction$({
         transaction: {
@@ -218,12 +232,7 @@
         },
       });
 
-      artwork.list_price_tx = (await signOver(artwork, tx)).toBase64();
-      artwork.auction_release_tx = (
-        await createRelease(artwork, tx)
-      ).toBase64();
-
-      $psbt = Psbt.fromBase64(base64);
+      if (base64) $psbt = Psbt.fromBase64(base64);
     }
 
     artwork.auction_start = start;

@@ -28,7 +28,7 @@
     <h2>Galleries</h2>
 
     {#each Object.keys(galleries) as gallery}
-      <h2 class="text-xl mb-6 m-6 px-4"><a href={`/gallery/${gallery}`}>{galleries[gallery]}</a></h2>
+      <h2 class="text-xl mb-6 m-6 px-4"><a href={`/galleries/${gallery}`}>{galleries[gallery]}</a></h2>
       <div class="flex flex-wrap">
         {#each tags.filter((t) => t.tag === gallery) as tag}
           <div class="w-full lg:w-1/3 px-10 mb-20">

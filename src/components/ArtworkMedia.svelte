@@ -9,7 +9,6 @@
   export let thumb = true;
   export let preview = false;
   export let popup = false;
-
   let img, vid;
   $: path =
     artwork &&
@@ -91,6 +90,7 @@
 <style>
   .contain,
   .cover {
+    width: 100%;
     position: relative;
   }
 
@@ -103,7 +103,6 @@
 
   img,
   video {
-    @apply mx-auto;
     max-height: 70vh;
   }
 
@@ -113,7 +112,7 @@
 </style>
 
 {#if artwork.filetype && artwork.filetype.includes('video')}
-  <div
+  <div class="w-full"
     class:inline-block={!popup}
     class:cover
     class:contain
@@ -141,9 +140,9 @@
     {/if}
   </div>
 {:else}
-  <div class:cover class:contain>
+  <div class="w-full" class:cover class:contain>
     <img
-      src={preview || path}
+      src={preview || path ? path : "/liquid_logo.svg"}
       alt={artwork.title}
       loading="lazy"
       bind:this={img} />

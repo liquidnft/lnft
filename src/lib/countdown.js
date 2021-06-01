@@ -24,12 +24,12 @@ export default (d) => {
   minutes = ("0" + minutes).slice(-2);
   seconds = ("0" + seconds).slice(-2);
 
-  return days > 1
+  return days >= 1
     ? `
   ${days ? days + (days === 1 ? " day" : " days") : ""} 
   ${hours ? hours + (hours === 1 ? " hour" : " hours") : ""} 
   `
-    : hours > 1
+    : hours >= 1
     ? `
   ${hours ? hours + (hours === 1 ? " hour" : " hours") : ""} 
   ${minutes ? minutes + (minutes === 1 ? " minute" : " minutes") : ""}

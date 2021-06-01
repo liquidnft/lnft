@@ -256,6 +256,16 @@
         let artworkSansTags = { ...artwork };
         delete artworkSansTags.tags;
 
+        console.log("creating", {
+            artwork_id: artwork.id,
+            type: "creation",
+            hash,
+            contract,
+            asset: artwork.asset,
+            amount: 1,
+            psbt: $psbt.toBase64(),
+          });
+
         let result = await createArtwork({
           artwork: artworkSansTags,
           transaction: {
@@ -269,6 +279,8 @@
           },
           tags,
         });
+
+        console.log("result", result);
 
         if (result.error) throw new Error(result.error.message);
       }

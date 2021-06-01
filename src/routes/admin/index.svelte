@@ -1,30 +1,40 @@
 <script>
-  import { tick, onDestroy } from "svelte";
+  import { onMount, tick, onDestroy } from "svelte";
   import { page } from "$app/stores";
   import ArtworkMedia from "$components/ArtworkMedia";
   import { query, mutation, operationStore, subscription } from "@urql/svelte";
   import { getSamples, updateUser } from "$queries/users";
-  import { role, user } from "$lib/store";
-  import { api } from "$lib/api";
+  import { role, user, token } from "$lib/store";
+  import { api, hasura } from "$lib/api";
   import { goto, info } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
 
   let users = [];
   let samples;
 
-  $: pageChange($page);
+  onMount(async () => {
+    if ($token) {
+      users = (
+        await hasura
+          .auth(`Bearer ${$token}`)
+          .headers({
+            'X-Hasura-Role': 'approver'
+          }) 
+          .post({
+            query: getSamples,
+          })
+          .json()
+      ).data.users
+        .sort((a, b) => a.username && a.username.localeCompare(b.username))
+    }
+  });
+
+  $: pageChange($page, $user);
   let pageChange = async () => {
     await requireLogin();
+    if (!$user) return;
     if (!($user.is_admin)) goto('/market');
     $role = "approver";
-    samples = operationStore(getSamples);
-    samples.subscribe((res) => {
-      if (!res.data) return;
-      users = res.data.users
-        .sort((a, b) => a.username && a.username.localeCompare(b.username))
-        .filter((u) => u.info && !u.is_artist);
-    });
-    query(samples);
   };
 
   onDestroy(() => ($role = "user"));

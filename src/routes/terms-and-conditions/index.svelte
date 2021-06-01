@@ -10,6 +10,22 @@
   p,
   h3 {
     @apply mb-4;
+    text-align: left;
+  }
+
+  h4{
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+  }
+
+  ul{
+    list-style: disc;
+    padding: 0 20px;
+  }
+
+  ul li{
+    margin-bottom: 20px;
+    text-align: left;
   }
 
   .faq-content {
@@ -50,14 +66,8 @@
   }
 </style>
 
-<div class="max-w-2xl container mx-auto sm:justify-between mt-10 md:mt-20">
+<div class="max-w-4xl container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
-    <a href="/" class="text-midblue">
-      <div class="flex mb-8">
-        <Fa icon={faChevronLeft} class="my-auto mr-1" />
-        <div>Back</div>
-      </div>
-    </a>
     <h2 class="mb-10">Raretoshi Terms and Conditions</h2>
     <div class="faq-content">
       <div class="faq">
@@ -118,7 +128,6 @@
         </p>
 
         <h3>Accessing and Interacting with the Website</h3>
-
         <h4>User account registration and types of accounts</h4>
         <p>
           All new users will need a valid email address to register in the
@@ -529,9 +538,9 @@
           Tokens auctioned are specified on the Site for the Sale
         </p>
 
-        <p>
+        <h4>
           There are several trading options available for Users that include:
-        </p>
+        </h4>
 
         <p>Listing options:</p>
 

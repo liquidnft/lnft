@@ -4,12 +4,17 @@
   import { api } from "$lib/api";
   import { err } from "$lib/utils";
   import Fa from "svelte-fa";
-  import { faTimes, faEye } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faTimes,
+    faEye,
+    faEyeSlash,
+  } from "@fortawesome/free-solid-svg-icons";
 
   let attempt = "";
   let input;
+  let show;
 
-  let focus = (p) => p && tick().then(() => input.select());
+  let focus = (p) => p && tick().then(() => input.focus());
   $: focus($prompt);
 
   export let submit = (e) => {
@@ -62,12 +67,28 @@
     </button>
   </div>
   <div class="mt-2">
-    <input
-      bind:value={attempt}
-      placeholder="Password"
-      class="mb-2"
-      type="password"
-      bind:this={input} />
+    <div class="relative mb-2">
+      {#if show}
+        <input
+          bind:value={attempt}
+          placeholder="Password"
+          class="w-full"
+          bind:this={input} />
+      {:else}
+        <input
+          bind:value={attempt}
+          placeholder="Password"
+          class="w-full"
+          type="password"
+          bind:this={input} />
+      {/if}
+      <button
+        class="flex h-full top-0 absolute px-3 right-0"
+        type="button"
+        on:click|preventDefault|stopPropagation={() => (show = !show)}>
+        <Fa icon={show ? faEyeSlash : faEye} class="my-auto mr-1" />
+      </button>
+    </div>
     <div class="text-right text-sm">
       <a href="/forgot-password" class="block w-full text-midblue">Forgot
         password?</a>

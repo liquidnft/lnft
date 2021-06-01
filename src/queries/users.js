@@ -37,7 +37,7 @@ export const getUsers = `subscription {
 }`;
 
 export const getSamples = `query {
-  users {
+  users(where: { _and: [{ is_artist: { _eq: false }}, { samples: {}}]}) {
     ${fields} 
     info
     samples {

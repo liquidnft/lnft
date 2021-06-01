@@ -64,6 +64,7 @@
 
     .menu a {
       margin: 25px 0 0 0px;
+      width: 100%;
     }
     .menu .search {
       margin: 40px 0 0 45px;
@@ -75,14 +76,9 @@
   <Search suggest={false} />
   <a href="/market"><button on:click={toggle}>Market</button></a>
   <a href="/activity"><button on:click={toggle}>Activity</button></a>
-  <!--
   <a href="/galleries"><button on:click={toggle}>Galleries</button></a>
-  -->
   <a href="https://blog.raretoshi.com/"><button on:click={toggle}>Blog</button></a>
   <a href="/faq"><button on:click={toggle}>FAQ</button></a>
-  <!--
-  <a href="https://blog.raretoshi.com/"><button on:click={toggle}>Blog</button></a>
-  -->
   {#if $user}
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
@@ -90,9 +86,6 @@
     <a href={`/u/${$user.username}`}>
       <button on:click={toggle} class="flex">
         <Avatar user={$user} />
-        <!--
-        <div class="my-auto ml-2">{$user.full_name}</div>
-        -->
       </button></a>
   {:else}<a href="/login"><button on:click={toggle}>Sign In</button></a>{/if}
 </div>

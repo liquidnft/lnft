@@ -46,13 +46,7 @@
 
   .market-gallery :global(.card-link img), .market-gallery :global(.card-link video){
     height: 350px;
-  }
-
-  .market-gallery{
-    height: 619px;
-  }
-
-  
+  }  
 </style>
 
 <div class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3" bind:clientWidth={w}>

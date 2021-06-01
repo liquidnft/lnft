@@ -14,7 +14,7 @@ import { expired } from "$lib/auth";
 import schema from "$lib/schema";
 import { getUser } from "$queries/users";
 import { getArtworks } from "$queries/artworks";
-import { getRecentActivity, getLatestPieces } from "$queries/transactions";
+import { getRecentActivity, getLatestPieces, getArtworkTransactions } from "$queries/transactions";
 import { makeOperation } from "@urql/core";
 
 let url, wsUrl;
@@ -44,19 +44,6 @@ export const setupUrql = async () => {
       storage,
       updates: {
         Mutation: {
-          update_users_by_pk(result, args, cache, info) {
-            cache.updateQuery({ query: getUser }, (data) => {
-              try {
-                data.currentuser[0] = {
-                  ...data.currentuser[0],
-                  ...result.update_users_by_pk,
-                };
-              } catch(e) {
-                console.log(e);
-              }
-              return data;
-            });
-          },
           insert_transactions_one(result, args, cache, info) {
             cache.updateQuery({ query: getRecentActivity(20) }, (data) => {
               try {
@@ -151,6 +138,7 @@ export const setupUrql = async () => {
           headers: {
             ...fetchOptions.headers,
             Authorization: `Bearer ${token}`,
+            'X-Hasura-Role': get(role),
           },
         },
       });
