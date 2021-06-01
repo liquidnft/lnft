@@ -51,28 +51,30 @@
 </style>
 
 {#if artwork}
-<div
-  class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full"
-  in:fade>
-  <a href={`/a/${artwork.slug}`}>
-    <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
-  </a>
-  {#if showDetails}
-    <div class="p-4">
-      <div class="flex flex-row justify-between mb-2">
-        <div>
-          <h1 class="text-xl">{artwork.title || 'Untitled'} {#if !artwork.asking_asset}(unlisted){/if}</h1>
-          {#if artwork.editions > 1}
-          <h2 class="text-sm text-gray-400 font-light">Edition {artwork.edition} of {artwork.editions}</h2>
-        {/if}
-        </div>
-        <Heart {artwork} />
-      </div>
-      <div class="flex mb-4">
-        <div class="1/2 flex-1">
-          <div class="price">
-            {#if artwork.list_price}{val(artwork.list_price)}{:else}&mdash;{/if}
-            {ticker}
+  <div
+    class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full"
+    in:fade>
+    <a href={`/a/${artwork.slug}`} class="mx-auto">
+      <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
+    </a>
+    {#if showDetails}
+      <div class="p-4">
+        <div class="flex flex-row justify-between mb-2">
+          <div>
+            <h1 class="text-xl">
+              {artwork.title || 'Untitled'}
+              {#if !(artwork.transferred_at || artwork.asking_asset)}
+                (unlisted)
+              {/if}
+            </h1>
+            {#if artwork.editions > 1}
+              <h2 class="text-sm text-gray-400 font-light">
+                Edition
+                {artwork.edition}
+                of
+                {artwork.editions}
+              </h2>
+            {/if}
           </div>
           <div class="w-1/2 text-sm font-medium">List Price</div>
         </div>
