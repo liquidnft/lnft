@@ -45,84 +45,96 @@
     border-radius: 10px 10px 0 0;
   }
 
-  .price{
+  .price {
     font-size: 15px;
   }
 </style>
 
 {#if artwork}
-<div
-  class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full"
-  in:fade>
-  <a href={`/a/${artwork.slug}`}>
-    <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
-  </a>
-  {#if showDetails}
-    <div class="p-4">
-      <div class="flex flex-row justify-between mb-2">
-        <div>
-          <h1 class="text-xl">{artwork.title || 'Untitled'} {#if !artwork.asking_asset}(unlisted){/if}</h1>
-          {#if artwork.editions > 1}
-          <h2 class="text-sm text-gray-400 font-light">Edition {artwork.edition} of {artwork.editions}</h2>
-        {/if}
-        </div>
-        <Heart {artwork} />
-      </div>
-      <div class="flex mb-4">
-        <div class="1/2 flex-1">
-          <div class="price">
-            {#if artwork.list_price}{val(artwork.list_price)}{:else}&mdash;{/if}
-            {ticker}
+  <div
+    class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full"
+    in:fade>
+    <a href={`/a/${artwork.slug}`}>
+      <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
+    </a>
+    {#if showDetails}
+      <div class="p-4">
+        <div class="flex flex-row justify-between mb-2">
+          <div>
+            <h1 class="text-xl">
+              {artwork.title || 'Untitled'}
+              {#if !(artwork.transferred_at || artwork.asking_asset)}
+                (unlisted)
+              {/if}
+            </h1>
+            {#if artwork.editions > 1}
+              <h2 class="text-sm text-gray-400 font-light">
+                Edition
+                {artwork.edition}
+                of
+                {artwork.editions}
+              </h2>
+            {/if}
           </div>
-          <div class="w-1/2 text-sm font-medium">List Price</div>
+          <Heart {artwork} />
         </div>
-        {#if artwork.bid[0] && artwork.bid[0].user}
+        <div class="flex mb-4">
           <div class="1/2 flex-1">
-            <div class="price">{val(artwork.bid[0].amount)} {ticker}</div>
-            <div class="text-sm font-medium">
-              Current bid by
-              <a
-                href={`/u/${artwork.bid[0].user.username}`}>@{artwork.bid[0].user.username}</a>
+            <div class="price">
+              {#if artwork.list_price}
+                {val(artwork.list_price)}
+              {:else}&mdash;{/if}
+              {ticker}
             </div>
+            <div class="w-1/2 text-sm font-medium">List Price</div>
           </div>
-        {/if}
-      </div>
-      <div class="flex">
-        <div>
-          <a href={`/u/${artwork.artist.username}`}>
-            <div class="flex">
-              <Avatar user={artwork.artist} />
-              <div class="ml-2">
-                <div class="break-all">@{artwork.artist.username}</div>
-                <div class="text-xs text-gray-600">Artist</div>
+          {#if artwork.bid[0] && artwork.bid[0].user}
+            <div class="1/2 flex-1">
+              <div class="price">{val(artwork.bid[0].amount)} {ticker}</div>
+              <div class="text-sm font-medium">
+                Current bid by
+                <a
+                  href={`/u/${artwork.bid[0].user.username}`}>@{artwork.bid[0].user.username}</a>
               </div>
             </div>
-          </a>
+          {/if}
         </div>
-
-        {#if artwork.owner.id !== artwork.artist.id}
-          <div class="ml-auto">
+        <div class="flex">
+          <div>
             <a href={`/u/${artwork.artist.username}`}>
               <div class="flex">
-                <Avatar user={artwork.owner} />
+                <Avatar user={artwork.artist} />
                 <div class="ml-2">
-                  <div class="break-all">@{artwork.owner.username}</div>
-                  <div class="text-xs text-gray-600">Owner</div>
+                  <div class="break-all">@{artwork.artist.username}</div>
+                  <div class="text-xs text-gray-600">Artist</div>
                 </div>
               </div>
             </a>
           </div>
-        {/if}
+
+          {#if artwork.owner.id !== artwork.artist.id}
+            <div class="ml-auto">
+              <a href={`/u/${artwork.artist.username}`}>
+                <div class="flex">
+                  <Avatar user={artwork.owner} />
+                  <div class="ml-2">
+                    <div class="break-all">@{artwork.owner.username}</div>
+                    <div class="text-xs text-gray-600">Owner</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          {/if}
+        </div>
       </div>
-    </div>
-    {#if end_counter}
-      <div class="p-3 rounded-b-lg lightblue-grad text-black">
-        Time left:
-        {end_counter}
-      </div>
-    {:else}
-      <div class="p-3 rounded-b-lg">&nbsp;</div>
+      {#if end_counter}
+        <div class="p-3 rounded-b-lg lightblue-grad text-black">
+          Time left:
+          {end_counter}
+        </div>
+      {:else}
+        <div class="p-3 rounded-b-lg">&nbsp;</div>
+      {/if}
     {/if}
-  {/if}
-</div>
+  </div>
 {/if}
