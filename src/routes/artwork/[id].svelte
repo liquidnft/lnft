@@ -553,7 +553,7 @@
 
         {#if artwork.description}
           <div
-            class="desk-desc description text-gray-600 break-words max-w-xl mx-auto">
+            class="desk-desc description text-gray-600 break-words">
             <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
             <div class="whitespace-pre-wrap">{@html linkify(artwork.description)}</div>
           </div>
