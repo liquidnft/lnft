@@ -19,15 +19,14 @@
 
   let tab = "liquid";
 
-  let loading;
-  let amount;
+  let img, loading, explainer, amount, confirming, confirmed;
+
   $: amount = val(
     $error.asset,
     $error.asset === btc ? Math.max($error.amount, 1000) + fee : $error.amount
   );
-  let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
-  let img;
+  let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
   let showInvoice = false;
   let toggle = () => {
@@ -58,9 +57,6 @@
     else address = $user.address;
   };
 
-  let confirming;
-  let confirmed;
-
   $: current = ($balances && $balances[$error.asset]) || 0;
   $: incoming = ($pending && $pending[$error.asset]) || 0;
   $: incoming && (confirming = true);
@@ -86,6 +82,7 @@
     tab = "bitcoin";
     fee = 0;
     loading = true;
+    explainer = true;
     try {
       ({ address, fee } = await api
         .url("/bitcoin")
@@ -106,9 +103,12 @@
     fee = 0;
 
     if (!confidential) {
+      explainer = false;
       address = $user.address;
       return;
     }
+
+    explainer = true;
 
     loading = true;
     try {
@@ -130,6 +130,7 @@
     tab = "lightning";
     fee = 0;
     loading = true;
+    explainer = true;
     try {
       ({ address, fee } = await api
         .url("/lightning")
@@ -156,7 +157,7 @@
     border-bottom: 3px solid #6ed8e0;
   }
 
-  .closeBtn{
+  .closeBtn {
     padding: 10px 13px;
   }
 
@@ -213,12 +214,27 @@
         </div>
       </div>
     {/if}
-    {#if tab !== 'liquid'}
+    {#if explainer}
       <p class="text-sm my-4">
-        We'll automatically convert up to 1 BTC to L-BTC so you can continue
-        your offer. This will incur an additional fee of
-        {fee}
-        sats.
+        Funding through a confidential liquid address, bitcoin address, or
+        lightning invoice is achieved by automatically converting to L-BTC
+        through
+        <a href="https://coinos.io" style="color: #6ed8e0">coinos.io</a>. Funds will be subject to counterparty risk during the conversion process.
+      </p>
+
+      <p class="text-sm my-4">
+        Liquid and bitcoin deposits require one on-chain confirmation before
+        being converted. No pending deposit indication will be shown until
+        confirmations are received. The minimum amount to convert is 0.00001
+        BTC.
+      </p>
+
+      <p class="text-sm my-4">
+        See
+        <a
+          href="https://help.blockstream.com/hc/en-us/articles/900000630846-How-do-I-get-Liquid-Bitcoin-L-BTC-"
+          style="color: #6ed8e0">this article</a>
+        for other methods of acquiring L-BTC.
       </p>
     {/if}
     <div class="mb-2 flex justify-center flex-col">
@@ -264,24 +280,23 @@
         <div class="flex justify-center">
           {#if tab === 'liquid'}
             <button
- class="justify-center flex center font-medium secondary-color uppercase mt-4 mr-4"
-              on:click={toggleConfidential}
-              >
+              class="justify-center flex center font-medium secondary-color uppercase mt-4 mr-4"
+              on:click={toggleConfidential}>
               <div class="my-auto mr-1">
-              <Fa icon={faUserSecret} />
-            </div>
-              <div>{ confidential ? 'Unconfidential' : 'Confidential' }</div>
+                <Fa icon={faUserSecret} />
+              </div>
+              <div>{confidential ? 'Unconfidential' : 'Confidential'}</div>
             </button>
           {/if}
-        <button
-          on:click={() => copy(address)}
-          class="justify-center flex center font-medium secondary-color uppercase mt-4">
-          <div>Copy {tab === 'lightning' ? 'invoice' : 'address'}</div>
-          <div class="my-auto ml-2">
-            <Fa icon={faClone} />
-          </div>
-        </button>
-      </div>
+          <button
+            on:click={() => copy(address)}
+            class="justify-center flex center font-medium secondary-color uppercase mt-4">
+            <div>Copy {tab === 'lightning' ? 'invoice' : 'address'}</div>
+            <div class="my-auto ml-2">
+              <Fa icon={faClone} />
+            </div>
+          </button>
+        </div>
       {/if}
     </div>
   {/if}
