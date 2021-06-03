@@ -23,7 +23,7 @@ export const getUserById = (id) => `query {
 }`;
 
 export const getUserByUsername = (username) => `query {
-  users(where: { username: {_eq: "${username}" }}, limit: 1) { 
+  users(where: { username: {_ilike: "${username}" }}, limit: 1) { 
     ${fields} 
     ${computed}
   }

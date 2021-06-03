@@ -124,7 +124,7 @@ export const getArtworksByUsername = (username) => `subscription {
 }`;
 
 export const getArtworksByTag = (tag) => `subscription {
-  artworks(where: {tags: {tag: {_eq: "${tag}"}}}) {
+  artworks(where: {tags: {tag: {_ilike: "${tag}"}}}) {
     ${fields}
   }
 }`;

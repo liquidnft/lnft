@@ -19,6 +19,7 @@
           })
           .json()
       ).data.tags;
+      console.log("tags", tags);
     }
   });
 </script>
@@ -28,13 +29,18 @@
     <h2>Galleries</h2>
 
     {#each Object.keys(galleries) as gallery}
-      <h2 class="text-xl mb-6 m-6 px-4"><a href={`/galleries/${gallery}`}>{galleries[gallery]}</a></h2>
+      <h2 class="text-xl mb-6 m-6 px-4">
+        <a href={`/galleries/${gallery}`}>{galleries[gallery]}</a>
+      </h2>
       <div class="flex flex-wrap">
-        {#each tags.filter((t) => t.tag === gallery) as tag}
-          <div class="w-full lg:w-1/3 px-10 mb-20">
+        {#each tags
+          .filter((t) => t.tag.toLowerCase() === gallery)
+          .slice(0, 3) as tag}
+          <div class="w-full lg:w-1/3 px-10 mb-8">
             <Card artwork={tag.artwork} />
           </div>
         {/each}
+        <a class="mx-auto secondary-btn mb-20" href={`/galleries/${gallery}`}>View gallery</a>
       </div>
     {/each}
   </div>
