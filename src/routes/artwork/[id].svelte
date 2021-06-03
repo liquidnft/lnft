@@ -69,7 +69,7 @@
   let setup = () => {
     subscription(
       operationStore(getArtworkTransactions(id)),
-      (a, b) => (transactions = b.transactions) && console.log(transactions)
+      (a, b) => (transactions = b.transactions)
     );
 
     subscription(
