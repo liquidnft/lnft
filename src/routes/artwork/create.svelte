@@ -110,7 +110,7 @@
     let domain =
       $user.username === "raretoshi"
         ? "raretoshi.com"
-        : `${$user.username}.raretoshi.com`;
+        : `${$user.username.toLowerCase()}.raretoshi.com`;
 
     let error, success;
 
