@@ -10,17 +10,13 @@
   let tags = [];
 
   onMount(async () => {
-    if ($token) {
-      tags = (
-        await hasura
-          .auth(`Bearer ${$token}`)
-          .post({
-            query: getTags,
-          })
-          .json()
-      ).data.tags;
-      console.log("tags", tags);
-    }
+    tags = (
+      await hasura
+        .post({
+          query: getTags,
+        })
+        .json()
+    ).data.tags;
   });
 </script>
 
