@@ -135,10 +135,10 @@
               placeholder="At least 8 characters." />
           {/if}
           <button
-            class="absolute h-full px-3 right-0 top-0"
+            class="absolute h-full px-3 right-0 top-0 w-auto"
             type="button"
             on:click|preventDefault|stopPropagation={() => (show = !show)}>
-            <Fa icon={show ? faEyeSlash : faEye} class="my-auto mr-1 w-auto" />
+            <Fa icon={show ? faEyeSlash : faEye} class="my-auto mr-1" />
           </button>
         </div>
       </div>

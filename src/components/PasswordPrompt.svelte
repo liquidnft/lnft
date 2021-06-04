@@ -83,10 +83,10 @@
           bind:this={input} />
       {/if}
       <button
-        class="flex h-full top-0 absolute px-3 right-0"
+        class="flex h-full top-0 absolute px-3 right-0 w-auto"
         type="button"
         on:click|preventDefault|stopPropagation={() => (show = !show)}>
-        <Fa icon={show ? faEyeSlash : faEye} class="my-auto mr-1 w-auto" />
+        <Fa icon={show ? faEyeSlash : faEye} class="my-auto mr-1" />
       </button>
     </div>
     <div class="text-right text-sm">
