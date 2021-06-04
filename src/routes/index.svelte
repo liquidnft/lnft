@@ -1,5 +1,6 @@
 <script>
   import { Summary } from "$comp";
+  import { fade } from "svelte/transition";
   import { user } from "$lib/store";
   import { operationStore, query } from "@urql/svelte";
   import { topCollectors, topArtists } from "$queries/users";
@@ -11,6 +12,38 @@
 
   const requestPolicy = "cache-and-network";
   let featuredArtworkId = "strikes-twice-2-e15ef";
+
+  let vid;
+  let featured = [
+    {
+      video: "QmQcVcrNSVyREYce7wRRuRNifsWMBcC34a86LVdpWcQgJM",
+      slug: "miami-dance-by-mbsjq-f6d5c",
+      artist: "Playboy x MBSJQ",
+      title: "Miami Dance",
+      white: true,
+    },
+    {
+      img: "QmUfGUba6PnaG1JfiFrNHggZbXCWQfbeKnnu6q6ZmbQgtP",
+      slug: "lasers-of-the-storm-6782d",
+      artist: "rarescrilla",
+      title: "Lasers Of The Storm",
+      white: true,
+    },
+    {
+      video: "QmXYecumiaXbRQYaQGfBuEbZkAKxXZfEDo4tnJB8d1Hfgd",
+      slug: "miami-day-and-night-by-playboy-x-jon-noorlander-72fe4",
+      artist: "Playboy x Jon Noorlander",
+      title: "Miami Day and Night",
+      white: true,
+    },
+  ];
+
+  setInterval(() => {
+    current++;
+    if (current >= featured.length) current = 0;
+  }, 6000);
+
+  let current = 0;
 
   let artists = [];
   query(operationStore(topArtists(3), {}, { requestPolicy })).subscribe(
@@ -42,15 +75,15 @@
     margin-top: 128px;
   }
 
-  .header .primary-btn{
-      width: 240px;
-      margin: 0 auto;
-    }
+  .header .primary-btn {
+    width: 240px;
+    margin: 0 auto;
+  }
 
-  .header h5{
+  .header h5 {
     font-size: 22px;
     line-height: 36px;
-    color: #2D2E32;
+    color: #2d2e32;
     margin-top: 24px;
     margin-bottom: 34px;
   }
@@ -68,7 +101,7 @@
      */
   }
 
-  .container.more{
+  .container.more {
     display: flex;
     justify-content: center;
     margin: 0 auto;
@@ -86,33 +119,33 @@
     padding: 0.7rem 1.5rem !important;
   }
 
-  h3{
+  h3 {
     margin-bottom: 36px;
   }
 
-  .marg-bottom{
+  .marg-bottom {
     margin-bottom: 128px !important;
   }
 
   @media only screen and (max-width: 768px) {
-    .header-container.marg-bottom{
+    .header-container.marg-bottom {
       margin-bottom: 96px !important;
     }
 
-    .header{
+    .header {
       margin-top: 64px;
     }
 
-    h3{
+    h3 {
       margin-bottom: 32px;
     }
 
-    .header h5{
+    .header h5 {
       margin-top: 24px;
       margin-bottom: 24px;
     }
 
-    .header .primary-btn{
+    .header .primary-btn {
       width: 100%;
     }
 
@@ -120,11 +153,11 @@
       height: 400px !important;
     }
 
-    .container.more{
+    .container.more {
       margin-top: 48px;
     }
 
-    .marg-bottom{
+    .marg-bottom {
       margin-bottom: 96px !important;
     }
   }
@@ -136,35 +169,50 @@
       Raretoshi
       <br />digital art
     </h1>
-    <h5 class="md:max-w-lg mx-auto text-left md:text-center">Upload, collect, and transact rare digital art on the Liquid Network</h5>
-      <a class="primary-btn" href={`/market`}>Start exploring</a>
+    <h5 class="md:max-w-lg mx-auto text-left md:text-center">
+      Upload, collect, and transact rare digital art on the Liquid Network
+    </h5>
+    <a class="primary-btn" href={`/market`}>Start exploring</a>
   </div>
 </div>
 
 <div class="flex secondary-header marg-bottom">
   <div
-    class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
-    <h2 class="mb-3">cryptograffiti <br />x loudsqueak</h2>
-    <p>Strikes Twice</p>
-    <button
-      class="button-transparent header-button border mt-10"
-      on:click={() => goto(`/a/${featuredArtworkId}`)}>
-      View Artwork</button>
+    class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
+    class:text-white={featured[current].white}>
+    <h2 class:text-white={featured[current].white}>
+      {featured[current].artist}
+    </h2>
+    <p>
+      {featured[current].title}
+      <button
+        class="button-transparent header-button border mt-10"
+        class:text-white={featured[current].white}
+        class:hover:text-white={featured[current].white}
+        on:click={() => goto(`/a/${featured[current].slug}`)}>
+        View Artwork</button>
+    </p>
   </div>
 
-
-  <video
-    class="lazy cover absolute secondary-header"
-    autoplay
-    muted
-    playsinline
-    loop>
-    <source src="/api/ipfs/QmTLNhbh6EhA1V3q7NR91GLnqJ5VG8BPH2GGZ6DZrRxFqe" />
-    Your browser does not support HTML5 video.
-  </video>
-
+  {#if featured[current].video}
+    <video
+      in:fade
+      out:fade
+      class="lazy cover absolute secondary-header"
+      autoplay
+      muted
+      playsinline
+      loop
+      src={`/api/ipfs/${featured[current].video}`}
+      :key={featured[current].video} />
+  {:else if featured[current].img}
+    <img
+      in:fade
+      out:fade
+      class="lazy cover absolute secondary-header"
+      src={`/api/ipfs/${featured[current].img}`} />
+  {/if}
 </div>
-
 
 <div class="container mx-auto px-10">
   <h3>Recent Activity</h3>
@@ -190,7 +238,7 @@
   <a class="secondary-btn" href={'/market'}>View gallery</a>
 </div>
 
-  <!--
+<!--
 <div class="container mx-auto px-10">
   <h3>Watch the market move</h3>
 </div>
