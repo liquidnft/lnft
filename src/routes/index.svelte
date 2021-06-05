@@ -188,7 +188,9 @@
       <button
         class="button-transparent header-button border mt-10"
         class:text-white={featured[current].white}
+        class:border-white={featured[current].white}
         class:hover:text-white={featured[current].white}
+        class:hover:border-white={featured[current].white}
         on:click={() => goto(`/a/${featured[current].slug}`)}>
         View Artwork</button>
     </p>
