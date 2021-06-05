@@ -160,6 +160,8 @@ button {
 .secondary-btn,
 .button-transparent {
   border-radius: 30px;
+  border: 1px solid #2d2e32;
+  color: #2D2E32;
   height: 48px;
   padding: 0 30px;
   font-weight: 700;
@@ -168,6 +170,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
 
 .secondary-btn:hover{
