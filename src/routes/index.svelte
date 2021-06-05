@@ -16,13 +16,6 @@
   let vid;
   let featured = [
     {
-      video: "QmQcVcrNSVyREYce7wRRuRNifsWMBcC34a86LVdpWcQgJM",
-      slug: "miami-dance-by-mbsjq-f6d5c",
-      artist: "Playboy x MBSJQ",
-      title: "Miami Dance",
-      white: true,
-    },
-    {
       img: "QmUfGUba6PnaG1JfiFrNHggZbXCWQfbeKnnu6q6ZmbQgtP",
       slug: "lasers-of-the-storm-6782d",
       artist: "rarescrilla",
@@ -30,10 +23,17 @@
       white: true,
     },
     {
-      video: "QmXYecumiaXbRQYaQGfBuEbZkAKxXZfEDo4tnJB8d1Hfgd",
-      slug: "miami-day-and-night-by-playboy-x-jon-noorlander-72fe4",
-      artist: "Playboy x Jon Noorlander",
-      title: "Miami Day and Night",
+      img: "QmRjf6jUvHTSKn8gxb5SCJUhMWd4nWPx61XoJBU5u66t1g",
+      slug: "in-humanity-827dc",
+      artist: "karan4d",
+      title: "In Humanity",
+      white: true,
+    },
+    {
+      img: "Qmdx8u6pcNg9fop2r71ayfm9p22kBrXFyTqCfwCLYUVeU8",
+      slug: "identity-tax-570cc",
+      artist: "karan4d",
+      title: "Identity Tax",
       white: true,
     },
   ];
@@ -41,7 +41,7 @@
   setInterval(() => {
     current++;
     if (current >= featured.length) current = 0;
-  }, 6000);
+  }, 8000);
 
   let current = 0;
 
