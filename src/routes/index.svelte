@@ -23,14 +23,14 @@
       white: true,
     },
     {
-      img: "QmRjf6jUvHTSKn8gxb5SCJUhMWd4nWPx61XoJBU5u66t1g",
+      img: "QmWgQCmkmHLoMg7QSCcJGjioqRcYLLNYKRvByAVVQqiga2",
       slug: "in-humanity-827dc",
       artist: "karan4d",
       title: "In Humanity",
       white: true,
     },
     {
-      img: "Qmdx8u6pcNg9fop2r71ayfm9p22kBrXFyTqCfwCLYUVeU8",
+      img: "QmXLdTzbRSgaoEzMSYydZ6qDwQ9RUHaxEbgFoF6qPTYPRN",
       slug: "identity-tax-570cc",
       artist: "karan4d",
       title: "Identity Tax",
