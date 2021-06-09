@@ -190,7 +190,9 @@ export const multisig = (key) => {
 
   let redeem = payments.p2ms({
     m: 2,
-    pubkeys: [key.pubkey, SERVER_PUBKEY].sort((a, b) => a.toString('hex').localeCompare(b.toString('hex'))),
+    pubkeys: [key.pubkey, SERVER_PUBKEY].sort((a, b) =>
+      a.toString("hex").localeCompare(b.toString("hex"))
+    ),
     network,
   });
 
@@ -369,21 +371,19 @@ export const sign = (sighash = 1) => {
   return p;
 };
 
-export const broadcast = async () => {
+export const broadcast = (disableRetries = false) => {
   let tx = get(psbt).extractTransaction();
   let hex = tx.toHex();
+  let middlewares = [
+    retry({
+      delayTimer: 6000,
+      maxAttempts: 3,
+    }),
+  ];
 
-  electrs
-    .url("/tx")
-    .middlewares([
-      retry({
-        delayTimer: 6000,
-        maxAttempts: 3,
-      }),
-    ])
-    .body(hex)
-    .post()
-    .text();
+  if (disableRetries) middlewares = [];
+
+  return electrs.url("/tx").middlewares(middlewares).body(hex).post().text();
 };
 
 export const signAndBroadcast = async () => {
@@ -517,8 +517,11 @@ export const signOver = async ({ asset }, tx) => {
   let p = new Psbt();
 
   if (!tx) {
-    let utxos = await electrs.url(`/address/${multisig().address}/utxo`).get().json();
-    let prevout = utxos.find(o => o.asset === asset);
+    let utxos = await electrs
+      .url(`/address/${multisig().address}/utxo`)
+      .get()
+      .json();
+    let prevout = utxos.find((o) => o.asset === asset);
     let hex = await getHex(prevout.txid);
     tx = Transaction.fromHex(hex);
   }
@@ -609,9 +612,6 @@ export const createSwap = async (
   });
 
   let ms = !!(royalty || auction_end);
-
-  console.log("creating", ms, tx);
-  debugger;
 
   if (tx) {
     let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
