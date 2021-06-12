@@ -1,42 +1,51 @@
 <script>
+  import { onMount } from "svelte";
+  import { hasura } from "$lib/api";
   import { Summary } from "$comp";
   import { fade } from "svelte/transition";
   import { user } from "$lib/store";
   import { operationStore, query } from "@urql/svelte";
   import { topCollectors, topArtists } from "$queries/users";
+  import { getFeatured } from "$queries/artworks";
   import Activity from "$components/Activity";
   import RecentActivityCard from "$components/RecentActivityCard";
   import LatestPiecesCard from "$components/LatestPiecesCard";
-  import { goto } from "$lib/utils";
+  import { err, goto } from "$lib/utils";
   import { getRecentActivity, getLatestPieces } from "$queries/transactions";
 
-  const requestPolicy = "cache-and-network";
-  let featuredArtworkId = "strikes-twice-2-e15ef";
+  let featured = [];
+  let recent = [];
+  let latest = [];
 
-  let vid;
-  let featured = [
-    {
-      video: "QmQcVcrNSVyREYce7wRRuRNifsWMBcC34a86LVdpWcQgJM",
-      slug: "miami-dance-by-mbsjq-f6d5c",
-      artist: "Playboy x MBSJQ",
-      title: "Miami Dance",
-      white: true,
-    },
-    {
-      img: "QmUfGUba6PnaG1JfiFrNHggZbXCWQfbeKnnu6q6ZmbQgtP",
-      slug: "lasers-of-the-storm-6782d",
-      artist: "rarescrilla",
-      title: "Lasers Of The Storm",
-      white: true,
-    },
-    {
-      video: "QmXYecumiaXbRQYaQGfBuEbZkAKxXZfEDo4tnJB8d1Hfgd",
-      slug: "miami-day-and-night-by-playboy-x-jon-noorlander-72fe4",
-      artist: "Playboy x Jon Noorlander",
-      title: "Miami Day and Night",
-      white: true,
-    },
-  ];
+  onMount(async () => {
+    try {
+      featured = (
+        await hasura
+          .post({
+            query: getFeatured,
+          })
+          .json()
+      ).data.featured;
+
+      recent = (
+        await hasura
+          .post({
+            query: getRecentActivity(3),
+          })
+          .json()
+      ).data.recentactivity;
+
+      latest = (
+        await hasura
+          .post({
+            query: getLatestPieces(3),
+          })
+          .json()
+      ).data.transactions;
+    } catch (e) {
+      err(e);
+    }
+  });
 
   setInterval(() => {
     current++;
@@ -44,29 +53,6 @@
   }, 6000);
 
   let current = 0;
-
-  let artists = [];
-  query(operationStore(topArtists(3), {}, { requestPolicy })).subscribe(
-    ({ data }) =>
-      data && (artists = data.artists.map((u) => ({ user: u, value: u.sold })))
-  );
-
-  let collectors = [];
-  query(operationStore(topCollectors(3), {}, { requestPolicy })).subscribe(
-    ({ data }) =>
-      data &&
-      (collectors = data.collectors.map((u) => ({ user: u, value: u.owned })))
-  );
-
-  let recent = [];
-  query(operationStore(getRecentActivity(3), {}, { requestPolicy })).subscribe(
-    ({ data }) => data && (recent = data.recentactivity)
-  );
-
-  let latest = [];
-  query(operationStore(getLatestPieces(3), {}, { requestPolicy })).subscribe(
-    ({ data }) => data && (latest = data.transactions)
-  );
 </script>
 
 <style>
@@ -176,48 +162,51 @@
   </div>
 </div>
 
-<div class="flex secondary-header marg-bottom">
-  <div
-    class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
-    class:text-white={featured[current].white}>
-    <h2 class:text-white={featured[current].white}>
-      {featured[current].artist}
-    </h2>
-    <p>
-      {featured[current].title}
-      {#if featured[current].white}
-      <button
-        class="button-transparent header-button border mt-10" style="border-color: white; color: white"
-        on:click={() => goto(`/a/${featured[current].slug}`)}>
-        View Artwork</button>
-      {:else}
-      <button
-        class="button-transparent header-button border mt-10"
-        on:click={() => goto(`/a/${featured[current].slug}`)}>
-        View Artwork</button>
-    {/if}
-    </p>
-  </div>
+{#if featured[current]}
+  <div class="flex secondary-header marg-bottom">
+    <div
+      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
+      class:text-white={featured[current].white}>
+      <h2 class:text-white={featured[current].white}>
+        {featured[current].artwork.artist.username}
+      </h2>
+      <p>
+        {featured[current].artwork.title}
+        {#if featured[current].white}
+          <button
+            class="button-transparent header-button border mt-10"
+            style="border-color: white; color: white"
+            on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
+            View Artwork</button>
+        {:else}
+          <button
+            class="button-transparent header-button border mt-10"
+            on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
+            View Artwork</button>
+        {/if}
+      </p>
+    </div>
 
-  {#if featured[current].video}
-    <video
-      in:fade
-      out:fade
-      class="lazy cover absolute secondary-header"
-      autoplay
-      muted
-      playsinline
-      loop
-      src={`/api/ipfs/${featured[current].video}`}
-      :key={featured[current].video} />
-  {:else if featured[current].img}
-    <img
-      in:fade
-      out:fade
-      class="lazy cover absolute secondary-header"
-      src={`/api/ipfs/${featured[current].img}`} />
-  {/if}
-</div>
+    {#if featured[current].artwork.filetype.includes('video')}
+      <video
+        in:fade
+        out:fade
+        class="lazy cover absolute secondary-header"
+        autoplay
+        muted
+        playsinline
+        loop
+        src={`/api/ipfs/${featured[current].artwork.filename}`}
+        :key={featured[current].id} />
+    {:else}
+      <img
+        in:fade
+        out:fade
+        class="lazy cover absolute secondary-header"
+        src={`/api/ipfs/${featured[current].artwork.filename}`} />
+    {/if}
+  </div>
+{/if}
 
 <div class="container mx-auto px-10">
   <h3>Recent Activity</h3>
@@ -242,21 +231,3 @@
 <div class="container more marg-bottom">
   <a class="secondary-btn" href={'/market'}>View gallery</a>
 </div>
-
-<!--
-<div class="container mx-auto px-10">
-  <h3>Watch the market move</h3>
-</div>
-<div class="container mx-auto flex flex-wrap marg-bottom">
-  <Summary
-    title="Top Collectors"
-    stat="Works collected"
-    items={collectors}
-    link="/top-collectors" />
-  <Summary
-    title="Trending artworks"
-    stat="Total shares"
-    items={artists}
-    link="/top-artists" />
-</div>
--->

@@ -63,6 +63,18 @@ export const getAssets = `subscription {
  }
 }`;
 
+export const getFeatured = `query {
+ featured {
+    id
+    start_date
+    end_date
+    white 
+    artwork {
+      ${fields}
+    } 
+  }
+}`;
+
 export const getArtworks = `query {
  artworks {
     ${fields}
