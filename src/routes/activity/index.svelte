@@ -1,21 +1,23 @@
 <script>
   import { user } from "$lib/store";
+  import { page } from "$app/stores";
+  import { hasura } from "$lib/api";
   import { Activity, Avatar } from "$comp";
   import { getRecentActivity } from "$queries/transactions";
   import { topCollectors } from "$queries/users";
   import { query, operationStore } from "@urql/svelte";
 
-  const requestPolicy = "cache-and-network";
-
   let transactions = [];
-  query(operationStore(getRecentActivity(20)), {}, { requestPolicy }).subscribe(
-    ({ data }) => data && (transactions = data.recentactivity)
-  );
-
-  let collectors = [];
-  query(operationStore(topCollectors(5)), {}, { requestPolicy }).subscribe(
-    ({ data }) => data && (collectors = data.collectors)
-  );
+  $: pageChange($page);
+  const pageChange = async ({ params }) => {
+      transactions = (
+        await hasura
+          .post({
+            query: getRecentActivity(20),
+          })
+          .json()
+      ).data.recentactivity;
+  };
 
   let show = false;
 </script>
