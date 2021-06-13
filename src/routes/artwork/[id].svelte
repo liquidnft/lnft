@@ -10,8 +10,8 @@
   import { compareAsc, format, parseISO } from "date-fns";
   import { Activity, Avatar, Card, ProgressLinear } from "$comp";
   import Sidebar from "./_sidebar";
-  import { tick } from "svelte";
-  import { prompt, password, user, token, psbt } from "$lib/store";
+  import { tick, onDestroy } from "svelte";
+  import { art, prompt, password, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
   import {
     getArtworkSub,
@@ -34,7 +34,6 @@
   } from "$lib/wallet";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { api } from "$lib/api";
-  import Head from "$components/Head";
   import ArtworkQuery from "$components/ArtworkQuery";
   import SocialShare from "$components/SocialShare";
 
@@ -76,19 +75,14 @@
       operationStore(getArtworkSub(id)),
       (a, b) => (artwork = b.artworks_by_pk)
     );
-
-    query(operationStore(getArtwork(id)), {}, { requestPolicy }).subscribe(
-      (r) => {
-        if (r.data) {
-          artwork = r.data.artworks_by_pk;
-        }
-      }
-    );
   };
+
+  onDestroy(() => ($art = undefined));
 
   $: update(artwork);
   let update = () => {
     if (!artwork) return;
+    $art = artwork;
 
     let count = () => {
       clearTimeout(timeout);
@@ -300,7 +294,8 @@
     object-fit: contain !important;
   }
 
-  .desktopImage :global(img), .desktopImage :global(video){
+  .desktopImage :global(img),
+  .desktopImage :global(video) {
     margin: 0 auto;
   }
 
@@ -364,7 +359,6 @@
 
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork}
-    <Head {artwork} />
     <div class="flex flex-wrap">
       <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">
@@ -564,10 +558,11 @@
         </div>
 
         {#if artwork.description}
-          <div
-            class="desk-desc description text-gray-600 break-words">
+          <div class="desk-desc description text-gray-600 break-words">
             <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
-            <div class="whitespace-pre-wrap">{@html linkify(artwork.description)}</div>
+            <div class="whitespace-pre-wrap">
+              {@html linkify(artwork.description)}
+            </div>
           </div>
         {/if}
 

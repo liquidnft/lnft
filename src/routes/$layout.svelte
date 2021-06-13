@@ -15,6 +15,7 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
+  import Head from "$components/Head";
 
   let open = false;
   let ready;
@@ -32,6 +33,7 @@
 <style global src="../main.css" />
 <svelte:window bind:scrollY={y} />
 
+<Head />
 <Snack />
 
 {#if ready}
