@@ -51,8 +51,8 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
 
 ## Install
 
-    git clone https://gogs.coinos.io/adam/liquidart raretoshi
-    cd raretoshi
+    git clone https://github.com/liquidnft/lnft
+    cd lnft
     yarn
     cd hasura
     cp .env.sample .env

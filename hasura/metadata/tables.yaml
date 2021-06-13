@@ -461,6 +461,32 @@
           _eq: X-Hasura-User-Id
 - table:
     schema: public
+    name: featured
+  object_relationships:
+  - name: artwork
+    using:
+      foreign_key_constraint_on: artwork_id
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - white
+      - start_date
+      - end_date
+      - artwork_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - white
+      - end_date
+      - start_date
+      - artwork_id
+      - id
+      filter: {}
+- table:
+    schema: public
     name: follows
   object_relationships:
   - name: user

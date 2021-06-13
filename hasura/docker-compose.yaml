@@ -18,9 +18,6 @@ services:
       IPFS_URL: '${IPFS_URL}'
       IPFS_WEB_URL: '${IPFS_WEB_URL}'
       SIGNING_SERVER_MNEMONIC: '${SIGNING_SERVER_MNEMONIC}'
-    ports:
-      - '8091:8091'
-      - '8092:8092'
     volumes:
       - ${STORAGE_DIR}:/export
   postgres:

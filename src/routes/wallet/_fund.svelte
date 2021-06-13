@@ -150,22 +150,17 @@
 
     {#if explainer}
       <p class="text-sm my-4">
-        L-BTC and other liquid assets can be sent directly to your
-        non-confidential liquid address.
-      </p>
-
-      <p class="text-sm my-4">
-        Funding through a confidential address, bitcoin address, or lightning
-        invoice can be achieved by converting to non-confidential L-BTC through
-        <a href="https://coinos.io" style="color: #6ed8e0">coinos.io</a>
-        and will be handled automatically if you select one of these options.
+        Funding through a confidential liquid address, bitcoin address, or
+        lightning invoice is achieved by automatically converting to L-BTC
+        through
+        <a href="https://coinos.io" style="color: #6ed8e0">coinos.io</a>. Funds will be subject to counterparty risk during the conversion process.
       </p>
 
       <p class="text-sm my-4">
         Liquid and bitcoin deposits require one on-chain confirmation before
-        they will be converted. No pending deposit indication will be shown
-        while the conversion is underway. The minimum amount to convert is
-        0.00001 BTC and the maximum is 0.01 BTC.
+        being converted. No pending deposit indication will be shown until
+        confirmations are received. The minimum amount to convert is 0.00001
+        BTC.
       </p>
 
       <p class="text-sm my-4">

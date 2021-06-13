@@ -1,4 +1,5 @@
 <script>
+  import { tick } from "svelte";
   import { ProgressLinear } from "$comp";
   import Fa from "svelte-fa";
   import {
@@ -14,6 +15,8 @@
     getAddress,
     parseVal,
     parseAsset,
+    broadcast,
+    sign,
   } from "$lib/wallet";
   import { requirePassword } from "$lib/auth";
   import { Psbt, Transaction } from "@asoltys/liquidjs-lib";
@@ -28,24 +31,19 @@
     val,
     btc,
     goto,
+    info,
+    err,
   } from "$lib/utils";
 
   export let summary = false;
-  export let tx;
+  export let tx = undefined;
+  export let debug = false;
 
   let ins, outs, totals, senders, recipients, showDetails, users, lock, pp, uu;
   let loading;
   $: init($psbt, $user, $addresses);
   let retries = 0;
   let init = async (p, u) => {
-    pp = JSON.stringify(p);
-    uu = JSON.stringify(u);
-    if (++retries < 5 && lock) {
-      if (JSON.stringify(p) !== pp || JSON.stringify(u) !== uu)
-        setTimeout(() => init(p, u), 10);
-      return;
-    }
-    lock = true;
     if (!p) return;
 
     ins = [];
@@ -94,8 +92,8 @@
 
       let address, asset, value;
 
-        asset = parseAsset(out.asset);
-        value = parseVal(out.value);
+      asset = parseAsset(out.asset);
+      value = parseVal(out.value);
 
       try {
         address = getAddress(out);
@@ -135,24 +133,54 @@
     lock = false;
   };
 
+  let clear = () => {
+    base64 = undefined;
+    $psbt = undefined;
+    tx = undefined;
+  };
+
   let parse = () => (base64 = x);
 
   let base64;
   let x;
   $: read(base64);
-  let read = (base64) => {
+  let read = async (base64) => {
     if (base64) {
       tx = undefined;
       $psbt = Psbt.fromBase64(base64);
-      init($psbt, $user);
+      await init($psbt, $user);
+    }
+  };
+
+  let signTx = async () => {
+    await requirePassword();
+    sign();
+    info("Signed");
+  };
+
+  let broadcastTx = async () => {
+    try {
+      await broadcast(true);
+    } catch (e) {
+      err(e);
     }
   };
 </script>
 
-<!--
-<textarea bind:value={x} class="w-full" rows={20} />
-<button on:click={parse}>Parse</button>
--->
+{#if debug}
+  {#if tx}
+    <div class="flex">
+      <button on:click={clear} class="secondary-btn mr-2">Clear</button>
+      <button on:click={signTx} class="secondary-btn mr-2">Sign</button>
+      <button on:click={broadcastTx} class="secondary-btn">Broadcast</button>
+    </div>
+  {:else}
+    <textarea bind:value={x} class="w-full" rows={14} />
+    <div class="flex">
+      <button on:click={parse} class="secondary-btn mr-2">Parse</button>
+    </div>
+  {/if}
+{/if}
 
 {#if $addresses && tx}
   <div class="w-full mx-auto">
@@ -173,7 +201,9 @@
                       {/if}
                     </div>
                     <div class="my-auto ml-2">
-                      <a href={`/u/${username.replace(' 2of2', '')}`} class="secondary-color">
+                      <a
+                        href={`/u/${username.replace(' 2of2', '')}`}
+                        class="secondary-color">
                         {username}
                       </a>
                     </div>
@@ -215,7 +245,9 @@
                 <div class="my-auto ml-2">
                   {#if users[username]}
                     <div class="my-auto">
-                      <a href={`/u/${username.replace(' 2of2', '')}`} class="secondary-color">
+                      <a
+                        href={`/u/${username.replace(' 2of2', '')}`}
+                        class="secondary-color">
                         {username}
                       </a>
                     </div>
@@ -348,14 +380,14 @@
                 <div class="break-all mb-2 p-4">
                   <div class="mb-2">Index: {i}</div>
                   {#if out.value && out.asset}
-                  <div class="mb-2">
-                    {out.value}
-                    units of
-                    <a
-                      href={`${explorer}/asset/${out.asset}`}
-                      class="secondary-color">{out.asset}</a>
-                  </div>
-                {/if}
+                    <div class="mb-2">
+                      {out.value}
+                      units of
+                      <a
+                        href={`${explorer}/asset/${out.asset}`}
+                        class="secondary-color">{out.asset}</a>
+                    </div>
+                  {/if}
                   <div>
                     {#if out.address === 'Fee'}
                       Fee
@@ -378,6 +410,6 @@
       </div>
     {/if}
   </div>
-{:else}
-    <ProgressLinear />
+{:else if !debug}
+  <ProgressLinear />
 {/if}
