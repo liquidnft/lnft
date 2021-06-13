@@ -60,22 +60,24 @@
     {#if showDetails}
       <div class="p-4">
         <div class="flex flex-row justify-between mb-2">
-          <div>
-            <h1 class="text-xl">
-              {artwork.title || 'Untitled'}
-              {#if !(artwork.transferred_at || artwork.asking_asset)}
-                (unlisted)
+          <a href={`/a/${artwork.slug}`}>
+            <div>
+              <h1 class="text-xl">
+                {artwork.title || 'Untitled'}
+                {#if !(artwork.transferred_at || artwork.asking_asset)}
+                  (unlisted)
+                {/if}
+              </h1>
+              {#if artwork.editions > 1}
+                <h2 class="text-sm text-gray-400 font-light">
+                  Edition
+                  {artwork.edition}
+                  of
+                  {artwork.editions}
+                </h2>
               {/if}
-            </h1>
-            {#if artwork.editions > 1}
-              <h2 class="text-sm text-gray-400 font-light">
-                Edition
-                {artwork.edition}
-                of
-                {artwork.editions}
-              </h2>
-            {/if}
-          </div>
+            </div>
+          </a>
           <Heart {artwork} />
         </div>
         <div class="flex mb-4">
