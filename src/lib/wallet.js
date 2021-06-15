@@ -39,7 +39,7 @@ import { getActiveBids } from "$queries/transactions";
 const DUST = 1000;
 
 const SERVER_PUBKEY = Buffer.from(
-  "02e4520146cb2536acc5431d2e786f89470aa8ed3e2c61afecfc8d1e858e01eaa8",
+  "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b",
   "hex"
 );
 const network = networks.regtest;
