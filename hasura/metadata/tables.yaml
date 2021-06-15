@@ -105,6 +105,22 @@
           name: accounts
 - table:
     schema: public
+    name: activebids
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - psbt
+      - user_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - psbt
+      - user_id
+      filter: {}
+- table:
+    schema: public
     name: artists
   select_permissions:
   - role: anonymous

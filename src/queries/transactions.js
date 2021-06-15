@@ -85,6 +85,12 @@ export const getTransactions = (limit = 10) => `query {
   }
 }`;
 
+export const getActiveBids = (id) => `query {
+  activebids(where: { user_id: { _eq: "${id}"}}) {
+    psbt
+  }
+}`;
+
 export const getRecentActivity = (limit = 3) => `query {
   recentactivity(limit: ${limit}) {
     ${fields}
