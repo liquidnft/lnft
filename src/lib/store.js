@@ -7,7 +7,7 @@ export const assets = writable([]);
 export const balances = writable({});
 export const edition = writable();
 export const error = writable();
-export const fee = writable(300);
+export const fee = writable(100);
 export const filterCriteria = writable({
   listPrice: false,
   openBid: false,
