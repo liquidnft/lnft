@@ -26,6 +26,9 @@
     $error.asset === btc ? Math.max($error.amount, 1000) + fee : $error.amount
   );
 
+  $: amountUpdated(amount);
+  let amountUpdated = (a) => isNaN(a) && ($prompt = undefined);
+
   let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
   let showInvoice = false;
