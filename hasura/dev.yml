@@ -21,8 +21,14 @@ services:
       IPFS_URL: '${IPFS_URL}'
       IPFS_WEB_URL: '${IPFS_WEB_URL}'
       SIGNING_SERVER_MNEMONIC: '${SIGNING_SERVER_MNEMONIC}'
+      SMTP_HOST: '${SMTP_HOST}'
+      SMTP_PORT: '${SMTP_PORT}'
+      SMTP_USER: '${SMTP_USER}'
+      SMTP_PASS: '${SMTP_PASS}'
+      SMTP_SENDER: '${SMTP_SENDER}'
     volumes:
-      - ./app:/app
+      - ./app:/opt/src/hasura/app
+      - ./custom:/opt/src/hasura/app/custom
       - ${STORAGE_DIR}:/export
     network_mode: host
   postgres:

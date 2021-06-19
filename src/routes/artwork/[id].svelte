@@ -19,7 +19,7 @@
     getArtworksByArtist,
   } from "$queries/artworks";
   import {
-    createTransaction,
+    // createTransaction,
     getArtworkTransactions,
   } from "$queries/transactions";
   import { goto, err, explorer, info, units } from "$lib/utils";
@@ -101,7 +101,7 @@
 
   let others = [];
 
-  let createTransaction$ = mutation(createTransaction);
+  // let createTransaction$ = mutation(createTransaction);
 
   let list_price;
   let val, sats, ticker;
@@ -133,13 +133,11 @@
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-   
     let result = await api
       .auth(`Bearer ${$token}`)
       .url("/transaction")
       .post({ transaction })
       .json();
-    
     if (result.errors) {
       if (artwork && artwork.bid[0]) {
         return err(
@@ -149,7 +147,6 @@
         );
       } else return err(result.errors[0]);
     }
-
     if (transaction.type === "purchase") info("Sold! Congratulations!");
     if (transaction.type === "bid") info("Bid placed!");
     bidding = false;
