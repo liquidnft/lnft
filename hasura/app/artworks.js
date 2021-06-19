@@ -2,6 +2,7 @@ const { hasura } = require("./api");
 
 const crypto = require("crypto");
 const wretch = require("wretch");
+const { HASURA_URL } = process.env;
 
 app.post("/viewed", (req, res) => {
   const query = `mutation ($id: uuid!) {
@@ -16,4 +17,23 @@ app.post("/viewed", (req, res) => {
   });
 
   res.send({});
+});
+
+app.post("/transaction", auth, async (req, res) => {
+  const api = wretch().url(`${HASURA_URL}/v1/graphql`).headers(req.headers);
+  const query = `mutation create_transaction($transaction: transactions_insert_input!) {
+    insert_transactions_one(object: $transaction) {
+      id,
+      artwork_id
+    } 
+  }`;
+
+  const { transaction } = req.body;
+
+  let r = await api
+    .post({ query, variables: { transaction } })
+    .json()
+    .catch(console.error);
+
+  res.send(r);
 });
