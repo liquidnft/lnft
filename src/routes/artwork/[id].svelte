@@ -133,13 +133,13 @@
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-    // let result = await createTransaction$({ transaction });
+   
     let result = await api
       .auth(`Bearer ${$token}`)
       .url("/transaction")
       .post({ transaction })
       .json();
-    console.log(result);
+    
     if (result.errors) {
       if (artwork && artwork.bid[0]) {
         return err(
