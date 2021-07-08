@@ -133,13 +133,23 @@
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-    let result = await createTransaction$({ transaction });
-    if (result.error)
-      return err(
-        `Problem placing bid, minimum bid is ${val(
-          artwork.bid[0].amount + 1000
-        )}`
-      );
+   
+    let result = await api
+      .auth(`Bearer ${$token}`)
+      .url("/transaction")
+      .post({ transaction })
+      .json();
+    
+    if (result.errors) {
+      if (artwork && artwork.bid[0]) {
+        return err(
+          `Problem placing bid, minimum bid is ${val(
+            artwork.bid[0].amount + 1000
+          )}`
+        );
+      } else return err(result.errors[0]);
+    }
+
     if (transaction.type === "purchase") info("Sold! Congratulations!");
     if (transaction.type === "bid") info("Bid placed!");
     bidding = false;
