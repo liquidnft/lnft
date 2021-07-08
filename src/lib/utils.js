@@ -214,7 +214,10 @@ const validateEmail = (email) => {
   return re.test(email);
 };
 
-const go = ({ id, type, s }) => goto(`/${type}/${id ? id : s}`);
+const go = ({ id, type, s }) => {
+  let url = { user: 'u', artist: 'a', tag: 'tag' }[type];
+  goto(`/${url}/${s ? s : id}`);
+} 
 
 const kebab = (str) =>
   str &&

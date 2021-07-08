@@ -43,12 +43,13 @@
   let applyFilters = (artworks, subject) => {
     if (!(artworks && subject)) return;
     creations = artworks.filter((a) => a.artist_id === subject.id);
-    collection = artworks.filter((a) => a.owner_id === subject.id);
+    collection = artworks.filter((a) => a.owner_id === subject.id && a.artist_id !== a.owner_id);
     favorites = artworks.filter((a) => a.favorited);
   };
 
   let follow, toggleFollow$;
   $: if (subject && $user) {
+    if (subject.is_artist) tab = "creations";
     if (subject.followed) {
       toggleFollow$ = mutation(deleteFollow($user, subject));
 
@@ -68,7 +69,7 @@
     }
   }
 
-  let tab = "creations";
+  let tab = "collection";
 </script>
 
 <style>
@@ -198,11 +199,13 @@
       <div class="w-full xl:w-2/3">
         <div
           class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-14">
-          <div
-            class:hover={tab === 'creations'}
-            on:click={() => (tab = 'creations')}>
-            Creations
-          </div>
+          {#if subject.is_artist}
+            <div
+              class:hover={tab === 'creations'}
+              on:click={() => (tab = 'creations')}>
+              Creations
+            </div>
+          {/if}
           <div
             class:hover={tab === 'collection'}
             on:click={() => (tab = 'collection')}>
