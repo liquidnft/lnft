@@ -14,12 +14,13 @@ app.register(require("fastify-static"), {
   prefix: "/public/", // optional: default '/'
 });
 
+require("./mail");
+
 require("./auth");
 require("./artworks");
 require("./auctions");
 require("./coinos");
 require("./proxy");
-require("./mail");
 require("./monitor");
 require("./signing");
 require("./upload");
