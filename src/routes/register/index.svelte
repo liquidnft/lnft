@@ -148,7 +148,7 @@
         and
         <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
       <div class="flex my-5 justify-end">
-        <button class="primary-btn w-1/2" type="submit">Register</button>
+        <button class="primary-btn w-full" type="submit">Register</button>
       </div>
 
       <a href="/login" class="text-midblue">

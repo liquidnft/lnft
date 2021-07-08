@@ -104,7 +104,7 @@
     <a href="/forgot-password" class="block w-full text-midblue">Forgot
       password?</a>
     <div class="flex my-5 justify-end">
-      <button class="primary-btn w-1/2" type="submit">Sign In</button>
+      <button class="primary-btn w-full" type="submit">Sign In</button>
     </div>
     <a href="/register" class="text-midblue">Don't have an account? Sign up</a>
   </form>
