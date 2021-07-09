@@ -42,8 +42,6 @@ app.post("/transaction", auth, async (req, res) => {
   let r = await hasura.post({ query }).json().catch(console.error);
   let { owner, title, bid, slug } = r.data.artworks[0];
 
-  console.log(owner, bid);
-
   let locals = {
     outbid: false,
     title,
