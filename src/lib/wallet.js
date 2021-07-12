@@ -53,20 +53,21 @@ export const parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 export const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 export const getTransactions = () => {
+  let { address } = get(user);
   if (!get(poll).find((p) => p.name === "txns"))
     poll.set([
       ...get(poll),
       {
         name: "txns",
-        interval: setInterval(() => txns(get(user).address), 10000),
+        interval: setInterval(() => txns(), 10000),
       },
     ]);
 
-  let txns = async (address) => {
+  let txns = async () => {
     transactions.set(await electrs.url(`/address/${address}/txs`).get().json());
   };
 
-  return txns(get(user).address);
+  return txns();
 };
 
 export const getBalances = () => {
@@ -89,13 +90,6 @@ export const getBalances = () => {
     let single = (await f(singlesig)).map((u) => ({ ...u, single: true }));
     let multi = (await f(multisig)).map((u) => ({ ...u, multi: true }));
     let utxos = [...single, ...multi].filter((u) => !locked.includes(u.txid));
-
-    assets.set(
-      [...utxos, { asset: btc }]
-        .map(({ asset: a }) => ({ name: assetLabel(a), asset: a }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .filter((a, i, r) => a && (!i || a.asset != r[i - 1].asset))
-    );
 
     let b = {};
     let p = {};

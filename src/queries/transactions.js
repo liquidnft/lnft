@@ -68,7 +68,10 @@ export const getArtworkTransactions = (id) => `subscription {
 }`;
 
 export const getUserTransactions = (id) => `subscription {
-  transactions(order_by: {created_at: desc}, where: {user_id: {_eq: "${id}"}}) {
+  transactions(order_by: {created_at: desc}, where: {
+    user_id: {_eq: "${id}"}, 
+    type: {_in: ['deposit', 'withdrawal', 'creation', 'release', 'purchase']}
+  }) {
     ${fields}
   }
 }`;
