@@ -220,8 +220,8 @@ const validateEmail = (email) => {
 };
 
 const go = ({ id, type, s }) => {
-  let url = { user: 'u', artist: 'a', tag: 'tag' }[type];
-  goto(`/${url}/${s ? s : id}`);
+  let url = { user: 'u', artwork: 'artwork', tag: 'tag' }[type];
+  goto(`/${url}/${url === 'artwork' ? id : s}`);
 } 
 
 const kebab = (str) =>
