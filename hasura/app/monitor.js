@@ -242,7 +242,8 @@ app.get("/transactions", auth, async (req, res) => {
 
         if ([user.address, user.multisig].includes(a)) {
           if (asset) {
-            if (transactions.find((t) => t.hash === txid && t.asset === asset)) continue;
+            if (transactions.find((t) => t.hash === txid && t.asset === asset))
+              continue;
             total[asset]
               ? (total[asset] -= parseInt(value))
               : (total[asset] = parseInt(-value));
