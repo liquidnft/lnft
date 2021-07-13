@@ -231,12 +231,8 @@ app.get("/transactions", auth, async (req, res) => {
 
     let { transactions } = (await hasura.post({ query }).json()).data;
 
-    let unseen = txns.filter(
-      (tx) => !transactions.find((t) => tx.txid === t.hash)
-    );
-
-    for (let i = 0; i < unseen.length; i++) {
-      let { txid, vin, vout, status } = unseen[i];
+    for (let i = 0; i < txns.length; i++) {
+      let { txid, vin, vout, status } = txns[i];
       let total = {};
 
       for (let j = 0; j < vin.length; j++) {
@@ -246,6 +242,7 @@ app.get("/transactions", auth, async (req, res) => {
 
         if ([user.address, user.multisig].includes(a)) {
           if (asset) {
+            if (transactions.find((t) => t.hash === txid && t.asset === asset)) continue;
             total[asset]
               ? (total[asset] -= parseInt(value))
               : (total[asset] = parseInt(-value));
