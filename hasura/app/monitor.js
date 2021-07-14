@@ -274,6 +274,7 @@ app.get("/transactions", auth, async (req, res) => {
             type: "${type}",
             amount: ${total[asset]},
             hash: "${txid}",
+            confirmed: true,
           }) {
             id
           }
