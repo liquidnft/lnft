@@ -1,5 +1,5 @@
 {
-	"name": "raretoshi",
+	"name": "junglelab",
 	"license": "MIT",
 	"version": "0.0.1",
 	"scripts": {
@@ -54,5 +54,9 @@
 		"uuid": "^8.3.2",
 		"wretch": "^1.7.4",
 		"wretch-middlewares": "^0.1.12"
-	}
+	},
+	"description": "Liquid NFT",
+	"main": "index.js",
+	"repository": "https://github.com/Eskyee/lnft.git",
+	"author": "esky"
 }
