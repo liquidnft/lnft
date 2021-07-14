@@ -7,6 +7,7 @@ services:
     image: asoltys/app-server
     restart: on-failure
     environment:
+      SERVER_URL: '${SERVER_URL}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       CLOUDFLARE_TOKEN: '${CLOUDFLARE_TOKEN}'
       CLOUDFLARE_ZONE: '${CLOUDFLARE_ZONE}'
@@ -20,8 +21,14 @@ services:
       IPFS_URL: '${IPFS_URL}'
       IPFS_WEB_URL: '${IPFS_WEB_URL}'
       SIGNING_SERVER_MNEMONIC: '${SIGNING_SERVER_MNEMONIC}'
+      SMTP_HOST: '${SMTP_HOST}'
+      SMTP_PORT: '${SMTP_PORT}'
+      SMTP_USER: '${SMTP_USER}'
+      SMTP_PASS: '${SMTP_PASS}'
+      SMTP_SENDER: '${SMTP_SENDER}'
     volumes:
-      - ./app:/app
+      - ./app:/opt/src/hasura/app
+      - ./custom:/opt/src/hasura/app/custom
       - ${STORAGE_DIR}:/export
     network_mode: host
   postgres:
@@ -65,7 +72,7 @@ services:
       JWT_ALGORITHM: '${JWT_ALGORITHM}'
       JWT_KEY: '${JWT_KEY}'
       AUTO_MIGRATE: "true"
-      AUTO_ACTIVATE_NEW_USERS: "false"
+      AUTO_ACTIVATE_NEW_USERS: "true"
       STORAGE_ENABLE: "false"
       MAX_REQUESTS: 10000
       LOST_PASSWORD_ENABLE: "true"

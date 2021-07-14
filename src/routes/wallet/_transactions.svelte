@@ -3,39 +3,34 @@
   import { format, parseISO } from "date-fns";
   import { api } from "$lib/api";
   import ToggleSwitch from "$components/ToggleSwitch";
-  import { asset, user, token } from "$lib/store";
+  import { asset, assets, user, token } from "$lib/store";
   import { assetLabel, val, units } from "$lib/utils";
-  import { subscription, operationStore } from "@urql/svelte";
-  import { getUserTransactions } from "$queries/transactions";
 
   let show = false;
 
   let poll;
   onMount(() => {
-    poll = setInterval(
-      () => $token && api.auth(`Bearer ${$token}`).url("/transactions").get(),
-      5000
-    );
+    getTransactions();
+    poll = setInterval(getTransactions, 5000);
   });
 
-  onDestroy(() => clearInterval(poll));
-
   let txns = [];
-  $: if ($user) {
-    subscription(
-      operationStore(getUserTransactions($user.id)),
-      (a, b) => (txns = b.transactions)
-    );
-  }
+  let getTransactions = () =>
+    $token &&
+    api
+      .auth(`Bearer ${$token}`)
+      .url("/transactions")
+      .get()
+      .json((data) => {
+        txns = data.transactions;
 
-  let value = (tx, a) => {
-    let outs = tx.vout.filter(
-      (o) => o.asset === a && o.scriptpubkey_address === $user.address
-    );
-    if (!outs.length) return 0;
-    let total = outs.reduce((a, b) => (b.value ? a + b.value : a), 0);
-    return val(outs[0].asset, total);
-  };
+        $assets = txns
+          .map(({ asset }) => ({ name: assetLabel(asset), asset }))
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .filter((a, i, r) => a && (!i || a.asset != r[i - 1].asset));
+      });
+
+  onDestroy(() => clearInterval(poll));
 
   $: txAssets = (tx) => [
     ...new Set(
@@ -43,6 +38,7 @@
     ),
   ];
 </script>
+
 <div class="px-5 sm:px-0">
   {#if txns.length}
     <div class="my-7 flex">

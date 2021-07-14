@@ -3,16 +3,18 @@ const { formatISO } = require("date-fns");
 const fs = require("fs");
 const path = require("path");
 
-require('make-promises-safe');
+require("make-promises-safe");
 
 app = require("fastify")({
   logger: true,
 });
 
-app.register(require('fastify-static'), {
-  root: path.join('/export'),
-  prefix: '/public/', // optional: default '/'
-})
+app.register(require("fastify-static"), {
+  root: path.join("/export"),
+  prefix: "/public/", // optional: default '/'
+});
+
+require("./mail");
 
 require("./auth");
 require("./artworks");

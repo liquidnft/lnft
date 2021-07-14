@@ -219,7 +219,10 @@ const validateEmail = (email) => {
   return re.test(email);
 };
 
-const go = ({ id, type, s }) => goto(`/${type}/${id ? id : s}`);
+const go = ({ id, type, s }) => {
+  let url = { user: 'u', artwork: 'artwork', tag: 'tag' }[type];
+  goto(`/${url}/${url === 'artwork' ? id : s}`);
+} 
 
 const kebab = (str) =>
   str &&

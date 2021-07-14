@@ -26,6 +26,9 @@
     $error.asset === btc ? Math.max($error.amount, 1000) + fee : $error.amount
   );
 
+  $: amountUpdated(amount);
+  let amountUpdated = (a) => isNaN(a) && ($prompt = undefined);
+
   let url = `liquidnetwork:${$user.address}?amount=${amount}`;
 
   let showInvoice = false;
@@ -219,7 +222,8 @@
         Funding through a confidential liquid address, bitcoin address, or
         lightning invoice is achieved by automatically converting to L-BTC
         through
-        <a href="https://coinos.io" style="color: #6ed8e0">coinos.io</a>. Funds will be subject to counterparty risk during the conversion process.
+        <a href="https://coinos.io" style="color: #6ed8e0">coinos.io</a>. Funds
+        will be subject to counterparty risk during the conversion process.
       </p>
 
       <p class="text-sm my-4">

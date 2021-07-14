@@ -68,7 +68,10 @@ export const getArtworkTransactions = (id) => `subscription {
 }`;
 
 export const getUserTransactions = (id) => `subscription {
-  transactions(order_by: {created_at: desc}, where: {user_id: {_eq: "${id}"}}) {
+  transactions(order_by: {created_at: desc}, where: {
+    user_id: {_eq: "${id}"}, 
+    type: {_in: ['deposit', 'withdrawal', 'creation', 'release', 'purchase']}
+  }) {
     ${fields}
   }
 }`;
@@ -82,6 +85,12 @@ export const getTransaction = (id) => `query {
 export const getTransactions = (limit = 10) => `query {
   transactions(where: {artwork_id: {_is_null: false}, type: {_neq: "receipt"}}, order_by: {created_at: desc}, limit: ${limit}) {
     ${fields}
+  }
+}`;
+
+export const getActiveBids = (id) => `query {
+  activebids(where: { user_id: { _eq: "${id}"}}) {
+    psbt
   }
 }`;
 

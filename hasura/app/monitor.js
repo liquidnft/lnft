@@ -82,7 +82,7 @@ const transferOwnership = async ({
             artwork_id,
             hash,
             psbt,
-            amount: 1,
+            amount: -1,
             asset,
           },
         },
@@ -139,11 +139,11 @@ app.post("/asset/register", async (req, res) => {
 
   let proofs = {};
   try {
-    proofs = require('./proofs.json');
-  } catch(e) {};
+    proofs = require("./proofs.json");
+  } catch (e) {}
 
   proofs[asset] = true;
-  fs.writeFileSync('proofs.json', JSON.stringify(proofs));
+  fs.writeFileSync("proofs.json", JSON.stringify(proofs));
 
   let query = `query transactions($asset: String!) {
     transactions(where: {
@@ -224,19 +224,15 @@ app.get("/transactions", auth, async (req, res) => {
     let txns = [...(await get(user.address)), ...(await get(user.multisig))];
 
     query = `query {
-      transactions(where: { user_id: {_eq: "${user.id}"}})  {
+      transactions(where: { user_id: {_eq: "${user.id}"}}) {
         hash
       }
     }`;
 
     let { transactions } = (await hasura.post({ query }).json()).data;
 
-    let unseen = txns.filter(
-      (tx) => !transactions.find((t) => tx.txid === t.hash)
-    );
-
-    for (let i = 0; i < unseen.length; i++) {
-      let { txid, vin, vout, status } = unseen[i];
+    for (let i = 0; i < txns.length; i++) {
+      let { txid, vin, vout, status } = txns[i];
       let total = {};
 
       for (let j = 0; j < vin.length; j++) {
@@ -246,6 +242,8 @@ app.get("/transactions", auth, async (req, res) => {
 
         if ([user.address, user.multisig].includes(a)) {
           if (asset) {
+            if (transactions.find((t) => t.hash === txid && t.asset === asset))
+              continue;
             total[asset]
               ? (total[asset] -= parseInt(value))
               : (total[asset] = parseInt(-value));
@@ -285,7 +283,7 @@ app.get("/transactions", auth, async (req, res) => {
 
         if (!insert.data) {
           continue;
-        } 
+        }
 
         if (status.block_time) {
           query = `mutation {
@@ -304,7 +302,20 @@ app.get("/transactions", auth, async (req, res) => {
       }
     }
 
-    res.send({});
+    query = `query {
+      transactions(order_by: {created_at: desc}, where: {
+        user_id: {_eq: "${user.id}"}, 
+        type: {_in: ["deposit", "withdrawal", "creation", "release", "purchase", "receipt"]}
+      }) {
+        id
+        hash
+        amount
+        created_at
+        asset
+      }
+    }`;
+
+    res.send((await hasura.post({ query }).json()).data);
   } catch (e) {
     console.log(e);
     res.code(500).send(e.message);

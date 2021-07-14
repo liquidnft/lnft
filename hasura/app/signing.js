@@ -64,67 +64,67 @@ app.post("/sign", auth, async (req, res) => {
   }
 });
 
-module.exports = {
-  async check(psbt) {
-    const [txid, outputs] = parse(psbt);
+const check = async (psbt) => {
+  const [txid, outputs] = parse(psbt);
 
-    const multisig = (
-      await hasura.post({ query: allMultisig }).json().catch(console.log)
-    ).data.users.map((u) => u.multisig);
+  const multisig = (
+    await hasura.post({ query: allMultisig }).json().catch(console.log)
+  ).data.users.map((u) => u.multisig);
 
-    let variables = { assets: outputs.map((o) => o.asset) };
+  let variables = { assets: outputs.map((o) => o.asset) };
 
-    let {
-      data: { artworks },
-    } = await hasura.post({ query, variables }).json();
+  let {
+    data: { artworks },
+  } = await hasura.post({ query, variables }).json();
 
-    artworks.map(
-      ({
-        asset,
-        royalty,
-        artist,
-        owner,
-        asking_asset,
-        auction_start,
-        auction_end,
-      }) => {
-        if (auction_end) {
-          let start = parseISO(auction_start);
-          let end = parseISO(auction_end);
+  artworks.map(
+    ({
+      asset,
+      royalty,
+      artist,
+      owner,
+      asking_asset,
+      auction_start,
+      auction_end,
+    }) => {
+      if (auction_end) {
+        let start = parseISO(auction_start);
+        let end = parseISO(auction_end);
 
-          if (isWithinInterval(new Date(), { start, end }))
-            throw new Error("Auction underway");
+        if (isWithinInterval(new Date(), { start, end }))
+          throw new Error("Auction underway");
+      }
+
+      let outs = outputs.filter((o) => o.asset === asking_asset);
+      let toArtist = outs
+        .filter(
+          (o) => o.address === artist.address || o.address === artist.multisig
+        )
+        .reduce((a, b) => (a += b.value), 0);
+
+      let toOwner = outs
+        .filter(
+          (o) => o.address === owner.address || o.address === owner.multisig
+        )
+        .reduce((a, b) => (a += b.value), 0);
+
+      if (royalty) {
+        if (toOwner) {
+          let amountDue = Math.round((toOwner * royalty) / 100);
+          if (toArtist < amountDue && artist.id !== owner.id)
+            throw new Error("Royalty not paid");
         }
 
-        let outs = outputs.filter((o) => o.asset === asking_asset);
-        let toArtist = outs
-          .filter(
-            (o) => o.address === artist.address || o.address === artist.multisig
+        if (
+          outputs.find(
+            (o) => o.asset === asset && !multisig.includes(o.address)
           )
-          .reduce((a, b) => (a += b.value), 0);
-
-        let toOwner = outs
-          .filter(
-            (o) => o.address === owner.address || o.address === owner.multisig
-          )
-          .reduce((a, b) => (a += b.value), 0);
-
-        if (royalty) {
-          if (toOwner) {
-            let amountDue = Math.round((toOwner * royalty) / 100);
-            if (toArtist < amountDue && artist.id !== owner.id)
-              throw new Error("Royalty not paid");
-          }
-
-          if (
-            outputs.find(
-              (o) => o.asset === asset && !multisig.includes(o.address)
-            )
-          ) {
-            throw new Error("Unrecognized recipient address");
-          }
+        ) {
+          throw new Error("Unrecognized recipient address");
         }
       }
-    );
-  },
+    }
+  );
 };
+
+module.exports = { check };

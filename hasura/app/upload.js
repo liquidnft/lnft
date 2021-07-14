@@ -28,7 +28,7 @@ app.post("/upload", async function (req, res) {
       await createFragmentPreview(s2, s3, path);
     } else {
       let ws = fs.createWriteStream(path);
-      let t = sharp().resize(1000).webp();
+      let t = sharp().rotate().resize(1000).webp();
       s2.pipe(t).pipe(ws);
     }
   } catch (e) {
