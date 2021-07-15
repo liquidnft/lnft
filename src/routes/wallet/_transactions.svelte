@@ -60,7 +60,7 @@
                 {format(parseISO(tx.created_at), 'MMM do, yyyy')}
               </div>
               <div class:text-secondary={tx.amount > 0}>
-                {tx.amount > 0 ? '+' : ''}{val(tx.asset, tx.amount)}
+                {tx.amount > 0 ? '+' : tx.amount < 0 ? '-' : ''}{val(tx.asset, Math.abs(tx.amount))}
               </div>
             </div>
 

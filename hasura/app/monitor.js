@@ -226,6 +226,7 @@ app.get("/transactions", auth, async (req, res) => {
     query = `query {
       transactions(where: { user_id: {_eq: "${user.id}"}}) {
         hash
+        asset
       }
     }`;
 
@@ -244,6 +245,7 @@ app.get("/transactions", auth, async (req, res) => {
           if (asset) {
             if (transactions.find((t) => t.hash === txid && t.asset === asset))
               continue;
+
             total[asset]
               ? (total[asset] -= parseInt(value))
               : (total[asset] = parseInt(-value));
@@ -255,6 +257,9 @@ app.get("/transactions", auth, async (req, res) => {
         let { asset, value, scriptpubkey_address: a } = vout[k];
 
         if ([user.address, user.multisig].includes(a)) {
+          if (transactions.find((t) => t.hash === txid && t.asset === asset))
+            continue;
+
           if (asset) {
             total[asset]
               ? (total[asset] += parseInt(value))
@@ -267,9 +272,11 @@ app.get("/transactions", auth, async (req, res) => {
 
       for (let l = 0; l < assets.length; l++) {
         let asset = assets[l];
+        if (total[asset] === 0) continue;
         let type = total[asset] < 0 ? "withdrawal" : "deposit";
         query = `mutation {
           insert_transactions_one(object: {
+            user_id: "${user.id}",
             asset: "${asset}",
             type: "${type}",
             amount: ${total[asset]},
@@ -280,7 +287,7 @@ app.get("/transactions", auth, async (req, res) => {
           }
         }`;
 
-        let insert = await api(req.headers).post({ query }).json();
+        let insert = await hasura.post({ query }).json().catch(console.log);
 
         if (!insert.data) {
           continue;
