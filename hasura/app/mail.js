@@ -19,7 +19,7 @@ mail = new Email({
   message: { from: SMTP_SENDER },
   send: true,
   views: {
-    root: path.resolve(process.env.PWD || ".", "custom/emails"),
+    root: path.resolve(process.env.PWD || ".", "../custom/emails"),
     options: {
       extension: "ejs",
     },
