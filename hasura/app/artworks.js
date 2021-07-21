@@ -71,7 +71,6 @@ app.post("/transaction", auth, async (req, res) => {
   } catch (err) {
     console.error("Unable to send email");
     console.error(err);
-    return res.code(204).send();
   }
 
   query = `mutation create_transaction($transaction: transactions_insert_input!) {
