@@ -40,10 +40,13 @@
 
   $: applyFilters(artworks, subject);
 
+  let sort = (a, b) => b.edition - a.edition;
   let applyFilters = (artworks, subject) => {
     if (!(artworks && subject)) return;
-    creations = artworks.filter((a) => a.artist_id === subject.id);
-    collection = artworks.filter((a) => a.owner_id === subject.id && a.artist_id !== a.owner_id);
+    creations = artworks.filter((a) => a.artist_id === subject.id).sort(sort);
+    collection = artworks.filter(
+      (a) => a.owner_id === subject.id && a.artist_id !== a.owner_id
+    );
     favorites = artworks.filter((a) => a.favorited);
   };
 

@@ -208,6 +208,7 @@ function format(n, p, d) {
       }
     }
     let r = x.toString().split(".")[1];
+
     if (r && r.length < 2 && d === 2) return x.toFixed(2);
     if (r > p && x.toFixed) return parseFloat(x.toFixed(p)).toString();
     return x;

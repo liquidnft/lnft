@@ -57,6 +57,12 @@
           single transaction without needing to go through a trusted 3rd party
           escrow agent.
         </p>
+        
+        <h3>How do I get some L-BTC?</h3>
+        
+        <p>
+          Watch <a href="https://www.youtube.com/watch?v=LxY3oxLQhA8">this video tutorial</a> to learn how to use the Side Swap mobile app to turn BTC into L-BTC so you can bid on art listed on Raretoshi.
+        </p>
       </div>
       <div class="contact boxShadow">
         <p>Need more help?</p>
