@@ -58,5 +58,6 @@
 	"description": "Liquid NFT",
 	"main": "index.js",
 	"repository": "https://github.com/Eskyee/lnft.git",
-	"author": "esky"
+	"author": "esky",
+	"dependencies": {}
 }
