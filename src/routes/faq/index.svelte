@@ -61,7 +61,7 @@
         <h3>How do I get some L-BTC?</h3>
         
         <p>
-          Watch <a href="https://www.youtube.com/watch?v=LxY3oxLQhA8">this video tutorial</a> to learn how to use the Side Swap mobile app to turn BTC into L-BTC so you can bid on art listed on Raretoshi.
+          Watch <a href="https://www.youtube.com/watch?v=LxY3oxLQhA8" target="_blank">this video tutorial</a> to learn how to use the Side Swap mobile app to turn BTC into L-BTC so you can bid on art listed on Raretoshi.
         </p>
       </div>
       <div class="contact boxShadow">
@@ -101,7 +101,7 @@
     margin-bottom: 10px;
   }
 
-  .contact a{
+  .contact a, .faq a{
     color: #3ba5ac;
   }
 
