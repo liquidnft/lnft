@@ -61,7 +61,7 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
     hasura migrate apply
     hasura metadata apply
     hasura seeds apply
-    sudo cp ../static/user.png hasura/storage
+    sudo cp ../static/user.png storage
     docker exec -it ipfs ipfs add /export/user.png
     cd ..
     yarn dev   # site is available at http://localhost:3000/
