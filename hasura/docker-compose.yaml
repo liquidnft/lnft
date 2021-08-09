@@ -30,6 +30,8 @@ services:
 #      - ./app:/opt/src/hasura/app
       - ./custom:/opt/src/hasura/app/custom
       - ${STORAGE_DIR}:/export
+    ports:
+      - '8091:8091'
   postgres:
     container_name: postgres
     image: postgres:12
