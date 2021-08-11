@@ -152,11 +152,11 @@
 <div class="flex header-container mx-auto justify-center marg-bottom">
   <div class="header text-center">
     <h1 class="text-left md:text-center md:w-full">
-      Raretoshi
-      <br />digital art
+      JungleLab
+      <br />rare digital music art lifestyle
     </h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      Upload, collect, and transact rare digital art on the Liquid Network
+      Upload, collect, and transact rare digital music, videos, art on the Liquid Network
     </h5>
     <a class="primary-btn" href={`/market`}>Start exploring</a>
   </div>

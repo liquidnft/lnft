@@ -15,9 +15,9 @@
         <h3>How do I use them?</h3>
 
         <p>
-          NFT’s can be issued on different blockchains and networks. On Raretoshi,
+          NFT’s can be issued on different blockchains and networks. On JungleLab,
           they're created on the Liquid network and can be stored in any wallet that
-          supports Liquid assets. Raretoshi offers a free built-in web wallet that
+          supports Liquid assets. JungleLab offers a free built-in web wallet that
           gets used by default.
         </p>
 
@@ -26,7 +26,7 @@
         <p>
           When an artist first uploads an image or video file for an artwork, the
           file is added to the IPFS network and assigned a hash number that uniquely
-          identifies the contents of the file. The artist's Raretoshi wallet will
+          identifies the contents of the file. The artist's JungleLab wallet will
           then generate a Liquid asset issuance transaction containing the title of
           the artwork and its hash and broadcast it to be permanently recorded in
           the Liquid blockchain.
@@ -40,7 +40,7 @@
           been accepted.
         </p>
 
-        <h3>What’s different about Raretoshi compared to other NFT platforms?</h3>
+        <h3>What’s different about JungleLab Raretoshi compared to other NFT platforms?</h3>
 
         <p>
           Raretoshi is the first NFT platform that uses the Bitcoin Liquid Network
@@ -57,9 +57,9 @@
           single transaction without needing to go through a trusted 3rd party
           escrow agent.
         </p>
-        
+
         <h3>How do I get some L-BTC?</h3>
-        
+
         <p>
           Watch <a href="https://www.youtube.com/watch?v=LxY3oxLQhA8">this video tutorial</a> to learn how to use the Side Swap mobile app to turn BTC into L-BTC so you can bid on art listed on Raretoshi.
         </p>
@@ -67,7 +67,7 @@
       <div class="contact boxShadow">
         <p>Need more help?</p>
         <h5>Contact us through</h5>
-        <a href="mailto:support@raretoshi.com" target="_blank">support@raretoshi.com</a>
+        <a href="mailto:support@btcpayjungle.com" target="_blank">support@btcpayjungle.com</a>
       </div>
     </div>
   </div>
@@ -77,7 +77,7 @@
   h3 { @apply mt-8 }
   p, h3 { @apply mb-4 }
 
-  
+
   .faq-content{
     display: flex;
   }
