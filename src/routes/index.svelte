@@ -153,7 +153,7 @@
   <div class="header text-center">
     <h1 class="text-left md:text-center md:w-full">
       JungleLab
-      <br />rare digital music art
+      <br />digital music art video
     </h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
       Upload, collect, and transact rare digital music, video, art on the Liquid Network
