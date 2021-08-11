@@ -1,4 +1,4 @@
-# JungleLab LNFT
+# JungleLab Rare LNFT
 
 LNFT is a web-based platform for issuing and transacting with non-fungible tokens on the [Bitcoin Liquid Network](https://blockstream.com/liquid/). Blockstream is sponsoring its development and hosting an exemplary curated instance of it for use by Bitcoin artists at [Raretoshi](https://raretoshi.com). 
 
