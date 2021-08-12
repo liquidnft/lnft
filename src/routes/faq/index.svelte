@@ -40,10 +40,10 @@
           been accepted.
         </p>
 
-        <h3>What’s different about JungleLab Raretoshi compared to other NFT platforms?</h3>
+        <h3>What’s different about JungleLab compared to other NFT platforms?</h3>
 
         <p>
-          Raretoshi is the first NFT platform that uses the Bitcoin Liquid Network
+          JungleLab is a urban lifestyle NFT platform that uses the Bitcoin Liquid Network
           instead of Ethereum or Counterparty. The Liquid network is a bitcoin
           sidechain where transaction fees are denominated in L-BTC, Liquid Bitcoin,
           which is pegged 1:1 to bitcoin.
@@ -61,7 +61,7 @@
         <h3>How do I get some L-BTC?</h3>
 
         <p>
-          Watch <a href="https://www.youtube.com/watch?v=LxY3oxLQhA8">this video tutorial</a> to learn how to use the Side Swap mobile app to turn BTC into L-BTC so you can bid on art listed on Raretoshi.
+          Watch <a href="https://www.youtube.com/watch?v=LxY3oxLQhA8">this video tutorial</a> to learn how to use the Side Swap mobile app to turn BTC into L-BTC so you can bid on art listed on JungleLab.io
         </p>
       </div>
       <div class="contact boxShadow">

@@ -15,6 +15,8 @@
         <li class="mb-2"><a href="https://twitter.com/Esky33junglist">Twitter</a></li>
         <li class="mb-2"><a href="https://t.me/raretoshi">Telegram</a></li>
         <li class="mb-2"><a href="https://blog.raretoshi.com/">Blog</a></li>
+        <li class="mb-2"><a href="https://btcpayjungle.com">BTCPayJungle</a></li>
+        <li class="mb-2"><a href="https://store.btcpayliquid.com/">Store.BTCPayLiquid</a></li>
       </ul>
     </div>
     <div class="w-full lg:w-1/4 mb-10">

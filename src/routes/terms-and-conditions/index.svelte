@@ -68,20 +68,20 @@
 
 <div class="max-w-4xl container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
-    <h2 class="mb-10">Raretoshi Terms and Conditions</h2>
+    <h2 class="mb-10">JungleLab Terms and Conditions</h2>
     <div class="faq-content">
       <div class="faq">
         <p>
-          Raretoshi is a bitcoin-focused digital art website based on the LNFT
+          JungleLab Rare LNFT is a bitcoin-focused digital music art video lifestyle website based on the LNFT
           platform which provides a new way for artists and their fans to
-          interact in a more direct way. Raretoshi provides artists with an easy
+          interact in a more direct way. JungleLab provides artists with an easy
           and intuitive way to mint and trade non-fungible tokens (NFTs) on the
-          Liquid Network (a Bitcoin sidechain). Raretoshi allows fans to support
+          Liquid Network (a Bitcoin sidechain). JungleLab allows fans to support
           their favourite artist through digital patronage. As an artist or fan
-          you should understand exactly how Raretoshi works before you decide to
-          participate. These Terms &amp; Conditions give a quick summary, but
-          you should review the Raretoshi FAQs and ask questions on the
-          Raretoshi support forums to get more information.
+          you should understand exactly how JungleLab works before you decide to
+          participate. These Terms & Conditions give a quick summary, but
+          you should review the JungleLab FAQs and ask questions on the
+          JungleLab support forums to get more information.
         </p>
 
         <p>These Terms Set Forth a Legally Binding Agreement</p>
@@ -94,8 +94,8 @@
           and incorporated under the laws of Malta with company number C62738
           and whose registered office is Vincenti Buildings 28/19 (Suite 1405),
           Strait Street, VLT1432 Valletta, Malta and a wholly-owned, indirect
-          subsidiary of Blockstream Corporation Inc, and operating the Raretoshi
-          website (“Website”) located at Raretoshi.com (“Site”).
+          subsidiary of Blockstream Corporation Inc, and operating the
+          Raretoshi website (“Website”) located at Raretoshi.com (“Site”).
         </p>
 
         <p>
@@ -122,7 +122,7 @@
         <h3>The Website</h3>
 
         <p>
-          Raretoshi is an open source curated instance of the LNFT platform for
+          JungleLab is an open source curated instance of the LNFT platform for
           Bitcoin artists and fans. LNFT is a web-based platform for issuing and
           transacting with non-fungible tokens on the Bitcoin Liquid Network.
         </p>
@@ -143,7 +143,7 @@
           registered are personal and will not be used by any other person. You
           must inform us immediately of any breach of security, loss, theft or
           unauthorized use of your username, password or security information at
-          <a href="mailto:support@raretoshi.com">support@raretoshi.com</a>
+          <a href="mailto:support@raretoshi.com">support@btcpayjungle.com</a>
         </p>
 
         <p>
@@ -218,7 +218,7 @@
         </p>
 
         <p>
-          Raretoshi is a non-custodial service meaning that neither the Website
+          JungleLab LNFT is a non-custodial service meaning that neither the Website
           nor Operator are ever in control of assets in Users wallets. Users are
           solely responsible for the security of their account and wallets. As
           with all crypto assets, control of the password, mnemonic seed phrase
@@ -232,15 +232,15 @@
           device and in the browser. You agree to maintain at all times adequate
           security and control of all of your account details, passwords, or any
           other codes that you use to access or interact with the Website. Users
-          acknowledge and agree that the technologies used in Raretoshi
+          acknowledge and agree that the technologies used in JungleLab
           (including but not limited to cryptocurrencies, web wallets, atomic
           swaps, NFTs, integrations with 3rd parties) are experimental,
           speculative, and inherently risky. Users acknowledge and agree that
-          the Raretoshi services may be subject to bugs, malfunctions, timing
+          the JungleLab services may be subject to bugs, malfunctions, timing
           errors, hacking and theft, that can adversely affect your account and
           may expose you to a risk of total loss, forfeiture of your funds or
-          Raretoshi Items, or lost opportunities to buy or sell Raretoshi Items.
-          Raretoshi and Operator assume no liability or responsibility for any
+          JungleLab Items, or lost opportunities to buy or sell JungleLab Items.
+          JungleLab and Operator assume no liability or responsibility for any
           such failures, risks, or uncertainties.
         </p>
 
@@ -263,7 +263,7 @@
         </p>
 
         <p>
-          Transactions in Raretoshi are peer-to-peer and use atomic swaps. This
+          Transactions in JungleLab are peer-to-peer and use atomic swaps. This
           means that neither the Website or Operator need to hold funds in
           escrow in Token sales. Partially Signed Elements Transactions (PSET)
           used in these atomic swaps ensure that the parties involved in a
@@ -271,22 +271,22 @@
           holding periods are enforced through a 2-of-2 signing server provided
           by the Website that only signs off on transactions that meet certain
           conditions including making sure that Artists receive their
-          corresponding royalties. Initially Raretoshi will not charge any fee
+          corresponding royalties. Initially JungleLab will not charge any fee
           for any transaction performed in the Website (other than Liquid
           transaction fees), but this may change in the future.
         </p>
 
-        <h3>Creation of Raretoshi Items</h3>
+        <h3>Creation of JungleLab Items</h3>
 
         <p>
           All Artwork (“Artwork(s)”, “Creation(s)”, “Work”) posted on the
-          Raretoshi website is associated with a unique Liquid asset exclusively
-          issued by an approved Raretoshi Artist. Each Raretoshi Item
+          JungleLab website is associated with a unique Liquid asset exclusively
+          issued by an approved JungleLab Artist. Each JungleLab Item
           (“Item(s)”, “Non-fungible token(s)”, “NFT(s)” or “Token”) is minted by
           an Artist using the asset issuance functionality of the Liquid
           Network. The type of media files that are currently supported and can
-          be used by Artists in Raretoshi to post their Work are jpg, png, gif
-          and mp4. When an Artist first uploads his or her Work to Raretoshi,
+          be used by Artists in JungleLab to post their Work are jpg, png, gif
+          and mp4. When an Artist first uploads his or her Work to JungleLab,
           the media file is added to the IPFS network and assigned a unique
           content identifier (CID) derived from the SHA256 hash of the file. The
           Website hosts an IPFS node that is capable of maintaining a copy and
@@ -299,31 +299,31 @@
           broadcasted to be permanently recorded in the Liquid blockchain, added
           to the Blockstream Asset Registry and the minted Token is sent to the
           Artist’s wallet that can then be traded in the Website. This action
-          provides Raretoshi Artists and Fans with a permanent record of
+          provides JungleLab Artists and Fans with a permanent record of
           authenticity and ownership of the Token. Since the asset registry is
           an open source project publicly available on GitHub anyone interested
           could clone this project and provide redundancy to the system. After a
           Token is minted by an Artist, he or she can then propose the terms
           (“Sale”) under which the Token will be sold to Fans (including the
           option to add royalties to be assigned to the original Artist) in a
-          primary sale. After a Raretoshi Item is sold by the original Artist,
+          primary sale. After a JungleLab Item is sold by the original Artist,
           it can then be traded in a secondary market provided by the Website to
-          any Raretoshi User.
+          any JungleLab User.
         </p>
 
-        <h3>Raretoshi Artists</h3>
+        <h3>JungleLab Artists</h3>
 
         <p>
           Initially, only invited Artists will be able to post Artwork in the
-          Website, mint Tokens and make a primary Sale of Raretoshi Items. This
-          responsibility will then be passed on to the active Raretoshi Artists.
+          Website, mint Tokens and make a primary Sale of JungleLab Items. This
+          responsibility will then be passed on to the active JungleLab Artists.
           Artists seeking an invitation to create and list works for sale on
-          Raretoshi must submit a request that can be found here. Please keep in
+          JungleLab must submit a request that can be found here. Please keep in
           mind that due to current limited resources this process could
-          initially extend for months. Raretoshi has unilateral discretion in
+          initially extend for months. JungleLab has unilateral discretion in
           curating in the Website and makes no guarantees or promises that any
           Artists will be approved, even if the Artist was invited by a member
-          of Raretoshi to submit a request
+          of JungleLab to submit a request
         </p>
 
         <p>
@@ -368,11 +368,11 @@
             affect these agreements, representations and warranties
           </li>
           <li>
-            Artist agrees to indemnify Raretoshi and Operator and be held liable
-            for any claim against Raretoshi or Operator arising out of the
+            Artist agrees to indemnify JungleLab and Operator and be held liable
+            for any claim against JungleLab or Operator arising out of the
             Artist’s breach of these Terms. Artist releases and forever
-            discharges Raretoshi and Operator from any damages or causes of
-            action resulting from a sale of any of the Artist’s listed Raretoshi
+            discharges JungleLab and Operator from any damages or causes of
+            action resulting from a sale of any of the Artist’s listed JungleLab
             Items occurring after the Artist’s breach of these Terms.
           </li>
         </ul>
@@ -403,11 +403,11 @@
           </li>
         </ul>
 
-        <h3>Raretoshi Fans</h3>
+        <h3>JungleLab Fans</h3>
 
         <p>
           By bidding on an Token, a Fan agrees with Operator, and represents and
-          warranties to Operator and the Artist or any other Raretoshi User
+          warranties to Operator and the Artist or any other JungleLab User
           that:
         </p>
 
@@ -460,7 +460,7 @@
             the intent to sell the associated Token or to share the purchase or
             discuss the Artwork. Any other features associated with the Token
             including but not limited to a physical representation of the
-            Artwork will be explicitly described in the Raretoshi Item Sale.
+            Artwork will be explicitly described in the JungleLab Item Sale.
             Unless authorized by the Artist or Sale terms, the owner of a Token
             can not use the associated Artwork for commercial purposes including
             but not limited to selling copies of the Work. If any additional
@@ -518,15 +518,15 @@
           </li>
         </ul>
 
-        <h3>Raretoshi Marketplace</h3>
+        <h3>JungleLab Marketplace</h3>
 
         <p>
-          Raretoshi provides an easy and intuitive way for Artists and Fans to
-          buy and sell Raretoshi Items. Artworks are listed in a
+          JungleLab provides an easy and intuitive way for Artists and Fans to
+          buy and sell JungleLab Items. Artworks are listed in a
           searchable/sortable/filterable marketplace gallery. Bids and sales are
           conducted peer-to-peer using atomic swaps so the Website or Operator
           do not hold funds on escrow and are never in custody of User’s funds
-          or Raretoshi Items. Listings, bids, transfers and new Artwork activity
+          or JungleLab Items. Listings, bids, transfers and new Artwork activity
           are logged and presented in a site-wide feed. Royalties and auction
           holding periods are enforced through a 2-of-2 signing method where one
           of the keys is controlled by the Website and only transactions that
@@ -547,12 +547,12 @@
         <ul>
           <li>
             Simple listing: Artists or Token owners can set a predefined price
-            for the Raretoshi Item or not, and decide on the listing asset
+            for the JungleLab Item or not, and decide on the listing asset
             denomination (e.g. L-BTC, L-USDt, etc.). The option to define a
             royalty rate (in percentage) is also available only for Artists when
-            originally listing a Raretoshi Item in a primary sale. This rate can
+            originally listing a JungleLab Item in a primary sale. This rate can
             not be modified afterwards by any Token owner. This listing option
-            keeps the Raretoshi Item available for purchase/bid as long as the
+            keeps the JungleLab Item available for purchase/bid as long as the
             Sale terms are not fulfilled, delisted or deleted by the Artist or
             Token owner.
           </li>
@@ -570,18 +570,18 @@
         <ul>
           <li>
             Make an offer: In this case a listing price is not predefined for
-            the Raretoshi Item. This allows Users to make offers on a Raretoshi
-            Item that the Artist or current owner of the Raretoshi Item can then
+            the JungleLab Item. This allows Users to make offers on a JungleLab
+            Item that the Artist or current owner of the JungleLab Item can then
             accept, reject or wait until more offers are available.
           </li>
           <li>
-            Buy Now: Artist or Token owners can decide to list a Raretoshi Item
+            Buy Now: Artist or Token owners can decide to list a JungleLab Item
             for a predefined price. This allows other Users to automatically buy
-            the Raretoshi Item for the listed price. The completion of the trade
+            the JungleLab Item for the listed price. The completion of the trade
             is enforced by an atomic swap transaction created by the Artist or
-            Token owner wallet when listing a Raretoshi Item. In this scenario
+            Token owner wallet when listing a JungleLab Item. In this scenario
             however, it is also possible for Users to make an offer instead of
-            buying the Raretoshi Item.
+            buying the JungleLab Item.
           </li>
         </ul>
 
