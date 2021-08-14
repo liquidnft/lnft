@@ -26,8 +26,11 @@ services:
       SMTP_USER: '${SMTP_USER}'
       SMTP_PASS: '${SMTP_PASS}'
       SMTP_SENDER: '${SMTP_SENDER}'
+    ports:
+      - '8091:8091'
+      - '8092:8092'
     volumes:
-      - ./app:/opt/src/hasura/app
+#     - ./app:/opt/src/hasura/app
       - ./custom:/opt/src/hasura/app/custom
       - ${STORAGE_DIR}:/export
     network_mode: host
@@ -72,7 +75,7 @@ services:
       JWT_ALGORITHM: '${JWT_ALGORITHM}'
       JWT_KEY: '${JWT_KEY}'
       AUTO_MIGRATE: "true"
-      AUTO_ACTIVATE_NEW_USERS: "true"
+      AUTO_ACTIVATE_NEW_USERS: "false"
       STORAGE_ENABLE: "false"
       MAX_REQUESTS: 10000
       LOST_PASSWORD_ENABLE: "true"
