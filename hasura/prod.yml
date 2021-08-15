@@ -1,11 +1,13 @@
 version: '3.6'
 services:
   app:
+  depends_on:
+      - hbp
     container_name: app
-    build:
-      context: ./app
+      image: asoltys/app-server
     restart: on-failure
     environment:
+      SERVER_URL: '${SERVER_URL}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       CLOUDFLARE_TOKEN: '${CLOUDFLARE_TOKEN}'
       CLOUDFLARE_ZONE: '${CLOUDFLARE_ZONE}'

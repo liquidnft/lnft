@@ -21,11 +21,6 @@ services:
       IPFS_URL: '${IPFS_URL}'
       IPFS_WEB_URL: '${IPFS_WEB_URL}'
       SIGNING_SERVER_MNEMONIC: '${SIGNING_SERVER_MNEMONIC}'
-      SMTP_HOST: '${SMTP_HOST}'
-      SMTP_PORT: '${SMTP_PORT}'
-      SMTP_USER: '${SMTP_USER}'
-      SMTP_PASS: '${SMTP_PASS}'
-      SMTP_SENDER: '${SMTP_SENDER}'
     ports:
       - '8091:8091'
       - '8092:8092'
@@ -64,7 +59,7 @@ services:
     container_name: hbp
     image: nhost/hasura-backend-plus:v2.2.3
     depends_on:
-      - 'hasura'
+      - hasura
     ports:
       - '3400:3000'
     environment:
