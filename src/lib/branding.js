@@ -1,6 +1,8 @@
 const BRANDING = {
   projectName: 'Raretoshi',
   
+  superUserName: 'raretoshi',
+  
   urls: {
     base: 'raretoshi.com',
     www: 'www.raretoshi.com',

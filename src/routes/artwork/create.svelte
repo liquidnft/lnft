@@ -28,6 +28,7 @@
   } from "$lib/wallet";
   import reverse from "buffer-reverse";
   import { ArtworkMedia } from "$comp";
+  import branding from "$lib/branding";
 
   import Form from "./_form.svelte";
   import Issuing from "./_issuing.svelte";
@@ -105,7 +106,18 @@
   let hash, tx, unlockable_content;
   const issue = async (ticker) => {
     let contract;
-    let domain = "mintalio.coinos.io";
+    // @todo BRANDING
+    // what is the idea of username and different domains?
+    // let domain =
+    //     $user.username === "raretoshi"
+    //         ? "raretoshi.com"
+    //         : `${$user.username.toLowerCase()}.raretoshi.com`;
+    //
+    let domain =
+      $user.username === branding.superUserName
+        ? branding.urls.base
+        : `${$user.username.toLowerCase()}.${branding.urls.base}`;
+
     let error, success;
 
     await requirePassword();
