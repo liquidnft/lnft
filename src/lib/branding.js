@@ -1,5 +1,9 @@
 const BRANDING = {
-  projectName: 'Raretoshi'
+  projectName: 'Raretoshi',
+  
+  emails: {
+    support : 'support@raretoshi.com'
+  }
 };
 
 export default BRANDING;
