@@ -99,7 +99,8 @@ const transferOwnership = async ({
   });
 };
 
-const confirmTransactions = ({ data: { transactions } }) => {
+const confirmTransactions = (result) => {
+  let { data: { transactions } } = result;
   transactions.map((tx) => {
     electrs
       .url(`/tx/${tx.hash}/status`)
