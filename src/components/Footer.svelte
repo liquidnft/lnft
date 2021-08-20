@@ -3,7 +3,8 @@
     <div
       class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first">
       <a href="/"><img src="/logo-white.svg" alt="logo" class="w-48" /></a>
-      <p class="mt-4">&copy;2021 JungleLab</p>
+      <a href="/"><img src="/logo-default-1.svg" alt="Raretoshi-logo" class="w-48" /></a>
+      <p class="mt-4">&copy;2021 JungleLab + Raretoshi</p>
       <div class="flex items-center mt-12">
         <p class="pr-3">Powered by:</p>
         <img src="/liquid_logo.svg" alt="liquid network logo"/>
@@ -13,10 +14,8 @@
       <h4 class="font-bold mb-4">Follow US</h4>
       <ul class="list-none">
         <li class="mb-2"><a href="https://twitter.com/Esky33junglist">Twitter</a></li>
-        <li class="mb-2"><a href="https://t.me/raretoshi">Telegram</a></li>
-        <li class="mb-2"><a href="https://blog.raretoshi.com/">Blog</a></li>
-        <li class="mb-2"><a href="https://btcpayjungle.com">BTCPayJungle</a></li>
-        <li class="mb-2"><a href="https://store.btcpayliquid.com/">Store.BTCPayLiquid</a></li>
+        <li class="mb-2"><a href="https://t.me/eskyjunglelab">Telegram</a></li>
+        <li class="mb-2"><a href="https://junglelab-rare.ghost.io">GhostBlog</a></li>
       </ul>
     </div>
     <div class="w-full lg:w-1/4 mb-10">

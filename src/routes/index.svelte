@@ -152,11 +152,11 @@
 <div class="flex header-container mx-auto justify-center marg-bottom">
   <div class="header text-center">
     <h1 class="text-left md:text-center md:w-full">
-      JungleLab
+      JungleLab Rare
       <br />urban music art video
     </h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      Upload, collect, and transact exclusive rare digital music art video on the Bitcoin Liquid Network
+      Upload, collect, NFTs and transact exclusive rare digital token assets on the Bitcoin Liquid Network.
     </h5>
     <a class="primary-btn" href={`/market`}>Start exploring</a>
   </div>
@@ -221,7 +221,7 @@
 </div>
 
 <div class="container mx-auto px-10">
-  <h3>Latest Pieces</h3>
+  <h3>Latest Drop Pieces</h3>
 </div>
 <div class="container mx-auto flex pb-1 overflow-x-auto">
   {#each latest as transaction}

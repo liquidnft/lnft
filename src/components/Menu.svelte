@@ -79,7 +79,7 @@
   <!--
   <a href="/galleries"><button on:click={toggle}>Galleries</button></a>
   -->
-  <a href="https://blog.raretoshi.com/"><button on:click={toggle}>Blog</button></a>
+  <a href="https://junglelab-rare.ghost.io"><button on:click={toggle}>GhostBlog</button></a>
   <a href="/faq"><button on:click={toggle}>FAQ</button></a>
   {#if $user}
     {#if $user.is_admin}
