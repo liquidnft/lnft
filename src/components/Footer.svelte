@@ -4,7 +4,7 @@
       class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first">
       <a href="/"><img src="/logo-white.svg" alt="logo" class="w-48" /></a>
       <a href="/"><img src="/logo-default-1.svg" alt="Raretoshi-logo" class="w-48" /></a>
-      <p class="mt-4">&copy;2021 JungleLab + Raretoshi</p>
+      <p class="mt-4">&copy;2021 JungleLab Rare</p>
       <div class="flex items-center mt-12">
         <p class="pr-3">Powered by:</p>
         <img src="/liquid_logo.svg" alt="liquid network logo"/>
