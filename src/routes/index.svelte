@@ -153,7 +153,7 @@
   <div class="header text-center">
     <h1 class="text-left md:text-center md:w-full">
       JungleLab Rare
-      <br />urban music art video
+      <br />music art video
     </h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
       Upload, collect, NFTs and transact exclusive rare digital token assets on the Bitcoin Liquid Network.
