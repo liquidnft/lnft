@@ -17,6 +17,8 @@ const releaseQuery = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amo
     pk_columns: { id: $id }, 
     _set: { 
       owner_id: $owner_id,
+      auction_release_tx: null,
+      list_price_tx: null,
     }
   ) {
     id
@@ -39,7 +41,10 @@ const releaseQuery = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amo
 setInterval(async () => {
   try {
     const query = `query {
-      artworks(where: { auction_end: { _lte: "${formatISO(new Date())}"}}) {
+      artworks(where: { _and: [
+          { auction_end: { _lte: "${formatISO(new Date())}"}}, 
+          { auction_release_tx: { _is_null: false }}
+        ]}) {
         id
         title
         filename
@@ -73,11 +78,19 @@ setInterval(async () => {
     }`;
 
     let { artworks } = (await hasura.post({ query }).json()).data;
+
     for (let i = 0; i < artworks.length; i++) {
       let artwork = artworks[i];
 
       try {
-        if (!artwork.bid[0].psbt || compareAsc(parseISO(artwork.bid[0].created_at), parseISO(artwork.auction_end))) throw new Error("No bid");
+        if (
+          !artwork.bid[0].psbt ||
+          compareAsc(
+            parseISO(artwork.bid[0].created_at),
+            parseISO(artwork.auction_end)
+          )
+        )
+          throw new Error("No bid");
 
         let combined = combine(artwork.list_price_tx, artwork.bid[0].psbt);
 
@@ -136,7 +149,8 @@ setInterval(async () => {
                 },
               },
             })
-            .json().catch(console.log);
+            .json()
+            .catch(console.log);
         }
       }
     }
