@@ -32,7 +32,7 @@
           the Liquid blockchain.
         </p>
 
-        <h3>Who can publish their music or art here?</h3>
+        <h3>Who can publish their art here?</h3>
 
         <p>
           Anyone can apply to become an artist on our platform. Your application
