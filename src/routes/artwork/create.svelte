@@ -107,7 +107,7 @@
   let hash, tx;
   const issue = async (ticker) => {
     let contract;
-    let domain = "junglelab.io";
+    let domain =
       $user.username === "raretoshi"
         ? "raretoshi.com"
         : `${$user.username.toLowerCase()}.raretoshi.com`;
