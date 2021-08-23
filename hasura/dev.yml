@@ -4,7 +4,7 @@ services:
     depends_on:
       - hbp
     container_name: app
-    image: asoltys/lnft-server
+    image: junglelab/lnft-server
     restart: on-failure
     environment:
       SERVER_URL: '${SERVER_URL}'
