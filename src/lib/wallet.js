@@ -35,6 +35,7 @@ import cryptojs from "crypto-js";
 import { btc, assetLabel } from "$lib/utils";
 import { requirePassword } from "$lib/auth";
 import { getActiveBids } from "$queries/transactions";
+import { compareAsc, parseISO } from "date-fns";
 
 const DUST = 1000;
 
@@ -323,11 +324,11 @@ const addFee = (p) =>
 
 const bumpFee = (v) => fee.set(get(fee) + v);
 
-export const pay = async (artwork, to, amount) => {
-  let asset = btc;
-  let auction_end, royalty;
+const isMultisig = ({ royalty, auction_end }) =>
+  !!(compareAsc(new Date(), parseISO(auction_end)) || royalty);
 
-  if (artwork) ({ asset, auction_end, royalty } = artwork);
+export const pay = async (artwork, to, amount) => {
+  let asset = artwork ? artwork.asset : btc;
 
   let script;
   try {
@@ -338,8 +339,6 @@ export const pay = async (artwork, to, amount) => {
 
   amount = parseInt(amount);
 
-  let ms = !!(royalty || auction_end);
-
   let p = new Psbt().addOutput({
     asset,
     nonce: Buffer.alloc(1),
@@ -347,11 +346,11 @@ export const pay = async (artwork, to, amount) => {
     value: amount,
   });
 
-  let out = ms ? multisig() : singlesig();
+  let out = isMultisig(artwork) ? multisig() : singlesig();
   if (asset === btc) {
     await fund(p, singlesig(), asset, amount + get(fee));
   } else {
-    await fund(p, out, asset, amount, 1, ms);
+    await fund(p, out, asset, amount, 1, isMultisig(artwork));
     await fund(p, singlesig(), btc, get(fee));
   }
 
@@ -360,9 +359,9 @@ export const pay = async (artwork, to, amount) => {
   return p;
 };
 
-export const cancelSwap = async ({ auction_end, royalty, asset }) => {
-  let ms = royalty || auction_end;
-  let out = ms ? multisig() : singlesig();
+export const cancelSwap = async (artwork) => {
+  let { asset } = artwork;
+  let out = isMultisig(artwork) ? multisig() : singlesig();
 
   let p = new Psbt().addOutput({
     asset,
@@ -621,11 +620,9 @@ export const createRelease = async ({ asset, owner }, tx) => {
   return sign();
 };
 
-export const createSwap = async (
-  { asset, asking_asset, auction_end, royalty },
-  amount,
-  tx
-) => {
+export const createSwap = async (artwork, amount, tx) => {
+  let { asset, asking_asset } = artwork;
+
   if (asking_asset === btc && amount < DUST)
     throw new Error(
       `Minimum asking price is ${(DUST / 100000000).toFixed(8)} L-BTC`
@@ -637,8 +634,6 @@ export const createSwap = async (
     script: singlesig().output,
     value: amount,
   });
-
-  let ms = !!(royalty || auction_end);
 
   if (tx) {
     let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
@@ -654,11 +649,11 @@ export const createSwap = async (
   } else {
     await fund(
       p,
-      ms ? multisig() : singlesig(),
+      isMultisig(artwork) ? multisig() : singlesig(),
       asset,
       1,
       singleAnyoneCanPay,
-      ms
+      isMultisig(artwork)
     );
   }
 
@@ -668,18 +663,11 @@ export const createSwap = async (
 export const createOffer = async (artwork, amount) => {
   amount = parseInt(amount);
 
-  let {
-    asking_asset: asset,
-    artist_id,
-    owner_id,
-    auction_end,
-    royalty,
-  } = artwork;
+  let { asking_asset: asset, artist_id, royalty, owner_id } = artwork;
 
   if (asset === btc && amount < DUST)
     throw new Error(`Minimum bid is ${(DUST / 100000000).toFixed(8)} L-BTC`);
 
-  let ms = !!(auction_end || royalty);
   let out = singlesig();
 
   let p = new Psbt().addOutput({
@@ -693,7 +681,7 @@ export const createOffer = async (artwork, amount) => {
   let pubkey = fromBase58(artwork.owner.pubkey, network).publicKey;
   let ownerOut;
 
-  if (ms) {
+  if (isMultisig(artwork)) {
     if (royalty && artist_id !== owner_id) {
       let value = Math.round((total * royalty) / 100);
       total += value;
@@ -709,7 +697,7 @@ export const createOffer = async (artwork, amount) => {
     p.addOutput({
       asset: artwork.asset,
       nonce: Buffer.alloc(1),
-      script: royalty ? multisig().output : singlesig().output,
+      script: isMultisig(artwork) ? multisig().output : singlesig().output,
       value: 1,
     });
 
@@ -726,8 +714,9 @@ export const createOffer = async (artwork, amount) => {
   }
 
   try {
-    await fund(p, ownerOut, artwork.asset, 1, 1, ms);
+    await fund(p, ownerOut, artwork.asset, 1, 1, isMultisig(artwork));
   } catch (e) {
+    console.log(e);
     throw new Error(
       "Unable to construct offer, the asset could not be found in the owner's wallet"
     );
