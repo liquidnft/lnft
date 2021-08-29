@@ -324,8 +324,9 @@ const addFee = (p) =>
 
 const bumpFee = (v) => fee.set(get(fee) + v);
 
-const isMultisig = ({ royalty, auction_end }) =>
-  !!(compareAsc(new Date(), parseISO(auction_end)) || royalty);
+const isMultisig = ({ royalty, auction_end }) => {
+  return !!((auction_end && compareAsc(parseISO(auction_end), new Date()) > 0) || royalty);
+}
 
 export const pay = async (artwork, to, amount) => {
   let asset = artwork ? artwork.asset : btc;

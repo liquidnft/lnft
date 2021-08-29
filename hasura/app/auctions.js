@@ -49,6 +49,7 @@ setInterval(async () => {
         title
         filename
         filetype
+        reserve_price
         asking_asset
         royalty
         auction_end
@@ -81,18 +82,19 @@ setInterval(async () => {
 
     for (let i = 0; i < artworks.length; i++) {
       let artwork = artworks[i];
+      let bid = artwork.bid[0];
 
       try {
         if (
-          !artwork.bid[0].psbt ||
+          !bid.psbt ||
           compareAsc(
-            parseISO(artwork.bid[0].created_at),
+            parseISO(bid.created_at),
             parseISO(artwork.auction_end)
-          )
+          ) > 0 || bid.amount < artwork.reserve_price
         )
           throw new Error("No bid");
 
-        let combined = combine(artwork.list_price_tx, artwork.bid[0].psbt);
+        let combined = combine(artwork.list_price_tx, bid.psbt);
 
         await check(combined);
 
@@ -104,12 +106,12 @@ setInterval(async () => {
             query: releaseQuery,
             variables: {
               id: artwork.id,
-              owner_id: artwork.bid[0].user.id,
-              amount: artwork.bid[0].amount,
+              owner_id: bid.user.id,
+              amount: bid.amount,
               hash: psbt.extractTransaction().getId(),
               psbt: psbt.toBase64(),
               asset: artwork.asking_asset,
-              bid_id: artwork.bid[0].id,
+              bid_id: bid.id,
               type: "release",
             },
           })
@@ -121,6 +123,7 @@ setInterval(async () => {
           let psbt = await sign(artwork.auction_release_tx);
           await broadcast(psbt);
 
+          let result =  
           await hasura
             .post({
               query: releaseQuery,
@@ -135,6 +138,8 @@ setInterval(async () => {
               },
             })
             .json();
+
+          if (result.errors && result.errors.length) throw new Error(JSON.stringify(result.errors[0].message));
         } catch (e) {
           console.log("Problem releasing", e);
 
