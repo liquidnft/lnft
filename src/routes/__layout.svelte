@@ -16,6 +16,7 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
+  import "./layout.css";
 
   let open = false;
   let ready;
