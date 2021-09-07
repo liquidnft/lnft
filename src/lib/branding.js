@@ -1,43 +1,43 @@
 const BRANDING = {
-  projectName: 'Raretoshi',
+  projectName: 'Cozmos',
   
-  superUserName: 'raretoshi',
+  superUserName: 'cozmos',
   
   urls: {
-    base: 'raretoshi.com',
-    www: 'www.raretoshi.com',
-    protocol: 'https://raretoshi.com',
+    base: 'cozmos.coinos.io',
+    www: 'www.cozmos.coinos.io',
+    protocol: 'https://cozmos.coinos.io',
     external: {
-      twitter: 'https://twitter.com/raretoshi',
-      telegram: 'https://t.me/raretoshi',
-      blog: 'https://blog.raretoshi.com/',
+      twitter: 'https://twitter.com/cozmos',
+      telegram: 'https://t.me/cozmos',
+      // blog: 'https://blog.raretoshi.com/',
     }
   },
   
   meta: {
     general: {
       og: {
-        title: 'Raretoshi',
-        image: 'https://raretoshi.com/branding/splash.png',
-        url: 'https://raretoshi.com/',
+        title: 'Cozmos',
+        image: 'https://cozmos.coinos.io/branding/splash.png',
+        url: 'https://cozmos.coinos.io/',
       },
       twitter: {
         card: 'summary_large_image',
-        creator: '@raretoshi',
-        site: '@raretoshi',
-        title: 'Raretoshi',
-        image: 'https://raretoshi.com/branding/splash.png',
+        creator: '@cozmos',
+        site: '@cozmos',
+        title: 'Cozmos',
+        image: 'https://cozmos.coinos.io/branding/splash.png',
       },
     },
     // for art page we use art info in <header> meta
     artPage: (art) => ({
       og: {
-        title: `Raretoshi - ${art.title}`,
+        title: `Cozmos - ${art.title}`,
         image: `/api/ipfs/${art.filename}`,
-        url: `https://raretoshi.com/a/${art.slug}`,
+        url: `https://cozmos.coinos.io/a/${art.slug}`,
       },
       twitter: {
-        title: `Raretoshi - ${art.title}`,
+        title: `Cozmos - ${art.title}`,
         image: `/api/ipfs/${art.filename}`,
       },
     })
@@ -45,7 +45,7 @@ const BRANDING = {
   },
   
   emails: {
-    support : 'support@raretoshi.com'
+    support : 'support@cozmos.coinos.io'
   }
 };
 

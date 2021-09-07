@@ -117,18 +117,20 @@
 <div class="box max-w-5xl mx-auto p-5 mx-0 my-8 border-gray-200 border rounded-lg">
     <div class="mb-8">
         <h4 class="text-gray-400 text-base mb-8">Logo normal</h4>
-        <div class="p-4 bg-black">
+        <div class="p-24 bg-black flex items-center justify-center">
             <Logo class="w-32"/>
         </div>
     </div>
     <div class="mb-8">
         <h4 class="text-gray-400 text-base mb-8">Logo graphic</h4>
-        <Logo graphic class="w-6"/>
+        <div class="flex items-center justify-center">
+            <Logo graphic class="w-6"/>
+        </div>
     </div>
 
     <div class="mb-8">
         <h4 class="text-gray-400 text-base mb-8">Logo white</h4>
-        <div class="p-4 bg-black">
+        <div class="p-8 flex items-center justify-center">
             <Logo white class="w-32"/>
         </div>
     </div>

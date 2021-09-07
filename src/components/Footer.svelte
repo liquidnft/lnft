@@ -1,12 +1,30 @@
 <script>
   import branding from '$lib/branding';
+  import Logo from '$styleguide/components/Logo.svelte';
 </script>
 
-<div class="bg-black px-2 mt-24">
+<style lang="scss">
+  .colored-border {
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      left: 0;
+      top: -20px;
+      right: 0;
+      height: 20px;
+      z-index: 10;
+      background: #fa7900; /* Old browsers */
+      background: linear-gradient(90deg,  #fa7900 0%, #df36b4 43%, #0063ea 77%, #00eaaf 100%);
+    }
+}
+</style>
+
+<div class="bg-black px-2 mt-24 colored-border relative">
   <div class="container footer mx-auto flex flex-wrap text-white pt-12">
     <div
       class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first">
-      <a href="/"><img src="/branding/logo-white.svg" alt="logo" class="w-48" /></a>
+      <a href="/"><Logo class="w-24"/></a>
       <p class="mt-4">&copy;2021 {branding.projectName}</p>
       <div class="flex items-center mt-12">
         <p class="pr-3">Powered by:</p>
