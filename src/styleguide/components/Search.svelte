@@ -104,6 +104,12 @@
     @extend .focus;
   }
 
+  .search {
+    :global(svg path) {
+      fill: $search--icon--color;
+    }
+  }
+
   input {
     font-family: $search--font-family;
     font-size: $search--font-size;
@@ -123,10 +129,6 @@
 
   input:focus {
     outline: none;
-  }
-
-  :global(svg path) {
-    fill: $search--icon--color;
   }
 </style>
 
