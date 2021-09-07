@@ -6,7 +6,7 @@
   <div class="container footer mx-auto flex flex-wrap text-white pt-12">
     <div
       class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first">
-      <a href="/"><img src="/logo-white.svg" alt="logo" class="w-48" /></a>
+      <a href="/"><img src="/branding/logo-white.svg" alt="logo" class="w-48" /></a>
       <p class="mt-4">&copy;2021 {branding.projectName}</p>
       <div class="flex items-center mt-12">
         <p class="pr-3">Powered by:</p>
