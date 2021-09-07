@@ -1,0 +1,50 @@
+// = = = = BASE = = = =
+
+$font-family: "OpenSans";
+$font-size--base: 16px;
+
+// = = = = COLOR PALETTE = = = =
+
+$color-white: #fff;
+$color-white-10: rgba(255,255,255,0.1);
+$color-white-20: rgba(255,255,255,0.2);
+$color-white-30: rgba(255,255,255,0.3);
+$color-white-40: rgba(255,255,255,0.4);
+$color-white-50: rgba(255,255,255,0.5);
+$color-white-60: rgba(255,255,255,0.6);
+$color-white-70: rgba(255,255,255,0.7);
+$color-white-80: rgba(255,255,255,0.8);
+$color-white-90: rgba(255,255,255,0.9);
+
+//
+// = = = = HEADER = = = =
+//
+$header--background-color: #000;
+$header--links--font-family: "Audiowide";
+$header--links--font-size: 14px;
+$header--links--color: $color-white-60;
+$header--links--hover--color: $color-white-40;
+
+//
+// = = = = SEARCH = = = =
+//
+$search--transition: .15s;
+$search--font-family: "OpenSans";
+$search--font-size: 16px;
+$search--color: $color-white-60;
+$search--border-color: $color-white-20;
+$search--border-size: 1px;
+$search--border-style: solid;
+$search--border: $search--border-size $search--border-style $search--border-color;
+// search icon
+$search--icon--color: $color-white-40;
+// placeholder
+$search--placeholder--color: $color-white-40;
+// focus
+$search--focus--color: $color-white-60;
+$search--focus--border-color: $color-white-40;
+$search--focus--border: $search--border-size $search--border-style $search--focus--border-color;
+$search--focus--icon--color: $color-white-60;
+$search--focus--placeholder--color: $color-white-60;
+
+

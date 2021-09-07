@@ -1,5 +1,6 @@
 <script>
-  import { Avatar, Search } from "$comp";
+  import { Avatar } from "$comp";
+  import Search from "$styleguide/components/Search";
   import { show, user, token } from "$lib/store";
   import branding from "$lib/branding";
   import { logout } from "$lib/auth";
@@ -15,34 +16,8 @@
     padding: 0 20px;
   }
 
-  .menu :global(.search) {
-    border: 1px solid lightgray;
-    border-radius: 30px;
-    margin-right: 15px;
-    width: 250px;
-  }
-
-  .menu :global(.search):focus-within {
-    border: 1px solid #5c5d60;
-    border-radius: 30px;
-  }
-
-  .menu :global(input) {
-    width: auto;
-    width: 80%;
-    border: none;
-    background: none;
-    padding: 0.5rem 1.2rem;
-  }
-
-  .menu :global(.fa-search) {
-    font-size: 1.2rem;
-  }
-
-  @media only screen and (max-width: 1023px) {
-    .menu :global(.search) {
-      display: none;
-    }
+  .menu .signin {
+    width: 120px;
   }
 
   @media only screen and (max-width: 1023px) {
@@ -63,13 +38,8 @@
 </style>
 
 <div class="flex justify-between items-center menu relative">
-  <Search suggest={false} />
+  <Search suggest={false} class="mx-4"/>
   <a href="/market"><button on:click={toggle}>Market</button></a>
-  <a href="/activity"><button on:click={toggle}>Activity</button></a>
-  <!--
-  <a href="/galleries"><button on:click={toggle}>Galleries</button></a>
-  -->
-  <a href="{branding.urls.external.blog}"><button on:click={toggle}>Blog</button></a>
   <a href="/faq"><button on:click={toggle}>FAQ</button></a>
   {#if $user}
     {#if $user.is_admin}
