@@ -18,7 +18,7 @@ const BRANDING = {
     general: {
       og: {
         title: 'Raretoshi',
-        image: 'https://raretoshi.com/splash.png',
+        image: 'https://raretoshi.com/branding/splash.png',
         url: 'https://raretoshi.com/',
       },
       twitter: {
@@ -26,7 +26,7 @@ const BRANDING = {
         creator: '@raretoshi',
         site: '@raretoshi',
         title: 'Raretoshi',
-        image: 'https://raretoshi.com/splash.png',
+        image: 'https://raretoshi.com/branding/splash.png',
       },
     },
     // for art page we use art info in <header> meta

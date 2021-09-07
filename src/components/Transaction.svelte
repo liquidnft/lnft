@@ -210,7 +210,7 @@
                       {#if users[username]}
                         <Avatar
                           user={users[username]}
-                          overlay={username.includes('2of2') && '/logo-graphic.png'} />
+                          overlay={username.includes('2of2') && '/branding/logo-graphic.png'} />
                       {/if}
                     </div>
                     <div class="my-auto ml-2">
@@ -252,7 +252,7 @@
                   {#if users[username]}
                     <Avatar
                       user={users[username]}
-                      overlay={username.includes('2of2') && '/logo-graphic.png'} />
+                      overlay={username.includes('2of2') && '/branding/logo-graphic.png'} />
                   {:else}
                     <Avatar
                       src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z" />
