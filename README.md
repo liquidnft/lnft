@@ -62,7 +62,7 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
     hasura seeds apply
     sudo cp ../static/user.png storage
     docker exec -it ipfs ipfs add /export/user.png
-    docker restart app
+    docker restart lapp
     cd ..
     yarn dev   # site is available at http://localhost:3000/
 
