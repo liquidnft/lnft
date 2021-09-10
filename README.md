@@ -49,13 +49,14 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
  - Docker: https://docs.docker.com/get-docker/
  - Hasura CLI: https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cli.html#install-hasura-cli
 
-## Install
+## Setup local development environment
 
     git clone https://github.com/liquidnft/lnft
     cd lnft
     yarn
     cd hasura
     cp .env.sample .env
+    docker run -it -v $PWD/app:/app --entrypoint yarn asoltys/lnft-server
     docker-compose up -d
     hasura migrate apply
     hasura metadata apply
