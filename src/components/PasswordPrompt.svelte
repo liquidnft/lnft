@@ -10,7 +10,7 @@
     faEyeSlash,
   } from "@fortawesome/free-solid-svg-icons";
 
-  let attempt = "";
+  let attempt = "liquidart";
   let input;
   let show;
 

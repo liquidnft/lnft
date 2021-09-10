@@ -18,7 +18,8 @@ const releaseQuery = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amo
     _set: { 
       owner_id: $owner_id,
       auction_release_tx: null,
-      list_price_tx: null,
+      auction_tx: null,
+      reserve_price: null,
     }
   ) {
     id
@@ -47,6 +48,7 @@ setInterval(async () => {
         ]}) {
         id
         title
+        slug
         filename
         filetype
         reserve_price
@@ -55,6 +57,7 @@ setInterval(async () => {
         auction_end
         transferred_at
         list_price_tx
+        auction_tx
         auction_release_tx
         artist {
           id
@@ -84,6 +87,9 @@ setInterval(async () => {
       let artwork = artworks[i];
       let bid = artwork.bid[0];
 
+      console.log("finalizing auction for", artwork.slug);
+      console.log("reserve price", artwork.reserve_price);
+
       try {
         if (
           !bid.psbt ||
@@ -92,9 +98,9 @@ setInterval(async () => {
             parseISO(artwork.auction_end)
           ) > 0 || bid.amount < artwork.reserve_price
         )
-          throw new Error("No bid");
+          throw new Error("no bid");
 
-        let combined = combine(artwork.list_price_tx, bid.psbt);
+        let combined = combine(artwork.auction_tx, bid.psbt);
 
         await check(combined);
 
@@ -116,12 +122,17 @@ setInterval(async () => {
             },
           })
           .json();
+
+        console.log("released to high bidder");
       } catch (e) {
+        console.log("couldn't release to bidder,", e.message);
         if (artwork.royalty) continue;
 
         try {
           let psbt = await sign(artwork.auction_release_tx);
           await broadcast(psbt);
+
+          console.log("released to current owner");
 
           let result =  
           await hasura
@@ -141,7 +152,7 @@ setInterval(async () => {
 
           if (result.errors && result.errors.length) throw new Error(JSON.stringify(result.errors[0].message));
         } catch (e) {
-          console.log("Problem releasing", e);
+          console.log("problem releasing", e);
 
           hasura
             .post({

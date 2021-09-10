@@ -106,19 +106,37 @@
 - table:
     schema: public
     name: activebids
+  object_relationships:
+  - name: artwork
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: artworks
+        column_mapping:
+          artwork_id: id
   select_permissions:
   - role: anonymous
     permission:
       columns:
+      - amount
+      - artwork_id
+      - id
       - psbt
       - user_id
       filter: {}
   - role: user
     permission:
       columns:
+      - amount
+      - artwork_id
+      - id
       - psbt
       - user_id
       filter: {}
+- table:
+    schema: public
+    name: activelistings
 - table:
     schema: public
     name: artists
@@ -251,6 +269,7 @@
       - asset
       - auction_end
       - auction_start
+      - auction_tx
       - bid_increment
       - created_at
       - description
@@ -259,6 +278,7 @@
       - extension_interval
       - filename
       - filetype
+      - held
       - id
       - instagram
       - is_physical
@@ -291,6 +311,7 @@
       - asset
       - auction_end
       - auction_start
+      - auction_tx
       - bid_increment
       - created_at
       - description
@@ -299,6 +320,7 @@
       - extension_interval
       - filename
       - filetype
+      - held
       - id
       - instagram
       - is_physical
@@ -344,6 +366,7 @@
       - auction_end
       - auction_release_tx
       - auction_start
+      - auction_tx
       - bid_increment
       - description
       - edition
@@ -796,12 +819,15 @@
       - type
       - user_id
       filter:
-        artwork:
-          _or:
-          - transferred_at:
-              _is_null: false
-          - asking_asset:
-              _is_null: false
+        _or:
+        - artwork_id:
+            _is_null: true
+        - artwork:
+            _or:
+            - transferred_at:
+                _is_null: false
+            - asking_asset:
+                _is_null: false
   - role: user
     permission:
       columns:
@@ -818,14 +844,17 @@
       - type
       - user_id
       filter:
-        artwork:
-          _or:
-          - transferred_at:
-              _is_null: false
-          - asking_asset:
-              _is_null: false
-          - artist_id:
-              _eq: X-Hasura-User-Id
+        _or:
+        - artwork_id:
+            _is_null: true
+        - artwork:
+            _or:
+            - transferred_at:
+                _is_null: false
+            - asking_asset:
+                _is_null: false
+            - artist_id:
+                _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: users

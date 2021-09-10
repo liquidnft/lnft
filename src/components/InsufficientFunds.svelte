@@ -10,7 +10,7 @@
   import ProgressLinear from "$components/ProgressLinear";
   import { onMount, tick } from "svelte";
   import qrcode from "qrcode-generator-es6";
-  import { balances, pending, prompt, error, user, token } from "$lib/store";
+  import { balances, error, locked, pending, prompt, user, token } from "$lib/store";
   import { assetLabel, btc, copy, err, fullscreen, val } from "$lib/utils";
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
@@ -49,6 +49,7 @@
   };
 
   onMount(async () => {
+    console.log("hi mom");
     await getBalances();
     await tick();
   });
@@ -70,7 +71,8 @@
       confirming = false;
     }
 
-    if (current >= $error.amount) {
+    if (current - $locked >= $error.amount) {
+      console.log(current, $error.amount);
       $prompt = undefined;
     }
   };

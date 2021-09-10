@@ -13,7 +13,7 @@
 
   let show;
   let username = "";
-  let password = "";
+  let password = "liquidart";
 
   let usernameInput;
   let pageChange = () =>

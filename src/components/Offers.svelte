@@ -5,7 +5,7 @@
   import Card from "$components/Card";
   import { snack, prompt, psbt, token } from "$lib/store";
   import { Psbt } from "@asoltys/liquidjs-lib";
-  import { getOffers, acceptOffer } from "$queries/transactions";
+  import { getOffers } from "$queries/transactions";
   import { mutation, query, operationStore } from "@urql/svelte";
   import { broadcast } from "$lib/wallet";
   import { goto, val, ticker } from "$lib/utils";

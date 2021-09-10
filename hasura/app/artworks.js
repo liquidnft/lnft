@@ -1,26 +1,68 @@
-const { hasura } = require("./api");
+const { api, electrs, hasura } = require("./api");
+const { broadcast } = require("./wallet");
+const { Psbt } = require("@asoltys/liquidjs-lib");
 
 const crypto = require("crypto");
 const wretch = require("wretch");
 const { HASURA_URL, SERVER_URL } = process.env;
 
-app.post("/viewed", (req, res) => {
-  const query = `mutation ($id: uuid!) {
+app.post("/viewed", async (req, res) => {
+  let query = `mutation ($id: uuid!) {
     update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
       id
+      owner {
+        address
+        multisig
+      } 
+      asset
     }
   }`;
 
-  hasura.post({
-    query,
-    variables: { id: req.body.id },
-  });
+  let result = await hasura
+    .post({
+      query,
+      variables: { id: req.body.id },
+    })
+    .json()
+    .catch(console.log);
+
+  if (result.data) {
+    let { asset, owner } = result.data.update_artworks_by_pk;
+    let { address, multisig } = owner;
+
+    let utxos = [
+      ...(await electrs.url(`/address/${address}/utxo`).get().json()),
+      ...(await electrs.url(`/address/${multisig}/utxo`).get().json()),
+    ];
+
+    if (!utxos.find((tx) => tx.asset === asset)) {
+      query = `mutation ($id: uuid!) {
+        update_artworks_by_pk(pk_columns: { id: $id }, _set: { held: false }) {
+          id
+          owner {
+            address
+            multisig
+          } 
+          asset
+        }
+      }`;
+
+      result = await hasura
+        .post({
+          query,
+          variables: { id: req.body.id },
+        })
+        .json()
+        .catch(console.log);
+
+      if (result.errors) console.log("problem updating held status", result);
+    }
+  }
 
   res.send({});
 });
 
 app.post("/transaction", auth, async (req, res) => {
-  const api = wretch().url(`${HASURA_URL}/v1/graphql`).headers(req.headers);
   const { transaction } = req.body;
 
   let query = `query {
@@ -31,6 +73,7 @@ app.post("/transaction", auth, async (req, res) => {
       title
       slug
       bid {
+        amount
         user {
           id
           display_name
@@ -80,10 +123,69 @@ app.post("/transaction", auth, async (req, res) => {
     } 
   }`;
 
-  r = await api
+  r = await api(req.headers)
     .post({ query, variables: { transaction } })
     .json()
     .catch(console.error);
 
+  console.log("bid placed", title, bid[0].amount);
+
   res.send(r);
+});
+
+app.post("/tx/update", auth, async (req, res) => {
+  const query = `mutation update_transaction($id: uuid!, $psbt: String!) {
+    update_transactions_by_pk(
+      pk_columns: { id: $id },
+      _set: { 
+        psbt: $psbt,
+        type: "bid",
+      }
+    ) {
+      id
+    }
+  }`;
+
+  r = await hasura
+    .post({ query, variables: req.body })
+    .json()
+    .catch(console.error);
+
+  res.send(r);
+});
+
+app.post("/accept", auth, async (req, res) => {
+  let query = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!, $bid_id: uuid) {
+    update_artworks_by_pk(
+      pk_columns: { id: $id }, 
+      _set: { 
+        owner_id: $owner_id,
+      }
+    ) {
+      id
+    }
+    insert_transactions_one(object: {
+      artwork_id: $id,
+      asset: $asset,
+      type: "accept",
+      amount: $amount,
+      hash: $hash,
+      psbt: $psbt,
+      bid_id: $bid_id,
+    }) {
+      id,
+      artwork_id
+    } 
+  }`;
+
+  try {
+    await broadcast(Psbt.fromBase64(req.body.psbt));
+    let { data } = await api(req.headers)
+      .post({ query, variables: req.body })
+      .json();
+    res.send(data);
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
+  }
 });

@@ -4,12 +4,12 @@
   import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { Buffer } from "buffer";
-  import { tick } from "svelte";
+  import { onMount, tick } from "svelte";
   import { page } from "$app/stores";
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
-  import { api } from "$lib/api";
+  import { api, hasura } from "$lib/api";
   import {
     fee,
     password,
@@ -63,12 +63,24 @@
   let focus = (i) => i && tick().then(() => input && input.focus());
   $: focus(initialized);
 
-  let loading = true;
+  let loading;
   let artwork, list_price, royalty;
-  subscription(operationStore(getArtwork(id)), (a, b) => {
-    artwork = {
-      ...b.artworks_by_pk,
-    };
+  $: setup($token);
+
+  let setup = async (t) => {
+    if (!t) return;
+
+    loading = false;
+
+    let result = await hasura
+      .auth(`Bearer ${$token}`)
+      .post({
+        query: getArtwork(id),
+      })
+      .json();
+
+    if (result.data) artwork = result.data.artworks_by_pk;
+    else return;
 
     if (!artwork.asking_asset) artwork.asking_asset = btc;
     auction_enabled =
@@ -100,7 +112,7 @@
 
     initialized = true;
     loading = false;
-  });
+  };
 
   const updateArtwork$ = mutation(updateArtwork);
 
@@ -195,26 +207,27 @@
     if (compareAsc(start, new Date()) < 1)
       throw new Error("Start date can't be in the past");
 
-    if (compareAsc(start, end) === 1)
+    if (compareAsc(start, end) > 0)
       throw new Error("Start date must precede end date");
 
-    let newAuction = !artwork.auction_end;
-
-    if (newAuction) {
+    if (
+      !artwork.auction_end ||
+      compareAsc(parseISO(artwork.auction_end), new Date()) < 1
+    ) {
       await requirePassword();
 
       let base64, tx;
       if (artwork.royalty) {
         tx = await signOver(artwork, tx);
-        artwork.list_price_tx = $psbt.toBase64();
+        artwork.auction_tx = $psbt.toBase64();
       } else {
         $psbt = await sendToMultisig(artwork);
         $psbt = await signAndBroadcast();
         base64 = $psbt.toBase64();
         tx = $psbt.extractTransaction();
 
-        tx = (await signOver(artwork, tx));
-        artwork.list_price_tx = $psbt.toBase64();
+        tx = await signOver(artwork, tx);
+        artwork.auction_tx = $psbt.toBase64();
 
         artwork.auction_release_tx = (
           await createRelease(artwork, tx)
@@ -278,43 +291,46 @@
       await setupSwaps();
 
       let {
-        id: artwork_id,
         asking_asset,
-        auction_start,
-        auction_end,
         asset,
-        description,
-        filename,
-        reserve_price,
-        list_price_tx,
+        auction_end,
         auction_release_tx,
-        title,
+        auction_start,
+        auction_tx,
         bid_increment,
-        max_extensions,
+        description,
         extension_interval,
+        filename,
+        id: artwork_id,
+        list_price_tx,
+        max_extensions,
+        reserve_price,
+        title,
       } = artwork;
 
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
 
+      let reserveSats = sats(artwork.asking_asset, reserve_price);
+
       let result = await updateArtwork$({
         artwork: {
+          asking_asset,
+          auction_end,
+          auction_release_tx,
+          auction_start,
+          auction_tx,
+          bid_increment,
+          extension_interval,
           list_price: sats(artwork.asking_asset, list_price),
           list_price_tx,
-          auction_release_tx,
-          reserve_price: sats(artwork.asking_asset, reserve_price),
-          auction_start,
-          auction_end,
-          asking_asset,
-          bid_increment,
           max_extensions,
-          extension_interval,
+          reserve_price: sats(artwork.asking_asset, reserve_price),
           royalty,
         },
         id,
       });
 
-      console.log(result);
       if (result.error) {
         throw new Error(
           `Problem updating artwork record ${result.error.message}`
@@ -432,7 +448,7 @@
 
     {#if loading}
       <ProgressLinear />
-    {:else}
+    {:else if artwork && $user}
       {#if auction_underway}
         <h4 class="mt-12">
           Listing cannot be updated while auction is underway

@@ -8,7 +8,7 @@
     <a
       href={`/u/${transaction.user.username}`}
       class="secondary-color">@{transaction.user.username}</a>
-    {#if transaction.type === 'bid'}
+    {#if transaction.type.includes('bid')}
       offered
       {val(transaction.asset, transaction.amount)}
       {ticker(transaction.asset)}
@@ -20,13 +20,13 @@
       {val(transaction.asset, transaction.amount)}
       {ticker(transaction.asset)}
       for
-    {:else if transaction.type === 'listing'}
+    {:else if transaction.type.includes('listing')}
       set a listing price of
       {val(transaction.asset, transaction.amount)}
       {ticker(transaction.asset)}
       for
     {:else if transaction.type === 'return'}
-      did not receive any bids for
+      received no bids for
     {:else if transaction.type === 'release'}
       won the auction for
     {:else if transaction.type === 'auction'}

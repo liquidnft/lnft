@@ -16,7 +16,7 @@ const query = `
       royalty
       auction_start
       auction_end
-      list_price_tx
+      list_price
       artist {
         id
         address
@@ -50,8 +50,6 @@ app.get("/pubkey", async (req, res) => {
 });
 
 app.post("/sign", auth, async (req, res) => {
-  const userapi = wretch().url(`${HASURA_URL}/v1/graphql`).headers(req.headers);
-
   try {
     const { psbt } = req.body;
 
@@ -83,18 +81,11 @@ const check = async (psbt) => {
       royalty,
       artist,
       owner,
+      list_price,
       asking_asset,
       auction_start,
       auction_end,
     }) => {
-      if (auction_end) {
-        let start = parseISO(auction_start);
-        let end = parseISO(auction_end);
-
-        if (isWithinInterval(new Date(), { start, end }))
-          throw new Error("Auction underway");
-      }
-
       let outs = outputs.filter((o) => o.asset === asking_asset);
       let toArtist = outs
         .filter(
@@ -107,6 +98,14 @@ const check = async (psbt) => {
           (o) => o.address === owner.address || o.address === owner.multisig
         )
         .reduce((a, b) => (a += b.value), 0);
+
+      if (auction_end) {
+        let start = parseISO(auction_start);
+        let end = parseISO(auction_end);
+
+        if (toOwner !== list_price && isWithinInterval(new Date(), { start, end }))
+          throw new Error("Auction underway");
+      }
 
       if (royalty) {
         if (toOwner) {

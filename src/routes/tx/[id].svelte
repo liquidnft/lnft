@@ -5,41 +5,56 @@
   import reverse from "buffer-reverse";
   import { Buffer } from "buffer";
   import { onMount } from "svelte";
-  import { electrs } from "$lib/api";
-  import { query, operationStore } from "@urql/svelte";
+  import { electrs, hasura } from "$lib/api";
   import { getTransaction } from "$queries/transactions";
   import { Psbt } from "@asoltys/liquidjs-lib";
-  import { psbt } from "$lib/store";
+  import { psbt, token } from "$lib/store";
   import Transaction from "$components/Transaction";
   import { getTx } from "$lib/wallet";
+  import { err } from "$lib/utils";
 
   const { id } = $page.params;
 
   let tx;
   let done;
 
-  query(operationStore(getTransaction(id))).subscribe(async ({ data }) => {
-    if (done || !data) return;
-    let transaction = data.transactions_by_pk;
-    let { psbt: p } = transaction;
+  onMount(async () => {
+    try {
+      let result = await hasura
+        .auth(`Bearer ${$token}`)
+        .post({
+          query: getTransaction(id),
+        })
+        .json();
 
-    if (p) $psbt = Psbt.fromBase64(p);
-    else if (!$psbt) {
-      tx = await getTx(transaction.hash);
-      p = new Psbt();
+      if (result.errors) throw new Error(result.errors[0].message);
 
-      for (let i = 0; i < tx.ins.length; i++) {
-        p.addInput(tx.ins[i]);
+      let {
+        data: {
+          transactions_by_pk: { hash, psbt: p },
+        },
+      } = result;
+
+      if (p) $psbt = Psbt.fromBase64(p);
+      else if (!$psbt) {
+        tx = await getTx(hash);
+        p = new Psbt();
+
+        for (let i = 0; i < tx.ins.length; i++) {
+          p.addInput(tx.ins[i]);
+        }
+
+        tx.outs.map((output) => {
+          p.addOutput(output);
+        });
+
+        $psbt = p;
       }
 
-      tx.outs.map((output) => {
-        p.addOutput(output);
-      });
-
-      $psbt = p;
+      done = true;
+    } catch (e) {
+      err(e);
     }
-
-    done = true;
   });
 </script>
 
@@ -56,7 +71,7 @@
     </a>
     <h3 class="py-4">Transaction details</h3>
   </div>
-  {#if $psbt}
+  {#if done && $psbt}
     <Transaction {tx} />
   {:else}Transaction not found{/if}
 </div>

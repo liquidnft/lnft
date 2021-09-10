@@ -15,7 +15,7 @@
 
   let canAccept = ({ type, artwork, created_at }, debug) => {
     let isCurrent = ({ transferred_at: t }) =>
-      type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)));
+      type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);
 
     let isOwner = ({ owner }) => $user && $user.id === owner.id;
 

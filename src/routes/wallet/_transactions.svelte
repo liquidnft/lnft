@@ -15,14 +15,14 @@
   });
 
   let txns = [];
-  let getTransactions = () =>
+  let getTransactions = () => 
     $token &&
     api
       .auth(`Bearer ${$token}`)
       .url("/transactions")
       .get()
       .json((data) => {
-        txns = data.transactions;
+        txns = data.transactions.filter(t => t.type === 'withdrawal' || t.type === 'deposit');
 
         $assets = txns
           .map(({ asset }) => ({ name: assetLabel(asset), asset }))

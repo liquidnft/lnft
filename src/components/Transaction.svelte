@@ -41,7 +41,7 @@
 
   let ins, outs, totals, senders, recipients, showDetails, users, lock, pp, uu;
   let loading;
-  $: init($psbt, $user, $addresses);
+  $: init($psbt, $user, $addresses, tx);
   let retries = 0;
   let init = async (p, u) => {
     if (!p) return;

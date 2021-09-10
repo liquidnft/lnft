@@ -5,6 +5,7 @@ const fields = `
   asset
   edition
   editions
+  held
   title
   description
   artist_id

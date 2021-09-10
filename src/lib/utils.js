@@ -150,6 +150,7 @@ const err = (e) => {
   try {
     msg = JSON.parse(msg).message;
   } catch {}
+  console.log("MSG", msg);
   if (!msg) msg = "An error occurred";
   if (msg.includes("Insufficient")) return;
   setTimeout(() => snack.set({ msg, type: "error" }), 100);

@@ -45,7 +45,7 @@
       info("Payment sent!");
       withdrawing = false;
     } catch (e) {
-      console.log(e);
+      console.log("BAD", e);
       err(e);
     }
     loading = false;

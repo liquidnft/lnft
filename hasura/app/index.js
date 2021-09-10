@@ -5,9 +5,7 @@ const path = require("path");
 
 require("make-promises-safe");
 
-app = require("fastify")({
-  logger: true,
-});
+app = require("fastify")();
 
 app.register(require("fastify-static"), {
   root: path.join("/export"),

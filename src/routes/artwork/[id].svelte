@@ -21,6 +21,7 @@
   import {
     // createTransaction,
     getArtworkTransactions,
+    getArtworkTransactionsSub,
   } from "$queries/transactions";
   import { goto, err, explorer, info, units } from "$lib/utils";
   import { mutation, subscription, query, operationStore } from "@urql/svelte";
@@ -33,7 +34,7 @@
     broadcast,
   } from "$lib/wallet";
   import { Psbt } from "@asoltys/liquidjs-lib";
-  import { api } from "$lib/api";
+  import { api, hasura } from "$lib/api";
   import ArtworkQuery from "$components/ArtworkQuery";
   import SocialShare from "$components/SocialShare";
 
@@ -48,7 +49,7 @@
 
   const requestPolicy = "cache-and-network";
 
-  $: disabled =
+  $: disabled = !artwork || !artwork.held ||
     !transactions ||
     transactions.some(
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
@@ -56,6 +57,7 @@
 
   $: pageChange($page);
   const pageChange = ({ params }) => {
+    loading = false;
     if (params.id) ({ id } = params);
     api.url("/viewed").post({ id });
   };
@@ -65,9 +67,29 @@
   let artwork, start_counter, end_counter, now, timeout;
 
   $: setup(id);
-  let setup = () => {
+  let setup = async () => {
+    let result = await hasura
+      .auth(`Bearer ${$token}`)
+      .post({
+        query: getArtwork(id),
+      })
+      .json();
+
+    if (result.data) artwork = result.data.artworks_by_pk;
+
+    result = await hasura
+      .auth(`Bearer ${$token}`)
+      .post({
+        query: getArtworkTransactions(id),
+      })
+      .json();
+
+    if (result.data) transactions = result.data.transactions;
+  };
+
+  $: if (id) {
     subscription(
-      operationStore(getArtworkTransactions(id)),
+      operationStore(getArtworkTransactionsSub(id)),
       (a, b) => (transactions = b.transactions)
     );
 
@@ -75,7 +97,7 @@
       operationStore(getArtworkSub(id)),
       (a, b) => (artwork = b.artworks_by_pk)
     );
-  };
+  }
 
   onDestroy(() => ($art = undefined));
 
@@ -116,7 +138,8 @@
     await requirePassword();
 
     try {
-      $psbt = await createOffer(artwork, transaction.amount, 500);
+      $psbt = await createOffer(artwork, transaction.amount);
+      console.log("psbt", $psbt.toBase64());
     } catch (e) {
       err(e);
       offering = false;
@@ -133,18 +156,20 @@
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-   
+
     let result = await api
       .auth(`Bearer ${$token}`)
       .url("/transaction")
       .post({ transaction })
-      .json().catch(err);
-    
+      .json()
+      .catch(err);
+
     if (result.errors) {
+      console.log("errors", result.errors);
       if (artwork && artwork.bid[0]) {
         return err(
-          `Problem placing bid, minimum bid is ${val(
-            artwork.bid[0].amount + 1000
+          `Problem placing bid, minimum bid is ${max(val(artwork.reserve_price), val(
+            artwork.bid[0].amount + artwork.bid_increment)
           )}`
         );
       } else return err(result.errors[0]);

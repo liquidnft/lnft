@@ -7,6 +7,43 @@ export const createTransaction = {
   }`,
 };
 
+const artworkfields = `
+  id
+  asset
+  title
+  filename
+  filetype
+  asking_asset
+  royalty
+  auction_start
+  auction_end
+  transferred_at
+  slug
+  artist_id
+  owner_id
+  artist {
+    id
+    username
+    avatar_url
+    address
+  } 
+  owner {
+    id
+    username
+    avatar_url
+    address
+    pubkey
+  } 
+  bid {
+    id
+    amount
+    user {
+      id
+      username
+    } 
+  } 
+`;
+
 export const fields = `
   id
   psbt
@@ -30,38 +67,17 @@ export const fields = `
   } 
   artwork_id
   artwork {
-    id
-    title
-    filename
-    filetype
-    asking_asset
-    royalty
-    auction_start
-    auction_end
-    transferred_at
-    slug
-    artist {
-      id
-      username
-      avatar_url
-    } 
-    owner {
-      id
-      username
-      avatar_url
-    } 
-    bid {
-      id
-      amount
-      user {
-        id
-        username
-      } 
-    } 
+    ${artworkfields}
   } 
 `;
 
-export const getArtworkTransactions = (id) => `subscription {
+export const getArtworkTransactions = (id) => `query {
+  transactions(order_by: {created_at: desc}, where: {_and: {artwork_id: {_eq: "${id}"}, type: {_neq: "receipt"}}}) {
+    ${fields}
+  }
+}`;
+
+export const getArtworkTransactionsSub = (id) => `subscription {
   transactions(order_by: {created_at: desc}, where: {_and: {artwork_id: {_eq: "${id}"}, type: {_neq: "receipt"}}}) {
     ${fields}
   }
@@ -90,7 +106,12 @@ export const getTransactions = (limit = 10) => `query {
 
 export const getActiveBids = (id) => `query {
   activebids(where: { user_id: { _eq: "${id}"}}) {
+    id
     psbt
+    amount
+    artwork {
+      ${artworkfields}
+    } 
   }
 }`;
 
@@ -113,28 +134,3 @@ export const getOffers = `query {
     }
   }
 }`;
-
-export const acceptOffer = {
-  query: `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!, $bid_id: uuid) {
-    update_artworks_by_pk(
-      pk_columns: { id: $id }, 
-      _set: { 
-        owner_id: $owner_id,
-      }
-    ) {
-      id
-    }
-    insert_transactions_one(object: {
-      artwork_id: $id,
-      asset: $asset,
-      type: "accept",
-      amount: $amount,
-      hash: $hash,
-      psbt: $psbt,
-      bid_id: $bid_id,
-    }) {
-      id,
-      artwork_id
-    } 
-  }`,
-};

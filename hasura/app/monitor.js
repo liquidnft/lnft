@@ -1,7 +1,8 @@
 const { api, hasura, electrs, registry } = require("./api");
-const { formatISO } = require("date-fns");
+const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
 const reverse = require("buffer-reverse");
 const fs = require("fs");
+const { Psbt } = require("@asoltys/liquidjs-lib");
 
 const setConfirmed = `
   mutation setConfirmed($id: uuid!) {
@@ -100,7 +101,9 @@ const transferOwnership = async ({
 };
 
 const confirmTransactions = (result) => {
-  let { data: { transactions } } = result;
+  let {
+    data: { transactions },
+  } = result;
   transactions.map((tx) => {
     electrs
       .url(`/tx/${tx.hash}/status`)
@@ -115,24 +118,164 @@ const confirmTransactions = (result) => {
   });
 };
 
-const query = `
-  query transactions {
-    transactions(where: {
-      confirmed: {_eq: false},
-      type: {_in: ["purchase", "creation", "royalty", "accept", "release", "auction", "cancel"] },
-    }) {
-      id
-      hash
-      bid {
-        id
-      } 
+const isSpent = async ({ ins }, artwork_id) => {
+  let query = `query($artwork_id: uuid!) { 
+    transactions(
+      where: { artwork_id: { _eq: $artwork_id }},
+      order_by: { created_at: desc }, 
+      limit: 1
+    ) {
+      created_at
     }
+  }`;
+
+  let result;
+  try {
+    result = await hasura.post({ query, variables: { artwork_id } }).json();
+  } catch(e) {
+    return false;
+  } 
+
+  if (
+    result.errors ||
+    compareAsc(
+      parseISO(result.data.transactions[0].created_at),
+      subMinutes(new Date(), 2) > 0
+    )
+  )
+    return console.log("skipping", artwork_id);
+
+  for (let i = 0; i < ins.length; i++) {
+    let { index, hash } = ins[i];
+    let txid = reverse(hash).toString("hex");
+
+    let { spent } = await electrs
+      .url(`/tx/${txid}/outspend/${index}`)
+      .get()
+      .json();
+
+    if (spent) return true;
   }
-`;
+
+  return false;
+};
+
+const checkBids = async () => {
+  let result = await hasura
+    .post({
+      query: `query {
+        activebids {
+          id
+          artwork_id
+          psbt
+        }
+      }`,
+    })
+    .json()
+    .catch(console.log);
+
+  if (!result.data) return console.log("problem checking bids", result);
+
+  let query = `mutation ($id: uuid!) {
+    update_transactions_by_pk(
+      pk_columns: { id: $id }, 
+      _set: { 
+        type: "cancelled_bid"
+      }
+    ) {
+     id
+    }
+  }`;
+
+  let {
+    data: { activebids },
+  } = result;
+
+  for (let i = 0; i < activebids.length; i++) {
+    let tx = activebids[i];
+
+    let p = Psbt.fromBase64(tx.psbt);
+    let variables = { id: tx.id };
+    if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
+      hasura.post({ query, variables }).json(console.log).catch(console.log);
+  }
+
+  setTimeout(checkBids, 5000);
+};
+setTimeout(checkBids, 2000);
+
+const checkListings = async () => {
+  let result = await hasura
+    .post({
+      query: `query {
+        activelistings {
+          id
+          artwork_id
+          psbt
+        }
+      }`,
+    })
+    .json()
+    .catch(console.log);
+
+  if (!result.data) return console.log("problem checking listings", result);
+
+  let query = `mutation ($id: uuid!, $artwork_id: uuid!) {
+    update_artworks_by_pk(
+      pk_columns: { id: $artwork_id }, 
+      _set: { 
+        list_price: null,
+        list_price_tx: null
+      }
+    ) {
+     id
+    }
+    update_transactions_by_pk(
+      pk_columns: { id: $id }, 
+      _set: { 
+        type: "cancelled_listing"
+      }
+    ) {
+     id
+    }
+  }`;
+
+  let {
+    data: { activelistings },
+  } = result;
+
+  for (let i = 0; i < activelistings.length; i++) {
+    let tx = activelistings[i];
+    let p = Psbt.fromBase64(tx.psbt);
+    let variables = { id: tx.id, artwork_id: tx.artwork_id };
+    if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
+      hasura.post({ query, variables }).json(console.log).catch(console.log);
+  }
+
+  setTimeout(checkListings, 5000);
+};
+setTimeout(checkListings, 4000);
 
 setInterval(
-  () => hasura.post({ query }).json(confirmTransactions).catch(console.log),
-  2000
+  () =>
+    hasura
+      .post({
+        query: `query {
+          transactions(where: {
+            confirmed: {_eq: false},
+            type: {_in: ["purchase", "creation", "royalty", "accept", "release", "auction", "cancel"] },
+          }) {
+            id
+            hash
+            bid {
+              id
+            } 
+          }
+        }`,
+      })
+      .json(confirmTransactions)
+      .catch(console.log),
+  5000
 );
 
 app.post("/asset/register", async (req, res) => {
@@ -225,27 +368,35 @@ app.get("/transactions", auth, async (req, res) => {
     let txns = [...(await get(user.address)), ...(await get(user.multisig))];
 
     query = `query {
-      transactions(where: { user_id: {_eq: "${user.id}"}}) {
+      transactions(where: { user_id: {_eq: "${user.id}"}, type: { _in: ["withdrawal", "deposit"] }} ) {
+        id
         hash
         asset
+        type
       }
     }`;
 
-    let { transactions } = (await hasura.post({ query }).json()).data;
+    let result = await hasura.post({ query }).json();
+    let { transactions } = result.data;
 
     for (let i = 0; i < txns.length; i++) {
       let { txid, vin, vout, status } = txns[i];
+
       let total = {};
 
       for (let j = 0; j < vin.length; j++) {
-        let { txid, vout } = vin[j];
-        let tx = await electrs.url(`/tx/${txid}`).get().json();
+        let { txid: prev, vout } = vin[j];
+        let tx = await electrs.url(`/tx/${prev}`).get().json();
         let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
 
         if ([user.address, user.multisig].includes(a)) {
           if (asset) {
-            if (transactions.find((t) => t.hash === txid && t.asset === asset))
+            let t = transactions.find(
+              (t) => t.hash === txid && t.asset === asset
+            );
+            if (t) {
               continue;
+            }
 
             total[asset]
               ? (total[asset] -= parseInt(value))
@@ -314,13 +465,14 @@ app.get("/transactions", auth, async (req, res) => {
     query = `query {
       transactions(order_by: {created_at: desc}, where: {
         user_id: {_eq: "${user.id}"}, 
-        type: {_in: ["deposit", "withdrawal", "creation", "release", "purchase", "receipt"]}
+        type: {_in: ["deposit", "withdrawal"]}
       }) {
         id
         hash
         amount
         created_at
         asset
+        type
       }
     }`;
 
