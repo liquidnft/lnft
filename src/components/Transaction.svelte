@@ -68,6 +68,8 @@
       let { hash, index } = tx.ins[i];
       let txid = reverse(hash).toString("hex");
       let input = (await electrs.url(`/tx/${txid}`).get().json()).vout[index];
+      input.spent = (await electrs.url(`/tx/${txid}/outspend/${index}`).get().json()).spent;
+      
       input.signed =
         p.data.inputs[i] &&
         (!!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig);
@@ -215,10 +217,10 @@
                   {#each Object.keys(totals[username]) as asset}
                     {#if totals[username][asset] > 0}
                       <div class="flex break-all mb-2">
-                        <div class="ml-auto mr-1">
+                        <div class="ml-auto mr-1 whitespace-nowrap">
                           {val(asset, Math.abs(totals[username][asset]))}
                         </div>
-                        <div>{assetLabel(asset)}</div>
+                        <div class="whitespace-nowrap">{assetLabel(asset)}</div>
                       </div>
                     {/if}
                   {/each}
@@ -240,7 +242,9 @@
                     <Avatar
                       user={users[username]}
                       overlay={username.includes('2of2') && '/logo-graphic.png'} />
-                  {/if}
+                  {:else}
+                    <Avatar src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z" />
+                      {/if}
                 </div>
                 <div class="my-auto ml-2">
                   {#if users[username]}
@@ -252,17 +256,17 @@
                       </a>
                     </div>
                   {:else}
-                    <div class="w-2/3 break-all">{username}</div>
+                    <div class="w-2/3 whitespace-nowrap">{username}</div>
                   {/if}
                 </div>
                 <div class="ml-auto mt-3">
                   {#each Object.keys(totals[username]) as asset}
                     {#if totals[username][asset] < 0}
                       <div class="flex break-all mb-2">
-                        <div class="mx-auto mr-1">
+                        <div class="mx-auto mr-1 whitespace-nowrap">
                           {val(asset, Math.abs(totals[username][asset]))}
                         </div>
-                        <div>{assetLabel(asset)}</div>
+                        <div class="whitespace-nowrap">{assetLabel(asset)}</div>
                       </div>
                     {/if}
                   {/each}
@@ -346,15 +350,15 @@
 
                 <div class="mb-2">
                   Status:
-                  {input.signed ? (input.pSig ? 'Partially signed' : 'Fully signed') : 'Unsigned'}
+                  {input.signed ? (input.pSig ? 'Partially signed' : 'Fully signed') : 'Unsigned'} -
+                  {input.spent ? 'Spent' : 'Unspent'}
                 </div>
 
-                <div class="mb-2">Prevout: {input.txid}:{input.index}</div>
+                <div class="mb-2">Prevout: <a class="secondary-color" href={`${explorer}/tx/${input.txid}?output:${input.index}`}>{input.txid}:{input.index}</a></div>
 
                 {#if input.value && input.asset}
                   <div class="mb-2">
                     {input.value}
-                    units of
                     <a
                       href={`${explorer}/asset/${input.asset}`}
                       class="secondary-color">{input.asset}</a>
@@ -362,6 +366,7 @@
                 {/if}
 
                 <div class="mb-2">
+                  Address: 
                   <a
                     href={`${explorer}/address/${input.scriptpubkey_address}`}
                     class="secondary-color">{input.scriptpubkey_address}</a>
@@ -382,7 +387,6 @@
                   {#if out.value && out.asset}
                     <div class="mb-2">
                       {out.value}
-                      units of
                       <a
                         href={`${explorer}/asset/${out.asset}`}
                         class="secondary-color">{out.asset}</a>
@@ -392,6 +396,7 @@
                     {#if out.address === 'Fee'}
                       Fee
                     {:else}
+                      Address: 
                       <a
                         href={`${explorer}/address/${out.address}`}
                         class="secondary-color">{out.address}</a>

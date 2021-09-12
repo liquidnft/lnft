@@ -152,7 +152,7 @@ const isSpent = async ({ ins }, artwork_id) => {
     let { spent } = await electrs
       .url(`/tx/${txid}/outspend/${index}`)
       .get()
-      .json();
+      .json().catch(console.log);
 
     if (spent) return true;
   }
@@ -164,7 +164,7 @@ const checkBids = async () => {
   let result = await hasura
     .post({
       query: `query {
-        activebids {
+        activebids(where: { type: { _eq: "bid" }}) {
           id
           artwork_id
           psbt

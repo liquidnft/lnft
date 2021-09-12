@@ -17,12 +17,12 @@
   import { Dropzone, ProgressLinear } from "$comp";
   import upload from "$lib/upload";
   import { create } from "$queries/artworks";
-  import { mutation } from "@urql/svelte";
   import { btc, fade, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
     createIssuance,
-    signAndBroadcast,
+    sign,
+    broadcast,
     parseAsset,
     keypair,
   } from "$lib/wallet";
@@ -102,8 +102,6 @@
     tags: [],
   };
 
-  const createArtwork = mutation(create);
-
   let hash, tx;
   const issue = async (ticker) => {
     let contract;
@@ -119,12 +117,15 @@
     try {
       contract = await createIssuance(artwork, domain, tx);
 
-      success = await signAndBroadcast();
+      await sign();
+      await broadcast(true);
+      await tick();
     } catch (e) {
+      console.log(e);
       throw new Error("Issuance failed: " + e.message);
     }
 
-    tx = success.extractTransaction();
+    tx = $psbt.extractTransaction();
     artwork.asset = parseAsset(
       tx.outs.find((o) => parseAsset(o.asset) !== btc).asset
     );
@@ -256,17 +257,7 @@
         let artworkSansTags = { ...artwork };
         delete artworkSansTags.tags;
 
-        console.log("creating", {
-            artwork_id: artwork.id,
-            type: "creation",
-            hash,
-            contract,
-            asset: artwork.asset,
-            amount: 1,
-            psbt: $psbt.toBase64(),
-          });
-
-        let result = await createArtwork({
+        let variables = {
           artwork: artworkSansTags,
           transaction: {
             artwork_id: artwork.id,
@@ -278,9 +269,15 @@
             psbt: $psbt.toBase64(),
           },
           tags,
-        });
+        };
 
-        console.log("result", result);
+        let result = await hasura
+          .auth(`Bearer ${$token}`)
+          .post({
+            query: create,
+            variables,
+          })
+          .json();
 
         if (result.error) throw new Error(result.error.message);
       }

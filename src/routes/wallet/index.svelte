@@ -142,21 +142,21 @@
           <span class="text-gray-400 mt-auto">{assetLabel($asset)}</span>
         </div>
       </div>
-      {#if $locked}
-        <div class="m-6">
-          <div class="text-sm light-color">Total offered in active bids</div>
-          <div class="flex mt-3">
-            <span class="light-color mr-3">{val($asset, $locked)}</span>
-            <span class="text-gray-400">{assetLabel($asset)}</span>
-          </div>
-        </div>
-      {/if}
       {#if $pending && val($asset, $pending[$asset])}
         <div class="m-6">
           <div class="text-sm light-color">Pending</div>
           <div class="flex mt-3">
             <span
               class="light-color mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
+            <span class="text-gray-400">{assetLabel($asset)}</span>
+          </div>
+        </div>
+      {/if}
+      {#if $locked && $asset === btc}
+        <div class="m-6">
+          <div class="text-sm light-color">Locked in active transactions</div>
+          <div class="flex mt-3">
+            <span class="light-color mr-3">{val($asset, $locked)}</span>
             <span class="text-gray-400">{assetLabel($asset)}</span>
           </div>
         </div>

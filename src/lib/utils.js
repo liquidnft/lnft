@@ -51,7 +51,7 @@ const addressLabel = (address) => {
     if (r) return r.username;
   }
 
-  return address;
+  return address.length > 6 ? address.substr(0,6) + '...' : address;
 };
 
 const assetLabel = (asset) => {

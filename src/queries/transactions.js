@@ -109,6 +109,7 @@ export const getActiveBids = (id) => `query {
     id
     psbt
     amount
+    type
     artwork {
       ${artworkfields}
     } 

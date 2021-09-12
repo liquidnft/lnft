@@ -12,7 +12,8 @@
   export let withdrawing = false;
 
   let amount;
-  let to;
+  let to ="AzppkpkTHBGfGcvU89AKH9JNuoe24LZvjbNCDStpykLLUj2S3n3zPFPVhQCiC8akswapzRrEqHnJUmMQ";
+
   let loading;
   let artwork;
 
@@ -24,7 +25,7 @@
 
   $: clearForm($asset);
   let clearForm = () => {
-    amount = 0;
+    amount = undefined;
   };
 
   let send = async (e) => {
@@ -53,33 +54,43 @@
 </script>
 
 <style>
-  textarea {
+  textarea, input, select {
     @apply rounded-lg p-2 text-black;
     margin-top: 10px;
   }
 </style>
 
 {#if $user && withdrawing}
-  <form class="dark-bg md:rounded-lg p-5 w-full flex flex-col" on:submit|preventDefault={send} autocomplete="off">
+  <form
+    class="dark-bg md:rounded-lg p-5 w-full flex flex-col"
+    on:submit|preventDefault={send}
+    autocomplete="off">
     {#if loading}
       <ProgressLinear />
     {:else}
       <div class="flex flex-col mb-4">
+        <label>Asset</label>
+        <select
+          class="text-black"
+          bind:value={$asset}>
+          {#each $assets as asset}
+            <option value={asset.asset}>{assetLabel(asset.asset)}</option>
+          {/each}
+        </select>
+      </div>
+      <div class="flex flex-col mb-4">
         <label>Amount</label>
         <div class="flex justify-between text-black">
-          <input placeholder={val($asset, 0)} bind:value={amount} />
-          <select
-            class="rounded-full bg-gray-200 appearance-none py-0 ml-5"
-            bind:value={$asset}>
-            {#each $assets as asset}
-              <option value={asset.asset}>{assetLabel(asset.asset)}</option>
-            {/each}
-          </select>
+          <input class="w-full" placeholder={val($asset, 0)} bind:value={amount} />
         </div>
       </div>
       <div class="flex flex-col mb-4">
         <label>Recipient Address</label>
-        <textarea  style="overflow:auto" placeholder="Address" bind:value={to} rows={4} />
+        <textarea
+          style="overflow:auto"
+          placeholder="Address"
+          bind:value={to}
+          rows={4} />
       </div>
       <button type="submit" class="primary-btn w-full mt-5">Complete withdraw</button>
     {/if}

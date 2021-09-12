@@ -133,13 +133,32 @@ app.post("/transaction", auth, async (req, res) => {
   res.send(r);
 });
 
+app.post("/release/update", auth, async (req, res) => {
+  const query = `mutation($id: uuid!, $psbt: String!) {
+    update_artworks_by_pk(
+      pk_columns: { id: $id },
+      _set: { 
+        auction_release_tx: $psbt,
+      }
+    ) {
+      id
+    }
+  }`;
+
+  r = await hasura
+    .post({ query, variables: req.body })
+    .json()
+    .catch(console.error);
+
+  res.send(r);
+});
+
 app.post("/tx/update", auth, async (req, res) => {
   const query = `mutation update_transaction($id: uuid!, $psbt: String!) {
     update_transactions_by_pk(
       pk_columns: { id: $id },
       _set: { 
         psbt: $psbt,
-        type: "bid",
       }
     ) {
       id

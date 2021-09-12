@@ -83,7 +83,7 @@
     else return;
 
     if (!artwork.asking_asset) artwork.asking_asset = btc;
-    auction_enabled =
+    auction_enabled = auction_enabled ||
       compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
 
     let start, end;

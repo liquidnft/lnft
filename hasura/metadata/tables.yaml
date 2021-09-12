@@ -121,8 +121,10 @@
       columns:
       - amount
       - artwork_id
+      - hash
       - id
       - psbt
+      - type
       - user_id
       filter: {}
   - role: user
@@ -130,8 +132,10 @@
       columns:
       - amount
       - artwork_id
+      - hash
       - id
       - psbt
+      - type
       - user_id
       filter: {}
 - table:

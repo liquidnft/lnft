@@ -49,7 +49,7 @@
 
   const requestPolicy = "cache-and-network";
 
-  $: disabled = !artwork || !artwork.held ||
+  $: disabled = !artwork || 
     !transactions ||
     transactions.some(
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
@@ -168,7 +168,7 @@
       console.log("errors", result.errors);
       if (artwork && artwork.bid[0]) {
         return err(
-          `Problem placing bid, minimum bid is ${max(val(artwork.reserve_price), val(
+          `Problem placing bid, minimum bid is ${Math.max(val(artwork.reserve_price), val(
             artwork.bid[0].amount + artwork.bid_increment)
           )}`
         );
@@ -181,6 +181,7 @@
 
   let bidding, amountInput, offering;
   let startBidding = async () => {
+    if (!artwork.held) return err("Can't construct bid transaction, token not currently held in known address for owner");
     bidding = true;
     await tick();
     amountInput.focus();
@@ -433,7 +434,7 @@
               <Avatar user={artwork.owner} />
               <div class="ml-2">
                 <div>@{artwork.owner.username}</div>
-                <div class="text-xs text-gray-600">Owner</div>
+                <div class="text-xs text-gray-600">{artwork.held ? "" : "Presumed "}Owner</div>
               </div>
             </div>
           </a>

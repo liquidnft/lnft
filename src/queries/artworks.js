@@ -142,22 +142,20 @@ export const getArtworksByTag = (tag) => `subscription {
   }
 }`;
 
-export const create = {
-  query: `mutation insertArtwork($artwork: artworks_insert_input!, $tags: [tags_insert_input!]!, $transaction: transactions_insert_input!) {
-      insert_artworks_one(object: $artwork) {
-        ${fields}
-        tags {
-          tag
-        } 
-      }
-      insert_tags(objects: $tags) {
-        affected_rows
-      }
-      insert_transactions_one(object: $transaction) {
-        ${txfields}
-      } 
-    }`,
-};
+export const create = `mutation ($artwork: artworks_insert_input!, $tags: [tags_insert_input!]!, $transaction: transactions_insert_input!) {
+  insert_artworks_one(object: $artwork) {
+    ${fields}
+    tags {
+      tag
+    } 
+  }
+  insert_tags(objects: $tags) {
+    affected_rows
+  }
+  insert_transactions_one(object: $transaction) {
+    ${txfields}
+  } 
+}`;
 
 export const updateArtwork = {
   query: `mutation update_artwork($artwork: artworks_set_input!, $id: uuid!) {

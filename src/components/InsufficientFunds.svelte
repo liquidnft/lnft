@@ -72,7 +72,7 @@
     }
 
     if (current - $locked >= $error.amount) {
-      console.log(current, $error.amount);
+      console.log(current, $locked, current - $locked, $error.amount);
       $prompt = undefined;
     }
   };
