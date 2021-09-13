@@ -44,7 +44,7 @@ services:
       - '5433:5432'
   hasura:
     container_name: hasura
-    image: hasura/graphql-engine:v1.3.3
+    image: hasura/graphql-engine:v2.0.9.cli-migrations-v3
     ports:
       - '8080:8080'
     depends_on:

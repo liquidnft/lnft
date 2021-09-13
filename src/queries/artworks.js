@@ -76,8 +76,8 @@ export const getFeatured = `query {
   }
 }`;
 
-export const getArtworks = `query($limit: Int, $offset: Int, $order_by: artworks_order_by!) {
- artworks(limit: $limit, offset: $offset, order_by: [$order_by]) {
+export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offset: Int, $order_by: artworks_order_by!) {
+ artworks(where: $where, limit: $limit, offset: $offset, order_by: [$order_by]) {
     ${fields}
     tags {
       tag

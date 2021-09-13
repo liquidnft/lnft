@@ -73,6 +73,7 @@
 
     if (result.data) artwork = result.data.artworks_by_pk;
     else err(result.errors[0]);
+    $art = artwork;
 
 
     result = await pub($token)

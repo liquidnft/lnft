@@ -4,11 +4,12 @@
   import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
   import {
     artworks,
-    show,
-    user,
+    filterCriteria,
     results,
+    show,
     sortCriteria,
     token,
+    user,
   } from "$lib/store";
   import { info, err, goto } from "$lib/utils";
   import Gallery from "$components/Gallery";
@@ -26,7 +27,7 @@
   let count = 0;
   let offset = 0;
 
-  $: reset($sortCriteria);
+  $: reset($filterCriteria, $sortCriteria);
   let reset = () => {
     $artworks = [];
     offset = 0;
@@ -34,6 +35,17 @@
   };
 
   const loadArtworks = async () => {
+    let where = { _or: [] };
+    if ($filterCriteria.listPrice)
+      where._or.push({ list_price: { _is_null: false } });
+    if ($filterCriteria.openBid) where._or.push({ bid: {} });
+    if ($filterCriteria.ownedByCreator)
+      where._or.push({ artist_owned: { _eq: true } });
+    if ($filterCriteria.hasSold)
+      where._or.push({ artist_owned: { _eq: false } });
+
+    if (!where._or.length) delete where._or;
+
     let order_by = {
       newest: {
         created_at: "asc",
@@ -58,7 +70,7 @@
     let result = await pub($token)
       .post({
         query: getArtworks,
-        variables: { limit: 12, offset, order_by },
+        variables: { limit: 12, offset, order_by, where },
       })
       .json();
 
@@ -77,13 +89,13 @@
   };
 
   onMount(async () => {
-      let result = await pub($token)
-        .post({
-          query: countArtworks,
-        })
-        .json();
+    let result = await pub($token)
+      .post({
+        query: countArtworks,
+      })
+      .json();
 
-      if (result.data) count = result.data.artworks_aggregate.aggregate.count;
+    if (result.data) count = result.data.artworks_aggregate.aggregate.count;
 
     new IntersectionObserver(async (e) => {
       if (e[0].isIntersecting && $artworks.length < count) loadArtworks();
