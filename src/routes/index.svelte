@@ -78,13 +78,28 @@
     height: 600px !important;
     width: 100%;
     object-fit: cover;
+  }
 
-    /*
-    background-image: url("/secondary-header.jpg");
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-     */
+  .blur-bg{
+    display: flex;
+    padding: 60px;
+    flex-direction: column;
+    background: rgba(54, 58, 74, 0.45);
+    backdrop-filter: blur(30px);
+    box-shadow: 2px 2px 4px 0 rgb(0 0 0 / 10%);
+    border-radius: 8px;
+    color: white;
+    width: 50%;
+    width: fit-content;
+  }
+
+  .blur-bg h2 {
+    color: white !important;
+  }
+
+  .blur-bg p{
+    color: white !important;
+    margin-top: 20px;
   }
 
   .container.more {
@@ -146,6 +161,12 @@
     .marg-bottom {
       margin-bottom: 96px !important;
     }
+
+    .blur-bg{
+      padding: 24px;
+      width: 75%;
+      width: fit-content;
+    }
   }
 </style>
 
@@ -167,24 +188,26 @@
     <div
       class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
       class:text-white={featured[current].white}>
-      <h2 class:text-white={featured[current].white}>
-        {featured[current].artwork.artist.username}
-      </h2>
-      <p>
-        {featured[current].artwork.title}
-        {#if featured[current].white}
-          <button
-            class="button-transparent header-button border mt-10"
-            style="border-color: white; color: white"
-            on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
-            View Artwork</button>
-        {:else}
-          <button
-            class="button-transparent header-button border mt-10"
-            on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
-            View Artwork</button>
-        {/if}
-      </p>
+      <div class="blur-bg">
+        <h2 class:text-white={featured[current].white}>
+          {featured[current].artwork.artist.username}
+        </h2>
+        <p>
+          {featured[current].artwork.title}
+          {#if featured[current].white}
+            <button
+              class="button-transparent header-button border mt-10"
+              style="border-color: white; color: white"
+              on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
+              View Artwork</button>
+          {:else}
+            <button
+              class="button-transparent header-button border mt-10"
+              on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
+              View Artwork</button>
+          {/if}
+        </p>
+      </div>
     </div>
 
     {#if featured[current].artwork.filetype.includes('video')}
