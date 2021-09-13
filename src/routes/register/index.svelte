@@ -8,8 +8,8 @@
 
   let show;
   let username = "";
-  let password = "liquidart";
-  let email = makeid(6) + "@a.com";
+  let password = import.meta && import.meta.env && import.meta.env !== "production" ? "liquidart" : "";
+  let email = import.meta && import.meta.env && import.meta.env !== "production" ? makeid(6) + "@a.com" : "";
   let registered;
 
   function makeid(length) {

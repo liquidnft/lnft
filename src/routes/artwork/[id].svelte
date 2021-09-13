@@ -215,6 +215,8 @@
       transaction.amount = 1;
       transaction.asset = artwork.asset;
       transaction.user;
+
+      await setup();
     } catch (e) {
       err(e);
     }
@@ -483,12 +485,14 @@
                 class:disabled>Edit</a>
             </div>
           {/if}
+          <!--
           <div class="w-full mb-2">
             <a
               href={disabled ? '' : `/artwork/${id}/auction`}
               class="block text-center text-sm secondary-btn w-full"
-              class:disabled>Transfer</a>
+              class:disabled>Send</a>
           </div>
+          -->
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
             <button

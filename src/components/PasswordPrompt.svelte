@@ -10,7 +10,7 @@
     faEyeSlash,
   } from "@fortawesome/free-solid-svg-icons";
 
-  let attempt = "liquidart";
+  let attempt = import.meta && import.meta.env && import.meta.env !== "production" ? "liquidart" : "";
   let input;
   let show;
 
