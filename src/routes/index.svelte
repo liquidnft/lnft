@@ -186,26 +186,18 @@
 {#if featured[current]}
   <div class="flex secondary-header marg-bottom">
     <div
-      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
-      class:text-white={featured[current].white}>
+      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
       <div class="blur-bg">
-        <h2 class:text-white={featured[current].white}>
+        <h2>
           {featured[current].artwork.artist.username}
         </h2>
         <p>
           {featured[current].artwork.title}
-          {#if featured[current].white}
             <button
               class="button-transparent header-button border mt-10"
               style="border-color: white; color: white"
               on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
               View Artwork</button>
-          {:else}
-            <button
-              class="button-transparent header-button border mt-10"
-              on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
-              View Artwork</button>
-          {/if}
         </p>
       </div>
     </div>
