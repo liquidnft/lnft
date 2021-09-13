@@ -1,7 +1,15 @@
 <script>
+  import { onMount } from "svelte";
   import Fa from "svelte-fa";
   import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
-  import { artworks, show, user, results } from "$lib/store";
+  import {
+    artworks,
+    show,
+    user,
+    results,
+    sortCriteria,
+    token,
+  } from "$lib/store";
   import { info, err, goto } from "$lib/utils";
   import Gallery from "$components/Gallery";
   import Results from "$components/Results";
@@ -9,9 +17,77 @@
   import Filter from "./_filter";
   import Sort from "./_sort";
   import { requirePassword } from "$lib/auth";
+  import { hasura } from "$lib/api";
+  import { countArtworks, getArtworks } from "$queries/artworks";
 
   export let showFilters;
   let filtered = [];
+
+  let count = 0;
+  let offset = 0;
+
+  $: reset($sortCriteria);
+  let reset = () => {
+    $artworks = [];
+    offset = 0;
+    loadArtworks();
+  } 
+
+  const loadArtworks = async () => {
+    let order_by = {
+      newest: {
+        created_at: "asc",
+      },
+      oldest: {
+        created_at: "desc",
+      },
+      highest: {
+        list_price: "desc",
+      },
+      lowest: {
+        list_price: "asc",
+      },
+      ending_soon: {
+        auction_end: "desc",
+      },
+      most_viewed: {
+        views: "desc",
+      },
+    }[$sortCriteria];
+
+    let result = await hasura
+      .auth(`Bearer ${$token}`)
+      .post({
+        query: getArtworks,
+        variables: { limit: 12, offset, order_by },
+      })
+      .json();
+
+    offset += 12;
+
+    if (result.data) {
+      $artworks = [...$artworks, ...result.data.artworks];
+    } else {
+      err(result.errors[0]);
+    }
+  };
+
+  onMount(async () => {
+    if ($token) {
+      let result = await hasura
+        .auth(`Bearer ${$token}`)
+        .post({
+          query: countArtworks,
+        })
+        .json();
+
+      if (result.data) count = result.data.artworks_aggregate.aggregate.count;
+    }
+
+    new IntersectionObserver(async (e) => {
+      if (e[0].isIntersecting && $artworks.length < count) loadArtworks();
+    }).observe(document.querySelector(".footer"));
+  });
 </script>
 
 <style>
@@ -57,7 +133,6 @@
 <div
   class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20">
   <h2 class="md:mb-0">Market</h2>
-
   {#if $user && $user.is_artist}
     <a href="/artwork/create" class="primary-btn">Submit a new artwork</a>
   {/if}

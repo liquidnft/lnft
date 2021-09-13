@@ -76,8 +76,8 @@ export const getFeatured = `query {
   }
 }`;
 
-export const getArtworks = `query {
- artworks {
+export const getArtworks = `query($limit: Int, $offset: Int, $order_by: artworks_order_by!) {
+ artworks(limit: $limit, offset: $offset, order_by: [$order_by]) {
     ${fields}
     tags {
       tag
@@ -214,6 +214,14 @@ export const getArtwork = (id) => `query {
   }
 }`;
 
+export const countArtworks = `query {
+  artworks_aggregate {
+    aggregate {
+      count
+    }
+  }
+}`;
+
 export const getTags = `query {
   tags {
     tag
@@ -221,4 +229,12 @@ export const getTags = `query {
       ${fields}
     } 
   } 
+}`;
+
+export const getTitles = `query {
+  artworks {
+    id
+    asset
+    title
+  }
 }`;

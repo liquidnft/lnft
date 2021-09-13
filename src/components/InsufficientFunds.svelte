@@ -49,7 +49,6 @@
   };
 
   onMount(async () => {
-    console.log("hi mom");
     await getBalances();
     await tick();
   });

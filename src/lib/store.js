@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 
+export const addresses = writable();
 export const art = writable();
 export const artworks = writable([]);
 export const asset = writable();
@@ -29,8 +30,8 @@ export const show = writable();
 export const sighash = writable();
 export const snack = writable();
 export const sortCriteria = writable("newest");
+export const titles = writable([]);
 export const token = writable();
 export const transactions = writable([]);
 export const user = writable();
-export const users = writable();
 export const wallet = writable();

@@ -7,7 +7,7 @@
     faChevronUp,
   } from "@fortawesome/free-solid-svg-icons";
   import Avatar from "$components/Avatar";
-  import { psbt, user, users as addresses } from "$lib/store";
+  import { addresses, psbt, user } from "$lib/store";
   import reverse from "buffer-reverse";
   import { electrs } from "$lib/api";
   import {
@@ -44,6 +44,8 @@
   $: init($psbt, $user, $addresses, tx);
   let retries = 0;
   let init = async (p, u) => {
+    if (lock) return setTimeout(() => init(p, u), 50);
+  lock = true;
     if (!p) return;
 
     ins = [];
@@ -243,8 +245,9 @@
                       user={users[username]}
                       overlay={username.includes('2of2') && '/logo-graphic.png'} />
                   {:else}
-                    <Avatar src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z" />
-                      {/if}
+                    <Avatar
+                      src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z" />
+                  {/if}
                 </div>
                 <div class="my-auto ml-2">
                   {#if users[username]}
@@ -350,11 +353,17 @@
 
                 <div class="mb-2">
                   Status:
-                  {input.signed ? (input.pSig ? 'Partially signed' : 'Fully signed') : 'Unsigned'} -
+                  {input.signed ? (input.pSig ? 'Partially signed' : 'Fully signed') : 'Unsigned'}
+                  -
                   {input.spent ? 'Spent' : 'Unspent'}
                 </div>
 
-                <div class="mb-2">Prevout: <a class="secondary-color" href={`${explorer}/tx/${input.txid}?output:${input.index}`}>{input.txid}:{input.index}</a></div>
+                <div class="mb-2">
+                  Prevout:
+                  <a
+                    class="secondary-color"
+                    href={`${explorer}/tx/${input.txid}?output:${input.index}`}>{input.txid}:{input.index}</a>
+                </div>
 
                 {#if input.value && input.asset}
                   <div class="mb-2">
@@ -366,7 +375,7 @@
                 {/if}
 
                 <div class="mb-2">
-                  Address: 
+                  Address:
                   <a
                     href={`${explorer}/address/${input.scriptpubkey_address}`}
                     class="secondary-color">{input.scriptpubkey_address}</a>
@@ -396,7 +405,7 @@
                     {#if out.address === 'Fee'}
                       Fee
                     {:else}
-                      Address: 
+                      Address:
                       <a
                         href={`${explorer}/address/${out.address}`}
                         class="secondary-color">{out.address}</a>

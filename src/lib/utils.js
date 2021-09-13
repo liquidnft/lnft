@@ -1,13 +1,13 @@
 import { fade as svelteFade } from "svelte/transition";
 import { get } from "svelte/store";
 import {
+  addresses,
   assets,
-  artworks,
   error,
   full,
   prompt,
   snack,
-  users,
+  titles,
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
 import { tick } from "svelte";
@@ -37,34 +37,34 @@ const publicPages = [
 ];
 
 const addressUser = (a) =>
-  get(users) && get(users).find((u) => u.address === a || u.multisig === a);
+  get(addresses) &&
+  get(addresses).find((u) => u.address === a || u.multisig === a);
 
 const addressLabel = (address) => {
-  let $users = get(users);
+  let $addresses = get(addresses);
 
   let r;
 
-  if ($users) {
-    r = $users.find((u) => u.multisig === address);
+  if ($addresses) {
+    r = $addresses.find((u) => u.multisig === address);
     if (r) return r.username + " 2of2";
-    r = $users.find((u) => u.address === address);
+    r = $addresses.find((u) => u.address === address);
     if (r) return r.username;
   }
 
-  return address.length > 6 ? address.substr(0,6) + '...' : address;
+  return address.length > 6 ? address.substr(0, 6) + "..." : address;
 };
 
 const assetLabel = (asset) => {
-  let $artworks = get(artworks);
-
-  let r = $artworks && $artworks.find((u) => u.asset === asset);
+  let $titles = get(titles);
+  let r = $titles && $titles.find((u) => u.asset === asset);
 
   return r ? r.title || r.name || "Untitled" : ticker(asset);
 };
 
 const artworkId = (asset) => {
-  let $artworks = get(artworks);
-  let r = $artworks && $artworks.find((u) => u.asset === asset);
+  let $titles = get(titles);
+  let r = $titles && $titles.find((u) => u.asset === asset);
   return r && r.id;
 };
 
@@ -222,9 +222,9 @@ const validateEmail = (email) => {
 };
 
 const go = ({ id, type, s }) => {
-  let url = { user: 'u', artwork: 'artwork', tag: 'tag' }[type];
-  goto(`/${url}/${url === 'artwork' ? id : s}`);
-} 
+  let url = { user: "u", artwork: "artwork", tag: "tag" }[type];
+  goto(`/${url}/${url === "artwork" ? id : s}`);
+};
 
 const kebab = (str) =>
   str &&

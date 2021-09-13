@@ -93,13 +93,3 @@ export const getUsersAddresses = `query {
     avatar_url
   }
 }`;
-
-export const subscribeAddresses = `subscription {
-  users {
-    id
-    address
-    multisig
-    username
-    avatar_url
-  }
-}`;

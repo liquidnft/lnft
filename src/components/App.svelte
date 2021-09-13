@@ -3,7 +3,7 @@
   import { onMount, tick } from "svelte";
   import decode from "jwt-decode";
   import {
-    artworks,
+    addresses,
     error,
     loggedIn,
     poll,
@@ -11,13 +11,13 @@
     results,
     role,
     snack,
+    titles,
     token,
     user,
-    users,
   } from "$lib/store";
   import { fade } from "svelte/transition";
-  import { getUser, subscribeAddresses, updateUser } from "$queries/users";
-  import { subscribeArtworks } from "$queries/artworks";
+  import { getTitles } from "$queries/artworks";
+  import { getUser, updateUser, getUsersAddresses } from "$queries/users";
   import { setupUrql } from "$lib/urql";
   import { mutation, subscription, query, operationStore } from "@urql/svelte";
   import { page } from "$app/stores";
@@ -52,12 +52,6 @@
   setupUrql();
   $: setup($role, $token);
 
-  let ao = operationStore(subscribeArtworks);
-  subscription(ao, (a, b) => b && ($artworks = b.artworks));
-
-  let uo = operationStore(subscribeAddresses);
-  subscription(uo, (a, b) => b && ($users = b.users));
-
   let updateUserQuery = mutation(updateUser);
   let setup = async (r, t) => {
     if (t) {
@@ -65,6 +59,32 @@
         id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
         setupUrql(t);
         $loggedIn = true;
+      }
+
+      let result = await hasura
+        .auth(`Bearer ${t}`)
+        .post({
+          query: getUsersAddresses,
+        })
+        .json();
+
+      if (result.data) {
+        $addresses = result.data.users;
+      } else {
+        err(result.errors[0]);
+      }
+
+      result = await hasura
+        .auth(`Bearer ${t}`)
+        .post({
+          query: getTitles,
+        })
+        .json();
+
+      if (result.data) {
+        $titles = result.data.artworks;
+      } else {
+        err(result.errors[0]);
       }
     }
   };
