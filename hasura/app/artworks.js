@@ -35,28 +35,28 @@ app.post("/viewed", async (req, res) => {
       ...(await electrs.url(`/address/${multisig}/utxo`).get().json()),
     ];
 
-    if (!utxos.find((tx) => tx.asset === asset)) {
-      query = `mutation ($id: uuid!) {
-        update_artworks_by_pk(pk_columns: { id: $id }, _set: { held: false }) {
-          id
-          owner {
-            address
-            multisig
-          } 
-          asset
-        }
-      }`;
+    let held = !!utxos.find((tx) => tx.asset === asset);
 
-      result = await hasura
-        .post({
-          query,
-          variables: { id: req.body.id },
-        })
-        .json()
-        .catch(console.log);
+    query = `mutation ($id: uuid!, $held: Boolean!) {
+      update_artworks_by_pk(pk_columns: { id: $id }, _set: { held: $held }) {
+        id
+        owner {
+          address
+          multisig
+        } 
+        asset
+      }
+    }`;
 
-      if (result.errors) console.log("problem updating held status", result);
-    }
+    result = await hasura
+      .post({
+        query,
+        variables: { id: req.body.id, held },
+      })
+      .json()
+      .catch(console.log);
+
+    if (result.errors) console.log("problem updating held status", result);
   }
 
   res.send({});
