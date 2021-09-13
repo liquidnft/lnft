@@ -14,17 +14,13 @@
   import { art, prompt, password, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
   import {
-    getArtworkSub,
     getArtwork,
     getArtworksByArtist,
   } from "$queries/artworks";
   import {
-    // createTransaction,
     getArtworkTransactions,
-    getArtworkTransactionsSub,
   } from "$queries/transactions";
   import { goto, err, explorer, info, units } from "$lib/utils";
-  import { mutation, subscription, query, operationStore } from "@urql/svelte";
   import { requirePassword } from "$lib/auth";
   import {
     createOffer,
@@ -49,7 +45,8 @@
 
   const requestPolicy = "cache-and-network";
 
-  $: disabled = !artwork || 
+  $: disabled =
+    !artwork ||
     !transactions ||
     transactions.some(
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
@@ -76,6 +73,8 @@
       .json();
 
     if (result.data) artwork = result.data.artworks_by_pk;
+    else err(result.errors[0]);
+
 
     result = await hasura
       .auth(`Bearer ${$token}`)
@@ -87,19 +86,12 @@
     if (result.data) transactions = result.data.transactions;
   };
 
-  $: if (id) {
-    subscription(
-      operationStore(getArtworkTransactionsSub(id)),
-      (a, b) => (transactions = b.transactions)
-    );
+  let poll = setInterval(setup, 5000);
 
-    subscription(
-      operationStore(getArtworkSub(id)),
-      (a, b) => (artwork = b.artworks_by_pk)
-    );
-  }
-
-  onDestroy(() => ($art = undefined));
+  onDestroy(() => {
+    $art = undefined;
+    clearInterval(poll);
+  });
 
   $: update(artwork);
   let update = () => {
@@ -122,8 +114,6 @@
   };
 
   let others = [];
-
-  // let createTransaction$ = mutation(createTransaction);
 
   let list_price;
   let val, sats, ticker;
@@ -168,8 +158,9 @@
       console.log("errors", result.errors);
       if (artwork && artwork.bid[0]) {
         return err(
-          `Problem placing bid, minimum bid is ${Math.max(val(artwork.reserve_price), val(
-            artwork.bid[0].amount + artwork.bid_increment)
+          `Problem placing bid, minimum bid is ${Math.max(
+            val(artwork.reserve_price),
+            val(artwork.bid[0].amount + artwork.bid_increment)
           )}`
         );
       } else return err(result.errors[0]);
@@ -181,7 +172,10 @@
 
   let bidding, amountInput, offering;
   let startBidding = async () => {
-    if (!artwork.held) return err("Can't construct bid transaction, token not currently held in known address for owner");
+    if (!artwork.held)
+      return err(
+        "Can't construct bid transaction, token not currently held in known address for owner"
+      );
     bidding = true;
     await tick();
     amountInput.focus();
@@ -434,7 +428,9 @@
               <Avatar user={artwork.owner} />
               <div class="ml-2">
                 <div>@{artwork.owner.username}</div>
-                <div class="text-xs text-gray-600">{artwork.held ? "" : "Presumed "}Owner</div>
+                <div class="text-xs text-gray-600">
+                  {artwork.held ? '' : 'Presumed '}Owner
+                </div>
               </div>
             </div>
           </a>
@@ -487,6 +483,12 @@
                 class:disabled>Edit</a>
             </div>
           {/if}
+          <div class="w-full mb-2">
+            <a
+              href={disabled ? '' : `/artwork/${id}/auction`}
+              class="block text-center text-sm secondary-btn w-full"
+              class:disabled>Transfer</a>
+          </div>
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
             <button

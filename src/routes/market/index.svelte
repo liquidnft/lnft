@@ -66,7 +66,7 @@
     offset += 12;
 
     if (result.data) {
-      $artworks = [...$artworks, ...result.data.artworks];
+      $artworks = [...$artworks, ...result.data.artworks.filter(a => !$artworks.find(b => a.id === b.id))];
     } else {
       err(result.errors[0]);
     }
