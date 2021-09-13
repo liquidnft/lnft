@@ -197,7 +197,7 @@ const checkBids = async () => {
     let p = Psbt.fromBase64(tx.psbt);
     let variables = { id: tx.id };
     if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
-      hasura.post({ query, variables }).json(console.log).catch(console.log);
+      hasura.post({ query, variables }).json(() => console.log("cancelled bid", tx.id)).catch(console.log);
   }
 
   setTimeout(checkBids, 5000);
