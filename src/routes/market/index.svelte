@@ -17,7 +17,7 @@
   import Filter from "./_filter";
   import Sort from "./_sort";
   import { requirePassword } from "$lib/auth";
-  import { hasura } from "$lib/api";
+  import { pub } from "$lib/api";
   import { countArtworks, getArtworks } from "$queries/artworks";
 
   export let showFilters;
@@ -31,7 +31,7 @@
     $artworks = [];
     offset = 0;
     loadArtworks();
-  } 
+  };
 
   const loadArtworks = async () => {
     let order_by = {
@@ -55,8 +55,7 @@
       },
     }[$sortCriteria];
 
-    let result = await hasura
-      .auth(`Bearer ${$token}`)
+    let result = await pub($token)
       .post({
         query: getArtworks,
         variables: { limit: 12, offset, order_by },
@@ -66,23 +65,25 @@
     offset += 12;
 
     if (result.data) {
-      $artworks = [...$artworks, ...result.data.artworks.filter(a => !$artworks.find(b => a.id === b.id))];
+      $artworks = [
+        ...$artworks,
+        ...result.data.artworks.filter(
+          (a) => !$artworks.find((b) => a.id === b.id)
+        ),
+      ];
     } else {
       err(result.errors[0]);
     }
   };
 
   onMount(async () => {
-    if ($token) {
-      let result = await hasura
-        .auth(`Bearer ${$token}`)
+      let result = await pub($token)
         .post({
           query: countArtworks,
         })
         .json();
 
       if (result.data) count = result.data.artworks_aggregate.aggregate.count;
-    }
 
     new IntersectionObserver(async (e) => {
       if (e[0].isIntersecting && $artworks.length < count) loadArtworks();

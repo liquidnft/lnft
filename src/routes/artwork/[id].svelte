@@ -30,7 +30,7 @@
     broadcast,
   } from "$lib/wallet";
   import { Psbt } from "@asoltys/liquidjs-lib";
-  import { api, hasura } from "$lib/api";
+  import { api, pub } from "$lib/api";
   import ArtworkQuery from "$components/ArtworkQuery";
   import SocialShare from "$components/SocialShare";
 
@@ -65,8 +65,7 @@
 
   $: setup(id);
   let setup = async () => {
-    let result = await hasura
-      .auth(`Bearer ${$token}`)
+    let result = await pub($token)
       .post({
         query: getArtwork(id),
       })
@@ -76,7 +75,7 @@
     else err(result.errors[0]);
 
 
-    result = await hasura
+    result = await pub($token)
       .auth(`Bearer ${$token}`)
       .post({
         query: getArtworkTransactions(id),
@@ -129,7 +128,6 @@
 
     try {
       $psbt = await createOffer(artwork, transaction.amount);
-      console.log("psbt", $psbt.toBase64());
     } catch (e) {
       err(e);
       offering = false;
@@ -140,6 +138,7 @@
     transaction.psbt = $psbt.toBase64();
     transaction.hash = $psbt.__CACHE.__TX.getId();
     await save();
+    await setup();
     offering = false;
   };
 

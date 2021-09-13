@@ -67,6 +67,8 @@
   let artwork, list_price, royalty;
   $: setup($token);
 
+  let reserve_price;
+
   let setup = async (t) => {
     if (!t) return;
 
@@ -83,7 +85,8 @@
     else return;
 
     if (!artwork.asking_asset) artwork.asking_asset = btc;
-    auction_enabled = auction_enabled ||
+    auction_enabled =
+      auction_enabled ||
       compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
 
     let start, end;
@@ -109,6 +112,8 @@
     if (!list_price && artwork.list_price)
       list_price = val(artwork.asking_asset, artwork.list_price);
     if (!royalty) royalty = artwork.royalty;
+    if (!reserve_price && artwork.reserve_price)
+      reserve_price = val(artwork.asking_asset, artwork.reserve_price);
 
     initialized = true;
     loading = false;
@@ -304,14 +309,11 @@
         id: artwork_id,
         list_price_tx,
         max_extensions,
-        reserve_price,
         title,
       } = artwork;
 
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
-
-      let reserveSats = sats(artwork.asking_asset, reserve_price);
 
       let result = await updateArtwork$({
         artwork: {
@@ -612,7 +614,7 @@
                       <input
                         class="form-input block w-full pl-7 pr-12"
                         placeholder="0"
-                        bind:value={artwork.reserve_price}
+                        bind:value={reserve_price}
                         disabled={auction_underway} />
                       <div
                         class="absolute inset-y-0 right-0 flex items-center mr-2 mt-8">

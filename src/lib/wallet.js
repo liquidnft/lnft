@@ -283,7 +283,6 @@ const splitUp = async (tx) => {
 
   let { hash, index } = ins[type === "bid" ? 1 : 0];
   let topup = Math.max(0, DUST - (total - change));
-  console.log("topup", topup, total, change);
 
   let p2 = new Psbt()
     .addInput({
@@ -382,7 +381,6 @@ const splitUp = async (tx) => {
     .json()
     .catch(console.log);
 
-  console.log("cool", type);
   if (type === "auction") {
     await api
       .url("/release/update")
