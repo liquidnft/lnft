@@ -132,9 +132,9 @@ const isSpent = async ({ ins }, artwork_id) => {
   let result;
   try {
     result = await hasura.post({ query, variables: { artwork_id } }).json();
-  } catch(e) {
+  } catch (e) {
     return false;
-  } 
+  }
 
   if (
     result.errors ||
@@ -152,7 +152,8 @@ const isSpent = async ({ ins }, artwork_id) => {
     let { spent } = await electrs
       .url(`/tx/${txid}/outspend/${index}`)
       .get()
-      .json().catch(console.log);
+      .json()
+      .catch(console.log);
 
     if (spent) return true;
   }
@@ -197,7 +198,10 @@ const checkBids = async () => {
     let p = Psbt.fromBase64(tx.psbt);
     let variables = { id: tx.id };
     if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
-      hasura.post({ query, variables }).json(() => console.log("cancelled bid", tx.id)).catch(console.log);
+      hasura
+        .post({ query, variables })
+        .json(() => console.log("cancelled bid", tx.id))
+        .catch(console.log);
   }
 
   setTimeout(checkBids, 5000);

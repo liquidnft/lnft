@@ -45,7 +45,7 @@
   let retries = 0;
   let init = async (p, u) => {
     if (lock) return setTimeout(() => init(p, u), 50);
-  lock = true;
+    lock = true;
     if (!p) return;
 
     ins = [];
@@ -70,8 +70,10 @@
       let { hash, index } = tx.ins[i];
       let txid = reverse(hash).toString("hex");
       let input = (await electrs.url(`/tx/${txid}`).get().json()).vout[index];
-      input.spent = (await electrs.url(`/tx/${txid}/outspend/${index}`).get().json()).spent;
-      
+      input.spent = (
+        await electrs.url(`/tx/${txid}/outspend/${index}`).get().json()
+      ).spent;
+
       input.signed =
         p.data.inputs[i] &&
         (!!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig);
