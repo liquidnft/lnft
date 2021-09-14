@@ -79,21 +79,22 @@
 
 <h3 class="my-8 mx-auto max-w-5xl mt-32">Button</h3>
 <div class="mx-auto max-w-5xl p-5 mx-0 my-8 border-gray-200 border rounded-lg">
-    <div class="mb-8">
-        <h4 class="text-gray-400 text-base mb-8">Button default</h4>
-        <Button>Default</Button>
-    </div>
-    <div class="mb-8">
-        <h4 class="text-gray-400 text-base mb-8">Button default (:hovered)</h4>
-        <Button hover>Default</Button>
-    </div>
-    <div class="mt-8">
+<!--    UNCOMMENT THE CODE BELOW WHEN button default be integrated into styleguide -->
+<!--    <div class="mb-8">-->
+<!--        <h4 class="text-gray-400 text-base mb-8">Button default</h4>-->
+<!--        <Button>Default</Button>-->
+<!--    </div>-->
+<!--    <div class="mb-8">-->
+<!--        <h4 class="text-gray-400 text-base mb-8">Button default (:hover)</h4>-->
+<!--        <Button hover>Default</Button>-->
+<!--    </div>-->
+    <div class="">
         <h4 class="text-gray-400 text-base mb-8">Button primary</h4>
-        <Button primary>Default</Button>
+        <Button primary>Primary</Button>
     </div>
     <div class="mt-8">
-        <h4 class="text-gray-400 text-base mb-8">Button primary (:hovered)</h4>
-        <Button primary hover>Default</Button>
+        <h4 class="text-gray-400 text-base mb-8">Button primary (:hover)</h4>
+        <Button primary hover>Primary</Button>
     </div>
 </div>
 
