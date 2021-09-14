@@ -37,9 +37,9 @@
 
 </style>
 
-<div class="flex justify-between items-center menu relative">
+<div class="flex justify-between items-center menu relative whitespace-nowrap">
   <Search suggest={false} class="mx-4"/>
-  <a href="/market"><button on:click={toggle}>Market</button></a>
+  <a href="/market"><button on:click={toggle}>Experiences</button></a>
   <a href="/faq"><button on:click={toggle}>FAQ</button></a>
   {#if $user}
     {#if $user.is_admin}

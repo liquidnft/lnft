@@ -14,6 +14,7 @@
   } from "$lib/store";
   import { info, err, goto } from "$lib/utils";
   import { Gallery, Results, Search } from "$comp";
+  import Button from "$styleguide/components/Button";
   import Filter from "./_filter.svelte";
   import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";
@@ -134,9 +135,12 @@
 
 <div
   class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20">
-  <h2 class="md:mb-0">Market</h2>
+  <h2 class="md:mb-0">Experiences</h2>
+
   {#if $user && $user.is_artist}
-    <a href="/artwork/create" class="primary-btn">Submit a new artwork</a>
+    <a href="/artwork/create">
+      <Button primary>Submit a new experience</Button>
+    </a>
   {/if}
 </div>
 <div class="container mx-auto mt-10">
