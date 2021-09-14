@@ -287,11 +287,11 @@ app.post("/asset/register", async (req, res) => {
 
   let proofs = {};
   try {
-    proofs = require("./proofs.json");
+    proofs = require("/export/proofs.json");
   } catch (e) {}
 
   proofs[asset] = true;
-  fs.writeFileSync("proofs.json", JSON.stringify(proofs));
+  fs.writeFileSync("/export/proofs.json", JSON.stringify(proofs));
 
   let query = `query transactions($asset: String!) {
     transactions(where: {
