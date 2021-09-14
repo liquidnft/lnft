@@ -3,7 +3,8 @@
   import Card   from "$styleguide/components/Card.svelte";
   import Navbar from "$styleguide/components/Navbar.svelte";
   import Logo   from "$styleguide/components/Logo.svelte";
-  import Search   from "$styleguide/components/Search.svelte";
+  import Search from "$styleguide/components/Search.svelte";
+  import Heart  from "$styleguide/components/Heart.svelte";
 
   const mockedArtwork = {
     "id"                : "cee17ab7-c8c9-43bf-88c4-31655be704a3",
@@ -110,6 +111,29 @@
     <div class="mb-8 max-w-md">
         <h4 class="text-gray-400 text-base mb-8">Card default (md)</h4>
         <Card artwork={mockedArtwork}/>
+    </div>
+</div>
+
+<h3 class="my-8 max-w-5xl mx-auto mt-32">Favorite/Like (Heart component)</h3>
+<div class="box max-w-5xl mx-auto p-5 mx-0 my-8 border-gray-200 border rounded-lg">
+    <div class="mb-8">
+        <h4 class="text-gray-400 text-base mb-8">Favorite</h4>
+        <div class="p-12 flex items-center justify-center">
+            <Heart artwork={mockedArtwork}/>
+        </div>
+        <h4 class="text-gray-400 text-base mb-8">Favorite (hovered)</h4>
+        <div class="p-12 flex items-center justify-center">
+            <Heart artwork={mockedArtwork} hovered/>
+        </div>
+        <h4 class="text-gray-400 text-base mb-8">Favorite (liked)</h4>
+        <div class="p-12 flex items-center justify-center">
+            <Heart artwork={mockedArtwork} active/>
+        </div>
+
+        <h4 class="text-gray-400 text-base mb-8">Favorite (liked hover)</h4>
+        <div class="p-12 flex items-center justify-center">
+            <Heart artwork={mockedArtwork} active hovered/>
+        </div>
     </div>
 </div>
 
