@@ -5,6 +5,7 @@
   import { page } from "$app/stores";
   import { register } from "$lib/register";
   import { ProgressLinear } from "$comp";
+  import Button from "$styleguide/components/Button";
 
   let show;
   let username = "";
@@ -87,7 +88,7 @@
 
 </style>
 
-<div class="form-container bg-lightblue px-4">
+<div class="form-container bg-black px-4">
   <form class="mb-6" on:submit|preventDefault={submit} autocomplete="off">
     {#if loading}
       <ProgressLinear />
@@ -161,7 +162,7 @@
         and
         <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
       <div class="flex my-5 justify-end">
-        <button class="primary-btn w-full" type="submit">Register</button>
+        <Button primary class="w-full" type="submit">Register</Button>
       </div>
 
       <a href="/login" class="text-midblue">
