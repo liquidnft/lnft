@@ -303,11 +303,9 @@
         auction_start,
         auction_tx,
         bid_increment,
-        description,
         extension_interval,
-        filename,
         list_price_tx,
-        title,
+        max_extensions,
       } = artwork;
 
       if (!auction_start) auction_start = null;
