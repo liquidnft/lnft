@@ -42,5 +42,5 @@
     }
 </style>
 
-<button class:primary class:hover class="button"><slot/></button>
+<button class:primary class:hover class="{$$props.class} button"><slot/></button>
 
