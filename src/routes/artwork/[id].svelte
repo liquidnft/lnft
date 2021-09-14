@@ -75,7 +75,6 @@
     else err(result.errors[0]);
     $art = artwork;
 
-
     result = await pub($token)
       .auth(`Bearer ${$token}`)
       .post({

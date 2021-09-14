@@ -77,12 +77,6 @@ export const getArtworkTransactions = (id) => `query {
   }
 }`;
 
-export const getArtworkTransactionsSub = (id) => `subscription {
-  transactions(order_by: {created_at: desc}, where: {_and: {artwork_id: {_eq: "${id}"}, type: {_neq: "receipt"}}}) {
-    ${fields}
-  }
-}`;
-
 export const getUserTransactions = (id) => `subscription {
   transactions(order_by: {created_at: desc}, where: {
     user_id: {_eq: "${id}"}, 
