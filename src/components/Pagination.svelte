@@ -2,6 +2,7 @@
   export let artworks;
   export let offset;
   export let hidden;
+  export let count;
 
   let jump = async (i) => {
     document.getElementById(`artwork-${i * offset}`).scrollIntoView();
@@ -10,10 +11,15 @@
   $: pages = [...Array(Math.ceil(artworks.length / offset)).keys()];
   let y;
   $: current = pages.findIndex((_, i) => {
-    return i === pages.length - 1 ||
-      (i === 0 && y < document.getElementById(`artwork-${offset}`).offsetTop) ||
-      (y >= document.getElementById(`artwork-${i * offset}`).offsetTop &&
-        y < document.getElementById(`artwork-${(i + 1) * offset}`).offsetTop);
+    return (
+      i === pages.length - 1 ||
+      (i === 0 &&
+        document.getElementById(`artwork-${offset}`) &&
+        y < document.getElementById(`artwork-${offset}`).offsetTop) ||
+      (document.getElementById(`artwork-${i * offset}`) &&
+        y >= document.getElementById(`artwork-${i * offset}`).offsetTop &&
+        y < document.getElementById(`artwork-${(i + 1) * offset}`).offsetTop)
+    );
   });
 </script>
 

@@ -4,9 +4,11 @@
   import { sortCriteria } from "$lib/store";
   export let filtered;
 
+  /*
   $: update($sortCriteria, filtered);
   let update = () => (filtered = filtered.sort(sort));
   onMount(update);
+   */
 
   let sort = (a, b) =>
     ({

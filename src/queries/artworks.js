@@ -214,8 +214,8 @@ export const getArtwork = (id) => `query {
   }
 }`;
 
-export const countArtworks = `query {
-  artworks_aggregate {
+export const countArtworks = `query($where: artworks_bool_exp!, $order_by: artworks_order_by!) {
+  artworks_aggregate(where: $where, order_by: [$order_by]) {
     aggregate {
       count
     }

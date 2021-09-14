@@ -14,7 +14,7 @@
     (!$fc.listPrice || a.list_price) &&
     (!$fc.openBid || a.bid[0].amount) &&
     (!$fc.ownedByCreator || a.artist_id === a.owner_id) &&
-    (!$fc.hasSold || a.artist_id !== a.owner_id);
+    (!$fc.hasSold || a.transferred_at);
 </script>
 
 <style>

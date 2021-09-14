@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { ProgressLinear } from "$comp";
   import Fa from "svelte-fa";
   import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
   import {
@@ -24,49 +25,64 @@
   export let showFilters;
   let filtered = [];
 
+  let loading;
   let count = 0;
   let offset = 0;
+  let where, order_by;
 
   $: reset($filterCriteria, $sortCriteria);
-  let reset = () => {
-    $artworks = [];
-    offset = 0;
-    loadArtworks();
-  };
-
-  const loadArtworks = async () => {
-    let where = { _or: [] };
+  let reset = async () => {
+    where = { _or: [] };
     if ($filterCriteria.listPrice)
       where._or.push({ list_price: { _is_null: false } });
     if ($filterCriteria.openBid) where._or.push({ bid: {} });
     if ($filterCriteria.ownedByCreator)
       where._or.push({ artist_owned: { _eq: true } });
     if ($filterCriteria.hasSold)
-      where._or.push({ artist_owned: { _eq: false } });
+      where._or.push({ transferred_at: { _is_null: false } });
 
     if (!where._or.length) delete where._or;
 
-    let order_by = {
+    order_by = {
       newest: {
-        created_at: "asc",
-      },
-      oldest: {
         created_at: "desc",
       },
+      oldest: {
+        created_at: "asc",
+      },
       highest: {
-        list_price: "desc",
+        list_price: "desc_nulls_last",
       },
       lowest: {
-        list_price: "asc",
+        list_price: "asc_nulls_last",
       },
       ending_soon: {
-        auction_end: "desc",
+        auction_end: "asc_nulls_last",
       },
       most_viewed: {
         views: "desc",
       },
     }[$sortCriteria];
 
+    let result = await pub($token)
+      .post({
+        query: countArtworks,
+        variables: { order_by, where },
+      })
+      .json();
+
+    if (result.data) count = result.data.artworks_aggregate.aggregate.count;
+    else err(result.errors[0]);
+
+    $artworks = [];
+    offset = 0;
+    loadArtworks();
+  };
+
+  const loadArtworks = async () => {
+    loading = true;
+
+    // await new Promise((r) => setTimeout(r, 500));
     let result = await pub($token)
       .post({
         query: getArtworks,
@@ -86,17 +102,10 @@
     } else {
       err(result.errors[0]);
     }
+    loading = false;
   };
 
   onMount(async () => {
-    let result = await pub($token)
-      .post({
-        query: countArtworks,
-      })
-      .json();
-
-    if (result.data) count = result.data.artworks_aggregate.aggregate.count;
-
     new IntersectionObserver(async (e) => {
       if (e[0].isIntersecting && $artworks.length < count) loadArtworks();
     }).observe(document.querySelector(".footer"));
@@ -174,5 +183,9 @@
     </div>
     <Filter bind:filtered {showFilters} />
   </div>
-  <Gallery artworks={filtered} />
+  <Gallery artworks={filtered} {count} />
+
+  {#if loading}
+    <ProgressLinear />
+  {/if}
 </div>
