@@ -5,7 +5,7 @@
   import reverse from "buffer-reverse";
   import { Buffer } from "buffer";
   import { onMount } from "svelte";
-  import { electrs, hasura } from "$lib/api";
+  import { electrs, hasura, pub } from "$lib/api";
   import { getTransaction } from "$queries/transactions";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { psbt, token } from "$lib/store";
@@ -20,8 +20,7 @@
 
   onMount(async () => {
     try {
-      let result = await hasura
-        .auth(`Bearer ${$token}`)
+      let result = await pub($token)
         .post({
           query: getTransaction(id),
         })

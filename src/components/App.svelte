@@ -1,5 +1,5 @@
 <script>
-  import { api, hasura } from "$lib/api";
+  import { api, pub } from "$lib/api";
   import { onMount, tick } from "svelte";
   import decode from "jwt-decode";
   import {
@@ -17,9 +17,8 @@
   } from "$lib/store";
   import { fade } from "svelte/transition";
   import { getTitles } from "$queries/artworks";
-  import { getUser, updateUser, getUsersAddresses } from "$queries/users";
+  import { getUser, getUsersAddresses } from "$queries/users";
   import { setupUrql } from "$lib/urql";
-  import { mutation, subscription, query, operationStore } from "@urql/svelte";
   import { page } from "$app/stores";
   import { refreshToken } from "$lib/auth";
   import InsufficientFunds from "$components/InsufficientFunds";
@@ -52,7 +51,6 @@
   setupUrql();
   $: setup($role, $token);
 
-  let updateUserQuery = mutation(updateUser);
   let setup = async (r, t) => {
     if (t) {
       if (!$loggedIn) {
@@ -60,32 +58,30 @@
         setupUrql(t);
         $loggedIn = true;
       }
+    }
 
-      let result = await hasura
-        .auth(`Bearer ${t}`)
-        .post({
-          query: getUsersAddresses,
-        })
-        .json();
+    let result = await pub(t)
+      .post({
+        query: getUsersAddresses,
+      })
+      .json();
 
-      if (result.data) {
-        $addresses = result.data.users;
-      } else {
-        err(result.errors[0]);
-      }
+    if (result.data) {
+      $addresses = result.data.users;
+    } else {
+      err(result.errors[0]);
+    }
 
-      result = await hasura
-        .auth(`Bearer ${t}`)
-        .post({
-          query: getTitles,
-        })
-        .json();
+    result = await pub(t)
+      .post({
+        query: getTitles,
+      })
+      .json();
 
-      if (result.data) {
-        $titles = result.data.artworks;
-      } else {
-        err(result.errors[0]);
-      }
+    if (result.data) {
+      $titles = result.data.artworks;
+    } else {
+      err(result.errors[0]);
     }
   };
 </script>
