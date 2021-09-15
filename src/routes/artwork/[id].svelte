@@ -76,7 +76,6 @@
     $art = artwork;
 
     result = await pub($token)
-      .auth(`Bearer ${$token}`)
       .post({
         query: getArtworkTransactions(id),
       })
