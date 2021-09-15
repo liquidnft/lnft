@@ -267,6 +267,10 @@ export const getLocked = async (asset = btc) => {
 };
 
 const splitUp = async (tx) => {
+  let releaseFee = 50;
+  let splitFee = 100;
+  let offerFee = 150;
+
   let { artwork, id, p, type } = tx;
   let { royalty, artist_id, owner_id } = artwork;
   let asset = btc;
@@ -304,13 +308,13 @@ const splitUp = async (tx) => {
       asset,
       nonce,
       script: singlesig().output,
-      value: change - topup - 100,
+      value: change - topup - splitFee,
     })
     .addOutput({
       asset,
       nonce,
       script: Buffer.alloc(0),
-      value: 100,
+      value: splitFee,
     });
 
   psbt.set(p2);
@@ -319,7 +323,7 @@ const splitUp = async (tx) => {
 
   let t = p2.extractTransaction();
 
-  let totalValue = total - change - 100;
+  let totalValue = total - change - offerFee;
   let value = totalValue;
   if (royalty && artist_id !== owner_id) {
     value = Math.round((value * 100) / (100 + royalty));
@@ -358,13 +362,13 @@ const splitUp = async (tx) => {
         asset,
         nonce,
         script: singlesig().output,
-        value: topup + 50,
+        value: topup + releaseFee,
       })
       .addOutput({
         asset,
         nonce,
         script: Buffer.alloc(0),
-        value: 50,
+        value: releaseFee,
       });
   }
 
@@ -394,7 +398,7 @@ const splitUp = async (tx) => {
   }
 
   return {
-    amt: change - topup - 100,
+    amt: change - topup - splitFee,
     input: {
       hash: t.getId(),
       index: 1,

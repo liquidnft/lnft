@@ -63,7 +63,7 @@
   let focus = (i) => i && tick().then(() => input && input.focus());
   $: focus(initialized);
 
-  let loading;
+  let loading = true;
   let artwork, list_price, royalty;
   $: setup($token);
 
@@ -71,8 +71,6 @@
 
   let setup = async (t) => {
     if (!t) return;
-
-    loading = false;
 
     let result = await hasura
       .auth(`Bearer ${$token}`)
