@@ -33,8 +33,12 @@
       margin: 25px 0 0 0px;
       width: 100%;
     }
+
+    .menu :global(.search) {
+      display: none;
   }
 
+  }
 </style>
 
 <div class="flex justify-between items-center menu relative whitespace-nowrap">
