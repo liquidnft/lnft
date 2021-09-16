@@ -19,14 +19,14 @@
     background-color: $header--background-color;
     color: $header--links--color;
 
-    :global(button), :global(a) {
+    :global(button.menu-button), :global(a.menu-link) {
       transition: .15s;
       font-family: $header--links--font-family;
       font-size: $header--links--font-size;
       color: $header--links--color;
     }
 
-    :global(button:hover) {
+    :global(button.menu-button:hover) {
       color: $header--links--hover--color;
     }
   }
