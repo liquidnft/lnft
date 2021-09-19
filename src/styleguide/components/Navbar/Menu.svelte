@@ -73,7 +73,7 @@
   <a class="menu-link" href="/market">
     <button class="menu-link-button" on:click={toggle}>Experiences</button>
   </a>
-  <a class="menu-link lg:hidden" href="/wallet">
+  <a class="menu-link lg:hidden" href={`/u/${$user.username}`}>
     <button class="menu-link-button" on:click={toggle}>Profile</button>
   </a>
   <a class="menu-link lg:hidden" href="/wallet">
