@@ -1,7 +1,7 @@
 <script>
   import Button from "$styleguide/components/Button.svelte";
   import Card   from "$styleguide/components/Card.svelte";
-  import Navbar from "$styleguide/components/Navbar.svelte";
+  import Navbar from "$styleguide/components/Navbar/Navbar.svelte";
   import Logo   from "$styleguide/components/Logo.svelte";
   import Search from "$styleguide/components/Search.svelte";
   import Heart  from "$styleguide/components/Heart.svelte";
