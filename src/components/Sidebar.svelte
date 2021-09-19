@@ -1,5 +1,5 @@
 <script>
-  import Menu from "./Menu.svelte";
+  import Menu from "$styleguide/components/Navbar/Menu.svelte";
 
   export let open = false;
 
