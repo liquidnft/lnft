@@ -2,15 +2,15 @@
   import Fa         from "svelte-fa";
   import {faSearch} from "@fortawesome/free-solid-svg-icons";
   import Hamburger  from "$components/Hamburger.svelte";
-  import Menu       from "$components/Menu.svelte";
-  import Logo       from "./Logo.svelte";
+  import Menu       from "./Menu.svelte";
+  import Logo       from "$styleguide/components/Logo.svelte";
 
   export let mobileScreen;
   export let sidebar = false;
 </script>
 
 <style lang="scss">
-  @import "../theme.scss";
+  @import "../../theme.scss";
 
   header {
     font-family: $header--links--font-family;
@@ -84,21 +84,25 @@
     }
 
   }
+
+  :global(nav.navbar-menu svg line) {
+    color: $header--hamburger--color;
+  }
 </style>
 
 <header
     class:mobileScreen
-    class="px-4 py-4">
+    class="px-4 py-4 sm:h-14 lg:h-auto">
   <div class="mx-auto flex container items-center justify-between">
-    <nav class="flex hambuger">
+    <nav class="flex hambuger navbar-menu">
       <Hamburger bind:open={sidebar} />
     </nav>
     <div>
       <a href="/">
-        <Logo class="w-16 lg:w-28" />
+        <Logo class="w-16 lg:w-28 z-20 relative" />
       </a>
     </div>
-    <a class="mobileSearch" href="/market">
+    <a class="mobileSearch z-20 relative" href="/market">
       <Fa icon={faSearch} />
     </a>
     <nav class="hidden text-bold lg:block">

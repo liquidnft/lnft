@@ -30,42 +30,61 @@
   }
 </script>
 
-<style>
+<style lang="scss">
+  @import "../../theme";
+
   .menu button {
-    width: auto;
-    text-align: left;
-    padding: 0 20px;
+    @apply w-auto text-left px-5;
   }
 
   .menu .signin {
-    width: 120px;
+    @apply w-32;
   }
 
-  @media only screen and (max-width: 1023px) {
+  .menu-link-button.wallet {
+    // Add gradient-color to wallet text
+    background: $color-primary-gradient-1;
+    background: $color-primary-gradient-2;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  @screen till-lg {
     .menu {
-      flex-direction: column;
-      align-items: flex-start;
-      margin-top: 50px;
-      border-top: 1px solid gray;
-      width: 100%;
+      @apply flex-col w-full mt-8;
     }
 
     .menu a {
-      margin: 25px 0 0 0px;
-      width: 100%;
+      @apply my-2;
+    }
+
+    .menu a.menu-link button.menu-link-button {
+      @apply text-xl leading-normal font-semibold;
     }
 
     .menu :global(.search) {
-      display: none;
+      @apply hidden;
     }
-
   }
 </style>
 
-<div class="flex justify-between items-center menu relative whitespace-nowrap">
+<div class="flex justify-between text-center items-center menu relative whitespace-nowrap">
   <Search suggest={false} class="mx-4"/>
-  <a class="menu-link" href="/market"><button on:click={toggle}>Experiences</button></a>
-  <a class="menu-link" href="/faq"><button on:click={toggle}>FAQ</button></a>
+  <a class="menu-link" href="/market">
+    <button class="menu-link-button" on:click={toggle}>Experiences</button>
+  </a>
+  <a class="menu-link lg:hidden" href="/wallet">
+    <button class="menu-link-button" on:click={toggle}>Profile</button>
+  </a>
+  <a class="menu-link lg:hidden" href="/wallet">
+    <button class="menu-link-button wallet" on:click={toggle}>Wallet</button>
+  </a>
+  <a class="menu-link" href="/faq">
+    <button on:click={toggle}>FAQ</button>
+  </a>
+  <a class="menu-link lg:hidden" href="/wallet">
+    <button class="menu-link-button" on:click={toggle}>Support</button>
+  </a>
 
   {#if $user}
     {#if $user.is_admin}

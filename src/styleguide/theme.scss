@@ -66,7 +66,42 @@ $header--background-color: $color-black;
 $header--links--font-family: $secondary-font-family;
 $header--links--font-size: 14px;
 $header--links--color: $color-white-60;
+$header--hamburger--color: #999;
 $header--links--hover--color: $color-white-40;
+
+//
+// = = = = MOBILE SIDEBAR = = = =
+//
+
+$mobile-sidebar--overlay-color: rgba(0, 0, 0, 0.8);
+$mobile-sidebar--overlay-color--opacity-0: rgba(0, 0, 0, 0.0); // to define keyframes
+$mobile-sidebar--transition-time: .25s;
+@mixin mobileSidebarAnimations() {
+
+    @keyframes hide {
+        0% {
+            left: 0;
+            background: $mobile-sidebar--overlay-color;
+        }
+        99% {
+            background: $mobile-sidebar--overlay-color--opacity-0;
+            left: 0;
+        }
+        100% {
+            left: -100%;
+            background: $mobile-sidebar--overlay-color--opacity-0;
+        }
+    }
+
+    @keyframes open {
+        0% {
+            background: $mobile-sidebar--overlay-color--opacity-0;
+        }
+        100% {
+            background: $mobile-sidebar--overlay-color;
+        }
+    }
+}
 
 //
 // = = = = SEARCH = = = =
