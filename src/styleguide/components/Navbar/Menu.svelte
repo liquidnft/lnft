@@ -73,14 +73,16 @@
   <a class="menu-link" href="/market">
     <button class="menu-link-button" on:click={toggle}>Experiences</button>
   </a>
-  <a class="menu-link lg:hidden" href={`/u/${$user.username}`}>
-    <button class="menu-link-button" on:click={toggle}>Profile</button>
-  </a>
-  <a class="menu-link lg:hidden" href="/wallet">
-    <button class="menu-link-button wallet" on:click={toggle}>Wallet</button>
-  </a>
+  {#if $user}
+    <a class="menu-link lg:hidden" href={`/u/${$user.username}`}>
+      <button class="menu-link-button" on:click={toggle}>Profile</button>
+    </a>
+    <a class="menu-link lg:hidden" href="/wallet">
+      <button class="menu-link-button wallet" on:click={toggle}>Wallet</button>
+    </a>
+  {/if}
   <a class="menu-link" href="/faq">
-    <button on:click={toggle}>FAQ</button>
+    <button class="menu-link-button" on:click={toggle}>FAQ</button>
   </a>
   <a class="menu-link lg:hidden" href="/wallet">
     <button class="menu-link-button" on:click={toggle}>Support</button>
@@ -104,6 +106,6 @@
       </button>
     </a>
   {:else}
-    <a href="/login" class="menu-link"><button on:click={toggle}>Sign In</button></a>
+    <a href="/login" class="menu-link"><button class="menu-link-button" on:click={toggle}>Sign In</button></a>
   {/if}
 </div>
