@@ -44,7 +44,7 @@ services:
       - '5433:5432'
   hasura:
     container_name: hasura
-    image: hasura/graphql-engine:v2.0.9.cli-migrations-v3
+    image: fedormelexin/graphql-engine-arm64
     ports:
       - '8080:8080'
     depends_on:
@@ -138,6 +138,7 @@ services:
       - ./liquidregtest/liquid-config/:/config
     restart: unless-stopped
   esplora-liquid:
+    platform: linux/arm/v7
     image: vulpemventures/esplora:latest
     container_name: esplora-liquid
     environment:
