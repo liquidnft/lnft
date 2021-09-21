@@ -42,9 +42,13 @@
 
 {#if ready}
   <Sidebar bind:open />
-  <div class={y > 50 ? 'sticky' : ''} in:fade>
-    <Navbar bind:sidebar={open} />
+
+  <div class="bg-black" style="height: 90px;">
+    <div class={y > 50 ? 'sticky' : ''} in:fade>
+      <Navbar bind:sidebar={open} />
+    </div>
   </div>
+
   <Dialog />
 
   <main>
