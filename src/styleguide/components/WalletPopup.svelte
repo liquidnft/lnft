@@ -52,7 +52,7 @@
 <div class="wallet z-10 absolute left-1/2 bg-white shadow-md w-80 -ml-40 mt-16 rounded-xl overflow-hidden" class:visible >
     <div class="bg-black h-12 p-4 flex items-center justify-between">
         <div class="flex items-center text-white">
-            <a href="/u/{$user.username}" class="flex items-center text-white" on:click>
+            <a href="/wallet" class="flex items-center text-white" on:click>
                 <Fa icon={faUser} class="mr-4"/> @{$user.username}
             </a>
         </div>
