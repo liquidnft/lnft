@@ -8,10 +8,6 @@
 <style lang="scss">
     @import "../theme.scss";
 
-    .button {
-        width: auto;
-    }
-
     .primary-hover {
         box-shadow: $button--primary--hover--box-shadow;
     }
@@ -28,5 +24,5 @@
     }
 </style>
 
-<button on:click class:primary class:hover class="h-12 px-8 rounded-3xl button flex justify-center items-center {$$props.class || ''}"><slot/></button>
+<button on:click class:primary class:hover class="w-auto h-12 px-8 rounded-3xl button flex justify-center items-center {$$props.class || ''}"><slot/></button>
 
