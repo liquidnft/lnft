@@ -97,7 +97,7 @@
         <Fa icon={faWallet} size="1.5x"/>
       </button>
       <div use:clickOutside on:clickOutside={handleWalletClickOutside}>
-        <WalletPopup visible={displayWallet}/>
+        <WalletPopup visible={displayWallet} on:click={toggleWallet}/>
       </div>
     </div>
     <a href={`/u/${$user.username}`} class="hidden lg:inline-block">
