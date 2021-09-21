@@ -59,7 +59,13 @@ const assetLabel = (asset) => {
   let $titles = get(titles);
   let r = $titles && $titles.find((u) => u.asset === asset);
 
-  return r ? r.title || r.name || "Untitled" : ticker(asset);
+  return r
+    ? r.title
+      ? r.title + (r.editions > 1
+        ? ` ${r.edition}/${r.editions}`
+        : "")
+      : r.name || "Untitled"
+    : ticker(asset);
 };
 
 const artworkId = (asset) => {

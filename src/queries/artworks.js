@@ -235,6 +235,9 @@ export const getTitles = `query {
   artworks {
     id
     asset
+    edition
+    editions
     title
+    owner_id
   }
 }`;

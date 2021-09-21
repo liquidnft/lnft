@@ -18,7 +18,6 @@ import {
 import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
 import {
-  assets,
   balances,
   fee,
   locked,
@@ -29,11 +28,12 @@ import {
   poll,
   psbt,
   sighash,
+  titles,
   transactions,
   token,
 } from "$lib/store";
 import cryptojs from "crypto-js";
-import { btc, assetLabel } from "$lib/utils";
+import { btc } from "$lib/utils";
 import { requirePassword } from "$lib/auth";
 import { getActiveBids } from "$queries/transactions";
 import { compareAsc, parseISO } from "date-fns";
@@ -106,6 +106,20 @@ export const getBalances = () => {
       } else {
         if (p[u.asset]) p[u.asset] += parseInt(u.value);
         else p[u.asset] = u.value;
+      }
+    });
+
+    Object.keys(b).map(async (a) => {
+      let artwork = get(titles).find(
+        (t) => t.asset === a && t.owner_id !== get(user).id
+      );
+
+      if (artwork) {
+        await api
+          .auth(`Bearer ${get(token)}`)
+          .url("/claim")
+          .post({ artwork })
+          .json();
       }
     });
 

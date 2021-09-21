@@ -30,14 +30,6 @@ const query = `
     } 
   }`;
 
-const userQuery = `
-  query {
-    currentuser {
-      address
-      multisig
-    } 
-  }`;
-
 const allMultisig = `query {
   users {
     multisig

@@ -17,6 +17,7 @@
     parseAsset,
     broadcast,
     sign,
+    requestSignature,
   } from "$lib/wallet";
   import { requirePassword } from "$lib/auth";
   import { Psbt, Transaction } from "@asoltys/liquidjs-lib";
@@ -46,7 +47,10 @@
   let init = async (p, u) => {
     if (lock) return setTimeout(() => init(p, u), 50);
     lock = true;
-    if (!p) return;
+    p = $psbt;
+    u = $user;
+    if (!p) return (lock = false);
+
 
     ins = [];
     outs = [];
@@ -160,7 +164,12 @@
 
   let signTx = async () => {
     await requirePassword();
-    sign();
+    $psbt = await sign();
+    try {
+      $psbt = await requestSignature($psbt);
+    } catch(e) {
+      console.log(`Couldn't get server signature: ${e.message}`);
+    } 
     info("Signed");
   };
 

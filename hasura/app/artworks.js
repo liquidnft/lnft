@@ -62,6 +62,55 @@ app.post("/viewed", async (req, res) => {
   res.send({});
 });
 
+app.post("/claim", auth, async (req, res) => {
+  try {
+    let { artwork: { asset, id } } = req.body;
+    let query = `query {
+      currentuser {
+        id
+        address
+        multisig
+      } 
+    }`;
+
+    let { data } = await api(req.headers).post({ query }).json();
+    let user = data.currentuser[0];
+
+    let { address, multisig } = user;
+
+    let utxos = [
+      ...(await electrs.url(`/address/${address}/utxo`).get().json()),
+      ...(await electrs.url(`/address/${multisig}/utxo`).get().json()),
+    ];
+
+    let held = !!utxos.find((tx) => tx.asset === asset);
+
+    query = `mutation($id: uuid!, $owner_id: uuid!) {
+    update_artworks_by_pk(
+      pk_columns: { id: $id },
+      _set: { 
+        owner_id: $owner_id,
+      }
+    ) {
+      id
+    }
+  }`;
+
+    r = await hasura
+      .post({
+        query,
+        variables: { id, owner_id: user.id },
+      })
+      .json()
+      .catch(console.error);
+
+    res.send(r);
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
+  }
+});
+
 app.post("/transaction", auth, async (req, res) => {
   const { transaction } = req.body;
 
