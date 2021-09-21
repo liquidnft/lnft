@@ -28,5 +28,5 @@
     }
 </style>
 
-<button on:click class:primary class:hover class="{$$props.class || ''} h-12 px-8 rounded-3xl button flex justify-center items-center"><slot/></button>
+<button on:click class:primary class:hover class="h-12 px-8 rounded-3xl button flex justify-center items-center {$$props.class || ''}"><slot/></button>
 
