@@ -9,7 +9,7 @@
     @import "../theme.scss";
 
     .button {
-        width: 100%;
+        width: auto;
     }
 
     .primary-hover {
