@@ -113,7 +113,7 @@
         </div>
         {#if showDetails}
             <div class="rounded-full overflow-hidden absolute w-24 h-24 -mt-16 ml-8 border-black border-4">
-                <img src="http://localhost:3000/api/ipfs/QmdCC5FysgFJqrQoWZQtnXd4VtPCkdi9FTQYVGY4CQEWdE" />
+                <Avatar user={artwork.artist} simple/>
             </div>
             <div class="bg-black h-36 px-8 pt-12">
                 <div class="text-xs mb-2 font-bold username">@{artwork.owner.username}</div>
