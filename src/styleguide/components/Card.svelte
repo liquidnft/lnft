@@ -40,6 +40,8 @@
 
   function currencyConversion(amount, ticker, toString = true) {
 
+    return '$0.00'
+
     const [getValue, getSats, cadTicker] = units(cad);
 
     // @TODO this is fake price conversion. Need to be replaced by coinos.io exchange rates api

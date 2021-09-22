@@ -74,7 +74,7 @@
             </div>
             <div class="flex font-bold text-lg border-t">
                 <div class="flex-1 text-center p-2 border-r">{balance} {assetLabel($asset)}</div>
-                <div class="flex-1 text-center p-2 ">US$ 1.00</div>
+                <div class="flex-1 text-center p-2 ">US$ 0.00</div>
             </div>
         </div>
         <div class="text-black flex items-center mt-2">
