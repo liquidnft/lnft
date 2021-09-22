@@ -31,8 +31,6 @@
 
   $: init(id)
   let init = async () => {
-
-
     let result = await pub($token)
       .post({
         query: getUserArtworks(id),

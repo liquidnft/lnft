@@ -61,9 +61,7 @@ const assetLabel = (asset) => {
 
   return r
     ? r.title
-      ? r.title + (r.editions > 1
-        ? ` ${r.edition}/${r.editions}`
-        : "")
+      ? r.title + (r.editions > 1 ? ` ${r.edition}/${r.editions}` : "")
       : r.name || "Untitled"
     : ticker(asset);
 };

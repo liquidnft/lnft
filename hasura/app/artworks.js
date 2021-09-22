@@ -64,7 +64,9 @@ app.post("/viewed", async (req, res) => {
 
 app.post("/claim", auth, async (req, res) => {
   try {
-    let { artwork: { asset, id } } = req.body;
+    let {
+      artwork: { asset, id },
+    } = req.body;
     let query = `query {
       currentuser {
         id
@@ -86,15 +88,15 @@ app.post("/claim", auth, async (req, res) => {
     let held = !!utxos.find((tx) => tx.asset === asset);
 
     query = `mutation($id: uuid!, $owner_id: uuid!) {
-    update_artworks_by_pk(
-      pk_columns: { id: $id },
-      _set: { 
-        owner_id: $owner_id,
+      update_artworks_by_pk(
+        pk_columns: { id: $id },
+        _set: { 
+          owner_id: $owner_id,
+        }
+      ) {
+        id
       }
-    ) {
-      id
-    }
-  }`;
+    }`;
 
     r = await hasura
       .post({
