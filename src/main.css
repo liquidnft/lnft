@@ -266,3 +266,12 @@ select {
     font-size: 16px;
 }
 
+.sticky-container {
+    height: 55px;
+}
+
+@media(min-width: 1024px) {
+    .sticky-container {
+        height: 90px;
+    }
+}

@@ -71,7 +71,7 @@
         </a>
       </div>
     </div>
-    <div class="flex flex-1 ml-20">
+    <div class="flex flex-1 ml-20 sm:hidden xl:flex items-center">
       <div>
         <a href="/market">
           <img src="/cards.png" class="w-full max-h-96">
