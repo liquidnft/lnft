@@ -14,15 +14,17 @@
   $: requireLogin($page);
 </script>
 
-<style>
+<style lang="scss">
+  @import "../../styleguide/theme";
+
   .bg-btc {
-    background: #3f6777;
+    background-color: $color-orange-80;
   }
   .outer-btc {
-    background: #30bfad;
+    background: $color-orange;
   }
   .border-btc {
-    border-color: #30bfad;
+    border-color: transparent;
   }
 
   .dark-red {
@@ -35,7 +37,7 @@
     background: #082527;
   }
   .dark-gray {
-    background: #31373e;
+    @apply bg-blue-600;
   }
   .border-blue {
     border-color: #6ed8e0;
@@ -55,7 +57,7 @@
         </div>
       </a>
     </div>
-    <div class="dark-bg p-4 rounded-lg">
+    <div class="bg-blue p-4 rounded-lg">
       {#each $assets as a}
         <div
           class="flex mb-2 cursor-pointer"
@@ -65,7 +67,7 @@
           }}>
           <div class={`py-2 ${outer(a.asset)} w-3 rounded-l-lg`} />
           <div
-            class={`flex ${bg(a.asset)} text-gray-300 rounded-r-lg p-4 flex-grow ${border(a.asset)}`}
+            class={`flex ${bg(a.asset)} text-white rounded-r-lg p-4 flex-grow ${border(a.asset)}`}
             class:active={$asset === a.asset}>
             <div class="flex-grow">{a.name}</div>
             <div>{val(a.asset, $balances[a.asset] || 0)}</div>
