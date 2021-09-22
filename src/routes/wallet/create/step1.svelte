@@ -1,5 +1,6 @@
 <script>
   import { goto } from "$lib/utils";
+  import Button from "$styleguide/components/Button";
   import Fa from "svelte-fa";
   import {
     faLock,
@@ -25,20 +26,20 @@
 
   <ul class="flex flex-col mb-10">
     <li class="flex">
-      <i class="text-lightblue">
+      <i class="text-black">
         <Fa icon={faStickyNote} /></i>
       <span class="-mt-1">Write on actual paper instead of keeping it in a
         digital format in your device.</span>
     </li>
     <li class="flex">
-      <i class="text-lightblue">
+      <i class="text-black">
         <Fa icon={faLock} />
       </i>
       <span class="-mt-1">Wait until you are on a personal device and in a
         private environment.</span>
     </li>
     <li class="flex">
-      <i class="text-lightblue">
+      <i class="text-black">
         <Fa icon={faWallet} />
       </i>
       <span class="-mt-1">The backup phrase is essential to restore your wallet.
@@ -46,5 +47,7 @@
     </li>
   </ul>
 
-  <a href="/wallet/create/step2" class="primary-btn w-full">I'm ready to start</a>
+  <a href="/wallet/create/step2">
+    <Button primary class="w-full">I'm ready to start</Button>
+  </a>
 </div>
