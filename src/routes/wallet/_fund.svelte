@@ -145,7 +145,7 @@
 {#if $user && funding}
   <div class="bg-blue mb-2 md:rounded-lg p-5">
     <div class="flex justify-between place-items-center text-white">
-      <p>Fund Wallet</p>
+      <p class="font-semibold">Fund Wallet</p>
 <!--      hide this temporary, during find the fix how to manage page.params.action and funding binding-->
 <!--      <button-->
 <!--        class="text-gray-400 text-xl w-auto"-->
