@@ -44,6 +44,28 @@ $color-black-90: rgba(0,0,0,0.9);
 $color-primary-gradient-1: #fa7900;
 $color-primary-gradient-2: linear-gradient(90deg,  #fa7900 0%, #df36b4 43%, #0063ea 77%, #00eaaf 100%);
 
+$color-orange: #f77030;
+$color-orange-10: rgba($color-orange,0.1);
+$color-orange-20: rgba($color-orange,0.2);
+$color-orange-30: rgba($color-orange,0.3);
+$color-orange-40: rgba($color-orange,0.4);
+$color-orange-50: rgba($color-orange,0.5);
+$color-orange-60: rgba($color-orange,0.6);
+$color-orange-70: rgba($color-orange,0.7);
+$color-orange-80: rgba($color-orange,0.8);
+$color-orange-90: rgba($color-orange,0.9);
+
+$color-blue: #335fe3;
+$color-blue-10: rgba($color-blue,0.1);
+$color-blue-20: rgba($color-blue,0.2);
+$color-blue-30: rgba($color-blue,0.3);
+$color-blue-40: rgba($color-blue,0.4);
+$color-blue-50: rgba($color-blue,0.5);
+$color-blue-60: rgba($color-blue,0.6);
+$color-blue-70: rgba($color-blue,0.7);
+$color-blue-80: rgba($color-blue,0.8);
+$color-blue-90: rgba($color-blue,0.9);
+
 // colors
 
 $color-text-base: $color-black-80;
@@ -144,11 +166,34 @@ $card--price--font-size: 15px;
 // = = = = BUTTON = = = =
 //
 
-// idle
+// Primary idle
 $button--primary--color: $color-white;
 $button--primary--background--gradient-1: $color-primary-gradient-1;
 $button--primary--background--gradient-2: $color-primary-gradient-2;
 $button--primary--font-weight: bold;
 $button--primary--transition--time: $transition-basic-duration;
-// hover
+// Primary hover
 $button--primary--hover--box-shadow: 0 0 0 5px rgba($color-primary-gradient-1, 0.3);
+
+// Ghost White idle
+$button--ghost-white--color: $color-white;
+$button--ghost-white--border-color: $color-white;
+$button--ghost-white--border-width: 1px;
+$button--ghost-white--border-style: solid;
+$button--ghost-white--border: $button--ghost-white--border-width $button--ghost-white--border-style $button--ghost-white--border-color;
+$button--ghost-white--background: transparent;
+$button--ghost-white--font-weight: bold;
+$button--ghost-white--transition--time: $transition-basic-duration;
+// Ghost White hover
+$button--ghost-white--hover--border-color: rgba($button--ghost-white--border-color, 0.5);
+$button--ghost-white--hover--border-width: 1px;
+$button--ghost-white--hover--border-style: solid;
+$button--ghost-white--hover--border: $button--ghost-white--hover--border-width $button--ghost-white--hover--border-style $button--ghost-white--hover--border-color;
+// Ghost White disabled
+$button--ghost-white--disabled--cursor: not-allowed;
+$button--ghost-white--disabled--color: $color-white-50;
+$button--ghost-white--disabled--border-color: rgba($button--ghost-white--border-color, 0.5);;
+// Ghost White disabled hover
+$button--ghost-white--disabled--hover--color: $color-white-50;
+$button--ghost-white--disabled--hover--border-color: rgba($button--ghost-white--border-color, 0.5);
+

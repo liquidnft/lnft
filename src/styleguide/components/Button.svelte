@@ -2,7 +2,9 @@
   export let primary = false;
   export let secondary = false;
   export let ghost = false;
+  export let ghostWhite = false;
   export let hover = false;
+  export let disabled = false;
 </script>
 
 <style lang="scss">
@@ -22,7 +24,41 @@
             @extend .primary-hover;
         }
     }
+
+    .ghostWhite-hover {
+        border: $button--ghost-white--hover--border;
+    }
+
+    .ghostWhite-disabled {
+        color: $button--ghost-white--disabled--color;
+    }
+
+    .ghostWhite-disabled-hover {
+        color: $button--ghost-white--disabled--hover--color;
+    }
+
+
+    .ghostWhite {
+        transition: $button--ghost-white--transition--time;
+        color: $button--ghost-white--color;
+        font-weight: $button--ghost-white--font-weight;
+        background: $button--ghost-white--background;
+        border: $button--ghost-white--border;
+        &:hover, &.hover {
+            @extend .ghostWhite-hover;
+        }
+        &:disabled, &.disabled {
+            @extend .ghostWhite-disabled;
+            cursor: $button--ghost-white--disabled--cursor;
+            border-color: $button--ghost-white--disabled--border-color;
+            &:hover {
+                @extend .ghostWhite-disabled-hover;
+                color: $button--ghost-white--disabled--hover--color;
+                border-color: $button--ghost-white--disabled--hover--border-color;
+            }
+        }
+    }
 </style>
 
-<button on:click class:primary class:hover class="w-auto h-12 px-8 rounded-3xl button flex justify-center items-center {$$props.class || ''}"><slot/></button>
+<button {disabled} on:click class:ghostWhite class:primary class:hover class="w-auto h-12 px-8 rounded-3xl button flex justify-center items-center {$$props.class || ''}"><slot/></button>
 

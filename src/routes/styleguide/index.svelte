@@ -96,6 +96,30 @@
         <h4 class="text-gray-400 text-base mb-8">Button primary (:hover)</h4>
         <Button primary hover>Primary</Button>
     </div>
+    <div class="mt-8">
+        <h4 class="text-gray-400 text-base mb-8">Button ghost white</h4>
+        <div class="p-4 bg-blue">
+            <Button ghostWhite>Ghost White</Button>
+        </div>
+    </div>
+    <div class="mt-8">
+        <h4 class="text-gray-400 text-base mb-8">Button ghost white (:hover)</h4>
+        <div class="p-4 bg-blue">
+            <Button ghostWhite hover>Ghost White</Button>
+        </div>
+    </div>
+    <div class="mt-8">
+        <h4 class="text-gray-400 text-base mb-8">Button ghost white (:disabled)</h4>
+        <div class="p-4 bg-blue">
+            <Button ghostWhite disabled>Ghost White</Button>
+        </div>
+    </div>
+    <div class="mt-8">
+        <h4 class="text-gray-400 text-base mb-8">Button ghost white (:disabled :hover)</h4>
+        <div class="p-4 bg-blue">
+            <Button ghostWhite disabled hover>Ghost White</Button>
+        </div>
+    </div>
 </div>
 
 <h3 class="my-8 mx-auto max-w-5xl mt-32">Card</h3>
