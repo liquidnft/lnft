@@ -4,7 +4,7 @@
   import { border, bg } from "./_colors";
   import { page } from "$app/stores";
   import { electrs, hasura } from "$lib/api";
-  import { onMount, tick } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import {
     asset,
     assets,
@@ -56,6 +56,7 @@
     funding = false;
   };
 
+  let poll;
   let artworks = [];
   $: init($user);
   let init = async (u) => {
@@ -69,8 +70,12 @@
 
     if (data) ({ artworks } = data);
     getBalances();
+    clearInterval(poll);
+    poll = setInterval(getBalances, 5000);
     loading = false;
   };
+
+  onDestroy(() => clearInterval(poll));
 </script>
 
 <style>

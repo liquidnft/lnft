@@ -122,6 +122,7 @@
   let makeOffer = async (e) => {
     if (e) e.preventDefault();
     offering = true;
+    transaction.type = "bid";
 
     await requirePassword();
 

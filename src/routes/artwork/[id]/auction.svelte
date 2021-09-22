@@ -149,6 +149,8 @@
             type: "cancel",
           },
         });
+
+        stale = true;
       } catch (e) {
         if (e.message.includes("already"))
           throw new Error(

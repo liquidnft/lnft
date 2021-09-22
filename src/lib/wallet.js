@@ -38,7 +38,8 @@ import { requirePassword } from "$lib/auth";
 import { getActiveBids } from "$queries/transactions";
 import { compareAsc, parseISO } from "date-fns";
 
-const DUST = 1000;
+const DUST = 800;
+const satsPerByte = 0.1;
 
 const SERVER_PUBKEY = Buffer.from(
   "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b",
@@ -74,60 +75,47 @@ export const getTransactions = () => {
   return txns();
 };
 
-export const getBalances = () => {
-  if (!get(poll).find((p) => p.name === "balances"))
-    poll.set([
-      ...get(poll),
-      {
-        name: "balances",
-        interval: setInterval(
-          () => getUtxos(get(user).address, get(user).multisig),
-          5000
-        ),
-      },
-    ]);
+export const getBalances = async () => {
+  await getLocked();
+  await requirePassword();
+  let f = (a) => electrs.url(`/address/${a}/utxo`).get().json();
+  let single = (await f(get(user).address)).map((u) => ({
+    ...u,
+    single: true,
+  }));
+  let multi = (await f(get(user).multisig)).map((u) => ({ ...u, multi: true }));
+  let utxos = [...single, ...multi];
 
-  let getUtxos = async (singlesig, multisig) => {
-    await getLocked();
-    await requirePassword();
-    let f = (a) => electrs.url(`/address/${a}/utxo`).get().json();
-    let single = (await f(singlesig)).map((u) => ({ ...u, single: true }));
-    let multi = (await f(multisig)).map((u) => ({ ...u, multi: true }));
-    let utxos = [...single, ...multi];
+  let b = {};
+  let p = {};
 
-    let b = {};
-    let p = {};
+  utxos.map((u) => {
+    if (u.asset === btc && u.value < DUST) return;
+    if (u.status.confirmed) {
+      if (b[u.asset]) b[u.asset] += parseInt(u.value);
+      else b[u.asset] = u.value;
+    } else {
+      if (p[u.asset]) p[u.asset] += parseInt(u.value);
+      else p[u.asset] = u.value;
+    }
+  });
 
-    utxos.map((u) => {
-      if (u.asset === btc && u.value < DUST) return;
-      if (u.status.confirmed) {
-        if (b[u.asset]) b[u.asset] += parseInt(u.value);
-        else b[u.asset] = u.value;
-      } else {
-        if (p[u.asset]) p[u.asset] += parseInt(u.value);
-        else p[u.asset] = u.value;
-      }
-    });
+  Object.keys(b).map(async (a) => {
+    let artwork = get(titles).find(
+      (t) => t.asset === a && t.owner_id !== get(user).id
+    );
 
-    Object.keys(b).map(async (a) => {
-      let artwork = get(titles).find(
-        (t) => t.asset === a && t.owner_id !== get(user).id
-      );
+    if (artwork) {
+      await api
+        .auth(`Bearer ${get(token)}`)
+        .url("/claim")
+        .post({ artwork })
+        .json();
+    }
+  });
 
-      if (artwork) {
-        await api
-          .auth(`Bearer ${get(token)}`)
-          .url("/claim")
-          .post({ artwork })
-          .json();
-      }
-    });
-
-    balances.set(JSON.parse(JSON.stringify(b)));
-    pending.set(p);
-  };
-
-  return getUtxos(get(user).address, get(user).multisig);
+  balances.set(JSON.parse(JSON.stringify(b)));
+  pending.set(p);
 };
 
 const getHex = async (txid) => {
@@ -563,17 +551,32 @@ export const pay = async (artwork, to, amount) => {
     value: amount,
   });
 
-  let out = artwork && isMultisig(artwork) ? multisig() : singlesig();
-  if (asset === btc) {
-    await fund(p, singlesig(), asset, amount + get(fee));
-  } else {
-    await fund(p, out, asset, amount, 1, isMultisig(artwork));
-    await fund(p, singlesig(), btc, get(fee));
-  }
+  let p2 = Psbt.fromBase64(p.toBase64());
 
+  let construct = async (p) => {
+    let out = artwork && isMultisig(artwork) ? multisig() : singlesig();
+    if (asset === btc) {
+      await fund(p, singlesig(), asset, amount + get(fee));
+    } else {
+      await fund(p, out, asset, amount, 1, isMultisig(artwork));
+      await fund(p, singlesig(), btc, get(fee));
+    }
+  };
+
+  await construct(p);
   addFee(p);
+  estimateFee(p);
 
-  return p;
+  await construct(p2);
+
+  addFee(p2);
+
+  return p2;
+};
+
+const estimateFee = (p) => {
+  let size = estimateTxSize(p.data.inputs.length, p.data.outputs.length);
+  fee.set(Math.ceil(size * satsPerByte));
 };
 
 export const cancelSwap = async (artwork) => {
@@ -674,13 +677,23 @@ export const executeSwap = async (artwork) => {
     });
   }
 
-  if (asking_asset === btc) total += get(fee);
-  else await fund(p, out, btc, get(fee));
-  await fund(p, out, asking_asset, total);
+  let p2 = Psbt.fromBase64(p.toBase64());
 
+  let construct = async (p, total) => {
+    if (asking_asset === btc) total += get(fee);
+    else await fund(p, out, btc, get(fee));
+    await fund(p, out, asking_asset, total);
+  };
+
+  await construct(p, total);
   addFee(p);
+  estimateFee(p);
 
-  return p;
+  await construct(p2, total);
+
+  addFee(p2);
+
+  return p2;
 };
 
 export const createIssuance = async (
@@ -942,22 +955,32 @@ export const createOffer = async (artwork, amount, input) => {
     );
   }
 
-  if (input) {
-    p.addInput(input);
-  } else {
-    if (asset === btc) {
-      total += get(fee);
+  let p2 = Psbt.fromBase64(p.toBase64());
+
+  let construct = async (p, total) => {
+    if (input) {
+      p.addInput(input);
     } else {
-      await fund(p, out, btc, get(fee));
+      if (asset === btc) {
+        total += get(fee);
+      } else {
+        await fund(p, out, btc, get(fee));
+      }
+
+      p.artwork_id = artwork.id;
+      await fund(p, out, asset, total);
     }
+  };
 
-    p.artwork_id = artwork.id;
-    await fund(p, out, asset, total);
-  }
-
+  await construct(p, total);
   addFee(p);
+  estimateFee(p);
 
-  return p;
+  await construct(p2, total);
+
+  addFee(p2);
+
+  return p2;
 };
 
 export const sendToMultisig = async (artwork) => {
@@ -992,3 +1015,71 @@ export const requestSignature = async (psbt) => {
 
 export const getAddress = (out) =>
   Address.fromOutputScript(out.script, network);
+
+export function estimateTxSize(numInputs, numOutputs) {
+  const base = calcTxSize(false, numInputs, numOutputs, false) + 200;
+  const total = calcTxSize(true, numInputs, numOutputs, false);
+  const weight = base * 3 + total;
+  const vsize = (weight + 3) / 4;
+
+  return vsize;
+}
+
+function calcTxSize(withWitness, numInputs, numOutputs, isConfidential) {
+  const inputsSize = calcInputsSize(withWitness, numInputs);
+  const outputsSize = calcOutputsSize(isConfidential, numOutputs);
+
+  return (
+    9 +
+    varIntSerializeSize(numOutputs) +
+    varIntSerializeSize(numInputs) +
+    inputsSize +
+    outputsSize
+  );
+}
+
+function calcInputsSize(withWitness, numInputs) {
+  // prevout hash + prevout index
+  let size = (32 + 8) * numInputs;
+  if (withWitness) {
+    // scriptsig + pubkey
+    size += numInputs * (72 + 33);
+  }
+
+  return size;
+}
+
+function calcOutputsSize(isConfidential, numOutputs) {
+  // asset + value + empty nonce
+  const baseOutputSize = 33 + 33 + 1;
+  let size = baseOutputSize * numOutputs;
+
+  if (isConfidential) {
+    // rangeproof + surjectionproof + 32 bytes for nonce
+    size += (4174 + 67 + 32) * numOutputs;
+  }
+
+  // fee asset + fee empty nonce + fee value
+  size += 33 + 1 + 9;
+
+  return size;
+}
+
+function varIntSerializeSize(val) {
+  const maxUINT16 = 65535;
+  const maxUINT32 = 4294967295;
+
+  if (val < 0xfd) {
+    return 1;
+  }
+
+  if (val <= maxUINT16) {
+    return 3;
+  }
+
+  if (val <= maxUINT32) {
+    return 5;
+  }
+
+  return 9;
+}
