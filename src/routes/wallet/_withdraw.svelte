@@ -8,6 +8,8 @@
   import { ProgressLinear } from "$comp";
   import { requirePassword } from "$lib/auth";
   import { getArtworkByAsset } from "$queries/artworks";
+  import { subscription, operationStore } from "@urql/svelte";
+  import Button from '$styleguide/components/Button';
 
   export let withdrawing = false;
 
@@ -66,16 +68,19 @@
 </style>
 
 {#if $user && withdrawing}
-  <form
-    class="dark-bg md:rounded-lg p-5 w-full flex flex-col"
-    on:submit|preventDefault={send}
-    autocomplete="off">
+  <form class="text-white bg-blue md:rounded-lg p-5 w-full flex flex-col" on:submit|preventDefault={send} autocomplete="off">
+    <div class="flex justify-between place-items-center text-white">
+      <p class="font-semibold">Withdraw Funds</p>
+    </div>
     {#if loading}
       <ProgressLinear />
     {:else}
       <div class="flex flex-col mb-4">
-        <label for="asset">Asset</label>
-        <select id="asset" class="text-black" bind:value={$asset}>
+        <label class="mt-4">Token</label>
+        <div>
+          <select
+              class="appearance-none py-0 h-12 rounded-md w-full text-black"
+              bind:value={$asset}>
           {#each $assets as asset}
             <option value={asset.asset}>{assetLabel(asset.asset)}</option>
           {/each}
@@ -90,6 +95,12 @@
             placeholder={val($asset, 0)}
             bind:value={amount} />
         </div>
+        <label class="mt-4">Amount</label>
+        <div class="flex justify-between text-black">
+          <div class="flex-1">
+            <input class="h-12 rounded-md w-full" placeholder={val($asset, 0)} bind:value={amount} />
+          </div>
+        </div>
       </div>
       <div class="flex flex-col mb-4">
         <label for="address">Recipient Address</label>
@@ -100,7 +111,7 @@
           bind:value={to}
           rows={4} />
       </div>
-      <button type="submit" class="primary-btn w-full mt-5">Complete withdraw</button>
+      <Button primary type="submit" class="w-full mt-5">Complete withdraw</Button>
     {/if}
   </form>
 {/if}
