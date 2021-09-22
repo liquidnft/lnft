@@ -124,10 +124,9 @@
 
 </script>
 
-<style>
+<style lang="scss">
   .hover {
-    @apply border-b-2;
-    border-bottom: 3px solid #6ed8e0;
+    @apply border-b-2 border-orange;
   }
 
   .tabs div {
@@ -138,21 +137,25 @@
     }
   }
 
+  button:hover {
+    @apply text-gray-200;
+  }
 </style>
 
 {#if $user && funding}
-  <div class="dark-bg mb-2 md:rounded-lg p-5">
-    <div class="flex justify-between place-items-center text-gray-400">
+  <div class="bg-blue mb-2 md:rounded-lg p-5">
+    <div class="flex justify-between place-items-center text-white">
       <p>Fund Wallet</p>
-      <button
-        class="text-gray-400 text-xl w-auto"
-        on:click={() => (funding = false)}>
-        <Fa icon={faTimes} />
-      </button>
+<!--      hide this temporary, during find the fix how to manage page.params.action and funding binding-->
+<!--      <button-->
+<!--        class="text-gray-400 text-xl w-auto"-->
+<!--        on:click={() => (funding = false)}>-->
+<!--        <Fa icon={faTimes} />-->
+<!--      </button>-->
     </div>
 
     {#if explainer}
-      <p class="text-sm my-4">
+      <p class="text-sm my-4 text-gray-200">
         Funding through a confidential liquid address, bitcoin address, or
         lightning invoice is achieved by automatically converting to L-BTC
         through
@@ -160,14 +163,14 @@
         will be subject to counterparty risk during the conversion process.
       </p>
 
-      <p class="text-sm my-4">
+      <p class="text-sm my-4 text-gray-200">
         Liquid and bitcoin deposits require one on-chain confirmation before
         being converted. No pending deposit indication will be shown until
         confirmations are received. The minimum amount to convert is 0.00001
         BTC.
       </p>
 
-      <p class="text-sm my-4">
+      <p class="text-sm my-4 text-gray-200">
         See
         <a
           href="https://help.blockstream.com/hc/en-us/articles/900000630846-How-do-I-get-Liquid-Bitcoin-L-BTC-"
@@ -178,7 +181,7 @@
 
     {#if $asset === btc}
       <div
-        class="flex justify-center text-center cursor-pointer tabs flex-wrap mb-2">
+        class="text-white flex justify-center text-center cursor-pointer tabs flex-wrap mb-2">
         <div class:hover={tab === 'liquid'} on:click={liquid}>Liquid</div>
         <div class:hover={tab === 'bitcoin'} on:click={bitcoin}>Bitcoin</div>
         <div class:hover={tab === 'lightning'} on:click={lightning}>
@@ -193,13 +196,13 @@
     {:else}
       <div class="mb-2 flex justify-center flex-col">
         <div class="flex mb-2">
-          <div class="mx-auto w-1/2 qr mt-6 mb-3">
+          <div class="mx-auto w-1/2 qr mt-6 mb-3 rounded-xl overflow-hidden">
             {@html img}
           </div>
         </div>
-        <div class="flex">
+        <div class="flex text-white">
           <div
-            class="break-all text-sm"
+            class="break-all text-sm text-white"
             class:truncate={tab === 'lightning' && !showInvoice}
             class:invisible={loading}
             class:mx-auto={tab !== 'lightning'}>
@@ -207,7 +210,7 @@
           </div>
           {#if tab === 'lightning' && !showInvoice}
             <div
-              class="flex w-1/4 ml-2 text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
+              class="flex w-1/4 ml-2 text-right whitespace-nowrap text-sm cursor-pointer"
               on:click={toggle}>
               Show invoice
               <div class="my-auto ml-1">
@@ -218,7 +221,7 @@
         </div>
         {#if tab === 'lightning' && showInvoice}
           <div
-            class="flex w-1/4 mx-auto mt-2 text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
+            class="flex text-white w-1/4 mx-auto mt-2 text-right whitespace-nowrap text-sm cursor-pointer"
             on:click={toggle}>
             Hide invoice
             <div class="my-auto ml-1">
@@ -226,10 +229,10 @@
             </div>
           </div>
         {/if}
-        <div class="flex justify-center">
+        <div class="flex justify-center text-white">
           {#if tab === 'liquid'}
             <button
-              class="justify-center flex center font-medium secondary-color uppercase mt-4 mr-4"
+              class="justify-center flex center font-medium uppercase mt-4 mr-4"
               on:click={toggleConfidential}>
               <div class="my-auto mr-1">
                 <Fa icon={faUserSecret} />
@@ -239,7 +242,7 @@
           {/if}
           <button
             on:click={() => copy(address)}
-            class="justify-center flex center font-medium secondary-color uppercase mt-4">
+            class="justify-center flex center font-medium uppercase mt-4">
             <div>Copy {tab === 'lightning' ? 'invoice' : 'address'}</div>
             <div class="my-auto ml-2">
               <Fa icon={faClone} />
