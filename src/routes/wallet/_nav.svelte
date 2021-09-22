@@ -72,16 +72,17 @@
           <div class="hidden sm:block">Back to profile</div>
         </div>
       </a>
-      {#if $assets.length > 1}
-        <a href="/wallet/asset">
-          <div
-            class="flex flex-wrap justify-center sm:justify-start items-center sm:items-start h-full">
-            <Fa icon={faDollarSign} class="my-auto mr-2" />
-            <div class="sm:hidden">Asset</div>
-            <div class="hidden sm:block">Change asset</div>
-          </div>
-        </a>
-      {/if}
+      <!-- Due to new feature (click on asset name to change the asset) we don't need this anymore -->
+      <!--{#if $assets.length > 1}-->
+      <!--  <a href="/wallet/asset">-->
+      <!--    <div-->
+      <!--      class="flex flex-wrap justify-center sm:justify-start items-center sm:items-start h-full">-->
+      <!--      <Fa icon={faDollarSign} class="my-auto mr-2" />-->
+      <!--      <div class="sm:hidden">Asset</div>-->
+      <!--      <div class="hidden sm:block">Change asset</div>-->
+      <!--    </div>-->
+      <!--  </a>-->
+      <!--{/if}-->
       <a href="/wallet/setup">
         <div
           class="flex flex-wrap justify-center sm:justify-start items-center sm:items-start h-full">

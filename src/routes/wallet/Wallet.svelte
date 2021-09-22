@@ -1,6 +1,6 @@
 <script>
   import Fa from "svelte-fa";
-  import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+  import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
   import { border, bg } from "./_colors";
   import { page } from "$app/stores";
   import { electrs, hasura } from "$lib/api";
@@ -104,26 +104,19 @@
     </div>
 {:else if $balances && $pending}
     <div class="w-full">
-        {#if $assets.length > 1}
-            <div class="mb-5">
-                <a class="secondary-color" href="/wallet/asset">
-                    <div class="flex">
-                        <div class="px-5 md:px-0">
-                            {$assets.length}
-                            assets available in this wallet
+        <div class="bg-blue mb-2 pt-1 sm:rounded-lg">
+            <div
+                class="flex inline-block text-center text-white text-xl mt-5 font-bold pr-8">
+                <a href="/wallet/asset">
+                    <div class="items-center flex border-l-8 rounded-r-full border-orange bg-custom-orange p-3 whitespace-nowrap ">
+                        <div class="whitespace-pre-wrap">
+                            {name($asset)}
                         </div>
-                        <div class="my-auto ml-1">
-                            <Fa icon={faChevronRight} />
+                        <div class="ml-4">
+                            <Fa icon={faChevronDown}/>
                         </div>
                     </div>
                 </a>
-            </div>
-        {/if}
-
-        <div class="bg-blue mb-2 pt-1 sm:rounded-lg">
-            <div
-                class={`border-l-8 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5 font-bold border-orange bg-custom-orange`}>
-                {name($asset)}
             </div>
 
             <div class="m-6">
