@@ -12,6 +12,7 @@
   import { assetLabel, btc, sats, tickers, val } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
   import { getBalances } from "$lib/wallet";
+  import Button from "$styleguide/components/Button";
 
   import Fund from "./_fund";
   import Withdraw from "./_withdraw";
@@ -85,37 +86,15 @@
 
 <svelte:window bind:scrollY={y}/>
 
-<style>
-    .dark-red {
-        background: #2b0208;
-    }
-    .dark-green {
-        background: #082527;
-    }
-    .dark-gray {
-        background: #31373e;
-    }
-    .border-blue {
-        border-color: #6ed8e0;
-    }
-
-    .bg-btc {
-        background: rgba(52, 190, 171, 0.25);
-    }
-    .border-btc {
-        border-color: #30bfad;
-    }
-
-    .light-color {
-        color: #f4f4f4;
-    }
+<style lang="scss">
+    @import "../../styleguide/theme";
 
     .active {
         @apply border-t-2 border-b-2 border-r-2 text-white;
     }
 
-    button:disabled {
-        @apply text-gray-400 border-gray-400;
+    .bg-custom-orange {
+        background: $color-orange-80;
     }
 </style>
 
@@ -141,35 +120,37 @@
             </div>
         {/if}
 
-        <div class="dark-bg mb-2 pt-1 sm:rounded-lg">
+        <div class="bg-blue mb-2 pt-1 sm:rounded-lg">
             <div
-                class={`border-l-8 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5 font-bold ${border($asset)} ${bg($asset)}`}>
+                class={`border-l-8 text-center p-3 text-white text-xl w-1/2 rounded-r-full mt-5 font-bold border-orange bg-custom-orange`}>
                 {name($asset)}
             </div>
 
             <div class="m-6">
-                <div class="text-sm light-color">Balance</div>
+                <div class="text-sm text-white">Balance</div>
                 <div class="flex mt-3">
-                    <span class="text-4xl text-white mr-3">{balance}</span>
-                    <span class="text-gray-400 mt-3.5">{assetLabel($asset)}</span>
+                    <span class="text-4xl text-white mr-3 font-semibold">{balance}</span>
+                    <span class="text-gray-300 mt-3.5">{assetLabel($asset)}</span>
                 </div>
             </div>
             <div class="m-6">
-                <div class="text-sm light-color">Pending</div>
+                <div class="text-sm text-white">Pending</div>
                 <div class="flex mt-3">
           <span
-              class="light-color mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
-                    <span class="text-gray-400">{assetLabel($asset)}</span>
+              class="text-white mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
+                    <span class="text-gray-300">{assetLabel($asset)}</span>
                 </div>
             </div>
             <div class="flex justify-between p-6 pt-2">
-                <button
+                <Button
+                    ghostWhite
                     on:click={toggleFunding}
-                    class="button-trans-gray w-full mr-2">Fund</button>
-                <button
+                    class="w-full mr-2">Fund</Button>
+                <Button
+                    ghostWhite
                     on:click={toggleWithdrawing}
-                    class="button-trans-gray w-full ml-2"
-                    disabled={!balance}>Withdraw</button>
+                    class="w-full ml-2"
+                    disabled={!balance}>Withdraw</Button>
             </div>
         </div>
         <div bind:this={actionsBlock}>
