@@ -84,7 +84,7 @@
     if (result.data) transactions = result.data.transactions;
   };
 
-  let poll = setInterval(setup, 5000);
+  let poll = setInterval(setup, 2500);
 
   onDestroy(() => {
     $art = undefined;

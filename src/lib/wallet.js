@@ -241,21 +241,19 @@ export const getLocked = async (asset = btc) => {
 
       res.data.activebids.map(async ({ artwork, id, psbt, type }) => {
         let p = Psbt.fromBase64(psbt);
+        let { tx } = p.data.globalMap.unsignedTx;
 
         arr.push({
           id,
           type,
-          amount: p.data.globalMap.unsignedTx.tx.outs
+          amount: tx.outs
             .filter(
-              (tx) =>
-                parseAsset(tx.asset) === btc &&
-                Buffer.compare(tx.script, singlesig().output) !== 0
+              (o) =>
+                parseAsset(o.asset) === btc &&
+                Buffer.compare(o.script, singlesig().output) !== 0
             )
             .reduce((a, b) => a + parseVal(b.value), 0),
           artwork,
-          txid: reverse(p.data.globalMap.unsignedTx.tx.ins[1].hash).toString(
-            "hex"
-          ),
           p,
         });
       });
@@ -285,13 +283,15 @@ const splitUp = async (tx) => {
     (o) => Buffer.compare(o.script, singlesig().output) === 0
   );
 
+  offerFee = parseVal(outs.find((o) => !o.script.length).value);
+
   if (change) change = parseVal(change.value);
 
-  let { hash, index } = ins[type === "bid" ? 1 : 0];
-  let topup = Math.max(0, DUST - (total - change));
+  let padding = Math.max(0, DUST - (total - change));
 
-  let p2 = new Psbt()
-    .addInput({
+  let p2 = new Psbt();
+  let add = async ({ hash, index }) =>
+    p2.addInput({
       hash,
       index,
       redeemScript: singlesig().redeem.output,
@@ -299,18 +299,25 @@ const splitUp = async (tx) => {
         await getHex(reverse(hash).toString("hex")),
         "hex"
       ),
-    })
+    });
+
+  if (type === "bid") {
+    for (let i = 1; i < ins.length; i++) {
+      await add(ins[i]);
+    }
+  } else await add(ins[0]);
+
+  p2.addOutput({
+    asset,
+    nonce,
+    script: singlesig().output,
+    value: total + padding - change,
+  })
     .addOutput({
       asset,
       nonce,
       script: singlesig().output,
-      value: total + topup - change,
-    })
-    .addOutput({
-      asset,
-      nonce,
-      script: singlesig().output,
-      value: change - topup - splitFee,
+      value: change - padding - splitFee,
     })
     .addOutput({
       asset,
@@ -339,7 +346,7 @@ const splitUp = async (tx) => {
   };
 
   let p3;
-  if (type === "bid") p3 = await createOffer(artwork, value, input);
+  if (type === "bid") p3 = await createOffer(artwork, value, input, offerFee);
   else {
     ({ hash, index } = ins[1]);
     p3 = new Psbt()
@@ -364,7 +371,7 @@ const splitUp = async (tx) => {
         asset,
         nonce,
         script: singlesig().output,
-        value: topup + releaseFee,
+        value: padding + releaseFee,
       })
       .addOutput({
         asset,
@@ -400,7 +407,7 @@ const splitUp = async (tx) => {
   }
 
   return {
-    amt: change - topup - splitFee,
+    amt: change - padding - splitFee,
     input: {
       hash: t.getId(),
       index: 1,
@@ -421,22 +428,31 @@ const fund = async (
   let { address, redeem, output } = out;
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
-  let l = (await getLocked(asset)).filter(
-    (t) => !(p.artwork_id && t.artwork.id === p.artwork_id)
-  );
+  let l = (await getLocked(asset))
+    .filter((t) => !(p.artwork_id && t.artwork.id === p.artwork_id))
+    .map((t) => {
+      t.inputs = t.p.data.globalMap.unsignedTx.tx.ins.map(
+        ({ hash, index }) => ({
+          hash: reverse(hash).toString("hex"),
+          index,
+        })
+      );
+      return t;
+    });
 
   utxos = shuffle(
     utxos.filter(
       (o) =>
         o.asset === asset &&
         (o.asset !== btc || o.value > DUST) &&
-        !l.find((t) => t.txid === o.txid)
+        !l.find((t) =>
+          t.inputs.find((i) => i.hash === o.txid && i.index === o.vout)
+        )
     )
   );
 
   let i = 0;
   let total = 0;
-  let totalLocked = 0;
 
   while (total < amount) {
     if (i >= utxos.length) {
@@ -452,17 +468,22 @@ const fund = async (
             if (b.change) a.push(b);
             return a;
           }, [])
-          .sort((a, b) => b.change - a.change);
+          .sort((a, b) => parseVal(b.change.value) - parseVal(a.change.value));
 
-        for (let k = 0; k < arr.length; k++) {
-          try {
-            let { input, amt } = await splitUp(arr[k]);
-            utxos.push({ input });
-            total += amt;
-            i++;
-            if (total >= amount) break;
-          } catch (e) {
-            console.log("failed to split bid", e.message, e.stack);
+        if (
+          arr.reduce((a, b) => a + parseVal(b.change.value), 0) >=
+          amount - total
+        ) {
+          for (let k = 0; k < arr.length; k++) {
+            try {
+              let { input, amt } = await splitUp(arr[k]);
+              utxos.push({ input });
+              total += amt;
+              i++;
+              if (total >= amount) break;
+            } catch (e) {
+              console.log("failed to split bid", e.message, e.stack);
+            }
           }
         }
       }
@@ -532,6 +553,7 @@ const isMultisig = ({ royalty, auction_end }) => {
 };
 
 export const pay = async (artwork, to, amount) => {
+  fee.set(100);
   if (!amount || amount <= 0) throw new Error("invalid amount");
   let asset = artwork ? artwork.asset : btc;
 
@@ -890,8 +912,8 @@ export const createSwap = async (artwork, amount, tx) => {
   return p;
 };
 
-export const createOffer = async (artwork, amount, input) => {
-  fee.set(150);
+export const createOffer = async (artwork, amount, input, f = 150) => {
+  fee.set(f);
   amount = parseInt(amount);
 
   let { asking_asset: asset, artist_id, royalty, owner_id } = artwork;
@@ -958,29 +980,30 @@ export const createOffer = async (artwork, amount, input) => {
   let p2 = Psbt.fromBase64(p.toBase64());
 
   let construct = async (p, total) => {
-    if (input) {
-      p.addInput(input);
+    if (asset === btc) {
+      total += get(fee);
     } else {
-      if (asset === btc) {
-        total += get(fee);
-      } else {
-        await fund(p, out, btc, get(fee));
-      }
-
-      p.artwork_id = artwork.id;
-      await fund(p, out, asset, total);
+      await fund(p, out, btc, get(fee));
     }
+
+    p.artwork_id = artwork.id;
+    await fund(p, out, asset, total);
   };
 
-  await construct(p, total);
-  addFee(p);
-  estimateFee(p);
+  if (input) {
+    p.addInput(input);
+    addFee(p);
+    return p;
+  } else {
+    await construct(p, total);
+    addFee(p);
+    estimateFee(p);
 
-  await construct(p2, total);
+    await construct(p2, total);
 
-  addFee(p2);
-
-  return p2;
+    addFee(p2);
+    return p2;
+  }
 };
 
 export const sendToMultisig = async (artwork) => {

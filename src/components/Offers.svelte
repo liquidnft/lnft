@@ -6,24 +6,32 @@
   import { snack, prompt, psbt, token } from "$lib/store";
   import { Psbt } from "@asoltys/liquidjs-lib";
   import { getOffers } from "$queries/transactions";
-  import { mutation, query, operationStore } from "@urql/svelte";
   import { broadcast } from "$lib/wallet";
   import { goto, val, ticker } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import AcceptOffer from "$components/AcceptOffer";
+  import { pub } from "$lib/api";
 
   let offers = [];
   let comp;
 
-  query(operationStore(getOffers)).subscribe(({ data }) => data && (offers = data.offers)
-  );
+  onMount(async () => {
+    let result = await pub($token)
+      .post({
+        query: getOffers,
+      })
+      .json();
+
+    if (result.data) offers = result.data.offers;
+    else err(result.errors[0]);
+  });
 </script>
 
 <style>
   button {
     @apply border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded;
     &:hover {
-      @apply border-green-400;
+      @apply border-secondary;
     }
   }
 </style>
@@ -37,13 +45,10 @@
         columns={1}
         showDetails={false}
         shadow={false} />
-      <div class="mt-4 mx-2 whitespace-no-wrap text-center">
+      <div class="mx-2 whitespace-no-wrap text-center">
         {val(offer.transaction.artwork.asking_asset, offer.transaction.amount)}
         {ticker(offer.transaction.artwork.asking_asset)}
         from @{offer.transaction.artwork.bid[0].user.username}
-        <a href={`/tx/${offer.id}`} class="text-xs text-green-400">
-          <Fa class="text-xl mx-2" icon={faInfoCircle} />
-        </a>
         <button on:click={() => comp.accept(offer.transaction)}>Accept</button>
       </div>
     </div>

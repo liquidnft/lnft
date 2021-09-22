@@ -10,6 +10,7 @@
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { goto } from "$lib/utils";
+  import { pub } from "$lib/api";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getUserArtworks } from "$queries/artworks";
   import { getUserById } from "$queries/users";
@@ -28,16 +29,25 @@
     else ({ id } = subject);
   };
 
+  $: init(id)
+  let init = async () => {
+
+
+    let result = await pub($token)
+      .post({
+        query: getUserArtworks(id),
+      })
+      .json();
+
+    if (result.data) artworks = result.data.artworks;
+    else err(result.errors[0]);
+  } 
+
   let collection = [];
   let creations = [];
   let favorites = [];
 
   let artworks;
-  $: if (id)
-    query(operationStore(getUserArtworks(id))).subscribe(
-      ({ data }) => data && (artworks = data.artworks)
-    );
-
   $: applyFilters(artworks, subject);
 
   let sort = (a, b) => b.edition - a.edition;
