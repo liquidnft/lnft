@@ -107,16 +107,24 @@
         <div class="bg-blue mb-2 pt-1 sm:rounded-lg">
             <div
                 class="flex inline-block text-center text-white text-xl mt-5 font-bold pr-8">
-                <a href="/wallet/asset">
+                {#if $assets.length > 1}
+                    <a href="/wallet/asset">
+                        <div class="items-center flex border-l-8 rounded-r-full border-orange bg-custom-orange p-3 whitespace-nowrap ">
+                            <div class="whitespace-pre-wrap">
+                                {name($asset)}
+                            </div>
+                            <div class="ml-4">
+                                <Fa icon={faChevronDown}/>
+                            </div>
+                        </div>
+                    </a>
+                {:else}
                     <div class="items-center flex border-l-8 rounded-r-full border-orange bg-custom-orange p-3 whitespace-nowrap ">
                         <div class="whitespace-pre-wrap">
                             {name($asset)}
                         </div>
-                        <div class="ml-4">
-                            <Fa icon={faChevronDown}/>
-                        </div>
                     </div>
-                </a>
+                {/if}
             </div>
 
             <div class="m-6">
