@@ -14,22 +14,21 @@ import { expired } from "$lib/auth";
 import schema from "$lib/schema";
 import { getUser } from "$queries/users";
 import { getArtworks } from "$queries/artworks";
-import { getRecentActivity, getLatestPieces, getArtworkTransactions } from "$queries/transactions";
+import {
+  getRecentActivity,
+  getLatestPieces,
+  getArtworkTransactions,
+} from "$queries/transactions";
 import { makeOperation } from "@urql/core";
 
 let url, wsUrl;
-if (import.meta && import.meta.env && import.meta.env !== "production") {
-  url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
-  wsUrl = import.meta.env.SNOWPACK_PUBLIC_WS;
-} else {
-  url = "https://bid2.nftglee.com/v1/graphql";
-  wsUrl = "wss://bid2.nftglee.com/v1/graphql";
-}
+url = "https://mintalio.coinos.io/v1/graphql";
+wsUrl = "wss://mintalio.coinos.io/v1/graphql";
 
 export const setupUrql = async () => {
   return new Promise((resolve) => {
     const storage = makeDefaultStorage({
-      idbName: "raretoshi", // The name of the IndexedDB database
+      idbName: "mintalio", // The name of the IndexedDB database
       maxAge: 7, // The maximum age of the persisted data in days
     });
 
@@ -138,7 +137,7 @@ export const setupUrql = async () => {
           headers: {
             ...fetchOptions.headers,
             Authorization: `Bearer ${token}`,
-            'X-Hasura-Role': get(role),
+            "X-Hasura-Role": get(role),
           },
         },
       });
