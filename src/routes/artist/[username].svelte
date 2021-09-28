@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { getArtworksByUsername } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
-  import Gallery from "$components/Gallery";
+  import { Gallery } from "$comp";
 
   let { username } = $page.params;
   let artworks = [];

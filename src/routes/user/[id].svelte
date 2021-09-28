@@ -15,7 +15,7 @@
   import { getUserArtworks } from "$queries/artworks";
   import { getUserById } from "$queries/users";
   import { createFollow, deleteFollow } from "$queries/follows";
-  import Menu from "./_menu";
+  import Menu from "./_menu.svelte";
   import { query, mutation, operationStore } from "@urql/svelte";
   import { fade } from "svelte/transition";
 

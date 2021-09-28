@@ -4,7 +4,7 @@
   import { err } from "$lib/utils";
   import { page } from "$app/stores";
   import { register } from "$lib/register";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear } from "$comp";
 
   let show;
   let username = "";

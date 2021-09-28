@@ -27,10 +27,10 @@
     keypair,
   } from "$lib/wallet";
   import reverse from "buffer-reverse";
-  import ArtworkMedia from "$components/ArtworkMedia";
+  import { ArtworkMedia } from "$comp";
 
-  import Form from "./_form";
-  import Issuing from "./_issuing";
+  import Form from "./_form.svelte";
+  import Issuing from "./_issuing.svelte";
 
   $: requireLogin($page);
 

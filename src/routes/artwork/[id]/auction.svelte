@@ -2,7 +2,7 @@
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-  import { Psbt } from "@asoltys/liquidjs-lib";
+  import { Psbt } from "liquidjs-lib";
   import { Buffer } from "buffer";
   import { onMount, tick } from "svelte";
   import { page } from "$app/stores";
@@ -52,7 +52,7 @@
     tickers,
     assetLabel,
   } from "$lib/utils";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear } from "$comp";
   import Select from "svelte-select";
 
   let { id } = $page.params;

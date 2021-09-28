@@ -19,8 +19,8 @@ import { makeOperation } from "@urql/core";
 
 let url, wsUrl;
 if (import.meta && import.meta.env && import.meta.env !== "production") {
-  url = import.meta.env.SNOWPACK_PUBLIC_HTTP;
-  wsUrl = import.meta.env.SNOWPACK_PUBLIC_WS;
+  url = import.meta.env.VITE_PUBLIC_HTTP;
+  wsUrl = import.meta.env.VITE_PUBLIC_WS;
 } else {
   url = "https://bid2.nftglee.com/v1/graphql";
   wsUrl = "wss://bid2.nftglee.com/v1/graphql";

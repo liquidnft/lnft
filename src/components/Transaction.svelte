@@ -1,12 +1,11 @@
 <script>
   import { tick } from "svelte";
-  import { ProgressLinear } from "$comp";
   import Fa from "svelte-fa";
   import {
     faChevronDown,
     faChevronUp,
   } from "@fortawesome/free-solid-svg-icons";
-  import Avatar from "$components/Avatar";
+  import { Avatar, ProgressLinear } from "$comp";
   import { addresses, psbt, user } from "$lib/store";
   import reverse from "buffer-reverse";
   import { electrs } from "$lib/api";
@@ -20,7 +19,7 @@
     requestSignature,
   } from "$lib/wallet";
   import { requirePassword } from "$lib/auth";
-  import { Psbt, Transaction } from "@asoltys/liquidjs-lib";
+  import { Psbt, Transaction } from "liquidjs-lib";
   import {
     explorer,
     addressLabel,
@@ -36,7 +35,6 @@
     err,
   } from "$lib/utils";
 
-  export let summary = false;
   export let tx = undefined;
   export let debug = false;
 

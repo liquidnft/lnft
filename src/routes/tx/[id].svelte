@@ -7,9 +7,9 @@
   import { onMount } from "svelte";
   import { electrs, hasura, pub } from "$lib/api";
   import { getTransaction } from "$queries/transactions";
-  import { Psbt } from "@asoltys/liquidjs-lib";
+  import { Psbt } from "liquidjs-lib";
   import { psbt, token } from "$lib/store";
-  import Transaction from "$components/Transaction";
+  import { Transaction } from "$comp";
   import { getTx } from "$lib/wallet";
   import { err } from "$lib/utils";
 

@@ -8,7 +8,7 @@
     snack,
     token,
   } from "$lib/store";
-  import Transaction from "$components/Transaction";
+  import { Transaction } from "$comp";
   import { api } from "$lib/api";
   import Lock from "$icons/lock";
   import { sign } from "$lib/wallet";

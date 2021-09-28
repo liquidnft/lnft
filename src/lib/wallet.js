@@ -14,7 +14,7 @@ import {
   payments,
   networks,
   Transaction,
-} from "@asoltys/liquidjs-lib";
+} from "liquidjs-lib";
 import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
 import {

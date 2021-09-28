@@ -13,11 +13,9 @@
     user,
   } from "$lib/store";
   import { info, err, goto } from "$lib/utils";
-  import Gallery from "$components/Gallery";
-  import Results from "$components/Results";
-  import Search from "$components/Search";
-  import Filter from "./_filter";
-  import Sort from "./_sort";
+  import { Gallery, Results, Search } from "$comp";
+  import Filter from "./_filter.svelte";
+  import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";
   import { pub } from "$lib/api";
   import { countArtworks, getArtworks } from "$queries/artworks";

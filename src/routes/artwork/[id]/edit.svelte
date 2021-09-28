@@ -3,7 +3,7 @@
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import { page } from "$app/stores";
-  import Form from "../_form";
+  import Form from "../_form.svelte";
   import { getArtwork } from "$queries/artworks";
   import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork, updateTags } from "$queries/artworks";

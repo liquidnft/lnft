@@ -11,7 +11,7 @@
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { err, info, goto, validateEmail } from "$lib/utils";
-  import { Avatar } from "$components/index";
+  import { Avatar } from "$comp";
   import upload from "$lib/upload";
   import { updateUser } from "$queries/users";
   import { mutation, subscription } from "@urql/svelte";

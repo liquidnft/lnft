@@ -10,8 +10,7 @@
   import { onMount, tick } from "svelte";
   import { user, token } from "$lib/store";
   import { info, goto } from "$lib/utils";
-  import { Avatar } from "$components/index";
-  import { Dropzone, ProgressLinear } from "$comp";
+  import { Avatar, Dropzone, ProgressLinear } from "$comp";
   import upload from "$lib/upload";
   import { updateUser } from "$queries/users";
   import { mutation } from "@urql/svelte";

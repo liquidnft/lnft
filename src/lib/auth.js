@@ -10,7 +10,7 @@ import {
   user,
   token,
 } from "$lib/store";
-import PasswordPrompt from "$components/PasswordPrompt";
+import { PasswordPrompt } from "$comp";
 import { goto, err } from "$lib/utils";
 
 export const expired = (t) => !t || decode(t).exp * 1000 < Date.now();

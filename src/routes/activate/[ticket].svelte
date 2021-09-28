@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { activate } from "$lib/auth";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear } from "$comp";
   import { err } from "$lib/utils";
 
   let loading = true;

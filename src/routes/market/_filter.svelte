@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import ToggleSwitch from "$components/ToggleSwitch";
+  import { ToggleSwitch } from "$comp";
   import { artworks, filterCriteria as fc } from "$lib/store";
 
   export let showFilters;

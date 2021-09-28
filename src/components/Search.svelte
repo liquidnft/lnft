@@ -5,8 +5,7 @@
   import { hasura } from "$lib/api";
   import { results, token } from "$lib/store";
   import Select from "svelte-select";
-  import Item from "$components/SearchItem";
-  import ArtworkMedia from "$components/ArtworkMedia";
+  import { ArtworkMedia } from "$comp";
 
   export let suggest = true;
 

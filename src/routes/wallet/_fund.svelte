@@ -11,7 +11,7 @@
   import { asset, user, token } from "$lib/store";
   import { btc, copy, err } from "$lib/utils";
   import { api } from "$lib/api";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear } from "$comp";
 
   export let funding = false;
 

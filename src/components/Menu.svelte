@@ -1,6 +1,5 @@
 <script>
-  import Avatar from "$components/Avatar";
-  import Search from "$components/Search";
+  import { Avatar, Search } from "$comp";
   import { show, user, token } from "$lib/store";
   import { logout } from "$lib/auth";
 
@@ -17,10 +16,6 @@
     width: auto;
     text-align: left;
     padding: 0 20px;
-  }
-
-  .menu .signin {
-    width: 120px;
   }
 
   .menu :global(.search) {
@@ -65,9 +60,6 @@
     .menu a {
       margin: 25px 0 0 0px;
       width: 100%;
-    }
-    .menu .search {
-      margin: 40px 0 0 45px;
     }
   }
 </style>

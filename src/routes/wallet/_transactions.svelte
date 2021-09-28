@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import { format, parseISO } from "date-fns";
   import { api } from "$lib/api";
-  import ToggleSwitch from "$components/ToggleSwitch";
+  import { ToggleSwitch } from "$comp";
   import { asset, assets, user, token } from "$lib/store";
   import { assetLabel, val, units } from "$lib/utils";
 

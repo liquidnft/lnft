@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { onMount, tick } from "svelte";
   import bip39 from "bip39";
-  import ToggleSwitch from "$components/ToggleSwitch";
+  import { ToggleSwitch } from "$comp";
   import { password, token, user } from "$lib/store";
   import { err, goto, info } from "$lib/utils";
   import { requirePassword } from "$lib/auth";

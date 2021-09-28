@@ -9,13 +9,13 @@
     Navbar,
     Dialog,
     Footer,
+    Snack,
+    Head
   } from "$comp";
-  import Snack from "$components/Snack";
   import { show, user, password, token } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
-  import Head from "$components/Head";
 
   let open = false;
   let ready;

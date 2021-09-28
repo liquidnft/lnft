@@ -1,9 +1,7 @@
 <script>
   import Fa from "svelte-fa";
   import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-  import Avatar from "$components/Avatar";
-  import Eye from "$components/Eye";
-  import Heart from "$components/Heart";
+  import { Avatar, Eye, Heart } from "$comp";
   import { explorer, goto } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
 

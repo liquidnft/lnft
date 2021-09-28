@@ -8,7 +8,7 @@
     compareAsc,
     formatDistanceStrict,
   } from "date-fns";
-  import AcceptOffer from "$components/AcceptOffer";
+  import { AcceptOffer } from "$comp";
   export let transaction;
 
   let comp;
@@ -52,8 +52,8 @@
     </a>
     {#if canAccept(transaction)}
       <a
-        href="#"
-        on:click={() => comp.accept(transaction)}
+        href="/"
+        on:click|preventDefault={() => comp.accept(transaction)}
         class="text-sm secondary-color">
         [accept]
       </a>

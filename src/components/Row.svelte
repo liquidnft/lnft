@@ -1,6 +1,6 @@
 <script>
   import { goto } from "$lib/utils";
-  import Avatar from "$components/Avatar";
+  import { Avatar } from "$comp";
 
   export let item;
   export let link;

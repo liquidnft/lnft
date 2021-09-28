@@ -7,9 +7,7 @@
   import { operationStore, query } from "@urql/svelte";
   import { topCollectors, topArtists } from "$queries/users";
   import { getFeatured } from "$queries/artworks";
-  import Activity from "$components/Activity";
-  import RecentActivityCard from "$components/RecentActivityCard";
-  import LatestPiecesCard from "$components/LatestPiecesCard";
+  import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
   import { err, goto } from "$lib/utils";
   import { getRecentActivity, getLatestPieces } from "$queries/transactions";
 
@@ -218,6 +216,7 @@
         in:fade
         out:fade
         class="lazy cover absolute secondary-header"
+        alt={featured[current].artwork.title}
         src={`/api/ipfs/${featured[current].artwork.filename}`} />
     {/if}
   </div>

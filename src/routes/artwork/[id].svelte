@@ -9,7 +9,7 @@
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
   import { Activity, Avatar, Card, ProgressLinear } from "$comp";
-  import Sidebar from "./_sidebar";
+  import Sidebar from "./_sidebar.svelte";
   import { tick, onDestroy } from "svelte";
   import { art, prompt, password, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
@@ -29,10 +29,9 @@
     sign,
     broadcast,
   } from "$lib/wallet";
-  import { Psbt } from "@asoltys/liquidjs-lib";
+  import { Psbt } from "liquidjs-lib";
   import { api, pub } from "$lib/api";
-  import ArtworkQuery from "$components/ArtworkQuery";
-  import SocialShare from "$components/SocialShare";
+  import { ArtworkQuery, SocialShare } from "$comp";
 
   function linkify(text) {
     var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;

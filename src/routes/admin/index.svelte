@@ -1,7 +1,7 @@
 <script>
   import { onMount, tick, onDestroy } from "svelte";
   import { page } from "$app/stores";
-  import ArtworkMedia from "$components/ArtworkMedia";
+  import { ArtworkMedia } from "$comp";
   import { query, mutation, operationStore, subscription } from "@urql/svelte";
   import { getSamples, updateUser } from "$queries/users";
   import { role, user, token } from "$lib/store";

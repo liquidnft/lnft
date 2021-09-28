@@ -2,14 +2,13 @@
   import Fa from "svelte-fa";
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import { onMount, tick } from "svelte";
-  import Card from "$components/Card";
+  import  { AcceptOffer, Card } from "$comp";
   import { snack, prompt, psbt, token } from "$lib/store";
-  import { Psbt } from "@asoltys/liquidjs-lib";
+  import { Psbt } from "liquidjs-lib";
   import { getOffers } from "$queries/transactions";
   import { broadcast } from "$lib/wallet";
   import { goto, val, ticker } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
-  import AcceptOffer from "$components/AcceptOffer";
   import { pub } from "$lib/api";
 
   let offers = [];

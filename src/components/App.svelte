@@ -21,10 +21,9 @@
   import { setupUrql } from "$lib/urql";
   import { page } from "$app/stores";
   import { refreshToken } from "$lib/auth";
-  import InsufficientFunds from "$components/InsufficientFunds";
+  import { InsufficientFunds, Session } from "$comp";
   import { etag, publicPages, err, info } from "$lib/utils";
   import { createWallet } from "$lib/wallet";
-  import Session from "$components/Session";
 
   onMount(async () => {
     refreshToken();

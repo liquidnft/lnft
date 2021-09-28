@@ -1,8 +1,5 @@
 <script>
-  import Avatar from "$components/Avatar";
-  import Card from "$components/Card";
-  import TransactionText from "$components/TransactionText";
-  import TransactionTime from "$components/TransactionTime";
+  import { Avatar, Card, TransactionTime, TransactionText } from "$comp";
   import { user } from "$lib/store";
   import { formatDistanceStrict } from "date-fns";
 
@@ -11,21 +8,12 @@
 </script>
 
 <style>
-  a {
-    color: #3ba5ac;
-  }
-
-  .divider {
-    border: 1px solid #e4e4e4;
-    margin: 50px 0;
-  }
-
-  .activity-card :global(img), .activity-card :global(video){
-   object-fit: cover !important;
-   height: 400px;
-   width: 500px !important;
-   box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
-   border-radius: 10px;
+  .activity-card :global(img), .activity-card :global(video) {
+    object-fit: cover !important;
+    height: 400px;
+    width: 500px !important;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+    border-radius: 10px;
   }
 </style>
 

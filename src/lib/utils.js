@@ -122,7 +122,7 @@ const goto = (path) => {
 
 const explorer =
   import.meta && import.meta.env && import.meta.env !== "production"
-    ? import.meta.env.SNOWPACK_PUBLIC_EXPLORER
+    ? import.meta.env.VITE_PUBLIC_EXPLORER
     : "https://blockstream.info/liquid";
 
 const copy = (v) => {

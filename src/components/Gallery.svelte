@@ -1,8 +1,6 @@
 <script>
-  import Card from "$components/Card";
+  import { Card, Pagination, LoadingPlaceholder } from "$comp";
   import { tick } from "svelte";
-  import Pagination from "$components/Pagination";
-  import LoadingPlaceholder from "$components/LoadingPlaceholder";
 
   export let artworks;
   export let offset;

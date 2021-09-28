@@ -1,5 +1,5 @@
 <script>
-  import Step1 from "./step1";
+  import Step1 from "./step1.svelte";
 </script>
 
 <Step1 />

@@ -8,7 +8,7 @@ const {
   Transaction,
   payments,
   networks,
-} = require("@asoltys/liquidjs-lib");
+} = require("liquidjs-lib");
 const { electrs } = require("./api");
 const reverse = require("buffer-reverse");
 
