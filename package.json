@@ -44,7 +44,7 @@
 		"svelte": "^3.43.0",
 		"svelte-fa": "^2.2.0",
 		"svelte-preprocess": "^4.6.1",
-		"svelte-select": "^3.17.0",
+		"svelte-select": "^4.4.3",
 		"tailwindcss": "^2.0.3",
 		"uuid": "^8.3.2",
 		"wretch": "^1.7.4",
@@ -52,6 +52,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@urql/core": "^2.3.3",
 		"liquidjs-lib": "^5.2.0"
 	}
 }

@@ -2,7 +2,7 @@
   export let value;
   let amount;
   export let unit;
-  export let focus = () => amount.focus();
+  export const focus = () => amount.focus();
 </script>
 
 <svelte:options accessors={true} />

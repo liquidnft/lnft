@@ -80,7 +80,9 @@
     on:dragenter={start}
     on:dragover={start}
     on:dragleave={stop}
+    on:focus={start}
     on:mouseover={start}
+    on:blur={stop}
     on:mouseout={stop}
     on:drop={drop}
     class:highlight>

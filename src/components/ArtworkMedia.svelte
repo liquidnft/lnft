@@ -118,7 +118,9 @@
     class:cover
     class:contain
     on:mouseover={over}
-    on:mouseout={out}>
+    on:focus={over}
+    on:mouseout={out}
+    on:blur={out}>
     <video
       class="lazy"
       autoplay

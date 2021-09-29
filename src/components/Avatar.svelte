@@ -32,6 +32,7 @@
   </div>
   {#if overlay}
     <img
+      alt="Multisig"
       src={overlay}
       class="w-6 h-6 absolute"
       style="bottom: -8px; right: -20px" />

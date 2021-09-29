@@ -2,7 +2,6 @@
   export let artworks;
   export let offset;
   export let hidden;
-  export let count;
 
   let jump = async (i) => {
     document.getElementById(`artwork-${i * offset}`).scrollIntoView();

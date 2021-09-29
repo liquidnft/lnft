@@ -4,7 +4,6 @@
 
   export let artworks;
   export let offset;
-  export let count;
 
   let loaded = {};
 
@@ -63,4 +62,4 @@
   {/each}
 </div>
 
-<Pagination {artworks} {hidden} {offset} {count} />
+<Pagination {artworks} {hidden} {offset} />
