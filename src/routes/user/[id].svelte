@@ -181,7 +181,7 @@
               </a>
             {/if}
             {#if subject.location}
-              <a href="#">
+              <a href=".">
                 <div class="flex">
                   <div class="my-auto">
                     <Fa icon={faMapMarkerAlt} />

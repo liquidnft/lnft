@@ -111,30 +111,12 @@
 </script>
 
 <style>
-  select {
-    background: url(down-arrow.png);
-    background-repeat: no-repeat;
-    background-position: 90%;
-    appearance: none !important;
-    background-color: whitesmoke;
-    padding-right: 3rem;
-    background-size: 20px;
-  }
-
   @media only screen and (max-width: 1023px) {
     .search :global(input) {
       width: 90%;
       appearance: none;
       border: 0;
       border-bottom: 1px solid #6ed8e0;
-    }
-
-    select {
-      border: none;
-      background-color: white;
-      margin-top: -20px;
-      text-transform: uppercase;
-      font-weight: bold;
     }
   }
 

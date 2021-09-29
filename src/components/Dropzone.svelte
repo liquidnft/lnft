@@ -103,7 +103,7 @@
     </form>
   </div>
 {:else}
-  <a on:click={open} class="secondary-color cursor-pointer">
+  <a href="." on:click|preventDefault={open} class="secondary-color cursor-pointer">
     <div class="flex">
       <div>{title}</div>
       <div class="ml-1 my-auto">
