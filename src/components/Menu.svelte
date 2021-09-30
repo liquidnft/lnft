@@ -13,9 +13,28 @@
 
 <style>
   .menu button {
+    font-size: 15px;
     width: auto;
     text-align: left;
+    font-family: 'Oswald-bold';
+    color:#000;
+    text-transform: uppercase;
+  }
+
+  .menu a{
     padding: 0 20px;
+  }
+
+  .menu button:hover{
+    border-bottom:1px solid #000;
+  }
+
+  .menu a.no-underline button{
+    border-bottom:none;
+  }
+
+  .menu .signin {
+    width: 120px;
   }
 
   .menu :global(.search) {
@@ -48,6 +67,14 @@
     }
   }
 
+ @media screen and (max-width: 1200px) {
+   .menu a{
+    padding: 0 10px;
+    font-size:16px;
+  }
+ }
+
+
   @media only screen and (max-width: 1023px) {
     .menu {
       flex-direction: column;
@@ -58,28 +85,34 @@
     }
 
     .menu a {
-      margin: 25px 0 0 0px;
-      width: 100%;
+      margin: 20px 0 0 20px;
+      font-family: 'Oswald-bold';
+    }
+    .menu .search {
+      margin: 40px 0 0 45px;
     }
   }
 </style>
 
 <div class="flex justify-between items-center menu relative">
-  <Search suggest={false} />
-  <a href="/market"><button on:click={toggle}>Market</button></a>
-  <a href="/activity"><button on:click={toggle}>Activity</button></a>
-  <!--
-  <a href="/galleries"><button on:click={toggle}>Galleries</button></a>
-  -->
-  <a href="https://blog.raretoshi.com/"><button on:click={toggle}>Blog</button></a>
-  <a href="/faq"><button on:click={toggle}>FAQ</button></a>
+  <a href="https://www.nftglee.com/about-us/"><button on:click={toggle}>About Us</button></a>
+  <a href="/market"><button on:click={toggle}>New Drops</button></a>
+  <a href="https://www.nftglee.com/goldenwhalepass/"><button on:click={toggle}>Our Work</button></a>
   {#if $user}
+  <a href="/contact"><button on:click={toggle}>Contact Us</button></a>
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
     {/if}
     <a href={`/u/${$user.username}`}>
       <button on:click={toggle} class="flex">
         <Avatar user={$user} />
+        <!--
+        <div class="my-auto ml-2">{$user.full_name}</div>
+        -->
       </button></a>
-  {:else}<a href="/login"><button on:click={toggle}>Sign In</button></a>{/if}
+    {:else}
+      <a href="/login"><button on:click={toggle}>Log In</button></a>
+      <a href="/register"><button on:click={toggle}>Sign Up</button></a>
+  <a href="/contact"><button on:click={toggle}>Contact Us</button></a>
+      {/if}
 </div>

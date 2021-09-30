@@ -4,6 +4,7 @@
   import {
     App,
     Avatar,
+    Cursor,
     ProgressLinear,
     Sidebar,
     Navbar,
@@ -43,6 +44,24 @@
   </div>
   <Dialog />
 
+
+  <div id="edgtf-theme-cursor" class="">
+    <svg
+      x="0px"
+      y="0px"
+      width="48px"
+      height="48px"
+      viewBox="0 0 48 48"
+      xml:space="preserve">
+      <circle id="edgtf-cursor-dot" cx="28" cy="28" r="14" />
+      <path id="edgtf-cursor-flame" fill="#FFFFFF" />
+      <path id="edgtf-cursor-cart" fill="#FFFFFF" />
+      <path id="edgtf-cursor-close" fill="#FFFFFF" />
+      <path id="edgtf-cursor-move" fill="#FFFFFF" />
+      <path id="edgtf-cursor-eye" fill="#FFFFFF" />
+    </svg>
+  </div>
+
   <main>
     <div class="mx-auto min-h-screen">
       <App>
@@ -51,5 +70,6 @@
     </div>
   </main>
 
+  <Cursor />
   <Footer />
 {/if}

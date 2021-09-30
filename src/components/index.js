@@ -6,6 +6,7 @@ export { default as ArtworkMedia } from "./ArtworkMedia.svelte";
 export { default as ArtworkQuery } from "./ArtworkQuery.svelte";
 export { default as Avatar } from "./Avatar.svelte";
 export { default as Card } from "./Card.svelte";
+export { default as Cursor } from "./Cursor.svelte";
 export { default as Dialog } from "./Dialog.svelte";
 export { default as Dropzone } from "./Dropzone.svelte";
 export { default as Eye } from "./Eye.svelte";

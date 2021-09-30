@@ -31,6 +31,7 @@
 		"date-fns": "^2.16.1",
 		"graphql": "^15.4.0",
 		"jwt-decode": "^3.1.1",
+		"jquery": "^3.6.0",
 		"liquidjs-lib": "^5.2.0",
 		"long": "^4.0.0",
 		"node-fetch": "^2.6.1",

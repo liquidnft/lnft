@@ -168,59 +168,33 @@
   }
 </style>
 
-<div class="flex header-container mx-auto justify-center marg-bottom">
-  <div class="header text-center">
-    <h1 class="text-left md:text-center md:w-full">
-      Raretoshi
-      <br />digital art
+<div class="flex mx-auto justify-center">
+  <div class="header mt-10 md:mt-20 text-center">
+    <h1 class="mb-10 text-left md:text-center w-2/3 md:w-full">
+      Forever Whale
     </h1>
-    <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      Upload, collect, and transact rare digital art on the Liquid Network
-    </h5>
-    <a class="primary-btn" href={`/market`}>Start exploring</a>
+    <p class="md:max-w-md mx-auto text-left md:text-center">
+      Artist Collab - Paul Milinski - Olivia Steele - Anchorball - Vincent Ubags - Tommy - Ronin
+    </p>
+    <div class="mt-10">
+      <a  href={`/market`} class="edgtf-btn edgtf-btn-solid" data-text="Start exploring">
+        <span class="edgtf-btn-text">Start exploring</span>
+      </a>
+    </div>
   </div>
 </div>
 
-{#if featured[current]}
-  <div class="flex secondary-header marg-bottom">
-    <div
-      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
-      <div class="blur-bg">
-        <h2>
-          {featured[current].artwork.artist.username}
-        </h2>
-        <p>
-          {featured[current].artwork.title}
-            <button
-              class="button-transparent header-button border mt-10"
-              style="border-color: white; color: white"
-              on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
-              View Artwork</button>
-        </p>
-      </div>
-    </div>
-
-    {#if featured[current].artwork.filetype.includes('video')}
-      <video
-        in:fade
-        out:fade
-        class="lazy cover absolute secondary-header"
-        autoplay
-        muted
-        playsinline
-        loop
-        src={`/api/ipfs/${featured[current].artwork.filename}`}
-        :key={featured[current].id} />
-    {:else}
-      <img
-        in:fade
-        out:fade
-        class="lazy cover absolute secondary-header"
-        alt={featured[current].artwork.title}
-        src={`/api/ipfs/${featured[current].artwork.filename}`} />
-    {/if}
-  </div>
-{/if}
+<div class="flex secondary-header mt-20 mb-20 text-white">
+  <video
+    class="lazy cover absolute secondary-header"
+    autoplay
+    muted
+    playsinline
+    loop>
+    <source src="/api/ipfs/QmY3358vMspxuHy8DNDShpGummjQ7SZ5LDe9DzizEAib9t" />
+    Your browser does not support HTML5 video.
+  </video>
+</div>
 
 <div class="container mx-auto px-10">
   <h3>Recent Activity</h3>

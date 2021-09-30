@@ -20,4 +20,8 @@
     <meta name="twitter:title" content="Raretoshi" />
     <meta name="twitter:image" content="https://raretoshi.com/splash.png" />
   {/if}
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&display=swap" rel="stylesheet">
 </svelte:head>
+
