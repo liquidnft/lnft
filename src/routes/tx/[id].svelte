@@ -61,7 +61,7 @@
   <div class="mb-5">
     <a
       on:click|preventDefault={() => window.history.back()}
-      href="#"
+      href="/"
       class="text-midblue">
       <div class="flex">
         <Fa icon={faChevronLeft} class="my-auto mr-1" />

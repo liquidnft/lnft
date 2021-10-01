@@ -13,7 +13,7 @@
 
   let show;
   let username = "";
-  let password = import.meta && import.meta.env && import.meta.env !== "production" ? "liquidart" : "";
+  let password = "liquidart";
 
   let usernameInput;
   let pageChange = () =>

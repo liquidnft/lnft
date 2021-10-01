@@ -45,6 +45,7 @@
   let handle = ({ detail }) => {
     artwork.tags = detail.map(({ value: tag }) => ({ tag }));
   };
+
 </script>
 
 <style>
@@ -72,10 +73,10 @@
   }
 
   input,
-  select,
   textarea {
     @apply rounded-lg;
   }
+
 </style>
 
 <form class="flex flex-col w-full mb-6 mt-20" on:submit autocomplete="off">
@@ -88,8 +89,9 @@
       bind:this={input} />
   </div>
   <div class="toggle mb-6">
-    <label class="inline-flex items-center">
+    <label for="physical" class="inline-flex items-center">
       <input
+        id="physical"
         class="form-checkbox h-6 w-6"
         type="checkbox"
         bind:checked={artwork.is_physical} />
@@ -98,23 +100,25 @@
   </div>
   {#if !artwork.id}
     <div class="flex flex-col mb-6">
-      <label>Number of editions</label>
+      <label for="editions">Number of editions</label>
       <input
+        id="editions"
         placeholder="Editions"
         bind:value={artwork.editions}
         class="w-1/2" />
     </div>
   {/if}
   <div class="flex flex-col mb-6">
-    <label>Description</label>
+    <label for="description">Description</label>
     <textarea
+      id="description"
       placeholder="How would you describe it?"
       bind:value={artwork.description} />
   </div>
   {#if !artwork.id}
     <div class="flex flex-col mb-6">
       <div class="mb-0">
-        <label class="flex">
+        <label for="ticker" class="flex">
           <div class="mr-2">Ticker</div>
           <div class="mt-1 mb-0">
             <span class="tooltip">
@@ -128,13 +132,14 @@
           </div>
         </label>
       </div>
-      <input class="w-1/2" bind:value={artwork.ticker} maxlength="5" />
+      <input id="ticker" class="w-1/2" bind:value={artwork.ticker} maxlength="5" />
     </div>
   {/if}
   <div class="flex flex-col mb-6">
-    <label>Tags
+    <label for="tags">Tags
       <span class="text-gray-400">(e.g. Abstract, monochromatic, etc)</span></label>
     <Select
+      id="tags"
       {items}
       isMulti={true}
       placeholder="Tags"

@@ -69,8 +69,9 @@
       <ProgressLinear />
     {:else}
       <div class="flex flex-col mb-4">
-        <label>Asset</label>
+        <label for="asset">Asset</label>
         <select
+          id="asset"
           class="text-black"
           bind:value={$asset}>
           {#each $assets as asset}
@@ -79,14 +80,15 @@
         </select>
       </div>
       <div class="flex flex-col mb-4">
-        <label>Amount</label>
+        <label for="amount">Amount</label>
         <div class="flex justify-between text-black">
-          <input class="w-full" placeholder={val($asset, 0)} bind:value={amount} />
+          <input id="amount" class="w-full" placeholder={val($asset, 0)} bind:value={amount} />
         </div>
       </div>
       <div class="flex flex-col mb-4">
-        <label>Recipient Address</label>
+        <label for="address">Recipient Address</label>
         <textarea
+          id="address"
           style="overflow:auto"
           placeholder="Address"
           bind:value={to}
