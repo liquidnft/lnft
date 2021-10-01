@@ -1,27 +1,12 @@
-import sveltePreprocess from "svelte-preprocess";
+import preprocess from "svelte-preprocess";
 import tailwind from "tailwindcss";
 import autoprefixer from "autoprefixer";
 import postcss from "postcss-preset-env";
+import nesting from "postcss-nesting";
 import path from "path";
 import shimReactPdf from "vite-plugin-shim-react-pdf";
 
-const preprocess = sveltePreprocess({
-  postcss: {
-    plugins: [
-      tailwind,
-      autoprefixer,
-      postcss({
-        stage: 3,
-        features: {
-          "nesting-rules": true,
-        },
-      }),
-    ],
-  },
-});
-
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
+export default {
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
     target: "#svelte",
@@ -44,7 +29,9 @@ const config = {
       },
     },
   },
-  preprocess,
+  preprocess: preprocess({
+    postcss: {
+      plugins: [tailwind(), autoprefixer(), nesting()],
+    },
+  }),
 };
-
-export default config;
