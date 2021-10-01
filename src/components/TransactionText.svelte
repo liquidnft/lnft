@@ -1,13 +1,14 @@
 <script>
   import { ticker, val } from "$lib/utils";
   export let transaction;
+
 </script>
 
 {#if transaction}
   <div class:line-through={transaction.type.includes('cancelled')}>
     <a
       href={`/u/${transaction.user.username}`}
-      class="secondary-color" >@{transaction.user.username}</a>
+      class="secondary-color">@{transaction.user.username}</a>
     {#if transaction.type.includes('bid')}
       offered
       {val(transaction.asset, transaction.amount)}

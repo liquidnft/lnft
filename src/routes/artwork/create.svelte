@@ -305,15 +305,6 @@
     height: 320px;
   }
 
-  .upload-button img,
-  .upload-button video {
-    width: 100%;
-  }
-
-  button {
-    @apply block bg-green-400 hover:bg-green-600 text-white uppercase text-lg mx-auto p-4 rounded flex-1;
-  }
-
   @media only screen and (max-width: 1023px) {
     .upload-button {
       margin-top: 25px;
@@ -334,7 +325,7 @@
     class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow">
     <a
       class="block mb-6 text-midblue"
-      href="#"
+      href="."
       on:click|preventDefault={() => window.history.back()}>
       <div class="flex">
         <Fa icon={faChevronLeft} class="my-auto mr-1" />

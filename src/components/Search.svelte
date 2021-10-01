@@ -65,6 +65,7 @@
     } else if (keys.length > 0) goto("/market");
     else err("Nothing matched that search string");
   };
+
 </script>
 
 <div class="relative w-full search">

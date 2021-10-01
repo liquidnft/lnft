@@ -17,7 +17,7 @@
 
   $: mnemonic = words.filter((w) => w).join(" ");
 
-  export let importWallet = async (mnemonic) => {
+  export const importWallet = async (mnemonic) => {
     await requirePassword();
 
     try {
@@ -90,6 +90,7 @@
     if (e.key === "Enter" || (e.key === "Tab" && !e.shiftKey))
       return suggestions[0] && take(suggestions[0]);
   };
+
 </script>
 
 <style>
@@ -107,6 +108,7 @@
       width: 100vw;
     }
   }
+
 </style>
 
 <div class="p-5">
@@ -129,8 +131,7 @@
       bind:value={typed}
       placeholder="Type or paste your seed here"
       class="my-4 w-full"
-      on:blur={setMnemonic}
-      autofocus />
+      on:blur={setMnemonic} />
   {:else}
     <div class="flex flex-wrap mb-2">
       <div class="mr-2 sm:mr-0 flex-grow w-1/4 sm:w-1/2">
@@ -187,11 +188,15 @@
 
   <p class="my-4">
     {#if bulk}
-      <a class="secondary-color my-2" href="/" on:click|preventDefault={toggle}>I want to enter
-        one word at a time</a>
+      <a
+        class="secondary-color my-2"
+        href="/"
+        on:click|preventDefault={toggle}>I want to enter one word at a time</a>
     {:else}
-      <a class="secondary-color my-2" href="/" on:click|preventDefault={toggle}>I want to type
-        in a text box</a>
+      <a
+        class="secondary-color my-2"
+        href="/"
+        on:click|preventDefault={toggle}>I want to type in a text box</a>
     {/if}
   </p>
 </div>

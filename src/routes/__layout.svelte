@@ -10,7 +10,7 @@
     Dialog,
     Footer,
     Snack,
-    Head
+    Head,
   } from "$comp";
   import { show, user, password, token } from "$lib/store";
   import { onMount } from "svelte";
@@ -28,9 +28,12 @@
   });
 
   let y;
+
 </script>
 
-<style global src="../main.css" />
+<style global src="../main.css">
+</style>
+
 <svelte:window bind:scrollY={y} />
 
 <Head />

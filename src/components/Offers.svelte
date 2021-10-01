@@ -2,7 +2,7 @@
   import Fa from "svelte-fa";
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import { onMount, tick } from "svelte";
-  import  { AcceptOffer, Card } from "$comp";
+  import { AcceptOffer, Card } from "$comp";
   import { snack, prompt, psbt, token } from "$lib/store";
   import { Psbt } from "liquidjs-lib";
   import { getOffers } from "$queries/transactions";
@@ -24,6 +24,7 @@
     if (result.data) offers = result.data.offers;
     else err(result.errors[0]);
   });
+
 </script>
 
 <style>
@@ -33,6 +34,7 @@
       @apply border-secondary;
     }
   }
+
 </style>
 
 <AcceptOffer bind:this={comp} />

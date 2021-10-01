@@ -20,7 +20,7 @@
       let result = await api
         .auth(`Bearer ${$token}`)
         .url("/accept")
-        .post({ 
+        .post({
           id: artwork.id,
           owner_id: user.id,
           amount,
@@ -36,6 +36,7 @@
       err(e);
     }
   };
+
 </script>
 
 <svelte:options accessors={true} />

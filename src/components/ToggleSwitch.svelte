@@ -2,6 +2,7 @@
   export let id;
   export let label;
   export let checked = false;
+
 </script>
 
 <style>
@@ -13,6 +14,7 @@
   .toggle-checkbox:checked + .toggle-label {
     background: #6ed8e0;
   }
+
 </style>
 
 <div class="relative inline-block w-10 mr-2 align-middle select-none ease-in">

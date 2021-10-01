@@ -31,6 +31,7 @@
   let open = (e) => {
     fileInput.click();
   };
+
 </script>
 
 <style>
@@ -71,6 +72,7 @@
       margin-top: 50px;
     }
   }
+
 </style>
 
 {#if style === 'box'}
@@ -103,7 +105,10 @@
     </form>
   </div>
 {:else}
-  <a href="." on:click|preventDefault={open} class="secondary-color cursor-pointer">
+  <a
+    href="."
+    on:click|preventDefault={open}
+    class="secondary-color cursor-pointer">
     <div class="flex">
       <div>{title}</div>
       <div class="ml-1 my-auto">

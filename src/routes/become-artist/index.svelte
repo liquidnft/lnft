@@ -27,7 +27,7 @@
 
   onMount(() => {
     ({ ...form } = $user);
-  }); 
+  });
 
   $: width = `width: ${percent}%`;
 
@@ -100,7 +100,7 @@
       wallet_initialized,
       ...rest
     } = form;
-    
+
     await updateUser$({ user: rest, id });
 
     let samples = files.map((f) => ({
@@ -112,6 +112,7 @@
 
     submitted = true;
   };
+
 </script>
 
 <style>
@@ -150,6 +151,7 @@
       margin-bottom: 200px;
     }
   }
+
 </style>
 
 <div class="container mx-auto py-20">
@@ -185,39 +187,41 @@
                 placeholder="What's your name?"
                 bind:value={form.full_name} />
             </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faEnvelope} class="mt-1" />
-            </i>
-            <input placeholder="email@example.com" bind:value={form.email} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faTwitter} class="mt-1" />
-            </i>
-            <input placeholder="@twitter" bind:value={form.twitter} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faInstagram} class="mt-1" />
-            </i>
-            <input placeholder="@instagram" bind:value={form.instagram} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faMapMarkerAlt} class="mt-1" />
-            </i>
-            <input placeholder="Vancouver, Canada" bind:value={form.location} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faLink} class="mt-1" />
-            </i>
-            <input placeholder="example.com" bind:value={form.website} />
-          </div>
             <div class="flex flex-col mb-4">
-              <label>Extra information</label>
-              <textarea placeholder="" bind:value={form.info} />
+              <i class="icon">
+                <Fa icon={faEnvelope} class="mt-1" />
+              </i>
+              <input placeholder="email@example.com" bind:value={form.email} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="icon">
+                <Fa icon={faTwitter} class="mt-1" />
+              </i>
+              <input placeholder="@twitter" bind:value={form.twitter} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="icon">
+                <Fa icon={faInstagram} class="mt-1" />
+              </i>
+              <input placeholder="@instagram" bind:value={form.instagram} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="icon">
+                <Fa icon={faMapMarkerAlt} class="mt-1" />
+              </i>
+              <input
+                placeholder="Vancouver, Canada"
+                bind:value={form.location} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="icon">
+                <Fa icon={faLink} class="mt-1" />
+              </i>
+              <input placeholder="example.com" bind:value={form.website} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <label for="info">Extra information</label>
+              <textarea id="info" placeholder="" bind:value={form.info} />
             </div>
             <div class="flex justify-end mt-8">
               <button

@@ -34,6 +34,7 @@
         $prompt = undefined;
       });
   };
+
 </script>
 
 <style>
@@ -52,6 +53,7 @@
   .closeBtn {
     padding: 10px 13px;
   }
+
 </style>
 
 <svelte:options accessors={true} />

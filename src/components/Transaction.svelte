@@ -49,7 +49,6 @@
     u = $user;
     if (!p) return (lock = false);
 
-
     ins = [];
     outs = [];
 
@@ -165,9 +164,9 @@
     $psbt = await sign();
     try {
       $psbt = await requestSignature($psbt);
-    } catch(e) {
+    } catch (e) {
       console.log(`Couldn't get server signature: ${e.message}`);
-    } 
+    }
     info("Signed");
   };
 
@@ -178,6 +177,7 @@
       err(e);
     }
   };
+
 </script>
 
 {#if debug}

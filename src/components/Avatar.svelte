@@ -1,8 +1,9 @@
 <script>
   export let user = undefined;
-  export let src = undefined;;
+  export let src = undefined;
   export let overlay = undefined;
   export let size = "small";
+
 </script>
 
 <style>
@@ -17,6 +18,7 @@
   .xl {
     @apply w-56 h-56;
   }
+
 </style>
 
 <div class={`${size} my-auto relative`}>

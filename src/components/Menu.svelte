@@ -9,6 +9,7 @@
   let hovering;
   let enter = () => (hovering = true);
   let leave = () => (hovering = false);
+
 </script>
 
 <style>
@@ -26,7 +27,7 @@
   }
 
   .menu :global(.search):focus-within {
-    border: 1px solid #5C5D60;
+    border: 1px solid #5c5d60;
     border-radius: 30px;
   }
 
@@ -62,6 +63,7 @@
       width: 100%;
     }
   }
+
 </style>
 
 <div class="flex justify-between items-center menu relative">
@@ -71,7 +73,8 @@
   <!--
   <a href="/galleries"><button on:click={toggle}>Galleries</button></a>
   -->
-  <a href="https://blog.raretoshi.com/"><button on:click={toggle}>Blog</button></a>
+  <a href="https://blog.raretoshi.com/"><button
+      on:click={toggle}>Blog</button></a>
   <a href="/faq"><button on:click={toggle}>FAQ</button></a>
   {#if $user}
     {#if $user.is_admin}

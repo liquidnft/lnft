@@ -51,6 +51,7 @@
   }, 6000);
 
   let current = 0;
+
 </script>
 
 <style>
@@ -78,7 +79,7 @@
     object-fit: cover;
   }
 
-  .blur-bg{
+  .blur-bg {
     display: flex;
     padding: 60px;
     flex-direction: column;
@@ -95,7 +96,7 @@
     color: white !important;
   }
 
-  .blur-bg p{
+  .blur-bg p {
     color: white !important;
     margin-top: 20px;
   }
@@ -160,12 +161,13 @@
       margin-bottom: 96px !important;
     }
 
-    .blur-bg{
+    .blur-bg {
       padding: 24px;
       width: 75%;
       width: fit-content;
     }
   }
+
 </style>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">
@@ -186,16 +188,14 @@
     <div
       class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
       <div class="blur-bg">
-        <h2>
-          {featured[current].artwork.artist.username}
-        </h2>
+        <h2>{featured[current].artwork.artist.username}</h2>
         <p>
           {featured[current].artwork.title}
-            <button
-              class="button-transparent header-button border mt-10"
-              style="border-color: white; color: white"
-              on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
-              View Artwork</button>
+          <button
+            class="button-transparent header-button border mt-10"
+            style="border-color: white; color: white"
+            on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
+            View Artwork</button>
         </p>
       </div>
     </div>

@@ -27,6 +27,7 @@
     setTimeout(count, 1000);
   };
   count();
+
 </script>
 
 <style>
@@ -43,6 +44,7 @@
   .price {
     font-size: 15px;
   }
+
 </style>
 
 {#if artwork}

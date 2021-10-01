@@ -2,13 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-  .hover {
-    @apply border-b-2;
-    border-bottom: 3px solid #6ed8e0;
-  }
-}
-
 @font-face {
   font-family: Montserrat;
   font-weight: normal;

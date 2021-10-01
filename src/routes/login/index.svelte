@@ -51,10 +51,6 @@
     padding: 10px;
   }
 
-  span {
-    cursor: pointer;
-  }
-
   @media only screen and (max-width: 640px) {
     .form-container {
       background: none;

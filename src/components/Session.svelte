@@ -16,7 +16,8 @@
           .json()
       ).data.currentuser[0];
 
-      if (!$user.wallet_initialized) goto('/wallet/setup');
+      if (!$user.wallet_initialized) goto("/wallet/setup");
     }
   });
+
 </script>

@@ -1,12 +1,13 @@
 <script>
   export let open = false;
+
 </script>
 
 <style>
   svg {
     min-height: 20px;
     transition: transform 0.3s ease-in-out;
-    color: #2D2E32;
+    color: #2d2e32;
   }
 
   svg line {
@@ -30,6 +31,7 @@
   .open #bottom {
     transform: translate(-9px, 9px) rotate(-45deg);
   }
+
 </style>
 
 <span
