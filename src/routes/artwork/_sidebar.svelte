@@ -15,10 +15,6 @@
     color: #3ba5ac;
   }
 
-  hr {
-    margin: 50px 0;
-  }
-
   .art-likes-container {
     display: flex;
     margin: 30px 0;
@@ -32,13 +28,6 @@
 
   .art-likes p {
     margin-left: 8px;
-  }
-
-  @media only screen and (max-width: 1023px) {
-    .sidebar {
-      width: 100%;
-      padding: 0;
-    }
   }
 </style>
 <div class="mt-6">

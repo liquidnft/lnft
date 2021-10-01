@@ -241,17 +241,6 @@
     &:hover {
       @apply border-green-700;
     }
-
-    &.dangerous {
-      &:hover {
-        @apply border-red-400;
-      }
-    }
-  }
-
-  .social-share a {
-    color: #2d2e32;
-    font-size: 16px;
   }
 
   .popup {
