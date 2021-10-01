@@ -154,11 +154,6 @@
 </script>
 
 <style>
-  .hover {
-    @apply border-b-2;
-    border-bottom: 3px solid #6ed8e0;
-  }
-
   .closeBtn {
     padding: 10px 13px;
   }
