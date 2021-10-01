@@ -1,5 +1,6 @@
 <script>
   import { art } from "$lib/store";
+
 </script>
 
 <svelte:head>

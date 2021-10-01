@@ -1,5 +1,6 @@
 <script>
   export let showDetails = true;
+
 </script>
 
 <style>
@@ -43,6 +44,7 @@
       background-position: -150% 0;
     }
   }
+
 </style>
 
 <div class="card">

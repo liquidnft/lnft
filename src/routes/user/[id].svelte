@@ -29,7 +29,7 @@
     else ({ id } = subject);
   };
 
-  $: init(id)
+  $: init(id);
   let init = async () => {
     let result = await pub($token)
       .post({
@@ -39,7 +39,7 @@
 
     if (result.data) artworks = result.data.artworks;
     else err(result.errors[0]);
-  } 
+  };
 
   let collection = [];
   let creations = [];
@@ -81,6 +81,7 @@
   }
 
   let tab = "collection";
+
 </script>
 
 <style>
@@ -97,7 +98,8 @@
   .tabs div {
     @apply mb-auto h-10 mx-2 md:mx-4;
     &:hover {
-      @apply hover;
+      @apply border-b-2;
+      border-bottom: 3px solid #6ed8e0;
     }
   }
 
@@ -119,6 +121,7 @@
     margin-left: 8px;
     color: #0f828a;
   }
+
 </style>
 
 <div class="container mx-auto lg:px-16 mt-5 md:mt-20">

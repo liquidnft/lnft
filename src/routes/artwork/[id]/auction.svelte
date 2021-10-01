@@ -365,6 +365,7 @@
     artwork && artwork.transferred_at
       ? Object.keys(tickers)
       : [...Object.keys(tickers), undefined];
+
 </script>
 
 <style>
@@ -376,9 +377,7 @@
     max-width: 100%;
   }
 
-  input,
-  select,
-  textarea {
+  input {
     @apply rounded-lg mb-4 mt-2;
     &:disabled {
       @apply bg-gray-100;
@@ -427,6 +426,7 @@
       top: 30px;
     }
   }
+
 </style>
 
 <div class="container mx-auto md:p-20">
@@ -455,8 +455,9 @@
           <p>Listing currency</p>
           <div class="flex flex-wrap">
             {#each listingCurrencies as asset}
-              <label class="ml-2 mr-6 flex items-center">
+              <label for={asset} class="ml-2 mr-6 flex items-center">
                 <input
+                  id={asset}
                   class="form-radio h-6 w-6 mt-4 mr-2"
                   type="radio"
                   name={asset}
@@ -475,7 +476,7 @@
         {#if artwork.asking_asset}
           <div class="flex w-full sm:w-3/4 mb-4">
             <div class="relative mt-1 rounded-md w-2/3 mr-6">
-              <label>Price
+              <label for="price">Price
                 <span class="tooltip">
                   <i class="text-midblue text-xl tooltip">
                     <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
@@ -493,6 +494,7 @@
                   </span>
                 </span></label>
               <input
+                id="price"
                 class="form-input block w-full pl-7 pr-12"
                 placeholder={val(artwork.asking_asset, 0)}
                 bind:value={list_price}
@@ -505,7 +507,7 @@
             </div>
             {#if $user.id === artwork.artist_id}
               <div class="relative mt-1 rounded-md">
-                <label>Royalty Rate
+                <label for="royalty">Royalty Rate
                   <span class="tooltip">
                     <i class="ml-3 text-midblue text-xl tooltip">
                       <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
@@ -518,6 +520,7 @@
                     </span>
                   </span></label>
                 <input
+                  id="royalty"
                   class="form-input block w-full pl-7 pr-12"
                   placeholder="0"
                   bind:value={royalty}
@@ -530,8 +533,9 @@
             {/if}
           </div>
           <div class="auction-toggle">
-            <label class="inline-flex items-center">
+            <label for="auction" class="inline-flex items-center">
               <input
+                id="auction"
                 class="form-checkbox h-6 w-6 mt-3"
                 type="checkbox"
                 bind:checked={auction_enabled}
@@ -548,6 +552,7 @@
                     <div class="flex flex-col mb-4 mr-6">
                       <label for="date">Date</label>
                       <input
+                        id="date"
                         type="date"
                         name="date"
                         bind:value={start_date}
@@ -556,6 +561,7 @@
                     <div class="flex flex-col mb-4">
                       <label for="time">Time</label>
                       <input
+                        id="time"
                         type="time"
                         name="time"
                         bind:value={start_time}

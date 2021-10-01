@@ -8,7 +8,7 @@
 
   let show;
   let username = "";
-  let password ="liquidart";
+  let password = "liquidart";
   let email = makeid(6) + "@a.com";
   let registered;
 

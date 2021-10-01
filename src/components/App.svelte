@@ -83,6 +83,7 @@
       err(result.errors[0]);
     }
   };
+
 </script>
 
 {#if $loggedIn}

@@ -37,14 +37,6 @@
     border-radius: 10px;
   }
 
-  input {
-    @apply appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
-  }
-
-  span {
-    cursor: pointer;
-  }
-
   @media only screen and (max-width: 640px) {
     .form-container {
       background: none;

@@ -20,6 +20,7 @@
         y < document.getElementById(`artwork-${(i + 1) * offset}`).offsetTop)
     );
   });
+
 </script>
 
 <style>
@@ -27,6 +28,7 @@
     width: 100%;
     left: calc(100vw - 100%);
   }
+
 </style>
 
 <svelte:window bind:scrollY={y} />

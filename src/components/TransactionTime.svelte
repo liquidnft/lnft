@@ -15,7 +15,8 @@
 
   let canAccept = ({ type, artwork, created_at }, debug) => {
     let isCurrent = ({ transferred_at: t }) =>
-      type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);
+      type === "bid" &&
+      (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);
 
     let isOwner = ({ owner }) => $user && $user.id === owner.id;
 
@@ -23,8 +24,11 @@
       e &&
       isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
 
-    return artwork && isCurrent(artwork) && isOwner(artwork) && !underway(artwork);
+    return (
+      artwork && isCurrent(artwork) && isOwner(artwork) && !underway(artwork)
+    );
   };
+
 </script>
 
 <style>
@@ -37,6 +41,7 @@
   .pending {
     @apply rounded bg-yellow-200 text-center rounded-full text-xs p-1 px-2;
   }
+
 </style>
 
 <AcceptOffer bind:this={comp} />

@@ -10,7 +10,15 @@
   import { ProgressLinear } from "$comp";
   import { onMount, tick } from "svelte";
   import qrcode from "qrcode-generator-es6";
-  import { balances, error, locked, pending, prompt, user, token } from "$lib/store";
+  import {
+    balances,
+    error,
+    locked,
+    pending,
+    prompt,
+    user,
+    token,
+  } from "$lib/store";
   import { assetLabel, btc, copy, err, fullscreen, val } from "$lib/utils";
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
@@ -151,9 +159,15 @@
 
   let address;
   $: if ($user) address = $user.address;
+
 </script>
 
 <style>
+  .hover {
+    @apply border-b-2;
+    border-bottom: 3px solid #6ed8e0;
+  }
+
   .closeBtn {
     padding: 10px 13px;
   }
@@ -161,9 +175,11 @@
   .tabs div {
     @apply mb-auto h-8 mx-2 md:mx-4 mt-6;
     &:hover {
-      @apply hover;
+      @apply border-b-2;
+      border-bottom: 3px solid #6ed8e0;
     }
   }
+
 </style>
 
 <svelte:options accessors={true} />

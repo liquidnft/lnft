@@ -1,9 +1,16 @@
 <script>
   import { goto } from "$lib/utils";
-  import { ArtworkMedia, Avatar, Card, TransactionTime, TransactionText } from "$comp";
+  import {
+    ArtworkMedia,
+    Avatar,
+    Card,
+    TransactionTime,
+    TransactionText,
+  } from "$comp";
   export let transaction;
 
   let { artwork } = transaction;
+
 </script>
 
 <style>
@@ -26,6 +33,7 @@
       width: 300px;
     }
   }
+
 </style>
 
 {#if artwork}

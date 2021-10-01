@@ -1,8 +1,6 @@
 <script>
   import { mutation, subscription, query, operationStore } from "@urql/svelte";
-  import {
-    getArtworksByArtist,
-  } from "$queries/artworks";
+  import { getArtworksByArtist } from "$queries/artworks";
   export let others;
   export let id;
 
@@ -16,4 +14,5 @@
         .filter((a) => artwork && a.id !== artwork.id)
         .slice(0, 4))
   );
+
 </script>

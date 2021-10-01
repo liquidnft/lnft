@@ -9,6 +9,7 @@
   let hovering;
   let enter = () => (hovering = true);
   let leave = () => (hovering = false);
+
 </script>
 
 <style>
@@ -16,21 +17,21 @@
     font-size: 15px;
     width: auto;
     text-align: left;
-    font-family: 'Oswald-bold';
-    color:#000;
+    font-family: "Oswald-bold";
+    color: #000;
     text-transform: uppercase;
   }
 
-  .menu a{
+  .menu a {
     padding: 0 20px;
   }
 
-  .menu button:hover{
-    border-bottom:1px solid #000;
+  .menu button:hover {
+    border-bottom: 1px solid #000;
   }
 
-  .menu a.no-underline button{
-    border-bottom:none;
+  .menu a.no-underline button {
+    border-bottom: none;
   }
 
   .menu .signin {
@@ -45,7 +46,7 @@
   }
 
   .menu :global(.search):focus-within {
-    border: 1px solid #5C5D60;
+    border: 1px solid #5c5d60;
     border-radius: 30px;
   }
 
@@ -67,13 +68,12 @@
     }
   }
 
- @media screen and (max-width: 1200px) {
-   .menu a{
-    padding: 0 10px;
-    font-size:16px;
+  @media screen and (max-width: 1200px) {
+    .menu a {
+      padding: 0 10px;
+      font-size: 16px;
+    }
   }
- }
-
 
   @media only screen and (max-width: 1023px) {
     .menu {
@@ -86,33 +86,32 @@
 
     .menu a {
       margin: 20px 0 0 20px;
-      font-family: 'Oswald-bold';
+      font-family: "Oswald-bold";
     }
     .menu .search {
       margin: 40px 0 0 45px;
     }
   }
+
 </style>
 
 <div class="flex justify-between items-center menu relative">
   <a href="https://www.nftglee.com/about-us/"><button on:click={toggle}>About Us</button></a>
   <a href="/market"><button on:click={toggle}>New Drops</button></a>
-  <a href="https://www.nftglee.com/goldenwhalepass/"><button on:click={toggle}>Our Work</button></a>
+  <a href="https://www.nftglee.com/goldenwhalepass/"><button
+      on:click={toggle}>Our Work</button></a>
   {#if $user}
-  <a href="/contact"><button on:click={toggle}>Contact Us</button></a>
+    <a href="/contact"><button on:click={toggle}>Contact Us</button></a>
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
     {/if}
     <a href={`/u/${$user.username}`}>
       <button on:click={toggle} class="flex">
         <Avatar user={$user} />
-        <!--
-        <div class="my-auto ml-2">{$user.full_name}</div>
-        -->
       </button></a>
-    {:else}
-      <a href="/login"><button on:click={toggle}>Log In</button></a>
-      <a href="/register"><button on:click={toggle}>Sign Up</button></a>
-  <a href="/contact"><button on:click={toggle}>Contact Us</button></a>
-      {/if}
+  {:else}
+    <a href="/login"><button on:click={toggle}>Log In</button></a>
+    <a href="/register"><button on:click={toggle}>Sign Up</button></a>
+    <a href="/contact"><button on:click={toggle}>Contact Us</button></a>
+  {/if}
 </div>

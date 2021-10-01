@@ -32,6 +32,7 @@
   };
 
   let base64 = false;
+
 </script>
 
 <svelte:options accessors={true} />
@@ -53,9 +54,8 @@
 <div class="text-sm">Transaction fee: 1000 sats</div>
 <div class="flex justify-between items-center my-6">
   <span class="secondary-color">View details</span>
-  <button
-    class="secondary-btn"
-    on:click={() => copy($psbt.toBase64())}>Copy transaction</button>
+  <button class="secondary-btn" on:click={() => copy($psbt.toBase64())}>Copy
+    transaction</button>
 </div>
 <hr class="mb-4" />
 

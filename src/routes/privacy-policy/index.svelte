@@ -1,7 +1,9 @@
 <script>
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+
 </script>
+
 <style>
   h3 {
     @apply mt-8;
@@ -9,6 +11,12 @@
   p,
   h3 {
     @apply mb-4;
+    text-align: left;
+  }
+
+  h4 {
+    font-weight: bold;
+    margin: 20px 0 10px 0;
   }
 
   .faq-content {
@@ -16,23 +24,14 @@
     text-align: justify;
   }
 
-  .contact {
-    height: 180px;
-    width: 700px;
-    padding: 30px;
-    margin-left: 50px;
-  }
-  .contact p {
-    margin-bottom: 30px;
-    font-size: 22px;
-    border-radius: 10px;
-  }
-  .contact h5 {
-    margin-bottom: 10px;
+  ul {
+    list-style: disc;
+    padding: 0 20px;
   }
 
-  .contact a {
-    color: #3ba5ac;
+  ul li {
+    margin-bottom: 20px;
+    text-align: left;
   }
 
   @media only screen and (max-width: 1023px) {
@@ -42,11 +41,8 @@
     .faq-content {
       flex-wrap: wrap;
     }
-    .contact {
-      width: 100%;
-      margin: 30px 0;
-    }
   }
+
 </style>
 
 <div class="max-w-2xl container mx-auto sm:justify-between mt-10 md:mt-20">

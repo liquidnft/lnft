@@ -51,6 +51,7 @@
   }, 6000);
 
   let current = 0;
+
 </script>
 
 <style>
@@ -78,7 +79,7 @@
     object-fit: cover;
   }
 
-  .blur-bg{
+  .blur-bg {
     display: flex;
     padding: 60px;
     flex-direction: column;
@@ -95,7 +96,7 @@
     color: white !important;
   }
 
-  .blur-bg p{
+  .blur-bg p {
     color: white !important;
     margin-top: 20px;
   }
@@ -160,12 +161,13 @@
       margin-bottom: 96px !important;
     }
 
-    .blur-bg{
+    .blur-bg {
       padding: 24px;
       width: 75%;
       width: fit-content;
     }
   }
+
 </style>
 
 <div class="flex mx-auto justify-center">
@@ -174,10 +176,14 @@
       Forever Whale
     </h1>
     <p class="md:max-w-md mx-auto text-left md:text-center">
-      Artist Collab - Paul Milinski - Olivia Steele - Anchorball - Vincent Ubags - Tommy - Ronin
+      Artist Collab - Paul Milinski - Olivia Steele - Anchorball - Vincent Ubags
+      - Tommy - Ronin
     </p>
     <div class="mt-10">
-      <a  href={`/market`} class="edgtf-btn edgtf-btn-solid" data-text="Start exploring">
+      <a
+        href={`/market`}
+        class="edgtf-btn edgtf-btn-solid"
+        data-text="Start exploring">
         <span class="edgtf-btn-text">Start exploring</span>
       </a>
     </div>

@@ -1,5 +1,6 @@
 <script>
   export let color = "#da4453";
+
 </script>
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="3 3 16 16"><defs>
