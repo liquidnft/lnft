@@ -4,14 +4,15 @@ import autoprefixer from "autoprefixer";
 import postcss from "postcss-preset-env";
 import nesting from "postcss-nesting";
 import path from "path";
-import shimReactPdf from "vite-plugin-shim-react-pdf";
+import shim from "vite-plugin-shim-react-pdf";
+import node from "@sveltejs/adapter-node";
 
 export default {
   kit: {
-    // hydrate the <div id="svelte"> element in src/app.html
+    adapter: node(),
     target: "#svelte",
     vite: {
-      plugins: [shimReactPdf()],
+      plugins: [shim()],
       resolve: {
         alias: {
           $comp: path.resolve("src/components/index.js"),

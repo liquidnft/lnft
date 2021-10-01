@@ -2,7 +2,7 @@
   import { differenceInMilliseconds } from "date-fns";
   import { onMount } from "svelte";
   import { sortCriteria } from "$lib/store";
-  export const filtered;
+  export const filtered = undefined;
 
   let sort = (a, b) =>
     ({

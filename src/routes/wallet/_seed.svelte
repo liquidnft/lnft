@@ -99,23 +99,6 @@
     margin-left: 20px;
   }
 
-  .button-transparent:focus {
-    background-color: #6aced5;
-    border: none;
-  }
-
-  .pagination {
-    color: lightgray;
-    padding: 7px;
-  }
-  .pagination:focus {
-    color: #6aced5;
-  }
-
-  .active {
-    color: #6aced5;
-  }
-
   @media only screen and (max-width: 640px) {
     .suggestions {
       position: fixed;
@@ -204,10 +187,10 @@
 
   <p class="my-4">
     {#if bulk}
-      <a class="secondary-color my-2" href="" on:click={toggle}>I want to enter
+      <a class="secondary-color my-2" href="/" on:click|preventDefault={toggle}>I want to enter
         one word at a time</a>
     {:else}
-      <a class="secondary-color my-2" href="" on:click={toggle}>I want to type
+      <a class="secondary-color my-2" href="/" on:click|preventDefault={toggle}>I want to type
         in a text box</a>
     {/if}
   </p>

@@ -8,8 +8,8 @@
 
   let show;
   let username = "";
-  let password = import.meta && import.meta.env && import.meta.env !== "production" ? "liquidart" : "";
-  let email = import.meta && import.meta.env && import.meta.env !== "production" ? makeid(6) + "@a.com" : "";
+  let password ="liquidart";
+  let email = makeid(6) + "@a.com";
   let registered;
 
   function makeid(length) {
@@ -40,6 +40,7 @@
 
     loading = false;
   };
+
 </script>
 
 <style>
@@ -83,6 +84,7 @@
       margin-top: 50px;
     }
   }
+
 </style>
 
 <div class="form-container bg-lightblue px-4">
