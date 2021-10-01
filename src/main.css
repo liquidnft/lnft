@@ -4,12 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
-  @layer components {
+@layer components {
   .hover {
     @apply border-b-2;
     border-bottom: 3px solid #6ed8e0;
   }
-  }
+}
 
 @font-face {
   font-family: Montserrat;
@@ -69,11 +69,11 @@ button, a{
   cursor: none;
   font-size: 18px;
   line-height: 32px;
-  color: #2D2E32;
+  color: #2d2e32;
 }
 
 @media (max-width: 768px) {
-  body{
+  body {
     font-size: 16px;
   }
 }
@@ -209,9 +209,9 @@ button {
   display: flex;
 }
 
-.secondary-btn:hover{
-  border: 1px solid #6B6B6B;
-  color: #6B6B6B;
+.secondary-btn:hover {
+  border: 1px solid #6b6b6b;
+  color: #6b6b6b;
 }
 
 .button-trans-gray {
@@ -295,7 +295,7 @@ select {
   z-index: 300;
 }
 
-.footer ul li a{
+.footer ul li a {
   font-size: 16px;
 }
 
@@ -397,10 +397,6 @@ position: absolute;
     color: #fff !important;
     display: flex;
 }
-
-/* ==========================================================================
-   #Theme Cursor - start
-   ========================================================================== */
 
    body.edgtf-theme-cursor #wpadminbar {
     cursor: default;
@@ -708,10 +704,6 @@ position: absolute;
   #edgtf-theme-cursor.edgtf-blink .path {
     display: none;
   }
-  
-  /* ==========================================================================
-     #Theme Cursor - end
-     ========================================================================== */
   
      @media all and (-ms-high-contrast: none) {
       .edgtf-section-title-holder .edgtf-st-title .edgtf-st-title-hollow {

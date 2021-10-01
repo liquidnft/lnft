@@ -14,7 +14,11 @@ import { expired } from "$lib/auth";
 import schema from "$lib/schema";
 import { getUser } from "$queries/users";
 import { getArtworks } from "$queries/artworks";
-import { getRecentActivity, getLatestPieces, getArtworkTransactions } from "$queries/transactions";
+import {
+  getRecentActivity,
+  getLatestPieces,
+  getArtworkTransactions,
+} from "$queries/transactions";
 import { makeOperation } from "@urql/core";
 
 let url, wsUrl;
@@ -138,7 +142,7 @@ export const setupUrql = async () => {
           headers: {
             ...fetchOptions.headers,
             Authorization: `Bearer ${token}`,
-            'X-Hasura-Role': get(role),
+            "X-Hasura-Role": get(role),
           },
         },
       });

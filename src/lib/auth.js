@@ -103,7 +103,7 @@ export const login = (email, password) => {
       goto("/");
     })
     .catch(() => {
-      err("Login failed")
+      err("Login failed");
     });
 };
 
