@@ -3,6 +3,7 @@ import tailwind from "tailwindcss";
 import autoprefixer from "autoprefixer";
 import postcss from "postcss-preset-env";
 import path from "path";
+import shimReactPdf from "vite-plugin-shim-react-pdf";
 
 const preprocess = sveltePreprocess({
   postcss: {
@@ -25,6 +26,7 @@ const config = {
     // hydrate the <div id="svelte"> element in src/app.html
     target: "#svelte",
     vite: {
+      plugins: [shimReactPdf()],
       resolve: {
         alias: {
           $comp: path.resolve("src/components/index.js"),
