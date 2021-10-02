@@ -29,7 +29,7 @@
         key={user && user.username}
         src={user ? `/api/ipfs/${user.avatar_url}` : src.startsWith('data') ? src : `/api/ipfs/${src}`}
         alt={user ? user.username : 'lovely avatar'}
-        class="absolute w-full h-full object-cover object-center visible group-hover:hidden overflow-hidden" />
+        class="absolute w-full h-full object-cover object-center visible overflow-hidden" />
     {/if}
   </div>
   {#if overlay}

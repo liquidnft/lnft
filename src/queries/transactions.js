@@ -1,11 +1,9 @@
-export const createTransaction = {
-  query: `mutation create_transaction($transaction: transactions_insert_input!) {
-    insert_transactions_one(object: $transaction) {
-      id,
-      artwork_id
-    } 
-  }`,
-};
+export const createTransaction = `mutation create_transaction($transaction: transactions_insert_input!) {
+  insert_transactions_one(object: $transaction) {
+    id,
+    artwork_id
+  } 
+}`;
 
 const artworkfields = `
   id
@@ -73,15 +71,6 @@ export const fields = `
 
 export const getArtworkTransactions = (id) => `query {
   transactions(order_by: {created_at: desc}, where: {_and: {artwork_id: {_eq: "${id}"}, type: {_neq: "receipt"}}}) {
-    ${fields}
-  }
-}`;
-
-export const getUserTransactions = (id) => `subscription {
-  transactions(order_by: {created_at: desc}, where: {
-    user_id: {_eq: "${id}"}, 
-    type: {_in: ['deposit', 'withdrawal', 'creation', 'release', 'purchase']}
-  }) {
     ${fields}
   }
 }`;

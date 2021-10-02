@@ -1,25 +1,21 @@
 <script>
   import { user } from "$lib/store";
   import { page } from "$app/stores";
-  import { hasura } from "$lib/api";
+  import { query } from "$lib/api";
   import { Activity, Avatar } from "$comp";
   import { getRecentActivity } from "$queries/transactions";
   import { topCollectors } from "$queries/users";
-  import { query, operationStore } from "@urql/svelte";
+  import { err } from "$lib/utils";
 
   let transactions = [];
-  $: pageChange($page);
-  const pageChange = async ({ params }) => {
-      transactions = (
-        await hasura
-          .post({
-            query: getRecentActivity(20),
-          })
-          .json()
-      ).data.recentactivity;
-  };
+  $: init($page);
+  let init = () =>
+    query(getRecentActivity(20))
+      .then((res) => (transactions = res.recentactivity))
+      .catch(err);
 
   let show = false;
+
 </script>
 
 <div class="container mx-auto my-10 md:my-20">

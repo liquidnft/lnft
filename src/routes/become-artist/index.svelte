@@ -9,11 +9,11 @@
   } from "@fortawesome/free-solid-svg-icons";
   import { onMount, tick } from "svelte";
   import { user, token } from "$lib/store";
-  import { info, goto } from "$lib/utils";
+  import { err, info, goto } from "$lib/utils";
   import { Avatar, Dropzone, ProgressLinear } from "$comp";
   import upload from "$lib/upload";
   import { updateUser } from "$queries/users";
-  import { mutation } from "@urql/svelte";
+  import { query } from "$lib/api";
 
   let form = {};
   let fileInput;
@@ -76,15 +76,11 @@
     percent = Math.round((event.loaded / event.total) * 100);
   };
 
-  let updateUser$ = mutation(updateUser);
-
-  let insertSamples = mutation({
-    query: `mutation ($samples: [samples_insert_input!]!) {
-      insert_samples(objects: $samples) {
-        affected_rows
-      }
-    }`,
-  });
+  let insertSamples = `mutation ($samples: [samples_insert_input!]!) {
+    insert_samples(objects: $samples) {
+      affected_rows
+    }
+  }`;
 
   let submitted;
   let submit = async () => {
@@ -101,14 +97,15 @@
       ...rest
     } = form;
 
-    await updateUser$({ user: rest, id });
+    await query(updateUser, { user: rest, id }).catch(err);
 
     let samples = files.map((f) => ({
       user_id: id,
       url: f.hash,
       type: f.type,
     }));
-    await insertSamples({ samples });
+
+    await query(insertSamples, { samples }).catch(err);
 
     submitted = true;
   };

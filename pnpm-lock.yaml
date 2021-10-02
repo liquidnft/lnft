@@ -7,11 +7,6 @@ specifiers:
   '@fortawesome/free-solid-svg-icons': ^5.15.3
   '@sveltejs/adapter-node': ^1.0.0-next.52
   '@sveltejs/kit': ^1.0.0-next.175
-  '@urql/core': ^2.3.3
-  '@urql/exchange-auth': ^0.1.2
-  '@urql/exchange-graphcache': ^4.0.0
-  '@urql/introspection': ^0.1.2
-  '@urql/svelte': ^1.1.3
   autoprefixer: ^10.2.5
   bip32: ^2.0.6
   bip39: ^3.0.3
@@ -52,11 +47,6 @@ devDependencies:
   '@fortawesome/free-solid-svg-icons': 5.15.4
   '@sveltejs/adapter-node': 1.0.0-next.52
   '@sveltejs/kit': 1.0.0-next.178_svelte@3.43.0
-  '@urql/core': 2.3.3_graphql@15.6.0
-  '@urql/exchange-auth': 0.1.6_graphql@15.6.0
-  '@urql/exchange-graphcache': 4.3.5_graphql@15.6.0
-  '@urql/introspection': 0.1.2_graphql@15.6.0
-  '@urql/svelte': 1.3.1_graphql@15.6.0+svelte@3.43.0
   autoprefixer: 10.3.6_postcss@8.3.8
   bip32: 2.0.6
   bip39: 3.0.4
@@ -192,14 +182,6 @@ packages:
       '@glimmer/env': 0.1.7
       '@glimmer/interfaces': 0.80.0
       '@simple-dom/interface': 1.4.0
-    dev: true
-
-  /@graphql-typed-document-node/core/3.1.0_graphql@15.6.0:
-    resolution: {integrity: sha512-wYn6r8zVZyQJ6rQaALBEln5B1pzxb9shV5Ef97kTvn6yVGrqyXVnDqnU24MXnFubR+rZjBY9NWuxX3FB2sTsjg==}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-    dependencies:
-      graphql: 15.6.0
     dev: true
 
   /@handlebars/parser/2.0.0:
@@ -359,56 +341,6 @@ packages:
     dependencies:
       '@typescript-eslint/types': 4.28.3
       eslint-visitor-keys: 2.1.0
-    dev: true
-
-  /@urql/core/2.3.3_graphql@15.6.0:
-    resolution: {integrity: sha512-Bi9mafTFu0O1XZmI7/HrEk12LHZW+Fs/V1FqSJoUDgYIhARIJW6cCh3Havy1dJJ0FETxYmmQQXPf6kst+IP2qQ==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-    dependencies:
-      '@graphql-typed-document-node/core': 3.1.0_graphql@15.6.0
-      graphql: 15.6.0
-      wonka: 4.0.15
-    dev: true
-
-  /@urql/exchange-auth/0.1.6_graphql@15.6.0:
-    resolution: {integrity: sha512-jVyUaV+hHe3p2rIJauh6lgILMAjXOsHQ98xjKhUF3TXYx88TZXuBIl5DPZwnMcGra8YPOSHO/Wsn6NEjO5hQ+Q==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-    dependencies:
-      '@urql/core': 2.3.3_graphql@15.6.0
-      graphql: 15.6.0
-      wonka: 4.0.15
-    dev: true
-
-  /@urql/exchange-graphcache/4.3.5_graphql@15.6.0:
-    resolution: {integrity: sha512-q5/CzNtSxd5fW/YZ94KABmtQ34XliyS+KKKhyJ+/y66D7mYrN/ZEiuKTlnB7FTt9GLZ0yRtgIfXjwoGicB/Tlw==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-    dependencies:
-      '@urql/core': 2.3.3_graphql@15.6.0
-      graphql: 15.6.0
-      wonka: 4.0.15
-    dev: true
-
-  /@urql/introspection/0.1.2_graphql@15.6.0:
-    resolution: {integrity: sha512-neUWngizFD2ajCrHJLT/KmkhB6dcJTvMn7cE3c2KB2Hk0y+bSXK/1KBQffaekAacHUwxgoLvYEL9Z68HkCuFvQ==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-    dependencies:
-      graphql: 15.6.0
-    dev: true
-
-  /@urql/svelte/1.3.1_graphql@15.6.0+svelte@3.43.0:
-    resolution: {integrity: sha512-zJT8mGCisEtV9g+b8OPYMXIomtxPb1WcgKFj5DWL8FXp+ntuvO0zshHf+KfprONbVAez7LCHLMxivLDpYIxULg==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-      svelte: ^3.0.0
-    dependencies:
-      '@urql/core': 2.3.3_graphql@15.6.0
-      graphql: 15.6.0
-      svelte: 3.43.0
-      wonka: 4.0.15
     dev: true
 
   /@vulpemventures/secp256k1-zkp/2.0.0:
@@ -3520,10 +3452,6 @@ packages:
     resolution: {integrity: sha1-CNP1IFbGZnkplyb63g1DKudLRwQ=}
     dependencies:
       bs58check: 2.1.2
-    dev: true
-
-  /wonka/4.0.15:
-    resolution: {integrity: sha512-U0IUQHKXXn6PFo9nqsHphVCE5m3IntqZNB9Jjn7EB1lrR7YTDY3YWgFvEvwniTzXSvOH/XMzAZaIfJF/LvHYXg==}
     dev: true
 
   /wrap-ansi/7.0.0:

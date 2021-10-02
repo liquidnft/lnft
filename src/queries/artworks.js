@@ -51,18 +51,8 @@ const fields = `
       username
     } 
     amount 
-  } 
+  }
 `;
-
-export const getAssets = `subscription {
- artworks {
-   id
-   title
-   asset
-   auction_end
-   royalty
- }
-}`;
 
 export const getFeatured = `query {
  featured {
@@ -85,15 +75,6 @@ export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offs
   }
 }`;
 
-export const subscribeArtworks = `subscription {
- artworks {
-    ${fields}
-    tags {
-      tag
-    } 
-  }
-}`;
-
 export const getUserArtworks = (id) => `query {
  artworks(where: { _or: [{ artist_id: { _eq: "${id}" }}, { owner_id: { _eq: "${id}" }}]}) {
     ${fields}
@@ -104,7 +85,7 @@ export const getUserArtworks = (id) => `query {
 }`;
 
 export const getArtworksByOwner = (id) => `query {
- artworks(where: { { owner_id: { _eq: "${id}" }}}) {
+ artworks(where: { owner_id: { _eq: "${id}" }}) {
     ${fields}
     tags {
       tag
@@ -112,7 +93,7 @@ export const getArtworksByOwner = (id) => `query {
   }
 }`;
 
-export const getArtworkByAsset = (asset) => `subscription {
+export const getArtworkByAsset = (asset) => `query {
   artworks(where: {asset: {_eq: "${asset}"}}, limit: 1) {
     ${fields}
   }
@@ -130,13 +111,13 @@ export const getArtworksByArtist = (id) => `query {
   }
 }`;
 
-export const getArtworksByUsername = (username) => `subscription {
+export const getArtworksByUsername = (username) => `query {
   artworks(where: {artist: { username: {_eq: "${username}"}}}) {
     ${fields}
   }
 }`;
 
-export const getArtworksByTag = (tag) => `subscription {
+export const getArtworksByTag = (tag) => `query {
   artworks(where: {tags: {tag: {_eq: "${tag}"}}}) {
     ${fields}
   }
@@ -157,45 +138,18 @@ export const create = `mutation ($artwork: artworks_insert_input!, $tags: [tags_
   } 
 }`;
 
-export const updateArtwork = {
-  query: `mutation update_artwork($artwork: artworks_set_input!, $id: uuid!) {
-      update_artworks_by_pk(pk_columns: { id: $id }, _set: $artwork) {
-        id
-      }
-    }`,
-};
+export const updateArtwork = `mutation update_artwork($artwork: artworks_set_input!, $id: uuid!) {
+  update_artworks_by_pk(pk_columns: { id: $id }, _set: $artwork) {
+    id
+  }
+}`;
 
-export const updateTags = {
-  query: `mutation insert_tags($tags: [tags_insert_input!]!, $artwork_id: uuid!) {
-      delete_tags(where: {artwork_id: {_eq: $artwork_id}}) {
-        affected_rows
-      } 
-      insert_tags(objects: $tags) {
-        affected_rows
-      }
-    }`,
-};
-
-export const destroyArtwork = (artwork) => ({
-  query: `mutation {
-      delete_artworks_by_pk(id: "${artwork.id}") {
-        id
-      }
-    }`,
-});
-
-export const getArtworkSub = (id) => `subscription {
-  artworks_by_pk(id: "${id}") {
-    ${fields}
-    tags {
-      tag
-    },
-    num_favorites,
-    favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
-      aggregate {
-        count
-      }
-    }
+export const updateTags = `mutation insert_tags($tags: [tags_insert_input!]!, $artwork_id: uuid!) {
+  delete_tags(where: {artwork_id: {_eq: $artwork_id}}) {
+    affected_rows
+  } 
+  insert_tags(objects: $tags) {
+    affected_rows
   }
 }`;
 
