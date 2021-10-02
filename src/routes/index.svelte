@@ -1,10 +1,9 @@
 <script>
   import { onMount } from "svelte";
-  import { hasura } from "$lib/api";
+  import { query } from "$lib/api";
   import { Summary } from "$comp";
   import { fade } from "svelte/transition";
   import { user } from "$lib/store";
-  import { operationStore, query } from "@urql/svelte";
   import { topCollectors, topArtists } from "$queries/users";
   import { getFeatured } from "$queries/artworks";
   import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
@@ -15,34 +14,18 @@
   let recent = [];
   let latest = [];
 
-  onMount(async () => {
-    try {
-      featured = (
-        await hasura
-          .post({
-            query: getFeatured,
-          })
-          .json()
-      ).data.featured;
+  onMount(() => {
+    query(getFeatured)
+      .then((res) => (featured = res.featured))
+      .catch(err);
 
-      recent = (
-        await hasura
-          .post({
-            query: getRecentActivity(3),
-          })
-          .json()
-      ).data.recentactivity;
+    query(getRecentActivity(3))
+      .then((res) => (recent = res.recentactivity))
+      .catch(err);
 
-      latest = (
-        await hasura
-          .post({
-            query: getLatestPieces(3),
-          })
-          .json()
-      ).data.transactions;
-    } catch (e) {
-      err(e);
-    }
+    query(getLatestPieces(3))
+      .then((res) => (latest = res.transactions))
+      .catch(err);
   });
 
   setInterval(() => {

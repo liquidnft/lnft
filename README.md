@@ -27,7 +27,6 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
 
  - [Svelte Kit](https://github.com/sveltejs/kit) reactive component framework
  - [Tailwind CSS](https://tailwindcss.com/) UI utility classes
- - [Urql](https://formidable.com/open-source/urql/) GraphQL client 
  - [LiquidJS](https://github.com/vulpemventures/liquidjs-lib) for liquid wallet functionality
 
 ### Back-end

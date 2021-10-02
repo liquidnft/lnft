@@ -5,11 +5,6 @@
 
   export let open = false;
   let toggle = () => (open = !open);
-
-  let hovering;
-  let enter = () => (hovering = true);
-  let leave = () => (hovering = false);
-
 </script>
 
 <style>

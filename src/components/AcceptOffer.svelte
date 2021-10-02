@@ -1,7 +1,6 @@
 <script>
   import { tick } from "svelte";
   import { prompt, snack, psbt, user, token } from "$lib/store";
-  import { mutation } from "@urql/svelte";
   import { broadcast, sign, requestSignature } from "$lib/wallet";
   import { err, info } from "$lib/utils";
   import { requirePassword } from "$lib/auth";

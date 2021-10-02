@@ -7,9 +7,8 @@
   import { onMount, tick } from "svelte";
   import { page } from "$app/stores";
   import { getArtwork } from "$queries/artworks";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
-  import { api, hasura } from "$lib/api";
+  import { api, query } from "$lib/api";
   import {
     fee,
     password,
@@ -39,7 +38,6 @@
     parse,
     parseISO,
     addMinutes,
-    addSeconds,
   } from "date-fns";
   import {
     btc,
@@ -72,52 +70,46 @@
   let setup = async (t) => {
     if (!t) return;
 
-    let result = await hasura
-      .auth(`Bearer ${$token}`)
-      .post({
-        query: getArtwork(id),
-      })
-      .json();
+    try {
+      artwork = (await query(getArtwork(id))).artworks_by_pk;
 
-    if (result.data) artwork = result.data.artworks_by_pk;
-    else return;
+      if (!artwork.asking_asset) artwork.asking_asset = btc;
+      auction_enabled =
+        auction_enabled ||
+        compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
 
-    if (!artwork.asking_asset) artwork.asking_asset = btc;
-    auction_enabled =
-      auction_enabled ||
-      compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
+      let start, end;
+      if (artwork.auction_start) {
+        start = parseISO(artwork.auction_start);
+        start_date = format(start, "yyyy-MM-dd");
+        start_time = format(start, "HH:mm");
+      }
 
-    let start, end;
-    if (artwork.auction_start) {
-      start = parseISO(artwork.auction_start);
-      start_date = format(start, "yyyy-MM-dd");
-      start_time = format(start, "HH:mm");
+      if (artwork.auction_end) {
+        end = parseISO(artwork.auction_end);
+        end_date = format(end, "yyyy-MM-dd");
+        end_time = format(end, "HH:mm");
+      }
+
+      auction_underway =
+        auction_enabled &&
+        isWithinInterval(new Date(), {
+          start,
+          end,
+        });
+
+      if (!list_price && artwork.list_price)
+        list_price = val(artwork.asking_asset, artwork.list_price);
+      if (!royalty) royalty = artwork.royalty;
+      if (!reserve_price && artwork.reserve_price)
+        reserve_price = val(artwork.asking_asset, artwork.reserve_price);
+    } catch (e) {
+      err(e);
     }
-
-    if (artwork.auction_end) {
-      end = parseISO(artwork.auction_end);
-      end_date = format(end, "yyyy-MM-dd");
-      end_time = format(end, "HH:mm");
-    }
-
-    auction_underway =
-      auction_enabled &&
-      isWithinInterval(new Date(), {
-        start,
-        end,
-      });
-
-    if (!list_price && artwork.list_price)
-      list_price = val(artwork.asking_asset, artwork.list_price);
-    if (!royalty) royalty = artwork.royalty;
-    if (!reserve_price && artwork.reserve_price)
-      reserve_price = val(artwork.asking_asset, artwork.reserve_price);
 
     initialized = true;
     loading = false;
   };
-
-  const updateArtwork$ = mutation(updateArtwork);
 
   const spendPreviousSwap = async () => {
     if (
@@ -139,7 +131,7 @@
       }
       try {
         await signAndBroadcast();
-        await createTransaction$({
+        await query(createTransaction, {
           transaction: {
             amount: artwork.list_price,
             artwork_id: artwork.id,
@@ -183,7 +175,7 @@
     await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
 
-    await createTransaction$({
+      await query(createTransaction, {
       transaction: {
         amount: sats(artwork.asking_asset, list_price),
         artwork_id: artwork.id,
@@ -197,7 +189,6 @@
     info("List price updated!");
   };
 
-  let createTransaction$ = mutation(createTransaction);
   let setupAuction = async () => {
     if (!auction_enabled) return true;
 
@@ -239,7 +230,7 @@
         ).toBase64();
       }
 
-      await createTransaction$({
+      await query(createTransaction, {
         transaction: {
           amount: 1,
           artwork_id: artwork.id,
@@ -268,7 +259,7 @@
       await signAndBroadcast();
     }
 
-    await createTransaction$({
+    await query(createTransaction, {
       transaction: {
         amount: 1,
         artwork_id: artwork.id,
@@ -311,7 +302,7 @@
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
 
-      let result = await updateArtwork$({
+      query(updateArtwork, {
         artwork: {
           asking_asset,
           auction_end,
@@ -327,13 +318,7 @@
           royalty,
         },
         id,
-      });
-
-      if (result.error) {
-        throw new Error(
-          `Problem updating artwork record ${result.error.message}`
-        );
-      }
+      }).catch(err);
 
       api.url("/asset/register").post({ asset }).json().catch(console.log);
 

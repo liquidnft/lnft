@@ -1,10 +1,11 @@
 <script>
+  import { err } from "$lib/utils";
+  import { query } from "$lib/api";
   import Fa from "svelte-fa";
   import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
   import { page } from "$app/stores";
   import { tick } from "svelte";
   import Select from "svelte-select";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
   import { onMount } from "svelte";
 
   export let artwork;
@@ -25,6 +26,15 @@
 
   onMount(() => {
     if (artwork.title) input.value = artwork.title;
+    query(`query { tags { tag } }`)
+      .then(
+        (res) =>
+          (items = [...new Set(res.tags.map((t) => t.tag))].map((value) => ({
+            value,
+            label: value,
+          })))
+      )
+      .catch(err);
   });
 
   $: focus($page);
@@ -34,13 +44,6 @@
     value: tag,
     label: tag,
   }));
-
-  subscription(operationStore(`subscription { tags { tag } }`), (a, b) => {
-    items = [...new Set(b.tags.map((t) => t.tag))].map((value) => ({
-      value,
-      label: value,
-    }));
-  });
 
   let handle = ({ detail }) => {
     artwork.tags = detail.map(({ value: tag }) => ({ tag }));
@@ -132,7 +135,11 @@
           </div>
         </label>
       </div>
-      <input id="ticker" class="w-1/2" bind:value={artwork.ticker} maxlength="5" />
+      <input
+        id="ticker"
+        class="w-1/2"
+        bind:value={artwork.ticker}
+        maxlength="5" />
     </div>
   {/if}
   <div class="flex flex-col mb-6">

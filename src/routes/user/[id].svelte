@@ -9,15 +9,14 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
-  import { goto } from "$lib/utils";
+  import { err, goto } from "$lib/utils";
   import { pub } from "$lib/api";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getUserArtworks } from "$queries/artworks";
-  import { getUserById } from "$queries/users";
   import { createFollow, deleteFollow } from "$queries/follows";
   import Menu from "./_menu.svelte";
-  import { query, mutation, operationStore } from "@urql/svelte";
   import { fade } from "svelte/transition";
+  import { query } from "$lib/api";
 
   export let id;
   export let subject;
@@ -30,16 +29,12 @@
   };
 
   $: init(id);
-  let init = async () => {
-    let result = await pub($token)
-      .post({
-        query: getUserArtworks(id),
+  let init = (id) =>
+    query(getUserArtworks(id))
+      .then((res) => {
+        artworks = res.artworks;
       })
-      .json();
-
-    if (result.data) artworks = result.data.artworks;
-    else err(result.errors[0]);
-  };
+      .catch(err);
 
   let collection = [];
   let creations = [];
@@ -58,27 +53,17 @@
     favorites = artworks.filter((a) => a.favorited);
   };
 
-  let follow, toggleFollow$;
-  $: if (subject && $user) {
-    if (subject.is_artist) tab = "creations";
+  let follow = () => {
     if (subject.followed) {
-      toggleFollow$ = mutation(deleteFollow($user, subject));
-
-      follow = () => {
-        toggleFollow$();
-        subject.followed = false;
-        subject.num_followers--;
-      };
+      query(deleteFollow($user, subject)).catch(err);
+      subject.followed = false;
+      subject.num_followers--;
     } else {
-      toggleFollow$ = mutation(createFollow(subject));
-
-      follow = () => {
-        toggleFollow$();
-        subject.followed = true;
-        subject.num_followers++;
-      };
+      query(createFollow(subject));
+      subject.followed = true;
+      subject.num_followers++;
     }
-  }
+  };
 
   let tab = "collection";
 

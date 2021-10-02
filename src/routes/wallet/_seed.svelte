@@ -1,17 +1,14 @@
 <script>
   import { page } from "$app/stores";
   import { onMount, tick } from "svelte";
-  import bip39 from "bip39";
+  import { wordlists } from "bip39";
   import { ToggleSwitch } from "$comp";
   import { password, token, user } from "$lib/store";
   import { err, goto, info } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import { createWallet } from "$lib/wallet";
   import { updateUser } from "$queries/users";
-  import { mutation } from "@urql/svelte";
-  import { hasura } from "$lib/api";
-
-  let update = mutation(updateUser);
+  import { query } from "$lib/api";
 
   export let mnemonic;
 
@@ -24,13 +21,10 @@
       let params = createWallet(mnemonic);
       params.wallet_initialized = true;
 
-      let query = updateUser;
-      query.variables = {
+      await query(updateUser, {
         user: params,
         id: $user.id,
-      };
-
-      await hasura.auth(`Bearer ${$token}`).post(updateUser).json(console.log);
+      });
 
       info("Wallet is ready!");
 
@@ -71,7 +65,7 @@
   let bulk = false;
 
   let suggestions;
-  $: suggestions = bip39.wordlists.EN.filter((w) =>
+  $: suggestions = wordlists.EN.filter((w) =>
     w.startsWith(words[curr])
   ).slice(0, 5);
 
