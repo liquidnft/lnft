@@ -10,6 +10,7 @@
 
   let focus = (p) => p && tick().then(() => ok && ok.focus());
   $: focus($prompt);
+
 </script>
 
 <style>
@@ -32,6 +33,7 @@
       width: 100%;
     }
   }
+
 </style>
 
 {#if $prompt}

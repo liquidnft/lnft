@@ -2,14 +2,13 @@
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-  import { Psbt } from "@asoltys/liquidjs-lib";
+  import { Psbt } from "liquidjs-lib";
   import { Buffer } from "buffer";
   import { onMount, tick } from "svelte";
   import { page } from "$app/stores";
   import { getArtwork } from "$queries/artworks";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
   import { updateArtwork } from "$queries/artworks";
-  import { api, hasura } from "$lib/api";
+  import { api, query } from "$lib/api";
   import {
     fee,
     password,
@@ -39,7 +38,6 @@
     parse,
     parseISO,
     addMinutes,
-    addSeconds,
   } from "date-fns";
   import {
     btc,
@@ -52,7 +50,7 @@
     tickers,
     assetLabel,
   } from "$lib/utils";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear } from "$comp";
   import Select from "svelte-select";
 
   let { id } = $page.params;
@@ -72,52 +70,46 @@
   let setup = async (t) => {
     if (!t) return;
 
-    let result = await hasura
-      .auth(`Bearer ${$token}`)
-      .post({
-        query: getArtwork(id),
-      })
-      .json();
+    try {
+      artwork = (await query(getArtwork(id))).artworks_by_pk;
 
-    if (result.data) artwork = result.data.artworks_by_pk;
-    else return;
+      if (!artwork.asking_asset) artwork.asking_asset = btc;
+      auction_enabled =
+        auction_enabled ||
+        compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
 
-    if (!artwork.asking_asset) artwork.asking_asset = btc;
-    auction_enabled =
-      auction_enabled ||
-      compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
+      let start, end;
+      if (artwork.auction_start) {
+        start = parseISO(artwork.auction_start);
+        start_date = format(start, "yyyy-MM-dd");
+        start_time = format(start, "HH:mm");
+      }
 
-    let start, end;
-    if (artwork.auction_start) {
-      start = parseISO(artwork.auction_start);
-      start_date = format(start, "yyyy-MM-dd");
-      start_time = format(start, "HH:mm");
+      if (artwork.auction_end) {
+        end = parseISO(artwork.auction_end);
+        end_date = format(end, "yyyy-MM-dd");
+        end_time = format(end, "HH:mm");
+      }
+
+      auction_underway =
+        auction_enabled &&
+        isWithinInterval(new Date(), {
+          start,
+          end,
+        });
+
+      if (!list_price && artwork.list_price)
+        list_price = val(artwork.asking_asset, artwork.list_price);
+      if (!royalty) royalty = artwork.royalty;
+      if (!reserve_price && artwork.reserve_price)
+        reserve_price = val(artwork.asking_asset, artwork.reserve_price);
+    } catch (e) {
+      err(e);
     }
-
-    if (artwork.auction_end) {
-      end = parseISO(artwork.auction_end);
-      end_date = format(end, "yyyy-MM-dd");
-      end_time = format(end, "HH:mm");
-    }
-
-    auction_underway =
-      auction_enabled &&
-      isWithinInterval(new Date(), {
-        start,
-        end,
-      });
-
-    if (!list_price && artwork.list_price)
-      list_price = val(artwork.asking_asset, artwork.list_price);
-    if (!royalty) royalty = artwork.royalty;
-    if (!reserve_price && artwork.reserve_price)
-      reserve_price = val(artwork.asking_asset, artwork.reserve_price);
 
     initialized = true;
     loading = false;
   };
-
-  const updateArtwork$ = mutation(updateArtwork);
 
   const spendPreviousSwap = async () => {
     if (
@@ -139,7 +131,7 @@
       }
       try {
         await signAndBroadcast();
-        await createTransaction$({
+        await query(createTransaction, {
           transaction: {
             amount: artwork.list_price,
             artwork_id: artwork.id,
@@ -183,7 +175,7 @@
     await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
 
-    await createTransaction$({
+      await query(createTransaction, {
       transaction: {
         amount: sats(artwork.asking_asset, list_price),
         artwork_id: artwork.id,
@@ -197,7 +189,6 @@
     info("List price updated!");
   };
 
-  let createTransaction$ = mutation(createTransaction);
   let setupAuction = async () => {
     if (!auction_enabled) return true;
 
@@ -239,7 +230,7 @@
         ).toBase64();
       }
 
-      await createTransaction$({
+      await query(createTransaction, {
         transaction: {
           amount: 1,
           artwork_id: artwork.id,
@@ -268,7 +259,7 @@
       await signAndBroadcast();
     }
 
-    await createTransaction$({
+    await query(createTransaction, {
       transaction: {
         amount: 1,
         artwork_id: artwork.id,
@@ -311,7 +302,7 @@
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
 
-      let result = await updateArtwork$({
+      query(updateArtwork, {
         artwork: {
           asking_asset,
           auction_end,
@@ -327,13 +318,7 @@
           royalty,
         },
         id,
-      });
-
-      if (result.error) {
-        throw new Error(
-          `Problem updating artwork record ${result.error.message}`
-        );
-      }
+      }).catch(err);
 
       api.url("/asset/register").post({ asset }).json().catch(console.log);
 
@@ -365,6 +350,7 @@
     artwork && artwork.transferred_at
       ? Object.keys(tickers)
       : [...Object.keys(tickers), undefined];
+
 </script>
 
 <style>
@@ -376,9 +362,7 @@
     max-width: 100%;
   }
 
-  input,
-  select,
-  textarea {
+  input {
     @apply rounded-lg mb-4 mt-2;
     &:disabled {
       @apply bg-gray-100;
@@ -427,6 +411,7 @@
       top: 30px;
     }
   }
+
 </style>
 
 <div class="container mx-auto md:p-20">
@@ -455,8 +440,9 @@
           <p>Listing currency</p>
           <div class="flex flex-wrap">
             {#each listingCurrencies as asset}
-              <label class="ml-2 mr-6 flex items-center">
+              <label for={asset} class="ml-2 mr-6 flex items-center">
                 <input
+                  id={asset}
                   class="form-radio h-6 w-6 mt-4 mr-2"
                   type="radio"
                   name={asset}
@@ -475,7 +461,7 @@
         {#if artwork.asking_asset}
           <div class="flex w-full sm:w-3/4 mb-4">
             <div class="relative mt-1 rounded-md w-2/3 mr-6">
-              <label>Price
+              <label for="price">Price
                 <span class="tooltip">
                   <i class="text-midblue text-xl tooltip">
                     <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
@@ -493,6 +479,7 @@
                   </span>
                 </span></label>
               <input
+                id="price"
                 class="form-input block w-full pl-7 pr-12"
                 placeholder={val(artwork.asking_asset, 0)}
                 bind:value={list_price}
@@ -505,7 +492,7 @@
             </div>
             {#if $user.id === artwork.artist_id}
               <div class="relative mt-1 rounded-md">
-                <label>Royalty Rate
+                <label for="royalty">Royalty Rate
                   <span class="tooltip">
                     <i class="ml-3 text-midblue text-xl tooltip">
                       <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
@@ -518,6 +505,7 @@
                     </span>
                   </span></label>
                 <input
+                  id="royalty"
                   class="form-input block w-full pl-7 pr-12"
                   placeholder="0"
                   bind:value={royalty}
@@ -530,8 +518,9 @@
             {/if}
           </div>
           <div class="auction-toggle">
-            <label class="inline-flex items-center">
+            <label for="auction" class="inline-flex items-center">
               <input
+                id="auction"
                 class="form-checkbox h-6 w-6 mt-3"
                 type="checkbox"
                 bind:checked={auction_enabled}
@@ -548,6 +537,7 @@
                     <div class="flex flex-col mb-4 mr-6">
                       <label for="date">Date</label>
                       <input
+                        id="date"
                         type="date"
                         name="date"
                         bind:value={start_date}
@@ -556,6 +546,7 @@
                     <div class="flex flex-col mb-4">
                       <label for="time">Time</label>
                       <input
+                        id="time"
                         type="time"
                         name="time"
                         bind:value={start_time}

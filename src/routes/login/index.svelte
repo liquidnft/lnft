@@ -13,7 +13,7 @@
 
   let show;
   let username = "";
-  let password = import.meta && import.meta.env && import.meta.env !== "production" ? "liquidart" : "";
+  let password = "liquidart";
 
   let usernameInput;
   let pageChange = () =>
@@ -49,10 +49,6 @@
     @apply appearance-none border rounded text-gray-700 leading-tight;
     padding: 0;
     padding: 10px;
-  }
-
-  span {
-    cursor: pointer;
   }
 
   @media only screen and (max-width: 640px) {

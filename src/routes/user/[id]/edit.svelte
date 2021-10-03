@@ -11,10 +11,10 @@
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { err, info, goto, validateEmail } from "$lib/utils";
-  import { Avatar } from "$components/index";
+  import { Avatar } from "$comp";
   import upload from "$lib/upload";
   import { updateUser } from "$queries/users";
-  import { mutation, subscription } from "@urql/svelte";
+  import { query } from "$lib/api";
 
   let initialize = (user) => {
     if (!(form && form.id) && user) form = { ...user };
@@ -60,8 +60,6 @@
     update(form);
   };
 
-  let updateUser$ = mutation(updateUser);
-
   let update = (form) => {
     let {
       is_artist,
@@ -77,7 +75,8 @@
       ...rest
     } = form;
     $user = { ...$user, ...rest };
-    updateUser$({ user: rest, id }).then((r) => {
+
+    query(updateUser, { user: rest, id }).then((r) => {
       if (r.error) {
         if (r.error.message.includes("Uniqueness")) err("Username taken");
         else err(r.error);
@@ -144,11 +143,11 @@
           on:submit|preventDefault={submit}
           autocomplete="off">
           <div class="flex flex-col mb-4">
-            <label>Name</label>
-            <input placeholder="Full Name" bind:value={form.full_name} />
+            <label for="name">Name</label>
+            <input id="name" placeholder="Full Name" bind:value={form.full_name} />
           </div>
           <div class="flex flex-col mb-4">
-            <label>Username</label>
+            <label for="username">Username</label>
             <input placeholder="Username" bind:value={form.username} />
           </div>
           <div class="flex flex-col mb-4">
@@ -182,7 +181,7 @@
             <input placeholder="example.com" bind:value={form.website} />
           </div>
           <div class="flex flex-col mb-4">
-            <label>Bio</label>
+            <label for="bio">Bio</label>
             <textarea placeholder="" bind:value={form.bio} />
           </div>
           <div class="flex mt-8">

@@ -1,12 +1,9 @@
 <script>
-  import Card from "$components/Card";
+  import { Card, Pagination, LoadingPlaceholder } from "$comp";
   import { tick } from "svelte";
-  import Pagination from "$components/Pagination";
-  import LoadingPlaceholder from "$components/LoadingPlaceholder";
 
   export let artworks;
   export let offset;
-  export let count;
 
   let loaded = {};
 
@@ -38,19 +35,24 @@
       observe(".controls");
       observe(".footer");
     });
+
 </script>
 
 <style>
-  .invisible{
+  .invisible {
     height: 0;
   }
 
-  .market-gallery :global(.card-link img), .market-gallery :global(.card-link video){
+  .market-gallery :global(.card-link img),
+  .market-gallery :global(.card-link video) {
     height: 350px;
-  }  
+  }
+
 </style>
 
-<div class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3" bind:clientWidth={w}>
+<div
+  class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3"
+  bind:clientWidth={w}>
   {#each artworks as artwork, i (artwork.id)}
     {#if i % offset === 0}
       <div class="sm:col-span-2 lg:col-span-3 w-full flex invisible h-0">
@@ -65,4 +67,4 @@
   {/each}
 </div>
 
-<Pagination {artworks} {hidden} {offset} {count} />
+<Pagination {artworks} {hidden} {offset} />

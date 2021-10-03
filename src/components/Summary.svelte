@@ -1,31 +1,32 @@
 <script>
-  import Row from "$components/Row";
+  import { Row } from "$comp";
 
   export let title;
   export let stat;
   export let link = "/top-collectors";
   export let items = [];
+
 </script>
 
 <style>
-  .watch-table:nth-child(1){
+  .watch-table:nth-child(1) {
     padding-right: 36px;
   }
 
-  .watch-table:nth-child(2){
+  .watch-table:nth-child(2) {
     padding-left: 36px;
     padding-right: 36px;
   }
 
   @media (max-width: 1023px) {
-    .watch-table{
+    .watch-table {
       margin-bottom: 72px;
     }
-    .watch-table:nth-child(1), .watch-table:nth-child(2){
+    .watch-table:nth-child(1),
+    .watch-table:nth-child(2) {
       padding: 0;
     }
   }
-
 
 </style>
 
@@ -39,6 +40,5 @@
       <Row {item} {link} />
     {/each}
   </div>
-  <a class="block text-right text-midblue primary-color" href={link}>See
-    all</a>
+  <a class="block text-right text-midblue primary-color" href={link}>See all</a>
 </div>

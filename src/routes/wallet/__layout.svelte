@@ -1,5 +1,5 @@
 <script>
-  import Nav from "./_nav";
+  import Nav from "./_nav.svelte";
 </script>
 
 <style>

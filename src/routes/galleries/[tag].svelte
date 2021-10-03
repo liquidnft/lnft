@@ -1,5 +1,5 @@
 <script>
-  import Tag from '../tag/[tag]';
+  import Tag from '../tag/[tag].svelte';
 </script>
 
 <Tag />

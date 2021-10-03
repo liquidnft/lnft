@@ -1,5 +1,5 @@
 <script>
-  import { api, pub } from "$lib/api";
+  import { api, query } from "$lib/api";
   import { onMount, tick } from "svelte";
   import decode from "jwt-decode";
   import {
@@ -18,13 +18,11 @@
   import { fade } from "svelte/transition";
   import { getTitles } from "$queries/artworks";
   import { getUser, getUsersAddresses } from "$queries/users";
-  import { setupUrql } from "$lib/urql";
   import { page } from "$app/stores";
   import { refreshToken } from "$lib/auth";
-  import InsufficientFunds from "$components/InsufficientFunds";
+  import { InsufficientFunds, Session } from "$comp";
   import { etag, publicPages, err, info } from "$lib/utils";
   import { createWallet } from "$lib/wallet";
-  import Session from "$components/Session";
 
   onMount(async () => {
     refreshToken();
@@ -48,42 +46,25 @@
 
   let id;
 
-  setupUrql();
   $: setup($role, $token);
 
   let setup = async (r, t) => {
     if (t) {
       if (!$loggedIn) {
         id = decode(t)["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-        setupUrql(t);
         $loggedIn = true;
       }
     }
 
-    let result = await pub(t)
-      .post({
-        query: getUsersAddresses,
-      })
-      .json();
+    query(getUsersAddresses)
+      .then((res) => ($addresses = res.users))
+      .catch(err);
 
-    if (result.data) {
-      $addresses = result.data.users;
-    } else {
-      err(result.errors[0]);
-    }
-
-    result = await pub(t)
-      .post({
-        query: getTitles,
-      })
-      .json();
-
-    if (result.data) {
-      $titles = result.data.artworks;
-    } else {
-      err(result.errors[0]);
-    }
+    query(getTitles)
+      .then((res) => ($titles = res.artworks))
+      .catch(err);
   };
+
 </script>
 
 {#if $loggedIn}

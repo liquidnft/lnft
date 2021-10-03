@@ -1,14 +1,13 @@
 <script>
   import { tick } from "svelte";
   import { prompt, snack, psbt, user, token } from "$lib/store";
-  import { mutation } from "@urql/svelte";
   import { broadcast, sign, requestSignature } from "$lib/wallet";
   import { err, info } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
-  import { Psbt } from "@asoltys/liquidjs-lib";
+  import { Psbt } from "liquidjs-lib";
   import { api } from "$lib/api";
 
-  export let accept = async ({ id, amount, artwork, psbt: base64, user }) => {
+  export const accept = async ({ id, amount, artwork, psbt: base64, user }) => {
     try {
       await requirePassword();
       $psbt = Psbt.fromBase64(base64);
@@ -20,7 +19,7 @@
       let result = await api
         .auth(`Bearer ${$token}`)
         .url("/accept")
-        .post({ 
+        .post({
           id: artwork.id,
           owner_id: user.id,
           amount,
@@ -36,6 +35,7 @@
       err(e);
     }
   };
+
 </script>
 
 <svelte:options accessors={true} />

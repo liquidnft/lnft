@@ -1,6 +1,6 @@
 const { api, electrs, hasura } = require("./api");
 const { broadcast } = require("./wallet");
-const { Psbt } = require("@asoltys/liquidjs-lib");
+const { Psbt } = require("liquidjs-lib");
 
 const crypto = require("crypto");
 const wretch = require("wretch");

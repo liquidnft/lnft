@@ -4,7 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@asoltys/liquidjs-lib": "^5.1.38",
     "abstract-cache-redis": "^1.1.0",
     "bip32": "^2.0.6",
     "bip39": "^3.0.3",
@@ -25,6 +24,7 @@
     "http-proxy": "^1.18.1",
     "ipfs-http-client": "^49.0.2",
     "jsonwebtoken": "^8.5.1",
+    "liquidjs-lib": "^5.2.0",
     "make-promises-safe": "^5.1.0",
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.6.2",

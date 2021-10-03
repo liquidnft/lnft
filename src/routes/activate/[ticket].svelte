@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { activate } from "$lib/auth";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear } from "$comp";
   import { err } from "$lib/utils";
 
   let loading = true;
@@ -35,14 +35,6 @@
     padding: 40px;
     box-shadow: 0 1px 5px rgb(0 0 0 / 18%);
     border-radius: 10px;
-  }
-
-  input {
-    @apply appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
-  }
-
-  span {
-    cursor: pointer;
   }
 
   @media only screen and (max-width: 640px) {

@@ -5,8 +5,7 @@
   import { hasura } from "$lib/api";
   import { results, token } from "$lib/store";
   import Select from "svelte-select";
-  import Item from "$components/SearchItem";
-  import ArtworkMedia from "$components/ArtworkMedia";
+  import { ArtworkMedia } from "$comp";
 
   export let suggest = true;
 
@@ -66,6 +65,7 @@
     } else if (keys.length > 0) goto("/market");
     else err("Nothing matched that search string");
   };
+
 </script>
 
 <div class="relative w-full search">

@@ -1,15 +1,12 @@
 <script>
   import { onMount } from "svelte";
-  import { hasura } from "$lib/api";
+  import { query } from "$lib/api";
   import { Summary } from "$comp";
   import { fade } from "svelte/transition";
   import { user } from "$lib/store";
-  import { operationStore, query } from "@urql/svelte";
   import { topCollectors, topArtists } from "$queries/users";
   import { getFeatured } from "$queries/artworks";
-  import Activity from "$components/Activity";
-  import RecentActivityCard from "$components/RecentActivityCard";
-  import LatestPiecesCard from "$components/LatestPiecesCard";
+  import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
   import { err, goto } from "$lib/utils";
   import { getRecentActivity, getLatestPieces } from "$queries/transactions";
 
@@ -17,34 +14,18 @@
   let recent = [];
   let latest = [];
 
-  onMount(async () => {
-    try {
-      featured = (
-        await hasura
-          .post({
-            query: getFeatured,
-          })
-          .json()
-      ).data.featured;
+  onMount(() => {
+    query(getFeatured)
+      .then((res) => (featured = res.featured))
+      .catch(err);
 
-      recent = (
-        await hasura
-          .post({
-            query: getRecentActivity(3),
-          })
-          .json()
-      ).data.recentactivity;
+    query(getRecentActivity(3))
+      .then((res) => (recent = res.recentactivity))
+      .catch(err);
 
-      latest = (
-        await hasura
-          .post({
-            query: getLatestPieces(3),
-          })
-          .json()
-      ).data.transactions;
-    } catch (e) {
-      err(e);
-    }
+    query(getLatestPieces(3))
+      .then((res) => (latest = res.transactions))
+      .catch(err);
   });
 
   setInterval(() => {
@@ -53,6 +34,7 @@
   }, 6000);
 
   let current = 0;
+
 </script>
 
 <style>
@@ -80,7 +62,7 @@
     object-fit: cover;
   }
 
-  .blur-bg{
+  .blur-bg {
     display: flex;
     padding: 60px;
     flex-direction: column;
@@ -97,7 +79,7 @@
     color: white !important;
   }
 
-  .blur-bg p{
+  .blur-bg p {
     color: white !important;
     margin-top: 20px;
   }
@@ -162,12 +144,13 @@
       margin-bottom: 96px !important;
     }
 
-    .blur-bg{
+    .blur-bg {
       padding: 24px;
       width: 75%;
       width: fit-content;
     }
   }
+
 </style>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">
@@ -188,16 +171,14 @@
     <div
       class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
       <div class="blur-bg">
-        <h2>
-          {featured[current].artwork.artist.username}
-        </h2>
+        <h2>{featured[current].artwork.artist.username}</h2>
         <p>
           {featured[current].artwork.title}
-            <button
-              class="button-transparent header-button border mt-10"
-              style="border-color: white; color: white"
-              on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
-              View Artwork</button>
+          <button
+            class="button-transparent header-button border mt-10"
+            style="border-color: white; color: white"
+            on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
+            View Artwork</button>
         </p>
       </div>
     </div>
@@ -218,6 +199,7 @@
         in:fade
         out:fade
         class="lazy cover absolute secondary-header"
+        alt={featured[current].artwork.title}
         src={`/api/ipfs/${featured[current].artwork.filename}`} />
     {/if}
   </div>

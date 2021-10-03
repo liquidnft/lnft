@@ -2,7 +2,6 @@
   export let artworks;
   export let offset;
   export let hidden;
-  export let count;
 
   let jump = async (i) => {
     document.getElementById(`artwork-${i * offset}`).scrollIntoView();
@@ -21,6 +20,7 @@
         y < document.getElementById(`artwork-${(i + 1) * offset}`).offsetTop)
     );
   });
+
 </script>
 
 <style>
@@ -28,6 +28,7 @@
     width: 100%;
     left: calc(100vw - 100%);
   }
+
 </style>
 
 <svelte:window bind:scrollY={y} />

@@ -1,12 +1,11 @@
 <script>
   import { onMount, tick, onDestroy } from "svelte";
   import { page } from "$app/stores";
-  import ArtworkMedia from "$components/ArtworkMedia";
-  import { query, mutation, operationStore, subscription } from "@urql/svelte";
+  import { ArtworkMedia } from "$comp";
   import { getSamples, updateUser } from "$queries/users";
   import { role, user, token } from "$lib/store";
-  import { api, hasura } from "$lib/api";
-  import { goto, info } from "$lib/utils";
+  import { api, hasura, query } from "$lib/api";
+  import { err, goto, info } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
 
   let users = [];
@@ -18,14 +17,15 @@
         await hasura
           .auth(`Bearer ${$token}`)
           .headers({
-            'X-Hasura-Role': 'approver'
-          }) 
+            "X-Hasura-Role": "approver",
+          })
           .post({
             query: getSamples,
           })
           .json()
-      ).data.users
-        .sort((a, b) => a.username && a.username.localeCompare(b.username))
+      ).data.users.sort(
+        (a, b) => a.username && a.username.localeCompare(b.username)
+      );
     }
   });
 
@@ -33,19 +33,19 @@
   let pageChange = async () => {
     await requireLogin();
     if (!$user) return;
-    if (!($user.is_admin)) goto('/market');
+    if (!$user.is_admin) goto("/market");
     $role = "approver";
   };
 
   onDestroy(() => ($role = "user"));
 
-  let updateUser$ = mutation(updateUser);
   let makeArtist = (user) => {
     user.is_artist = true;
-    updateUser$({ id: user.id, user: { is_artist: true } });
-    users = users.filter(u => u.id !== user.id);
+    query(updateUser, { id: user.id, user: { is_artist: true } }).catch(err);
+    users = users.filter((u) => u.id !== user.id);
     info(`${user.username} is now an artist!`);
   };
+
 </script>
 
 <div class="container mx-auto mt-20">

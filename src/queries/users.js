@@ -1,5 +1,4 @@
 import decode from "jwt-decode";
-import { operationStore, query } from "@urql/svelte";
 
 let fields =
   "id, username, location, bio, email, full_name, website, twitter, instagram, avatar_url, address, multisig, pubkey, is_artist";
@@ -29,13 +28,6 @@ export const getUserByUsername = (username) => `query {
   }
 }`;
 
-export const getUsers = `subscription {
-  users {
-    ${fields} 
-    ${computed}
-  }
-}`;
-
 export const getSamples = `query {
   users(where: { _and: [{ is_artist: { _eq: false }}, { samples: {}}]}) {
     ${fields} 
@@ -48,15 +40,13 @@ export const getSamples = `query {
   }
 }`;
 
-export const updateUser = {
-  query: `mutation update_user($user: users_set_input!, $id: uuid!) {
+export const updateUser = `mutation update_user($user: users_set_input!, $id: uuid!) {
   update_users_by_pk(pk_columns: { id: $id }, _set: $user) {
     ${fields}
     wallet_initialized
     ${computed}
   }
-}`,
-};
+}`;
 
 export const topCollectors = (limit) => `query {
   collectors(limit: ${limit}) { 

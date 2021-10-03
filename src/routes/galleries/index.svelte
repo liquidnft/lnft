@@ -1,7 +1,6 @@
 <script>
   import { onMount } from "svelte";
   import { hasura } from "$lib/api";
-  import { operationStore, subscription } from "@urql/svelte";
   import { getTags } from "$queries/artworks";
   import { Card } from "$comp";
   import galleries from "$lib/galleries";

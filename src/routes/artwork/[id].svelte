@@ -9,17 +9,12 @@
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
   import { Activity, Avatar, Card, ProgressLinear } from "$comp";
-  import Sidebar from "./_sidebar";
+  import Sidebar from "./_sidebar.svelte";
   import { tick, onDestroy } from "svelte";
   import { art, prompt, password, user, token, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
-  import {
-    getArtwork,
-    getArtworksByArtist,
-  } from "$queries/artworks";
-  import {
-    getArtworkTransactions,
-  } from "$queries/transactions";
+  import { getArtwork, getArtworksByArtist } from "$queries/artworks";
+  import { getArtworkTransactions } from "$queries/transactions";
   import { goto, err, explorer, info, units } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import {
@@ -29,13 +24,13 @@
     sign,
     broadcast,
   } from "$lib/wallet";
-  import { Psbt } from "@asoltys/liquidjs-lib";
-  import { api, pub } from "$lib/api";
-  import ArtworkQuery from "$components/ArtworkQuery";
-  import SocialShare from "$components/SocialShare";
+  import { Psbt } from "liquidjs-lib";
+  import { api, query } from "$lib/api";
+  import { SocialShare } from "$comp";
 
   function linkify(text) {
-    var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+    var urlRegex =
+      /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
     return text.replace(urlRegex, function (url) {
       return '<a href="' + url + '">' + url + "</a>";
     });
@@ -55,33 +50,39 @@
   $: pageChange($page);
   const pageChange = ({ params }) => {
     loading = false;
-    if (params.id) ({ id } = params);
-    api.url("/viewed").post({ id });
+    if (params.id) {
+      ({ id } = params);
+
+      api.url("/viewed").post({ id });
+    }
   };
 
+  let others = [];
   let transactions = [];
 
   let artwork, start_counter, end_counter, now, timeout;
 
   $: setup(id);
   let setup = async () => {
-    let result = await pub($token)
-      .post({
-        query: getArtwork(id),
+    query(getArtwork(id))
+      .then((res) => {
+        artwork = res.artworks_by_pk;
+        $art = artwork;
+
+        query(getArtworksByArtist(artwork.artist_id))
+          .then(
+            (res) =>
+              (others = res.artworks
+                .filter((a) => a.id !== artwork.id)
+                .slice(0, 4))
+          )
+          .catch(err);
       })
-      .json();
+      .catch(err);
 
-    if (result.data) artwork = result.data.artworks_by_pk;
-    else err(result.errors[0]);
-    $art = artwork;
-
-    result = await pub($token)
-      .post({
-        query: getArtworkTransactions(id),
-      })
-      .json();
-
-    if (result.data) transactions = result.data.transactions;
+    query(getArtworkTransactions(id))
+      .then((res) => (transactions = res.transactions))
+      .catch(err);
   };
 
   let poll = setInterval(setup, 2500);
@@ -110,8 +111,6 @@
     list_price = artwork.list_price;
     list_price = val(artwork.list_price);
   };
-
-  let others = [];
 
   let list_price;
   let val, sats, ticker;
@@ -226,6 +225,7 @@
   let showPopup = false;
   let showMore = false;
   let showActivity = false;
+
 </script>
 
 <style>
@@ -242,17 +242,6 @@
     &:hover {
       @apply border-green-700;
     }
-
-    &.dangerous {
-      &:hover {
-        @apply border-red-400;
-      }
-    }
-  }
-
-  .social-share a {
-    color: #2d2e32;
-    font-size: 16px;
   }
 
   .popup {
@@ -381,11 +370,8 @@
       width: 100%;
     }
   }
-</style>
 
-{#if artwork}
-  <ArtworkQuery id={artwork.id} />
-{/if}
+</style>
 
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork}
@@ -590,7 +576,7 @@
         </div>
       </div>
 
-      <div class="w-full lg:w-2/3 pl-40">
+      <div class="w-full lg:w-2/3 lg:pl-40">
         <div class="desktopImage">
           <span on:click={() => (showPopup = !showPopup)}>
             <Card {artwork} columns={1} showDetails={false} thumb={false} />
@@ -620,20 +606,20 @@
         </div>
 
         {#if others.length}
-          <div class="w-full mt-28">
-            <h2 class="text-2xl font-bold primary-color py-10 px-0 md:px-5">
+          <div class="w-full mt-64">
+            <h2 class="text-2xl font-bold primary-color py-10 px-0">
               More by this artist
             </h2>
             <div class="w-full flex flex-wrap">
               {#each others as artwork (artwork.id)}
-                <div class="w-full lg:w-full xl:w-1/2 px-0 md:px-5 mb-20">
-                  <Card {artwork} />
+                <div class="w-full px-0 mb-20">
+                  <Card {artwork} showDetails={false} />
                 </div>
               {/each}
               <div class="flex w-full">
                 <a
                   class="primary-btn mx-auto mb-12"
-                  href={`/artist/${artwork.artist.username}`}>View gallery</a>
+                  href={`/artist/${artwork.artist.username}`}>View all</a>
               </div>
             </div>
           </div>

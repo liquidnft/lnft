@@ -1,13 +1,16 @@
 <script>
   import { goto } from "$lib/utils";
-  import Avatar from "$components/Avatar";
-  import ArtworkMedia from "$components/ArtworkMedia";
-  import Card from "$components/Card";
-  import TransactionText from "$components/TransactionText";
-  import TransactionTime from "$components/TransactionTime";
+  import {
+    ArtworkMedia,
+    Avatar,
+    Card,
+    TransactionTime,
+    TransactionText,
+  } from "$comp";
   export let transaction;
 
   let { artwork } = transaction;
+
 </script>
 
 <style>
@@ -30,6 +33,7 @@
       width: 300px;
     }
   }
+
 </style>
 
 {#if artwork}

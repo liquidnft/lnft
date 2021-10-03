@@ -1,27 +1,28 @@
 <script>
+  import { query } from "$lib/api";
   import { tick } from "svelte";
-  import { asset, assets, balances, psbt, user } from "$lib/store";
+  import { asset, assets, balances, psbt, user, token } from "$lib/store";
   import { broadcast, pay, keypair, requestSignature } from "$lib/wallet";
   import { btc, err, info, sats, val, assetLabel } from "$lib/utils";
   import sign from "$lib/sign";
   import { ProgressLinear } from "$comp";
   import { requirePassword } from "$lib/auth";
   import { getArtworkByAsset } from "$queries/artworks";
-  import { subscription, operationStore } from "@urql/svelte";
 
   export let withdrawing = false;
 
   let amount;
-  let to ="AzppkpkTHBGfGcvU89AKH9JNuoe24LZvjbNCDStpykLLUj2S3n3zPFPVhQCiC8akswapzRrEqHnJUmMQ";
+  let to =
+    "AzppkpkTHBGfGcvU89AKH9JNuoe24LZvjbNCDStpykLLUj2S3n3zPFPVhQCiC8akswapzRrEqHnJUmMQ";
 
   let loading;
   let artwork;
 
   $: updateAsset($asset);
   let updateAsset = (a) =>
-    subscription(operationStore(getArtworkByAsset(a)), (a, b) => {
-      artwork = b.artworks[0];
-    });
+    query(getArtworkByAsset(a))
+      .then(({ artworks }) => (artwork = artworks[0]))
+      .catch(err);
 
   $: clearForm($asset);
   let clearForm = () => {
@@ -51,13 +52,17 @@
     }
     loading = false;
   };
+
 </script>
 
 <style>
-  textarea, input, select {
+  textarea,
+  input,
+  select {
     @apply rounded-lg p-2 text-black;
     margin-top: 10px;
   }
+
 </style>
 
 {#if $user && withdrawing}
@@ -69,24 +74,27 @@
       <ProgressLinear />
     {:else}
       <div class="flex flex-col mb-4">
-        <label>Asset</label>
-        <select
-          class="text-black"
-          bind:value={$asset}>
+        <label for="asset">Asset</label>
+        <select id="asset" class="text-black" bind:value={$asset}>
           {#each $assets as asset}
             <option value={asset.asset}>{assetLabel(asset.asset)}</option>
           {/each}
         </select>
       </div>
       <div class="flex flex-col mb-4">
-        <label>Amount</label>
+        <label for="amount">Amount</label>
         <div class="flex justify-between text-black">
-          <input class="w-full" placeholder={val($asset, 0)} bind:value={amount} />
+          <input
+            id="amount"
+            class="w-full"
+            placeholder={val($asset, 0)}
+            bind:value={amount} />
         </div>
       </div>
       <div class="flex flex-col mb-4">
-        <label>Recipient Address</label>
+        <label for="address">Recipient Address</label>
         <textarea
+          id="address"
           style="overflow:auto"
           placeholder="Address"
           bind:value={to}

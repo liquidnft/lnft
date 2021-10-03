@@ -2,7 +2,7 @@ const { api, hasura, electrs, registry } = require("./api");
 const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
 const reverse = require("buffer-reverse");
 const fs = require("fs");
-const { Psbt } = require("@asoltys/liquidjs-lib");
+const { Psbt } = require("liquidjs-lib");
 
 const setConfirmed = `
   mutation setConfirmed($id: uuid!) {

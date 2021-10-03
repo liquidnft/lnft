@@ -3,7 +3,7 @@
   import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
   import { border, bg } from "./_colors";
   import { page } from "$app/stores";
-  import { electrs, hasura } from "$lib/api";
+  import { query } from "$lib/api";
   import { onDestroy, onMount, tick } from "svelte";
   import {
     asset,
@@ -17,14 +17,13 @@
   } from "$lib/store";
   import { ProgressLinear } from "$comp";
   import { getArtworksByOwner } from "$queries/artworks";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
-  import { assetLabel, btc, sats, tickers, val } from "$lib/utils";
+  import { assetLabel, btc, err, sats, tickers, val } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
   import { getBalances } from "$lib/wallet";
 
-  import Fund from "./_fund";
-  import Withdraw from "./_withdraw";
-  import Transactions from "./_transactions";
+  import Fund from "./_fund.svelte";
+  import Withdraw from "./_withdraw.svelte";
+  import Transactions from "./_transactions.svelte";
 
   $: requireLogin($page);
 
@@ -59,23 +58,21 @@
   let poll;
   let artworks = [];
   $: init($user);
-  let init = async (u) => {
-    if (!u) return;
-    let { data } = await hasura
-      .auth(`Bearer ${$token}`)
-      .post({
-        query: getArtworksByOwner($user.id),
-      })
-      .json();
+  let init = (u) =>
+    u &&
+    query(getArtworksByOwner($user.id))
+      .then((res) => {
+        artworks = res.artworks;
 
-    if (data) ({ artworks } = data);
-    getBalances();
-    clearInterval(poll);
-    poll = setInterval(getBalances, 5000);
-    loading = false;
-  };
+        getBalances();
+        clearInterval(poll);
+        poll = setInterval(getBalances, 5000);
+        loading = false;
+      })
+      .catch(err);
 
   onDestroy(() => clearInterval(poll));
+
 </script>
 
 <style>
@@ -110,6 +107,7 @@
   button:disabled {
     @apply text-gray-400 border-gray-400;
   }
+
 </style>
 
 {#if loading}

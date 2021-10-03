@@ -11,9 +11,16 @@
       content="Upload, collect, and transact rare digital art on the Liquid Network"
     />
     <meta name="keywords" content="Bitcoin Liquid NFT Art" />
+
+    <script src="https://bundle.run/buffer"></script>
+    <script>
+      const process = { env: {} };
+      const { Buffer } = buffer;
+      const global = globalThis;
+    </script>
     %svelte.head%
   </head>
   <body>
-    %svelte.body%
+    <div id="svelte">%svelte.body%</div>
   </body>
 </html>

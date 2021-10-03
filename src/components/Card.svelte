@@ -1,17 +1,12 @@
 <script>
-  import Avatar from "$components/Avatar";
-  import ArtworkMedia from "$components/ArtworkMedia";
-  import Heart from "$components/Heart";
+  import { Avatar, ArtworkMedia, Heart } from "$comp";
   import countdown from "$lib/countdown";
   import { fade, goto, units } from "$lib/utils";
   import { onMount } from "svelte";
 
   export let artwork;
   export let columns = 3;
-  export let link = true;
   export let showDetails = true;
-  export let shadow = !showDetails;
-  export let activityPage = false;
   export let loaded = false;
   export let thumb = true;
   export let popup = false;
@@ -32,6 +27,7 @@
     setTimeout(count, 1000);
   };
   count();
+
 </script>
 
 <style>
@@ -48,6 +44,7 @@
   .price {
     font-size: 15px;
   }
+
 </style>
 
 {#if artwork}

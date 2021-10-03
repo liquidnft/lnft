@@ -1,4 +1,3 @@
-import bs58 from "bs58";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { api, electrs, hasura } from "$lib/api";
@@ -8,13 +7,12 @@ import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
 import {
   address as Address,
-  confidential,
   ECPair,
   Psbt,
   payments,
   networks,
   Transaction,
-} from "@asoltys/liquidjs-lib";
+} from "liquidjs-lib";
 import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
 import {

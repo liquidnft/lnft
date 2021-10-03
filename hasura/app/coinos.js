@@ -1,5 +1,5 @@
 const { coinos } = require("./api");
-const { networks } = require("@asoltys/liquidjs-lib");
+const { networks } = require("liquidjs-lib");
 
 let network;
 if (process.env.LIQUID_ELECTRS_URL.includes("blockstream")) {

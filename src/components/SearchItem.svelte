@@ -1,6 +1,7 @@
 <script>
   export let item = undefined;
   export const getOptionLabel = undefined;
+
 </script>
 
 <style>
@@ -30,6 +31,7 @@
   .customItem_tagline {
     display: inline-block;
   }
+
 </style>
 
 <div class="customItem">

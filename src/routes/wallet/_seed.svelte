@@ -1,36 +1,30 @@
 <script>
   import { page } from "$app/stores";
   import { onMount, tick } from "svelte";
-  import bip39 from "bip39";
-  import ToggleSwitch from "$components/ToggleSwitch";
+  import { wordlists } from "bip39";
+  import { ToggleSwitch } from "$comp";
   import { password, token, user } from "$lib/store";
   import { err, goto, info } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import { createWallet } from "$lib/wallet";
   import { updateUser } from "$queries/users";
-  import { mutation } from "@urql/svelte";
-  import { hasura } from "$lib/api";
-
-  let update = mutation(updateUser);
+  import { query } from "$lib/api";
 
   export let mnemonic;
 
   $: mnemonic = words.filter((w) => w).join(" ");
 
-  export let importWallet = async (mnemonic) => {
+  export const importWallet = async (mnemonic) => {
     await requirePassword();
 
     try {
       let params = createWallet(mnemonic);
       params.wallet_initialized = true;
 
-      let query = updateUser;
-      query.variables = {
+      await query(updateUser, {
         user: params,
         id: $user.id,
-      };
-
-      await hasura.auth(`Bearer ${$token}`).post(updateUser).json(console.log);
+      });
 
       info("Wallet is ready!");
 
@@ -71,7 +65,7 @@
   let bulk = false;
 
   let suggestions;
-  $: suggestions = bip39.wordlists.EN.filter((w) =>
+  $: suggestions = wordlists.EN.filter((w) =>
     w.startsWith(words[curr])
   ).slice(0, 5);
 
@@ -90,6 +84,7 @@
     if (e.key === "Enter" || (e.key === "Tab" && !e.shiftKey))
       return suggestions[0] && take(suggestions[0]);
   };
+
 </script>
 
 <style>
@@ -97,23 +92,6 @@
     @apply border-0 border-b-2 pb-1;
     width: 75%;
     margin-left: 20px;
-  }
-
-  .button-transparent:focus {
-    background-color: #6aced5;
-    border: none;
-  }
-
-  .pagination {
-    color: lightgray;
-    padding: 7px;
-  }
-  .pagination:focus {
-    color: #6aced5;
-  }
-
-  .active {
-    color: #6aced5;
   }
 
   @media only screen and (max-width: 640px) {
@@ -124,6 +102,7 @@
       width: 100vw;
     }
   }
+
 </style>
 
 <div class="p-5">
@@ -146,8 +125,7 @@
       bind:value={typed}
       placeholder="Type or paste your seed here"
       class="my-4 w-full"
-      on:blur={setMnemonic}
-      autofocus />
+      on:blur={setMnemonic} />
   {:else}
     <div class="flex flex-wrap mb-2">
       <div class="mr-2 sm:mr-0 flex-grow w-1/4 sm:w-1/2">
@@ -204,11 +182,15 @@
 
   <p class="my-4">
     {#if bulk}
-      <a class="secondary-color my-2" href="" on:click={toggle}>I want to enter
-        one word at a time</a>
+      <a
+        class="secondary-color my-2"
+        href="/"
+        on:click|preventDefault={toggle}>I want to enter one word at a time</a>
     {:else}
-      <a class="secondary-color my-2" href="" on:click={toggle}>I want to type
-        in a text box</a>
+      <a
+        class="secondary-color my-2"
+        href="/"
+        on:click|preventDefault={toggle}>I want to type in a text box</a>
     {/if}
   </p>
 </div>

@@ -7,15 +7,21 @@
     faTimes,
   } from "@fortawesome/free-solid-svg-icons";
   import { faClone } from "@fortawesome/free-regular-svg-icons";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear } from "$comp";
   import { onMount, tick } from "svelte";
   import qrcode from "qrcode-generator-es6";
-  import { balances, error, locked, pending, prompt, user, token } from "$lib/store";
+  import {
+    balances,
+    error,
+    locked,
+    pending,
+    prompt,
+    user,
+    token,
+  } from "$lib/store";
   import { assetLabel, btc, copy, err, fullscreen, val } from "$lib/utils";
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
-
-  export let hide = true;
 
   let tab = "liquid";
 
@@ -76,7 +82,7 @@
     }
   };
 
-  export let submit = (e) => {
+  export const submit = (e) => {
     if (e) e.preventDefault();
     $prompt = undefined;
   };
@@ -153,6 +159,7 @@
 
   let address;
   $: if ($user) address = $user.address;
+
 </script>
 
 <style>
@@ -168,9 +175,11 @@
   .tabs div {
     @apply mb-auto h-8 mx-2 md:mx-4 mt-6;
     &:hover {
-      @apply hover;
+      @apply border-b-2;
+      border-bottom: 3px solid #6ed8e0;
     }
   }
+
 </style>
 
 <svelte:options accessors={true} />
