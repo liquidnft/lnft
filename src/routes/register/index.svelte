@@ -8,8 +8,8 @@
 
   let show;
   let username = "";
-  let password = "liquidart";
-  let email = makeid(6) + "@a.com";
+  let password = "";
+  let email = "";
   let registered;
 
   function makeid(length) {
