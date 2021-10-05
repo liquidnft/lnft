@@ -8,7 +8,6 @@
   import { ProgressLinear } from "$comp";
   import { requirePassword } from "$lib/auth";
   import { getArtworkByAsset } from "$queries/artworks";
-  import { subscription, operationStore } from "@urql/svelte";
   import Button from '$styleguide/components/Button.svelte';
 
   export let withdrawing = false;
@@ -112,6 +111,7 @@
           rows={4} />
       </div>
       <Button primary type="submit" class="w-full mt-5">Complete withdraw</Button>
+      </div>
     {/if}
   </form>
 {/if}

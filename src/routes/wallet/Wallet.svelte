@@ -13,9 +13,9 @@
   import { getBalances } from "$lib/wallet";
   import Button from "$styleguide/components/Button.svelte";
 
-  import Fund from "./_fund";
-  import Withdraw from "./_withdraw";
-  import Transactions from "./_transactions";
+  import Fund from "./_fund.svelte";
+  import Withdraw from "./_withdraw.svelte";
+  import Transactions from "./_transactions.svelte";
 
   $: requireLogin($page);
 
