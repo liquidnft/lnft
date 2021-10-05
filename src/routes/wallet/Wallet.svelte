@@ -8,7 +8,6 @@
   import { asset, assets, balances, pending, password, user, token } from "$lib/store";
   import { ProgressLinear } from "$comp";
   import { getArtworksByOwner } from "$queries/artworks";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
   import { assetLabel, btc, sats, tickers, val } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
   import { getBalances } from "$lib/wallet";
