@@ -4,9 +4,6 @@
   import { err, go, goto } from "$lib/utils";
   import { hasura } from "$lib/api";
   import { results, token } from "$lib/store";
-  import Select from "svelte-select";
-  import Item from "$components/SearchItem";
-  import ArtworkMedia from "$components/ArtworkMedia";
 
   export let focused;
   export let suggest = true;

@@ -39,7 +39,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
   @import "../styleguide/theme.scss";
 
   .secondary-font {

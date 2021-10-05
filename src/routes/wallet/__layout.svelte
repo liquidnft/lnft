@@ -2,7 +2,7 @@
   import Nav from "./_nav.svelte";
 </script>
 
-<style>
+<style lang="scss">
   :global(.dark) {
     @apply bg-black text-white p-4;
   }
@@ -23,7 +23,7 @@
     width: 412px;
   }
 
-  @media (max-width: 1023px) { 
+  @media (max-width: 1023px) {
     .container{
       flex-wrap: wrap;
       padding-left: 0;

@@ -1,5 +1,5 @@
 <script>
-  import Card from "$styleguide/components/Card";
+  import Card from "$styleguide/components/Card.svelte";
   import {Pagination, LoadingPlaceholder } from "$comp";
   import { tick } from "svelte";
 

@@ -6,7 +6,7 @@
   import { getMnemonic } from "$lib/wallet";
   import { copy, goto } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
-  import Button from "$styleguide/components/Button";
+  import Button from "$styleguide/components/Button.svelte";
 
   let mnemonic;
   let displayMnemonic = async () => {

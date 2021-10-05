@@ -1,6 +1,6 @@
 <script>
   import { goto } from "$lib/utils";
-  import Button from "$styleguide/components/Button";
+  import Button from "$styleguide/components/Button.svelte";
   import Fa from "svelte-fa";
   import {
     faLock,

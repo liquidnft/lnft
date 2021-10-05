@@ -1,7 +1,7 @@
 <script>
-  import Avatar from "$components/Avatar";
-  import ArtworkMedia from "$components/ArtworkMedia";
-  import Heart from "$styleguide/components/Heart";
+  import Avatar from "$components/Avatar.svelte";
+  import ArtworkMedia from "$components/ArtworkMedia.svelte";
+  import Heart from "$styleguide/components/Heart.svelte";
   import countdown from "$lib/countdown";
   import { fade, goto, units, cad } from "$lib/utils";
   import Fa from 'svelte-fa';

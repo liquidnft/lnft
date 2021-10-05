@@ -1,7 +1,7 @@
 <script>
   import { goto } from "$lib/utils";
   import { user, wallet } from "$lib/store";
-  import Button from '$styleguide/components/Button';
+  import Button from '$styleguide/components/Button.svelte';
 </script>
 
 {#if $user}

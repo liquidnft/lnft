@@ -1,6 +1,6 @@
 <script>
-  import Search from "$styleguide/components/Search";
-  import WalletPopup from "$styleguide/components/WalletPopup";
+  import Search from "$styleguide/components/Search.svelte";
+  import WalletPopup from "$styleguide/components/WalletPopup.svelte";
   import Fa from "svelte-fa";
   import { faWallet, faUser } from "@fortawesome/free-solid-svg-icons";
   import { user } from "$lib/store";

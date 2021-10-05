@@ -14,7 +14,7 @@
   } from "$lib/store";
   import { info, err, goto } from "$lib/utils";
   import { Gallery, Results, Search } from "$comp";
-  import Button from "$styleguide/components/Button";
+  import Button from "$styleguide/components/Button.svelte";
   import Filter from "./_filter.svelte";
   import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";

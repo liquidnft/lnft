@@ -2,7 +2,7 @@
   import { err, goto } from "$lib/utils";
   import Seed from "../_seed.svelte";
   import { getMnemonic } from "$lib/wallet";
-  import Button from "$styleguide/components/Button";
+  import Button from "$styleguide/components/Button.svelte";
 
   let importWallet;
   let mnemonic;

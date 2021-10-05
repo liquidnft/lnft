@@ -1,21 +1,16 @@
 <script>
-  import { page } from "$app/stores";
-  import decode from "jwt-decode";
   import {
     App,
-    Avatar,
-    ProgressLinear,
     Sidebar,
     Dialog,
     Footer,
     Snack,
     Head,
   } from "$comp";
-  import Navbar from "$styleguide/components/Navbar";
-  import { show, user, password, token } from "$lib/store";
+  import Navbar from "$styleguide/components/Navbar/Navbar.svelte";
+  import { password, token } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import { publicPages } from "$lib/utils";
 
   let open = false;
   let ready;

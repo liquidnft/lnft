@@ -9,7 +9,7 @@
   import { requirePassword } from "$lib/auth";
   import { getArtworkByAsset } from "$queries/artworks";
   import { subscription, operationStore } from "@urql/svelte";
-  import Button from '$styleguide/components/Button';
+  import Button from '$styleguide/components/Button.svelte';
 
   export let withdrawing = false;
 

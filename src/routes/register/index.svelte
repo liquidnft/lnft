@@ -5,7 +5,7 @@
   import { page } from "$app/stores";
   import { register } from "$lib/register";
   import { ProgressLinear } from "$comp";
-  import Button from "$styleguide/components/Button";
+  import Button from "$styleguide/components/Button.svelte";
 
   let show;
   let username = "";
