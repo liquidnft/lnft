@@ -66,23 +66,18 @@
     @include mobileScreen();
   }
 
+  header.mobileScreen {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    @include mobileScreen();
 
-  @layer components {
-
-    header.mobileScreen {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      @include mobileScreen();
-
-      a img {
-        @apply w-36;
-      }
-
-      nav {
-        @apply hidden;
-      }
+    a img {
+      @apply w-36;
     }
 
+    nav {
+      @apply hidden;
+    }
   }
 
   :global(nav.navbar-menu svg line) {
