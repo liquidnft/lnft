@@ -5,12 +5,14 @@ import postcss from "postcss-preset-env";
 import nesting from "postcss-nesting";
 import path from "path";
 import node from "@sveltejs/adapter-node";
+import shim from "vite-plugin-shim-react-pdf";
 
 export default {
   kit: {
     adapter: node(),
     target: "#svelte",
     vite: {
+plugins: [shim()],
       resolve: {
         alias: {
           $comp: path.resolve("src/components/index.js"),
