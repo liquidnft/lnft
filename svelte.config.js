@@ -4,7 +4,6 @@ import autoprefixer from "autoprefixer";
 import postcss from "postcss-preset-env";
 import nesting from "postcss-nesting";
 import path from "path";
-import shim from "vite-plugin-shim-react-pdf";
 import node from "@sveltejs/adapter-node";
 
 export default {
@@ -12,7 +11,6 @@ export default {
     adapter: node(),
     target: "#svelte",
     vite: {
-      plugins: [shim()],
       resolve: {
         alias: {
           $comp: path.resolve("src/components/index.js"),
