@@ -29,10 +29,6 @@
     border-bottom: none;
   }
 
-  .menu .signin {
-    width: 120px;
-  }
-
   .menu :global(.search) {
     border: 1px solid lightgray;
     border-radius: 30px;
@@ -82,9 +78,6 @@
     .menu a {
       margin: 20px 0 0 20px;
       font-family: "Oswald-bold";
-    }
-    .menu .search {
-      margin: 40px 0 0 45px;
     }
   }
 
