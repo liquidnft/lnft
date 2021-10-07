@@ -25,6 +25,15 @@ const defaultFields = `
   extension_interval
   max_extensions
   royalty
+  royalty_recipients {
+    id
+    name
+    artwork_id
+    asking_asset
+    amount
+    address
+    type
+  }
   slug
   is_physical
   instagram
@@ -142,6 +151,18 @@ export const create = `mutation ($artwork: artworks_insert_input!, $tags: [tags_
 export const updateArtwork = `mutation update_artwork($artwork: artworks_set_input!, $id: uuid!) {
   update_artworks_by_pk(pk_columns: { id: $id }, _set: $artwork) {
     id
+  }
+}`;
+
+export const updateArtworkWithRoyaltyRecipients = `mutation update_artwork_with_royalty_recipients($artwork: artworks_set_input!, $id: uuid!, $royaltyRecipients: [royalty_recipients_insert_input!]!) {
+  update_artworks_by_pk(pk_columns: { id: $id }, _set: $artwork) {
+    id
+  }
+  delete_royalty_recipients(where: {artwork_id: {_eq: $id}}) {
+    affected_rows
+  }
+  insert_royalty_recipients(objects: $royaltyRecipients) {
+    affected_rows
   }
 }`;
 

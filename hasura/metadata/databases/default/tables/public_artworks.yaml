@@ -16,6 +16,13 @@ array_relationships:
       table:
         name: favorites
         schema: public
+- name: royalty_recipients
+  using:
+    foreign_key_constraint_on:
+      column: artwork_id
+      table:
+        name: royalty_recipients
+        schema: public
 - name: tags
   using:
     foreign_key_constraint_on:

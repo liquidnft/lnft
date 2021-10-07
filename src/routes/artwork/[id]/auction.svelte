@@ -8,6 +8,8 @@
   import { page } from "$app/stores";
   import { getArtwork, updateArtwork } from "$queries/artworks";
   import { api, query } from "$lib/api";
+  import { getDefaultRoyaltyRecipients } from "$queries/royalty_recipients";
+  import { updateArtworkWithRoyaltyRecipients } from "$queries/artworks";
   import {
     fee,
     password,
@@ -48,8 +50,9 @@
     val,
     tickers,
     assetLabel,
+    royaltyRecipientSystemType,
   } from "$lib/utils";
-  import { ProgressLinear } from "$comp";
+  import { ProgressLinear, RoyaltyRecipientList } from "$comp";
   import Select from "svelte-select";
   import branding from "$lib/branding";
 
@@ -62,7 +65,7 @@
   $: focus(initialized);
 
   let loading = true;
-  let artwork, list_price, royalty;
+  let artwork, list_price, royalty, defaultRoyaltyRecipients;
   $: setup($token);
 
   let reserve_price;
@@ -98,9 +101,29 @@
           end,
         });
 
+      defaultRoyaltyRecipients = (await query(getDefaultRoyaltyRecipients()))
+        .default_royalty_recipients;
+
+      if (defaultRoyaltyRecipients && defaultRoyaltyRecipients.length) {
+        for (let index = 0; index < defaultRoyaltyRecipients.length; index++) {
+          const { address, amount, name } = defaultRoyaltyRecipients[index];
+          if (!artwork.royalty_recipients.find((e) => e.address === address)) {
+            artwork.royalty_recipients.push({
+              address,
+              amount,
+              name,
+              type: royaltyRecipientSystemType,
+            });
+          }
+        }
+      }
+
+      multi_royalty_recipients_enabled = !!artwork.royalty_recipients.length;
+      royalty_recipients = artwork.royalty_recipients;
+
       if (!list_price && artwork.list_price)
         list_price = val(artwork.asking_asset, artwork.list_price);
-      if (!royalty) royalty = artwork.royalty;
+      if (!royalty) royalty = artwork.royalty + 0;
       if (!reserve_price && artwork.reserve_price)
         reserve_price = val(artwork.asking_asset, artwork.reserve_price);
     } catch (e) {
@@ -175,7 +198,7 @@
     await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
 
-      await query(createTransaction, {
+    await query(createTransaction, {
       transaction: {
         amount: sats(artwork.asking_asset, list_price),
         artwork_id: artwork.id,
@@ -302,7 +325,7 @@
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
 
-      query(updateArtwork, {
+      query(updateArtworkWithRoyaltyRecipients, {
         artwork: {
           asking_asset,
           auction_end,
@@ -318,6 +341,14 @@
           royalty,
         },
         id,
+        royaltyRecipients: multi_royalty_recipients_enabled
+          ? royalty_recipients.map((item) => {
+              delete item.id;
+              item.artwork_id = artwork.id;
+              item.asking_asset = artwork.asking_asset;
+              return item;
+            })
+          : [],
       }).catch(err);
 
       api.url("/asset/register").post({ asset }).json().catch(console.log);
@@ -333,7 +364,10 @@
   let clearPrice = () => (list_price = undefined);
 
   let start_date, end_date, start_time, end_time;
-  let auction_enabled, auction_underway;
+  let auction_enabled,
+    auction_underway,
+    multi_royalty_recipients_enabled,
+    royalty_recipients;
   $: enableAuction(auction_enabled);
   let enableAuction = () => {
     if (!start_date) {
@@ -496,9 +530,10 @@
                     </i>
                     <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
                       Setting a royalty involves transferring the artwork to a
-                      2-of-2 multisig address with {branding.projectName}. Our server will
-                      co-sign on transfers if they pay the specified royalty to
-                      the original artist.
+                      2-of-2 multisig address with
+                      {branding.projectName}. Our server will co-sign on
+                      transfers if they pay the specified royalty to the
+                      original artist.
                     </span>
                   </span></label>
                 <input
@@ -514,6 +549,39 @@
               </div>
             {/if}
           </div>
+          {#if $user.id === artwork.artist_id}
+            <div class="flex w-full sm:w-3/4 mb-4">
+              <div class="relative mt-1 rounded-md w-2/3 mr-6">
+                <div class="auction-toggle">
+                  <label class="inline-flex items-center">
+                    <input
+                      class="form-checkbox h-6 w-6 mt-3"
+                      type="checkbox"
+                      bind:checked={multi_royalty_recipients_enabled}
+                      disabled={auction_underway} />
+                    <span class="ml-3 text-xl">Additional Royalty Recipients</span>
+                    <span class="tooltip">
+                      <i class="ml-3 text-midblue text-xl tooltip">
+                        <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
+                      </i>
+                      <span
+                        class="tooltip-text bg-gray-100 shadow ml-4 rounded">
+                        Multiple royalty text
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            {#if multi_royalty_recipients_enabled}
+              <div class="w-full ">
+                <RoyaltyRecipientList
+                  bind:items={royalty_recipients}
+                  maxTotalRate={100 - parseInt(royalty, 10)}
+                  askingAsset={artwork.asking_asset} />
+              </div>
+            {/if}
+          {/if}
           <div class="auction-toggle">
             <label for="auction" class="inline-flex items-center">
               <input
