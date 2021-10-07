@@ -8,7 +8,9 @@
   import { page } from "$app/stores";
   import { getArtwork } from "$queries/artworks";
   import { updateArtwork } from "$queries/artworks";
-  import { api, query } from "$lib/api";
+  import { api, query, hasura } from "$lib/api";
+  import { getDefaultRoyaltyRecipients } from "$queries/royalty_recipients";
+  import { updateArtworkWithRoyaltyRecipients } from "$queries/artworks";
   import {
     fee,
     password,
@@ -49,9 +51,11 @@
     val,
     tickers,
     assetLabel,
+    royaltyRecipientSystemType,
   } from "$lib/utils";
   import { ProgressLinear } from "$comp";
   import Select from "svelte-select";
+  import {RoyaltyRecipientList} from "$comp";
 
   let { id } = $page.params;
   $: requireLogin($page);
@@ -62,7 +66,7 @@
   $: focus(initialized);
 
   let loading = true;
-  let artwork, list_price, royalty;
+  let artwork, list_price, royalty, defaultRoyaltyRecipients;
   $: setup($token);
 
   let reserve_price;
@@ -98,9 +102,31 @@
           end,
         });
 
+      defaultRoyaltyRecipients = (await query(getDefaultRoyaltyRecipients())).default_royalty_recipients;
+      
+      if (
+        defaultRoyaltyRecipients &&
+        defaultRoyaltyRecipients.length 
+      ) {
+        for (let index = 0; index < defaultRoyaltyRecipients.length; index++) {
+          const { address, amount, name } = defaultRoyaltyRecipients[index];
+          if (!artwork.royalty_recipients.find((e) => e.address === address)) {
+            artwork.royalty_recipients.push({
+              address,
+              amount,
+              name,
+              type: royaltyRecipientSystemType,
+            });
+          }
+        }
+      }
+
+      multi_royalty_recipients_enabled = !!artwork.royalty_recipients.length;
+      royalty_recipients = artwork.royalty_recipients;
+
       if (!list_price && artwork.list_price)
         list_price = val(artwork.asking_asset, artwork.list_price);
-      if (!royalty) royalty = artwork.royalty;
+      if (!royalty) royalty = artwork.royalty + 0;
       if (!reserve_price && artwork.reserve_price)
         reserve_price = val(artwork.asking_asset, artwork.reserve_price);
     } catch (e) {
@@ -302,7 +328,7 @@
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
 
-      query(updateArtwork, {
+      query(updateArtworkWithRoyaltyRecipients, {
         artwork: {
           asking_asset,
           auction_end,
@@ -318,6 +344,14 @@
           royalty,
         },
         id,
+        royaltyRecipients: multi_royalty_recipients_enabled
+          ? royalty_recipients.map((item) => {
+              delete item.id;
+              item.artwork_id = artwork.id;
+              item.asking_asset = artwork.asking_asset;
+              return item;
+            })
+          : [],
       }).catch(err);
 
       api.url("/asset/register").post({ asset }).json().catch(console.log);
@@ -333,7 +367,10 @@
   let clearPrice = () => (list_price = undefined);
 
   let start_date, end_date, start_time, end_time;
-  let auction_enabled, auction_underway;
+  let auction_enabled,
+    auction_underway,
+    multi_royalty_recipients_enabled,
+    royalty_recipients;
   $: enableAuction(auction_enabled);
   let enableAuction = () => {
     if (!start_date) {
@@ -449,7 +486,8 @@
                   value={asset}
                   bind:group={artwork.asking_asset}
                   on:change={clearPrice}
-                  disabled={auction_underway} />
+                  disabled={auction_underway}
+                />
                 <p class="mb-2 whitespace-nowrap">
                   {asset ? assetLabel(asset) : 'Unlisted'}
                 </p>
@@ -484,9 +522,11 @@
                 placeholder={val(artwork.asking_asset, 0)}
                 bind:value={list_price}
                 bind:this={input}
-                disabled={auction_underway} />
+                disabled={auction_underway}
+              />
               <div
-                class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4">
+                class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4"
+              >
                 {assetLabel(artwork.asking_asset)}
               </div>
             </div>
@@ -509,14 +549,52 @@
                   class="form-input block w-full pl-7 pr-12"
                   placeholder="0"
                   bind:value={royalty}
-                  disabled={auction_underway} />
+                  disabled={auction_underway}
+                />
                 <div
-                  class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4">
+                  class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4"
+                >
                   %
                 </div>
               </div>
             {/if}
           </div>
+          {#if $user.id === artwork.artist_id}
+            <div class="flex w-full sm:w-3/4 mb-4">
+              <div class="relative mt-1 rounded-md w-2/3 mr-6">
+                <div class="auction-toggle">
+                  <label class="inline-flex items-center">
+                    <input
+                      class="form-checkbox h-6 w-6 mt-3"
+                      type="checkbox"
+                      bind:checked={multi_royalty_recipients_enabled}
+                      disabled={auction_underway}
+                    />
+                    <span class="ml-3 text-xl">Additional Royalty Recipients</span>
+                    <span class="tooltip">
+                      <i class="ml-3 text-midblue text-xl tooltip">
+                        <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
+                      </i>
+                      <span
+                        class="tooltip-text bg-gray-100 shadow ml-4 rounded"
+                      >
+                        Multiple royalty text
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            {#if multi_royalty_recipients_enabled}
+              <div class="w-full ">
+                <RoyaltyRecipientList
+                  bind:items={royalty_recipients}
+                  maxTotalRate={100 - parseInt(royalty, 10)}
+                  askingAsset={artwork.asking_asset}
+                />
+              </div>
+            {/if}
+          {/if}
           <div class="auction-toggle">
             <label for="auction" class="inline-flex items-center">
               <input
@@ -524,7 +602,8 @@
                 class="form-checkbox h-6 w-6 mt-3"
                 type="checkbox"
                 bind:checked={auction_enabled}
-                disabled={auction_underway} />
+                disabled={auction_underway}
+              />
               <span class="ml-3 text-xl">Create an auction</span>
             </label>
           </div>
@@ -541,7 +620,8 @@
                         type="date"
                         name="date"
                         bind:value={start_date}
-                        disabled={auction_underway} />
+                        disabled={auction_underway}
+                      />
                     </div>
                     <div class="flex flex-col mb-4">
                       <label for="time">Time</label>
@@ -550,7 +630,8 @@
                         type="time"
                         name="time"
                         bind:value={start_time}
-                        disabled={auction_underway} />
+                        disabled={auction_underway}
+                      />
                     </div>
                   </div>
                 </div>
@@ -563,7 +644,8 @@
                         type="date"
                         name="date"
                         bind:value={end_date}
-                        disabled={auction_underway} />
+                        disabled={auction_underway}
+                      />
                     </div>
                     <div class="flex flex-col mb-4">
                       <label for="time">Time</label>
@@ -571,7 +653,8 @@
                         type="time"
                         name="time"
                         bind:value={end_time}
-                        disabled={auction_underway} />
+                        disabled={auction_underway}
+                      />
                     </div>
                   </div>
                 </div>
@@ -579,7 +662,8 @@
               <div class="flex flex-col mb-4">
                 <div>
                   <div
-                    class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm">
+                    class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm"
+                  >
                     <label>
                       Reserve price
                       <span class="tooltip">
@@ -587,10 +671,12 @@
                           <Fa
                             icon={faQuestionCircle}
                             pull="right"
-                            class="mt-1" />
+                            class="mt-1"
+                          />
                         </i>
                         <span
-                          class="tooltip-text bg-gray-100 shadow ml-4 rounded">
+                          class="tooltip-text bg-gray-100 shadow ml-4 rounded"
+                        >
                           Reserve price is the minimum price that you'll accept
                           for the artwork. Setting one is optional.
                         </span>
@@ -599,9 +685,11 @@
                         class="form-input block w-full pl-7 pr-12"
                         placeholder="0"
                         bind:value={reserve_price}
-                        disabled={auction_underway} />
+                        disabled={auction_underway}
+                      />
                       <div
-                        class="absolute inset-y-0 right-0 flex items-center mr-2 mt-8">
+                        class="absolute inset-y-0 right-0 flex items-center mr-2 mt-8"
+                      >
                         {assetLabel(artwork.asking_asset)}
                       </div>
                     </label>

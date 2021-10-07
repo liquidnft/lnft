@@ -36,6 +36,14 @@ const publicPages = [
   "activate",
 ];
 
+const royaltyRecipientSystemType = 'system';
+const royaltyRecipientIndividualType = 'individual';
+
+const royaltyRecipientTypes = {
+  [royaltyRecipientSystemType] : "System",
+  [royaltyRecipientIndividualType] : "Individual"
+}
+
 const addressUser = (a) =>
   get(addresses) &&
   get(addresses).find((u) => u.address === a || u.multisig === a);
@@ -275,4 +283,7 @@ export {
   val,
   validateEmail,
   publicPages,
+  royaltyRecipientSystemType,
+  royaltyRecipientIndividualType,
+  royaltyRecipientTypes
 };
