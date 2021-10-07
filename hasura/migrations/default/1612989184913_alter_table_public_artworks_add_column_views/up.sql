@@ -1,1 +1,1 @@
-ALTER TABLE "public"."artworks" ADD COLUMN "views" integer DEFAULT 0;
+ALTER TABLE "public"."artworks" ADD COLUMN IF NOT EXISTS "views" integer DEFAULT 0;
