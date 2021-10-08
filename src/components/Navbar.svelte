@@ -49,7 +49,7 @@
   </nav>
   <div>
     <a href="/">
-      <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-48" /></a>
+      <img src="/logo.png" alt="logo" class="w-36 lg:w-48" /></a>
   </div>
   <a class="mobileSearch" href="/market">
     <Fa icon={faSearch} />

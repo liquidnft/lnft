@@ -62,12 +62,12 @@
 </style>
 
 <div class="flex justify-between items-center menu relative">
-  <Search suggest={false} />
-  <a href="/market"><button on:click={toggle}>Market</button></a>
-  <a href="/activity"><button on:click={toggle}>Activity</button></a>
-  <a href="https://blog.raretoshi.com/"><button
-      on:click={toggle}>Blog</button></a>
-  <a href="/faq"><button on:click={toggle}>FAQ</button></a>
+  <a href="/harvest"><button on:click={toggle}>Harvest Rights</button></a>
+  <a href="/market"><button on:click={toggle}>Purchase / Resell</button></a>
+  <a href="/market"><button on:click={toggle}>Artwork</button></a>
+  <a href="/give"><button on:click={toggle}>Give Back</button></a>
+  <a href="/about"><button on:click={toggle}>About</button></a>
+  <a href="/news"><button on:click={toggle}>News</button></a>
   {#if $user}
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>

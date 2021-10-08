@@ -1,4 +1,4 @@
-<script>
+    <script>
   import { onMount } from "svelte";
   import { query } from "$lib/api";
   import { Summary } from "$comp";
@@ -156,11 +156,11 @@
 <div class="flex header-container mx-auto justify-center marg-bottom">
   <div class="header text-center">
     <h1 class="text-left md:text-center md:w-full">
-      Raretoshi
-      <br />digital art
+      NFTs
     </h1>
+
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      Upload, collect, and transact rare digital art on the Liquid Network
+      Eco-Friendly Avocado & Teak Harvest Rights 
     </h5>
     <a class="primary-btn" href={`/market`}>Start exploring</a>
   </div>
