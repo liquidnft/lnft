@@ -26,6 +26,7 @@ specifiers:
   postcss-load-config: ^3.1.0
   postcss-nesting: '7'
   postcss-preset-env: ^6.7.0
+  prettier: ^2.4.1
   prettier-plugin-svelte: ^1.4.2
   qrcode-generator-es6: ^1.1.4
   rollup: ^2.33.1
@@ -67,7 +68,8 @@ devDependencies:
   postcss-load-config: 3.1.0
   postcss-nesting: 7.0.1
   postcss-preset-env: 6.7.0
-  prettier-plugin-svelte: 1.4.2_svelte@3.43.0
+  prettier: 2.4.1
+  prettier-plugin-svelte: 1.4.2_prettier@2.4.1+svelte@3.43.0
   qrcode-generator-es6: 1.1.4
   rollup: 2.57.0
   slip77: 0.1.1
@@ -2165,13 +2167,20 @@ packages:
       source-map-js: 0.6.2
     dev: true
 
-  /prettier-plugin-svelte/1.4.2_svelte@3.43.0:
+  /prettier-plugin-svelte/1.4.2_prettier@2.4.1+svelte@3.43.0:
     resolution: {integrity: sha512-O9VsNwII+raTG8QPoQWouk5ABQy/hmLm4dZ2eqJ7DPnbO35A+BxMSjlfqkw0cNP+UcbykHFYU8zNXm93ytWP9g==}
     peerDependencies:
       prettier: ^1.16.4 || ^2.0.0
       svelte: ^3.2.0
     dependencies:
+      prettier: 2.4.1
       svelte: 3.43.0
+    dev: true
+
+  /prettier/2.4.1:
+    resolution: {integrity: sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
     dev: true
 
   /pretty-hrtime/1.0.3:
