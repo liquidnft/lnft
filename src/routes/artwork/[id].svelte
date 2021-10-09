@@ -74,7 +74,6 @@
       .then((res) => {
         artwork = res.artworks_by_pk;
 
-        console.log("id", id, res);
         $art = artwork;
         if (!loaded) api.url("/viewed").post({ id });
         loaded = true;
