@@ -30,6 +30,7 @@ specifiers:
   prettier-plugin-svelte: ^1.4.2
   qrcode-generator-es6: ^1.1.4
   rollup: ^2.33.1
+  simple-svelte-autocomplete: ^2.2.3
   slip77: ^0.1.1
   subscriptions-transport-ws: ^0.9.18
   svelte: ^3.43.0
@@ -72,6 +73,7 @@ devDependencies:
   prettier-plugin-svelte: 1.4.2_prettier@2.4.1+svelte@3.43.0
   qrcode-generator-es6: 1.1.4
   rollup: 2.57.0
+  simple-svelte-autocomplete: 2.2.3
   slip77: 0.1.1
   subscriptions-transport-ws: 0.9.19_graphql@15.6.0
   svelte: 3.43.0
@@ -2369,6 +2371,10 @@ packages:
       call-bind: 1.0.2
       get-intrinsic: 1.1.1
       object-inspect: 1.11.0
+    dev: true
+
+  /simple-svelte-autocomplete/2.2.3:
+    resolution: {integrity: sha512-9eOfSIAVemihgV206UwC/DX3hQ5oKK/ihrQRaQ15S7kMucsRNlqX42UC1KbUoG4DrXtjqqmq6d0iLsfn/Xng6g==}
     dev: true
 
   /simple-swizzle/0.2.2:

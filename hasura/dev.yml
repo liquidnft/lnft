@@ -43,6 +43,10 @@ services:
     ports:
       - '5433:5432'
   hasura:
+    logging:
+      options:
+        max-size: "50k"
+        max-file: "3"
     container_name: hasura
     image: hasura/graphql-engine:v2.0.9.cli-migrations-v3
     ports:

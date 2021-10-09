@@ -6,8 +6,7 @@
   import { Buffer } from "buffer";
   import { onMount, tick } from "svelte";
   import { page } from "$app/stores";
-  import { getArtwork } from "$queries/artworks";
-  import { updateArtwork } from "$queries/artworks";
+  import { getArtwork, updateArtwork } from "$queries/artworks";
   import { api, query } from "$lib/api";
   import {
     fee,

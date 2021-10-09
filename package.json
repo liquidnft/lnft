@@ -39,6 +39,7 @@
 				"prettier-plugin-svelte": "^1.4.2",
 				"qrcode-generator-es6": "^1.1.4",
 				"rollup": "^2.33.1",
+				"simple-svelte-autocomplete": "^2.2.3",
 				"slip77": "^0.1.1",
 				"subscriptions-transport-ws": "^0.9.18",
 				"svelte": "^3.43.0",

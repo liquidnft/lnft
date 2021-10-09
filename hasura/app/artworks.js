@@ -6,6 +6,34 @@ const crypto = require("crypto");
 const wretch = require("wretch");
 const { HASURA_URL, SERVER_URL } = process.env;
 
+app.post("/transfer", auth, async (req, res) => {
+  let { address, transaction } = req.body;
+  await new Promise((r) => setTimeout(r, 2000));
+
+  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+
+  let held = !!utxos.find((tx) => tx.asset === transaction.asset);
+
+  if (held) {
+    let query = `mutation create_transaction($transaction: transactions_insert_input!) {
+      insert_transactions_one(object: $transaction) {
+        id,
+        artwork_id
+      } 
+    }`;
+
+    transaction.user_id = req.body.id;
+    transaction.type = "receipt";
+
+    r = await hasura
+      .post({ query, variables: { transaction } })
+      .json()
+      .catch(console.error);
+  }
+
+  res.send({});
+});
+
 app.post("/viewed", async (req, res) => {
   let query = `mutation ($id: uuid!) {
     update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
