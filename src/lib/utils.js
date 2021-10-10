@@ -58,7 +58,7 @@ const addressLabel = (address) => {
 const assetLabel = (asset) => {
   let $titles = get(titles);
   let r = $titles && $titles.find((u) => u.asset === asset);
-
+  
   return r
     ? r.title
       ? r.title + (r.editions > 1 ? ` ${r.edition}/${r.editions}` : "")
@@ -156,6 +156,8 @@ const err = (e) => {
   } catch {}
   if (!msg) msg = "An error occurred";
   if (msg.includes("Insufficient")) return;
+  if (msg.includes("socket")) return;
+  if (msg.includes("JWT")) return;
   setTimeout(() => snack.set({ msg, type: "error" }), 100);
   if (e.stack) console.log(e.stack);
 };

@@ -11,7 +11,15 @@
   import { Activity, Avatar, Card, ProgressLinear } from "$comp";
   import Sidebar from "./_sidebar.svelte";
   import { tick, onDestroy } from "svelte";
-  import { art, prompt, password, user, token, psbt } from "$lib/store";
+  import {
+    art,
+    addresses,
+    prompt,
+    password,
+    user,
+    token,
+    psbt,
+  } from "$lib/store";
   import countdown from "$lib/countdown";
   import { getArtwork, getArtworksByArtist } from "$queries/artworks";
   import { getArtworkTransactions } from "$queries/transactions";
@@ -52,23 +60,23 @@
     loading = false;
     if (params.id) {
       ({ id } = params);
-
-      api.url("/viewed").post({ id });
     }
   };
 
   let others = [];
   let transactions = [];
 
-  let artwork, start_counter, end_counter, now, timeout;
+  let artwork, start_counter, end_counter, now, timeout, loaded;
 
   $: setup(id);
   let setup = async () => {
     query(getArtwork(id))
       .then((res) => {
         artwork = res.artworks_by_pk;
+
         $art = artwork;
-        // debugger
+        if (!loaded) api.url("/viewed").post({ id });
+        loaded = true;
 
         query(getArtworksByArtist(artwork.artist_id))
           .then(
@@ -229,6 +237,159 @@
   let showActivity = false;
 </script>
 
+<style>
+  .listContainer {
+    overflow: hidden;
+  }
+
+  svelte-virtual-list-viewport {
+    overflow: hidden;
+  }
+
+  :global(.description a) {
+    color: #3ba5ac;
+  }
+
+  .disabled {
+    @apply text-gray-400 border-gray-400;
+  }
+
+  button {
+    @apply mb-2 w-full text-sm;
+    &:hover {
+      @apply border-green-700;
+    }
+  }
+
+  .popup {
+    position: fixed;
+    z-index: 900;
+    width: 100%;
+    height: 100vh;
+    padding: 5px;
+    text-align: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: white;
+    scroll-behavior: contain;
+    transform: scale(0);
+  }
+
+  .showPopup {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    animation: zoom 0.2s ease forwards;
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background: whitesmoke;
+    padding: 11px 15px;
+    cursor: pointer;
+  }
+
+  .mob-desc {
+    display: none;
+  }
+
+  .mobileImage {
+    display: none;
+    margin-bottom: 40px;
+  }
+
+  .mobileImage :global(.cover) {
+    width: 100%;
+  }
+
+  .popup :global(video) {
+    width: 50%;
+    height: auto !important;
+    margin: 0 auto;
+  }
+
+  .popup :global(div) {
+    width: 100%;
+    height: auto;
+  }
+
+  .popup :global(.card-link) {
+    height: auto !important;
+  }
+
+  .popup :global(img) {
+    margin: 0 auto;
+    height: 95vh;
+    object-fit: contain !important;
+  }
+
+  .desktopImage :global(img),
+  .desktopImage :global(video) {
+    margin: 0 auto;
+  }
+
+  @keyframes zoom {
+    0% {
+      transform: scale(0.6);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @media only screen and (max-width: 1023px) {
+    .desc-text {
+      height: 150px;
+      overflow: hidden;
+    }
+
+    .openDesc {
+      height: auto !important;
+      overflow: visible;
+    }
+
+    .show-more {
+      color: #3ba5ac;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 10px;
+      cursor: pointer;
+      white-space: normal;
+    }
+
+    .desktopImage,
+    .desk-desc {
+      display: none;
+    }
+
+    .mobileImage,
+    .mob-desc {
+      display: block;
+    }
+
+    .closeButton {
+      top: 20px;
+      right: 20px;
+    }
+  }
+
+  @media only screen and (max-width: 500px) {
+    .popup :global(img),
+    .popup :global(video) {
+      height: auto;
+      width: 100%;
+    }
+  }
+
+</style>
+
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork}
     <div class="flex flex-wrap">
@@ -312,13 +473,19 @@
 
         {#if loading}
           <ProgressLinear />
-        {:else if $user && $user.id === artwork.owner_id}
+        {:else if $user && $user.id === artwork.owner_id && artwork.held}
           <div class="w-full mb-2">
             <a
               href={disabled ? "" : `/artwork/${id}/auction`}
               class="block text-center text-sm secondary-btn w-full"
               class:disabled>List</a
             >
+          </div>
+          <div class="w-full mb-2">
+            <a
+              href={`/artwork/${artwork.id}/transfer`}
+              class="block text-center text-sm secondary-btn w-full"
+              class:disabled>Transfer</a>
           </div>
 
           {#if $user.id === artwork.artist_id}
@@ -514,147 +681,3 @@
     />
   {/if}
 </div>
-
-<style>
-  :global(.description a) {
-    color: #3ba5ac;
-  }
-
-  .disabled {
-    @apply text-gray-400 border-gray-400;
-  }
-
-  button {
-    @apply mb-2 w-full text-sm;
-    &:hover {
-      @apply border-green-700;
-    }
-  }
-
-  .popup {
-    position: fixed;
-    z-index: 900;
-    width: 100%;
-    height: 100vh;
-    padding: 5px;
-    text-align: center;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: white;
-    scroll-behavior: contain;
-    transform: scale(0);
-  }
-
-  .showPopup {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    animation: zoom 0.2s ease forwards;
-  }
-
-  .closeButton {
-    position: absolute;
-    top: 50px;
-    right: 50px;
-    width: 40px;
-    height: 40px;
-    border-radius: 100%;
-    background: whitesmoke;
-    padding: 11px 15px;
-    cursor: pointer;
-  }
-
-  .mob-desc {
-    display: none;
-  }
-
-  .mobileImage {
-    display: none;
-    margin-bottom: 40px;
-  }
-
-  .mobileImage :global(.cover) {
-    width: 100%;
-  }
-
-  .popup :global(video) {
-    width: 50%;
-    height: auto !important;
-    margin: 0 auto;
-  }
-
-  .popup :global(div) {
-    width: 100%;
-    height: auto;
-  }
-
-  .popup :global(.card-link) {
-    height: auto !important;
-  }
-
-  .popup :global(img) {
-    margin: 0 auto;
-    height: 95vh;
-    object-fit: contain !important;
-  }
-
-  .desktopImage :global(img),
-  .desktopImage :global(video) {
-    margin: 0 auto;
-  }
-
-  @keyframes zoom {
-    0% {
-      transform: scale(0.6);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  @media only screen and (max-width: 1023px) {
-    .desc-text {
-      height: 150px;
-      overflow: hidden;
-    }
-
-    .openDesc {
-      height: auto !important;
-      overflow: visible;
-    }
-
-    .show-more {
-      color: #3ba5ac;
-      font-weight: bold;
-      text-align: right;
-      margin-top: 10px;
-      cursor: pointer;
-      white-space: normal;
-    }
-
-    .desktopImage,
-    .desk-desc {
-      display: none;
-    }
-
-    .mobileImage,
-    .mob-desc {
-      display: block;
-    }
-
-    .closeButton {
-      top: 20px;
-      right: 20px;
-    }
-  }
-
-  @media only screen and (max-width: 500px) {
-    .popup :global(img),
-    .popup :global(video) {
-      height: auto;
-      width: 100%;
-    }
-  }
-</style>

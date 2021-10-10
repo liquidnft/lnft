@@ -14,6 +14,10 @@
       {val(transaction.asset, transaction.amount)}
       {ticker(transaction.asset)}
       for
+    {:else if transaction.type === 'receipt'}
+      received
+    {:else if transaction.type === 'transfer'}
+      transferred
     {:else if transaction.type === 'creation'}
       created
     {:else if transaction.type === 'cancel'}
