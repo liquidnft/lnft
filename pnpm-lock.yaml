@@ -26,7 +26,6 @@ specifiers:
   postcss-load-config: ^3.1.0
   postcss-nesting: '7'
   postcss-preset-env: ^6.7.0
-  prettier: ^2.4.1
   prettier-plugin-svelte: ^1.4.2
   qrcode-generator-es6: ^1.1.4
   rollup: ^2.33.1
@@ -69,8 +68,7 @@ devDependencies:
   postcss-load-config: 3.1.0
   postcss-nesting: 7.0.1
   postcss-preset-env: 6.7.0
-  prettier: 2.4.1
-  prettier-plugin-svelte: 1.4.2_prettier@2.4.1+svelte@3.43.0
+  prettier-plugin-svelte: 1.4.2_svelte@3.43.0
   qrcode-generator-es6: 1.1.4
   rollup: 2.57.0
   simple-svelte-autocomplete: 2.2.3
@@ -2169,13 +2167,12 @@ packages:
       source-map-js: 0.6.2
     dev: true
 
-  /prettier-plugin-svelte/1.4.2_prettier@2.4.1+svelte@3.43.0:
+  /prettier-plugin-svelte/1.4.2_svelte@3.43.0:
     resolution: {integrity: sha512-O9VsNwII+raTG8QPoQWouk5ABQy/hmLm4dZ2eqJ7DPnbO35A+BxMSjlfqkw0cNP+UcbykHFYU8zNXm93ytWP9g==}
     peerDependencies:
       prettier: ^1.16.4 || ^2.0.0
       svelte: ^3.2.0
     dependencies:
-      prettier: 2.4.1
       svelte: 3.43.0
     dev: true
 
@@ -2371,10 +2368,6 @@ packages:
       call-bind: 1.0.2
       get-intrinsic: 1.1.1
       object-inspect: 1.11.0
-    dev: true
-
-  /simple-svelte-autocomplete/2.2.3:
-    resolution: {integrity: sha512-9eOfSIAVemihgV206UwC/DX3hQ5oKK/ihrQRaQ15S7kMucsRNlqX42UC1KbUoG4DrXtjqqmq6d0iLsfn/Xng6g==}
     dev: true
 
   /simple-swizzle/0.2.2:
