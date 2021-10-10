@@ -74,15 +74,25 @@ select_permissions:
     - type
     - user_id
     filter:
-      _or:
-      - artwork_id:
-          _is_null: true
-      - artwork:
-          _or:
-          - transferred_at:
-              _is_null: false
-          - asking_asset:
-              _is_null: false
-          - artist_id:
-              _eq: X-Hasura-User-Id
+      _and:
+      - _or:
+        - artwork_id:
+            _is_null: true
+        - artwork:
+            _or:
+            - transferred_at:
+                _is_null: false
+            - asking_asset:
+                _is_null: false
+            - artist_id:
+                _eq: X-Hasura-User-Id
+      - _or:
+        - contract:
+            _nlike: "%locked_content%"
+        - _and:
+          - artwork:
+              owner_id:
+                _eq: X-Hasura-User-Id
+          - contract:
+              _like: "%locked_content%"
   role: user

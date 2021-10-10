@@ -102,7 +102,7 @@
     tags: [],
   };
 
-  let hash, tx;
+  let hash, tx, unlockable_content;
   const issue = async (ticker) => {
     let contract;
     let domain = "mintalio.coinos.io";
@@ -111,7 +111,7 @@
     await requirePassword();
 
     try {
-      contract = await createIssuance(artwork, domain, tx);
+      contract = await createIssuance({...artwork, ...{unlockable_content}}, domain, tx);
 
       await sign();
       await broadcast(true);
@@ -136,12 +136,13 @@
   $: generateTicker(title);
   let generateTicker = (t) => {
     if (!t) return;
-    artwork.ticker = (t.split(" ").length > 2
-      ? t
-          .split(" ")
-          .map((w) => w[0])
-          .join("")
-      : t
+    artwork.ticker = (
+      t.split(" ").length > 2
+        ? t
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+        : t
     )
       .substr(0, 3)
       .toUpperCase();
@@ -287,6 +288,62 @@
   };
 </script>
 
+<div class="container mx-auto py-20">
+  <div
+    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow"
+  >
+    <a
+      class="block mb-6 text-midblue"
+      href="."
+      on:click|preventDefault={() => window.history.back()}
+    >
+      <div class="flex">
+        <Fa icon={faChevronLeft} class="my-auto mr-1" />
+        <div>Back</div>
+      </div>
+    </a>
+    <h2>Submit artwork</h2>
+    <div class="flex flex-wrap flex-col-reverse lg:flex-row">
+      <div class="w-full lg:w-1/2 lg:pr-10">
+        <div class:invisible={!loading}>
+          <ProgressLinear />
+        </div>
+        <div class:invisible={loading}>
+          <Form bind:unlockable_content bind:artwork bind:focus on:submit={submit} bind:title />
+        </div>
+      </div>
+      {#if percent}
+        <div class="ml-2 flex-1 flex">
+          <div class="upload-button mx-auto">
+            <ArtworkMedia
+              {artwork}
+              {preview}
+              showDetails={false}
+              thumb={false}
+            />
+            <div class="w-full bg-grey-light p-8">
+              <div
+                class="font-light p-4 mx-auto max-w-xs text-center"
+                class:bg-primary={percent >= 100 && artwork.filename}
+                class:bg-yellow-200={percent < 100 || !artwork.filename}
+                style={width}
+              >
+                {#if percent < 100}
+                  {percent}%
+                {:else if artwork.filename}
+                  Upload complete!
+                {:else}Processing...{/if}
+              </div>
+            </div>
+          </div>
+        </div>
+      {:else}
+        <Dropzone on:file={uploadFile} style="box" />
+      {/if}
+    </div>
+  </div>
+</div>
+
 <style>
   .container {
     background-color: #ecf6f7;
@@ -315,55 +372,3 @@
     }
   }
 </style>
-
-<div class="container mx-auto py-20">
-  <div
-    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow">
-    <a
-      class="block mb-6 text-midblue"
-      href="."
-      on:click|preventDefault={() => window.history.back()}>
-      <div class="flex">
-        <Fa icon={faChevronLeft} class="my-auto mr-1" />
-        <div>Back</div>
-      </div>
-    </a>
-    <h2>Submit artwork</h2>
-    <div class="flex flex-wrap flex-col-reverse lg:flex-row">
-      <div class="w-full lg:w-1/2 lg:pr-10">
-        <div class:invisible={!loading}>
-          <ProgressLinear />
-        </div>
-        <div class:invisible={loading}>
-          <Form bind:artwork bind:focus on:submit={submit} bind:title />
-        </div>
-      </div>
-      {#if percent}
-        <div class="ml-2 flex-1 flex">
-          <div class="upload-button mx-auto">
-            <ArtworkMedia
-              {artwork}
-              {preview}
-              showDetails={false}
-              thumb={false} />
-            <div class="w-full bg-grey-light p-8">
-              <div
-                class="font-light p-4 mx-auto max-w-xs text-center"
-                class:bg-primary={percent >= 100 && artwork.filename}
-                class:bg-yellow-200={percent < 100 || !artwork.filename}
-                style={width}>
-                {#if percent < 100}
-                  {percent}%
-                {:else if artwork.filename}
-                  Upload complete!
-                {:else}Processing...{/if}
-              </div>
-            </div>
-          </div>
-        </div>
-      {:else}
-        <Dropzone on:file={uploadFile} style="box" />
-      {/if}
-    </div>
-  </div>
-</div>

@@ -43,7 +43,10 @@ const SERVER_PUBKEY = Buffer.from(
   "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b",
   "hex"
 );
+
+// TODO: check if on local or live env
 const network = networks.liquid;
+// const network = networks.regtest;
 
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
@@ -717,7 +720,7 @@ export const executeSwap = async (artwork) => {
 };
 
 export const createIssuance = async (
-  { filename: file, title: name, ticker },
+  { filename: file, title: name, ticker, unlockable_content: locked_content },
   domain,
   tx
 ) => {
@@ -772,6 +775,8 @@ export const createIssuance = async (
     ticker,
     version: 0,
   };
+
+  if (locked_content) contract["locked_content"] = locked_content;
 
   p.addIssuance({
     assetAmount: 1,

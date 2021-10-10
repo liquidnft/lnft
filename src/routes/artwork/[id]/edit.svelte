@@ -14,9 +14,17 @@
   let { id } = $page.params;
   let artwork;
 
+  let artworkFields = `
+    id
+    description
+    filename
+    title
+    slug
+`;
+
   onMount(async () => {
     await requireLogin();
-    query(getArtwork(id))
+    query(getArtwork(id, artworkFields))
       .then((res) => {
         artwork = res.artworks_by_pk;
       })
@@ -44,7 +52,6 @@
       })
       .catch(err);
   };
-
 </script>
 
 <div class="container mx-auto md:p-20">

@@ -34,3 +34,4 @@ export { default as ToggleSwitch } from "./ToggleSwitch.svelte";
 export { default as Transaction } from "./Transaction.svelte";
 export { default as TransactionText } from "./TransactionText.svelte";
 export { default as TransactionTime } from "./TransactionTime.svelte";
+export { default as LockedContent } from "./LockedContent.svelte";

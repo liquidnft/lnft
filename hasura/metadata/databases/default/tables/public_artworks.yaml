@@ -55,6 +55,13 @@ computed_fields:
       name: artwork_last_tx
       schema: public
   name: last_active
+- definition:
+    function:
+      name: artwork_locked_content
+      schema: public
+    session_argument: hasura_session
+    table_argument: artwork_row
+  name: locked_content
 - comment: ""
   definition:
     function:
@@ -179,6 +186,7 @@ select_permissions:
     - artist_owned
     - favorited
     - last_active
+    - locked_content
     - num_favorites
     filter:
       _or:
