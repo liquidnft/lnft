@@ -1,13 +1,19 @@
 <script>
-  import { ProgressLinear } from "$comp";
+  import { Avatar, ProgressLinear } from "$comp";
   import AutoComplete from "simple-svelte-autocomplete";
-  import { addresses, art, psbt, token } from "$lib/store";
+  import { addresses, art, psbt, user, token } from "$lib/store";
   import { err, goto, info } from "$lib/utils";
   import { getArtwork, updateArtwork } from "$queries/artworks";
   import { createTransaction } from "$queries/transactions";
   import { api, query } from "$lib/api";
   import { page } from "$app/stores";
-  import { broadcast, isMultisig, pay, sign } from "$lib/wallet";
+  import {
+    broadcast,
+    isMultisig,
+    requestSignature,
+    pay,
+    sign,
+  } from "$lib/wallet";
   import { requirePassword } from "$lib/auth";
 
   let { id } = $page.params;
@@ -26,6 +32,8 @@
       err(e);
     }
   };
+
+  $: loading = !$user || !$addresses;
 
   let send = async (e) => {
     await requirePassword();
@@ -82,9 +90,8 @@
     @apply text-gray-400 border-gray-400;
   }
 
-  .huh {
-    @apply rounded-lg p-2 text-black;
-    margin-top: 10px;
+  :global(.huh) {
+    @apply rounded-lg px-8 py-4 text-black w-full !important;
   }
 
 </style>
@@ -97,11 +104,18 @@
   {:else}
     <div class="w-full text-center my-8">
       <AutoComplete
+        hideArrow={true}
         placeholder="Recipient"
-        items={$addresses}
-        labelFieldName="username"
+        items={$addresses.filter((a) => a.id !== $user.id)}
+        className="w-full"
         inputClassName="huh"
-        bind:selectedItem={selectedValue} />
+        labelFieldName="username"
+        bind:selectedItem={selectedValue}>
+        <div class="flex" slot="item" let:item let:label>
+          <Avatar class="my-auto" user={item} />
+          <div class="ml-1 my-auto">{item.username}</div>
+        </div>
+      </AutoComplete>
     </div>
 
     <a
