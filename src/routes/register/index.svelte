@@ -7,9 +7,9 @@
   import { ProgressLinear } from "$comp";
 
   let show;
-  let username = "";
-  let password = "liquidart";
-  let email = makeid(6) + "@a.com";
+  let username;
+  let password;
+  let email;
   let registered;
 
   function makeid(length) {

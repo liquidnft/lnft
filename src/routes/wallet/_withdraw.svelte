@@ -12,8 +12,7 @@
   export let withdrawing = false;
 
   let amount;
-  let to =
-    "AzppkpkTHBGfGcvU89AKH9JNuoe24LZvjbNCDStpykLLUj2S3n3zPFPVhQCiC8akswapzRrEqHnJUmMQ";
+  let to;
 
   let loading;
   let artwork;

@@ -12,8 +12,8 @@
   import { user } from "$lib/store";
 
   let show;
-  let username = "";
-  let password = "liquidart";
+  let username;
+  let password;
 
   let usernameInput;
   let pageChange = () =>
