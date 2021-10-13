@@ -158,10 +158,9 @@
   <div class="header text-center">
     <h1 class="text-left md:text-center md:w-full">
       {branding.projectName}
-      <br />digital art
     </h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      Upload, collect, and transact rare digital art on the Liquid Network
+      {branding.meta.general.homeHeroText}
     </h5>
     <a class="primary-btn" href={`/market`}>Start exploring</a>
   </div>

@@ -1,0 +1,21 @@
+@font-face {
+    font-family: "SecondaryFont";
+    src: url("/font/Montserrat-Regular.ttf") format("truetype"),
+         url("/font/Montserrat-Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "PrimaryFont";
+    src: url("/font/Prata-Regular.ttf") format("truetype");
+}
+
+:root {
+  --color-primary-safe: #3C63C4;
+  --color-primary: #3C63C4;
+  --color-lightblue: #8faefc;
+  --color-midblue: #4c8de2;
+
+  --font-primary-src: url("/font/OpenSans-Regular.ttf");
+  --font-secondary-src: url("/font/Montserrat-Regular.ttf") format("truetype"),
+  url("/font/Montserrat-Bold.ttf") format("truetype");
+}

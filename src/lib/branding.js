@@ -1,43 +1,58 @@
 const BRANDING = {
-  projectName: 'Raretoshi',
+  projectName: 'Mintalio',
   
-  superUserName: 'raretoshi',
+  superUserName: 'mintalio',
   
   urls: {
-    base: 'raretoshi.com',
-    www: 'www.raretoshi.com',
-    protocol: 'https://raretoshi.com',
+    base: 'mintalio.com',
+    www: 'www.mintalio.com',
+    protocol: 'https://mintalio.com',
     external: {
-      twitter: 'https://twitter.com/raretoshi',
-      telegram: 'https://t.me/raretoshi',
-      blog: 'https://blog.raretoshi.com/',
+      twitter: 'https://twitter.com/mintalio',
+      telegram: 'https://t.me/mintalio',
+      blog: 'https://blog.mintalio.com/',
     }
   },
   
   meta: {
     general: {
       og: {
-        title: 'Raretoshi',
-        image: 'https://raretoshi.com/branding/splash.png',
-        url: 'https://raretoshi.com/',
+        title: 'Mintalio',
+        image: 'https://mintalio.com/branding/splash.png',
+        url: 'https://mintalio.com/',
       },
       twitter: {
         card: 'summary_large_image',
-        creator: '@raretoshi',
-        site: '@raretoshi',
-        title: 'Raretoshi',
-        image: 'https://raretoshi.com/branding/splash.png',
+        creator: '@mintalio',
+        site: '@mintalio',
+        title: 'Mintalio',
+        image: 'https://mintalio.com/branding/splash.png',
       },
+      logo: {
+        header: {
+          path: '/branding/logo-default.png',
+          class: 'w-24 lg:w-28'
+        },
+        footer: {
+          path: '/branding/logo-footer.jpg',
+          class: 'w-24'
+        }
+      },
+      colors: {
+        primary: '#3C63C4',
+        secondary: '#32373C',
+      },
+      homeHeroText: 'Upload, collect, and transact rare digital art on the Liquid Network'
     },
     // for art page we use art info in <header> meta
     artPage: (art) => ({
       og: {
-        title: `Raretoshi - ${art.title}`,
+        title: `Mintalio - ${art.title}`,
         image: `/api/ipfs/${art.filename}`,
-        url: `https://raretoshi.com/a/${art.slug}`,
+        url: `https://mintalio.com/a/${art.slug}`,
       },
       twitter: {
-        title: `Raretoshi - ${art.title}`,
+        title: `Mintalio - ${art.title}`,
         image: `/api/ipfs/${art.filename}`,
       },
     })
@@ -45,7 +60,7 @@ const BRANDING = {
   },
   
   emails: {
-    support : 'support@raretoshi.com'
+    support : 'support@mintalio.com'
   }
 };
 

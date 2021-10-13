@@ -75,17 +75,10 @@
     height: 350px;
   }
 
-  .hover {
-    @apply border-b-2;
-    border-bottom: 3px solid #6ed8e0;
-  }
 
   .tabs div {
     @apply mb-auto h-10 mx-2 md:mx-4;
-    &:hover {
-      @apply border-b-2;
-      border-bottom: 3px solid #6ed8e0;
-    }
+
   }
 
   .social-details {

@@ -3,6 +3,7 @@
   import { faSearch } from "@fortawesome/free-solid-svg-icons";
   import Hamburger from "./Hamburger.svelte";
   import Menu from "./Menu.svelte";
+  import branding from "$lib/branding";
 
   export let sidebar = false;
 
@@ -49,7 +50,7 @@
   </nav>
   <div>
     <a href="/">
-      <img src="/branding/logo-default.svg" alt="logo" class="w-36 lg:w-48" /></a>
+      <img src={branding.meta.general.logo.header.path}  alt="logo" class={branding.meta.general.logo.header.class} /></a>
   </div>
   <a class="mobileSearch" href="/market">
     <Fa icon={faSearch} />

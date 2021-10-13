@@ -1,5 +1,6 @@
 <script>
   import Nav from "./_nav.svelte";
+  import "../vars.css";
 </script>
 
 <style>
@@ -9,7 +10,7 @@
 
   :global(.dark input, .dark select) {
     @apply bg-black text-white border;
-    border-color: #3ba5ac;
+    border-color: #2cbf0f;
   }
 
   .wallet-container{
