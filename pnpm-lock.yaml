@@ -40,7 +40,7 @@ specifiers:
   uuid: ^8.3.2
   vite-plugin-shim-react-pdf: ^1.0.3
   wretch: ^1.7.4
-  wretch-middlewares: ^0.1.12
+  wretch-middlewares: ^0.1.13
 
 devDependencies:
   '@fortawesome/fontawesome-free': 5.15.4
