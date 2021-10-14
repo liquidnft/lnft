@@ -246,10 +246,6 @@
     overflow: hidden;
   }
 
-  :global(.description a) {
-    color: #3ba5ac;
-  }
-
   .disabled {
     @apply text-gray-400 border-gray-400;
   }
@@ -356,7 +352,6 @@
     }
 
     .show-more {
-      color: #3ba5ac;
       font-weight: bold;
       text-align: right;
       margin-top: 10px;
@@ -477,14 +472,14 @@
           <div class="w-full mb-2">
             <a
               href={disabled ? "" : `/artwork/${id}/auction`}
-              class="block text-center text-sm secondary-btn w-full"
+              class="text-center text-sm secondary-btn w-full"
               class:disabled>List</a
             >
           </div>
           <div class="w-full mb-2">
             <a
               href={`/artwork/${artwork.id}/transfer`}
-              class="block text-center text-sm secondary-btn w-full"
+              class="text-center text-sm secondary-btn w-full"
               class:disabled>Transfer</a>
           </div>
 
@@ -492,7 +487,7 @@
             <div class="w-full mb-2">
               <a
                 href={`/artwork/${id}/edit`}
-                class="block text-center text-sm secondary-btn w-full"
+                class="text-center text-sm secondary-btn w-full"
                 class:disabled>Edit</a
               >
             </div>

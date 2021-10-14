@@ -2176,12 +2176,6 @@ packages:
       svelte: 3.43.0
     dev: true
 
-  /prettier/2.4.1:
-    resolution: {integrity: sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-    dev: true
-
   /pretty-hrtime/1.0.3:
     resolution: {integrity: sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=}
     engines: {node: '>= 0.8'}
@@ -2368,6 +2362,10 @@ packages:
       call-bind: 1.0.2
       get-intrinsic: 1.1.1
       object-inspect: 1.11.0
+    dev: true
+
+  /simple-svelte-autocomplete/2.2.3:
+    resolution: {integrity: sha512-9eOfSIAVemihgV206UwC/DX3hQ5oKK/ihrQRaQ15S7kMucsRNlqX42UC1KbUoG4DrXtjqqmq6d0iLsfn/Xng6g==}
     dev: true
 
   /simple-swizzle/0.2.2:

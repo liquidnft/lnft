@@ -30,11 +30,11 @@ const BRANDING = {
       },
       logo: {
         header: {
-          path: '/branding/logo-default.png',
+          path: '/branding/logo-default.svg',
           class: 'w-24 lg:w-28'
         },
         footer: {
-          path: '/branding/logo-footer.jpg',
+          path: '/branding/logo-footer.svg',
           class: 'w-24'
         }
       },
@@ -42,6 +42,8 @@ const BRANDING = {
         primary: '#3C63C4',
         secondary: '#32373C',
       },
+      metaDescription: 'Upload, collect, and transact rare digital art on the Liquid Network',
+      metaKeywords: 'Bitcoin Liquid NFT Art',
       homeHeroText: 'Upload, collect, and transact rare digital art on the Liquid Network'
     },
     // for art page we use art info in <header> meta

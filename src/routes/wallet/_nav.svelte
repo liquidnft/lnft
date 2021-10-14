@@ -24,10 +24,6 @@
     margin-bottom: 20px;
   }
 
-  .wallet-nav a:hover {
-    color: #3ba5ac;
-  }
-
   @media (max-width: 1023px) {
     .wallet-nav-container {
       position: relative;

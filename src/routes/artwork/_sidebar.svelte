@@ -11,9 +11,6 @@
 </script>
 
 <style>
-  :global(.description a) {
-    color: #3ba5ac;
-  }
 
   .art-likes-container {
     display: flex;

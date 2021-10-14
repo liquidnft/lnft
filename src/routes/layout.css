@@ -188,16 +188,7 @@ select:focus {
 }
 
 button:hover {
-  color: rgb(84, 110, 157);
-}
-
-:global(input),
-textarea,
-select {
-  @apply border bg-white focus:outline-none;
-  overflow-y: auto;
-  padding: 0;
-  padding: 10px;
+  color: var(--color-lightblue);
 }
 
 .title {
@@ -235,4 +226,67 @@ select {
 
 .tabs div:hover {
   border-bottom: 3px solid var(--color-lightblue);
+}
+
+.contact a, .faq a, .description a{
+  color: var(--color-primary);
+}
+
+.wallet-nav a:hover {
+  color: var(--color-primary);
+}
+
+.show-more {
+  color: var(--color-primary);
+}
+
+
+element.style {
+}
+select.svelte-1jm2bqe {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAh0lEQVQ4T93TMQrCUAzG8V9x8QziiYSuXdzFC7h4AcELOPQAdXYovZCHEATlgQV5GFTe1ozJlz/kS1IpjKqw3wQBVyy++JI0y1GTe7DCBbMAckeNIQKk/BanALBB+16LtnDELoMcsM/BESDlz2heDR3WePwKSLo5eoxz3z6NNcFD+vu3ij14Aqz/DxGbKB7CAAAAAElFTkSuQmCC);
+    background-repeat: no-repeat;
+    background-position: 90%;
+}
+.px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+.rounded-full {
+    border-radius: 9999px;
+}
+.bg-gray-100 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+}
+.appearance-none {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+.rounded-full {
+    border-radius: 9999px;
+}
+.bg-gray-100 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+}
+.appearance-none {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+input, textarea, select {
+    overflow-y: auto;
+    padding-top: 10px !important;
+    padding-right: 10px;
+    padding-bottom: 10px !important;
+    padding-left: 10px;
+}
+input[type="checkbox"], input[type="radio"] {
+  padding: 0 !important;
 }
