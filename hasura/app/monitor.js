@@ -72,23 +72,6 @@ const transferOwnership = async ({
       psbt,
       artwork: { asset },
     } = transaction;
-
-    await hasura
-      .post({
-        query: insertTransaction,
-        variables: {
-          transaction: {
-            type: "receipt",
-            user_id: transaction.artwork.owner_id,
-            artwork_id,
-            hash,
-            psbt,
-            amount: -1,
-            asset,
-          },
-        },
-      })
-      .json();
   }
 
   hasura.post({

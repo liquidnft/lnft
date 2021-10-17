@@ -543,7 +543,7 @@ const addFee = (p) =>
 
 const bumpFee = (v) => fee.set(get(fee) + v);
 
-const isMultisig = ({ royalty, auction_end }) => {
+export const isMultisig = ({ royalty, auction_end }) => {
   return !!(
     (auction_end && compareAsc(parseISO(auction_end), new Date()) > 0) ||
     royalty

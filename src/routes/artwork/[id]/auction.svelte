@@ -6,11 +6,10 @@
   import { Buffer } from "buffer";
   import { onMount, tick } from "svelte";
   import { page } from "$app/stores";
-  import { getArtwork } from "$queries/artworks";
-  import { updateArtwork } from "$queries/artworks";
-  import { api, query, hasura } from "$lib/api";
   import { getDefaultRoyaltyRecipients } from "$queries/royalty_recipients";
   import { updateArtworkWithRoyaltyRecipients } from "$queries/artworks";
+  import { getArtwork, updateArtwork } from "$queries/artworks";
+  import { api, query } from "$lib/api";
   import {
     fee,
     password,

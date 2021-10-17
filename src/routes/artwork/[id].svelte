@@ -11,7 +11,15 @@
   import { Activity, Avatar, Card, ProgressLinear } from "$comp";
   import Sidebar from "./_sidebar.svelte";
   import { tick, onDestroy } from "svelte";
-  import { art, prompt, password, user, token, psbt } from "$lib/store";
+  import {
+    art,
+    addresses,
+    prompt,
+    password,
+    user,
+    token,
+    psbt,
+  } from "$lib/store";
   import countdown from "$lib/countdown";
   import { getArtwork, getArtworksByArtist } from "$queries/artworks";
   import { getArtworkTransactions } from "$queries/transactions";
@@ -52,22 +60,23 @@
     loading = false;
     if (params.id) {
       ({ id } = params);
-
-      api.url("/viewed").post({ id });
     }
   };
 
   let others = [];
   let transactions = [];
 
-  let artwork, start_counter, end_counter, now, timeout;
+  let artwork, start_counter, end_counter, now, timeout, loaded;
 
   $: setup(id);
   let setup = async () => {
     query(getArtwork(id))
       .then((res) => {
         artwork = res.artworks_by_pk;
+
         $art = artwork;
+        if (!loaded) api.url("/viewed").post({ id });
+        loaded = true;
 
         query(getArtworksByArtist(artwork.artist_id))
           .then(
@@ -229,6 +238,14 @@
 </script>
 
 <style>
+  .listContainer {
+    overflow: hidden;
+  }
+
+  svelte-virtual-list-viewport {
+    overflow: hidden;
+  }
+
   :global(.description a) {
     color: #3ba5ac;
   }
@@ -455,13 +472,20 @@
 
         {#if loading}
           <ProgressLinear />
-        {:else if $user && $user.id === artwork.owner_id}
+        {:else if $user && $user.id === artwork.owner_id && artwork.held}
           <div class="w-full mb-2">
             <a
               href={disabled ? '' : `/artwork/${id}/auction`}
               class="block text-center text-sm secondary-btn w-full"
               class:disabled>List</a>
           </div>
+          <div class="w-full mb-2">
+            <a
+              href={`/artwork/${artwork.id}/transfer`}
+              class="block text-center text-sm secondary-btn w-full"
+              class:disabled>Transfer</a>
+          </div>
+
           {#if $user.id === artwork.artist_id}
             <div class="w-full mb-2">
               <a

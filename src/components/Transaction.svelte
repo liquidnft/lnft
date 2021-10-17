@@ -197,94 +197,93 @@
 
 {#if $addresses && tx}
   <div class="w-full mx-auto">
-    <div class="flex flex-wrap">
-      <div class="w-full sm:w-1/2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
         <h4 class="mb-2">Sending</h4>
         {#each Object.keys(totals) as username}
           {#if senders[username] && username !== 'Fee'}
-            <div class="flex mb-2">
-              <div class="flex ml-2 flex-grow sm:pr-8">
-                {#if users[username]}
-                  <div class="mb-auto flex">
-                    <div class="flex">
-                      {#if users[username]}
-                        <Avatar
-                          user={users[username]}
-                          overlay={username.includes('2of2') && '/logo-graphic.png'} />
-                      {/if}
+            {#each Object.keys(totals[username]) as asset}
+              {#if totals[username][asset] > 0}
+                <div class="flex mb-2">
+                  {#if users[username]}
+                    <div class="my-auto flex w-48">
+                      <div class="flex">
+                        {#if users[username]}
+                          <Avatar
+                            user={users[username]}
+                            overlay={username.includes('2of2') && '/logo-graphic.png'} />
+                        {:else}
+                          <Avatar
+                            src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z" />
+                        {/if}
+                      </div>
+                      <div class="my-auto ml-2 truncate">
+                        <a
+                          href={`/u/${username.replace(' 2of2', '')}`}
+                          class="secondary-color">
+                          {username}
+                        </a>
+                      </div>
                     </div>
-                    <div class="my-auto ml-2">
-                      <a
-                        href={`/u/${username.replace(' 2of2', '')}`}
-                        class="secondary-color">
-                        {username}
-                      </a>
-                    </div>
-                  </div>
-                {:else}
-                  <div class="w-2/3 break-all">{username}</div>
-                {/if}
-                <div class="ml-auto mt-3">
-                  {#each Object.keys(totals[username]) as asset}
-                    {#if totals[username][asset] > 0}
-                      <div class="flex break-all mb-2">
-                        <div class="ml-auto mr-1 whitespace-nowrap">
-                          {val(asset, Math.abs(totals[username][asset]))}
-                        </div>
-                        <div class="whitespace-nowrap">{assetLabel(asset)}</div>
+                  {:else}
+                    <div>{username}</div>
+                  {/if}
+                  <div class="flex my-auto ml-auto w-48">
+                    {#if val(asset, Math.abs(totals[username][asset])) !== "1"}
+                      <div class="mr-1 ml-auto">
+                        {val(asset, Math.abs(totals[username][asset]))}
                       </div>
                     {/if}
-                  {/each}
+                    <div class="truncate mr-2">{assetLabel(asset)}</div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              {/if}
+            {/each}
           {/if}
         {/each}
       </div>
 
-      <div class="w-full sm:w-1/2">
+      <div>
         <h4 class="mb-2">Receiving</h4>
         {#each Object.keys(totals) as username}
           {#if recipients[username] && username !== 'Fee'}
-            <div class="flex mb-2">
-              <div class="flex ml-2 flex-grow">
-                <div class="flex">
+            {#each Object.keys(totals[username]) as asset}
+              {#if totals[username][asset] < 0}
+                <div class="flex mb-2">
                   {#if users[username]}
-                    <Avatar
-                      user={users[username]}
-                      overlay={username.includes('2of2') && '/logo-graphic.png'} />
-                  {:else}
-                    <Avatar
-                      src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z" />
-                  {/if}
-                </div>
-                <div class="my-auto ml-2">
-                  {#if users[username]}
-                    <div class="my-auto">
-                      <a
-                        href={`/u/${username.replace(' 2of2', '')}`}
-                        class="secondary-color">
-                        {username}
-                      </a>
+                    <div class="my-auto flex w-48">
+                      <div class="flex">
+                        {#if users[username]}
+                          <Avatar
+                            user={users[username]}
+                            overlay={username.includes('2of2') && '/logo-graphic.png'} />
+                        {:else}
+                          <Avatar
+                            src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z" />
+                        {/if}
+                      </div>
+                      <div class="my-auto ml-2 truncate">
+                        <a
+                          href={`/u/${username.replace(' 2of2', '')}`}
+                          class="secondary-color">
+                          {username}
+                        </a>
+                      </div>
                     </div>
                   {:else}
-                    <div class="w-2/3 whitespace-nowrap">{username}</div>
+                    <div>{username}</div>
                   {/if}
-                </div>
-                <div class="ml-auto mt-3">
-                  {#each Object.keys(totals[username]) as asset}
-                    {#if totals[username][asset] < 0}
-                      <div class="flex break-all mb-2">
-                        <div class="mx-auto mr-1 whitespace-nowrap">
-                          {val(asset, Math.abs(totals[username][asset]))}
-                        </div>
-                        <div class="whitespace-nowrap">{assetLabel(asset)}</div>
+                  <div class="flex my-auto ml-auto w-48">
+                    {#if val(asset, Math.abs(totals[username][asset])) !== "1"}
+                      <div class="mr-1 ml-auto">
+                        {val(asset, Math.abs(totals[username][asset]))}
                       </div>
                     {/if}
-                  {/each}
+                    <div class="truncate mr-2">{assetLabel(asset)}</div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              {/if}
+            {/each}
           {/if}
         {/each}
 
@@ -323,9 +322,9 @@
     {/if}
 
     {#if showDetails}
-      <div class="text-sm">
+      <div class="text-sm break-all text-wrap">
         <div class="font-bold text-xs">Transaction ID</div>
-        <div class="mb-4 break-all text-wrap p-4">
+        <div class="mb-4 p-4">
           {#if ins.find((i) => !i.signed || i.pSig)}
             {tx.getId()}
           {:else}
@@ -349,15 +348,12 @@
           </div>
         </div>
 
-        <div class="md:flex">
-          <div class="w-1/2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
             <div class="font-bold text-xs">Inputs</div>
 
             {#each ins as input, i}
-              <div class="break-all mb-2 p-4">
-                {#if i > 0}
-                  <hr />
-                {/if}
+              <div class="mb-2 p-4">
                 <div class="mb-2">Index: {i}</div>
 
                 <div class="mb-2">
@@ -393,14 +389,11 @@
             {/each}
           </div>
 
-          <div class="w-1/2">
+          <div>
             <div class="font-bold text-xs">Outputs</div>
             {#each outs as out, i}
-              {#if i > 0}
-                <hr />
-              {/if}
               {#if out}
-                <div class="break-all mb-2 p-4">
+                <div class="mb-2 p-4">
                   <div class="mb-2">Index: {i}</div>
                   {#if out.value && out.asset}
                     <div class="mb-2">
