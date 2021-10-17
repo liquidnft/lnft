@@ -79,7 +79,7 @@
         id="editions"
         placeholder="Editions"
         bind:value={artwork.editions}
-        class="w-1/2"
+        class="w-1/2 p-3"
       />
     </div>
   {/if}
@@ -89,6 +89,7 @@
       id="description"
       placeholder="How would you describe it?"
       bind:value={artwork.description}
+      class="p-3"
     />
   </div>
   {#if !artwork.id}
@@ -97,6 +98,7 @@
       <textarea
         id="unlockable_content"
         placeholder="Have something special for your buyers?"
+        class="p-3"
         bind:value={unlockable_content}
       />
     </div>
@@ -121,7 +123,7 @@
       </div>
       <input
         id="ticker"
-        class="w-1/2"
+        class="w-1/2 p-3"
         bind:value={artwork.ticker}
         maxlength="5"
       />
@@ -166,8 +168,6 @@
   input[type="checkbox"]:checked {
     appearance: none;
     border: 5px solid #fff;
-    outline: 2px solid #6ed8e0;
-    background-color: #6ed8e0;
     padding: 2px;
     border-radius: 0;
   }

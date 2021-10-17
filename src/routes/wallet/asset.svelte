@@ -37,9 +37,6 @@
   .dark-gray {
     background: #31373e;
   }
-  .border-blue {
-    border-color: #6ed8e0;
-  }
 
   .active {
     @apply border-t-2 border-b-2 border-r-2 text-white;

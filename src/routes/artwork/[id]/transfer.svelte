@@ -122,6 +122,6 @@
       href="/"
       on:click|preventDefault={send}
       class:disabled
-      class="block text-center text-sm secondary-btn w-full">Send</a>
+      class="text-center text-md secondary-btn w-full">Send</a>
   {/if}
 </div>

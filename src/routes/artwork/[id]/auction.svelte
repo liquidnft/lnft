@@ -387,15 +387,12 @@
   input[type="checkbox"]:checked {
     appearance: none;
     border: 5px solid #fff;
-    outline: 2px solid #6ed8e0;
-    background-color: #6ed8e0;
     padding: 2px;
     border-radius: 0;
   }
 
   input[type="radio"]:checked {
     appearance: none;
-    border: 7px solid #6ed8e0;
     background-color: #fff;
     padding: 2px;
     border-radius: 100%;
@@ -540,6 +537,7 @@
                         id="date"
                         type="date"
                         name="date"
+                        class="p-3"
                         bind:value={start_date}
                         disabled={auction_underway} />
                     </div>
@@ -549,6 +547,7 @@
                         id="time"
                         type="time"
                         name="time"
+                        class="p-3"
                         bind:value={start_time}
                         disabled={auction_underway} />
                     </div>
@@ -562,6 +561,7 @@
                       <input
                         type="date"
                         name="date"
+                        class="p-3"
                         bind:value={end_date}
                         disabled={auction_underway} />
                     </div>
@@ -570,6 +570,7 @@
                       <input
                         type="time"
                         name="time"
+                        class="p-3"
                         bind:value={end_time}
                         disabled={auction_underway} />
                     </div>

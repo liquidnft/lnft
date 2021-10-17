@@ -85,9 +85,6 @@
   .dark-gray {
     background: #31373e;
   }
-  .border-blue {
-    border-color: #6ed8e0;
-  }
 
   .bg-btc {
     background: rgba(52, 190, 171, 0.25);

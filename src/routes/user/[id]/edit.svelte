@@ -115,7 +115,6 @@
     right: 15px;
     top: 15px;
     font-size: 20px;
-    color: #6ed8e0;
   }
 
   @media only screen and (max-width: 1024px) {
