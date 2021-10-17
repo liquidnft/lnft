@@ -33,7 +33,7 @@
     }
   };
 
-  $: loading = !$user || !$addresses;
+  $: loading = !$user || !$addresses || !artwork;
 
   let send = async (e) => {
     await requirePassword();
@@ -102,7 +102,7 @@
   {#if loading}
     <ProgressLinear />
   {:else}
-    <div class="w-full text-center my-8">
+    <div class="w-full max-w-lg text-center my-8 mx-auto">
       <AutoComplete
         hideArrow={true}
         placeholder="Recipient"
@@ -116,12 +116,12 @@
           <div class="ml-1 my-auto">{item.username}</div>
         </div>
       </AutoComplete>
-    </div>
-
     <a
       href="/"
       on:click|preventDefault={send}
       class:disabled
-      class="text-center text-md secondary-btn w-full">Send</a>
+      class="mt-8 text-center text-md secondary-btn w-full">Send</a>
+    </div>
+
   {/if}
 </div>
