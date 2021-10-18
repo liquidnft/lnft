@@ -204,7 +204,8 @@
       transaction.amount = -artwork.list_price;
       transaction.type = "purchase";
 
-      $psbt = await executeSwap(artwork, 500);
+      $psbt = await executeSwap(artwork);
+      debugger
       $psbt = await sign();
 
       if (artwork.royalty || artwork.auction_end) {
