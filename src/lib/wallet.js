@@ -685,16 +685,49 @@ export const executeSwap = async (artwork) => {
     value: 1,
   });
 
-  if (royalty && artist_id !== owner_id) {
-    let value = Math.round((total * royalty) / 100);
-    total += value;
+  // if (royalty && artist_id !== owner_id) {
+  //   let value = Math.round((total * royalty) / 100);
+  //   total += value;
 
-    p.addOutput({
-      asset: asking_asset,
-      value,
-      nonce,
-      script: Address.toOutputScript(address, network),
-    });
+  //   p.addOutput({
+  //     asset: asking_asset,
+  //     value,
+  //     nonce,
+  //     script: Address.toOutputScript(address, network),
+  //   });
+  // }
+
+  if (artist_id !== owner_id) {
+    if (royalty) {
+      let value = Math.round((list_price * royalty) / 100);
+      total += value;
+  
+      p.addOutput({
+        asset: asking_asset,
+        value,
+        nonce,
+        script: Address.toOutputScript(address, network),
+      });
+    }
+
+    if(artwork.royalty_recipients.length) {
+      for (let i = 0; i < artwork.royalty_recipients.length; i++) {
+        const element = artwork.royalty_recipients[i];
+
+        const recipientValue = Math.round((list_price * element.amount) / 100);
+        total += recipientValue;
+    
+        p.addOutput({
+          asset: asking_asset,
+          value: recipientValue,
+          nonce,
+          script: Address.toOutputScript(element.address, network),
+        });
+
+          
+      }
+    }
+    // TODO: add this info in the arwork page
   }
 
   let p2 = Psbt.fromBase64(p.toBase64());
@@ -712,7 +745,6 @@ export const executeSwap = async (artwork) => {
   await construct(p2, total);
 
   addFee(p2);
-
   return p2;
 };
 
