@@ -8,7 +8,7 @@
   import { faHeart, faImage } from "@fortawesome/free-regular-svg-icons";
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
-  import { Activity, Avatar, Card, ProgressLinear } from "$comp";
+  import { Activity, Avatar, Card, ProgressLinear, RoyaltyInfo } from "$comp";
   import Sidebar from "./_sidebar.svelte";
   import { tick, onDestroy } from "svelte";
   import {
@@ -205,7 +205,7 @@
       transaction.type = "purchase";
 
       $psbt = await executeSwap(artwork);
-      debugger
+      debugger;
       $psbt = await sign();
 
       if (artwork.royalty || artwork.auction_end) {
@@ -237,154 +237,6 @@
   let showMore = false;
   let showActivity = false;
 </script>
-
-<style>
-  .listContainer {
-    overflow: hidden;
-  }
-
-  svelte-virtual-list-viewport {
-    overflow: hidden;
-  }
-
-  .disabled {
-    @apply text-gray-400 border-gray-400;
-  }
-
-  button {
-    @apply mb-2 w-full text-sm;
-    &:hover {
-      @apply border-green-700;
-    }
-  }
-
-  .popup {
-    position: fixed;
-    z-index: 900;
-    width: 100%;
-    height: 100vh;
-    padding: 5px;
-    text-align: center;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: white;
-    scroll-behavior: contain;
-    transform: scale(0);
-  }
-
-  .showPopup {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    animation: zoom 0.2s ease forwards;
-  }
-
-  .closeButton {
-    position: absolute;
-    top: 50px;
-    right: 50px;
-    width: 40px;
-    height: 40px;
-    border-radius: 100%;
-    background: whitesmoke;
-    padding: 11px 15px;
-    cursor: pointer;
-  }
-
-  .mob-desc {
-    display: none;
-  }
-
-  .mobileImage {
-    display: none;
-    margin-bottom: 40px;
-  }
-
-  .mobileImage :global(.cover) {
-    width: 100%;
-  }
-
-  .popup :global(video) {
-    width: 50%;
-    height: auto !important;
-    margin: 0 auto;
-  }
-
-  .popup :global(div) {
-    width: 100%;
-    height: auto;
-  }
-
-  .popup :global(.card-link) {
-    height: auto !important;
-  }
-
-  .popup :global(img) {
-    margin: 0 auto;
-    height: 95vh;
-    object-fit: contain !important;
-  }
-
-  .desktopImage :global(img),
-  .desktopImage :global(video) {
-    margin: 0 auto;
-  }
-
-  @keyframes zoom {
-    0% {
-      transform: scale(0.6);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  @media only screen and (max-width: 1023px) {
-    .desc-text {
-      height: 150px;
-      overflow: hidden;
-    }
-
-    .openDesc {
-      height: auto !important;
-      overflow: visible;
-    }
-
-    .show-more {
-      font-weight: bold;
-      text-align: right;
-      margin-top: 10px;
-      cursor: pointer;
-      white-space: normal;
-    }
-
-    .desktopImage,
-    .desk-desc {
-      display: none;
-    }
-
-    .mobileImage,
-    .mob-desc {
-      display: block;
-    }
-
-    .closeButton {
-      top: 20px;
-      right: 20px;
-    }
-  }
-
-  @media only screen and (max-width: 500px) {
-    .popup :global(img),
-    .popup :global(video) {
-      height: auto;
-      width: 100%;
-    }
-  }
-
-</style>
 
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork}
@@ -447,7 +299,7 @@
           {#if artwork.list_price}
             <div class="my-2">
               <div class="text-sm mt-auto">List Price</div>
-              <div class="text-lg">{list_price} {ticker}</div>
+              <div class="text-lg">{list_price}{ticker}<RoyaltyInfo {artwork} /></div>
             </div>
           {/if}
           {#if artwork.reserve_price}
@@ -473,32 +325,24 @@
           <div class="w-full mb-2">
             <a
               href={disabled ? "" : `/artwork/${id}/auction`}
-              class="text-center text-md secondary-btn w-full"
+              class="block text-center text-sm secondary-btn w-full"
               class:disabled>List</a
             >
           </div>
           <div class="w-full mb-2">
             <a
               href={`/artwork/${artwork.id}/transfer`}
-              class="text-center text-md secondary-btn w-full"
-              class:disabled>Transfer</a>
+              class="block text-center text-sm secondary-btn w-full"
+              class:disabled>Transfer</a
+            >
           </div>
 
           {#if $user.id === artwork.artist_id}
             <div class="w-full mb-2">
               <a
                 href={`/artwork/${id}/edit`}
-                class="text-center text-md secondary-btn w-full"
+                class="block text-center text-sm secondary-btn w-full"
                 class:disabled>Edit</a
-              >
-            </div>
-          {/if}
-          {#if artwork.locked_content}
-            <div class="w-full mb-2">
-              <button
-                on:click|preventDefault={(e) => (showLockedContent = true)}
-                class="secondary-btn"
-                class:disabled>View Locked Content</button
               >
             </div>
           {/if}
@@ -677,3 +521,156 @@
     />
   {/if}
 </div>
+
+<style>
+  .listContainer {
+    overflow: hidden;
+  }
+
+  svelte-virtual-list-viewport {
+    overflow: hidden;
+  }
+
+  :global(.description a) {
+    color: #3ba5ac;
+  }
+
+  .disabled {
+    @apply text-gray-400 border-gray-400;
+  }
+
+  button {
+    @apply mb-2 w-full text-sm;
+    &:hover {
+      @apply border-green-700;
+    }
+  }
+
+  .popup {
+    position: fixed;
+    z-index: 900;
+    width: 100%;
+    height: 100vh;
+    padding: 5px;
+    text-align: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: white;
+    scroll-behavior: contain;
+    transform: scale(0);
+  }
+
+  .showPopup {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    animation: zoom 0.2s ease forwards;
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background: whitesmoke;
+    padding: 11px 15px;
+    cursor: pointer;
+  }
+
+  .mob-desc {
+    display: none;
+  }
+
+  .mobileImage {
+    display: none;
+    margin-bottom: 40px;
+  }
+
+  .mobileImage :global(.cover) {
+    width: 100%;
+  }
+
+  .popup :global(video) {
+    width: 50%;
+    height: auto !important;
+    margin: 0 auto;
+  }
+
+  .popup :global(div) {
+    width: 100%;
+    height: auto;
+  }
+
+  .popup :global(.card-link) {
+    height: auto !important;
+  }
+
+  .popup :global(img) {
+    margin: 0 auto;
+    height: 95vh;
+    object-fit: contain !important;
+  }
+
+  .desktopImage :global(img),
+  .desktopImage :global(video) {
+    margin: 0 auto;
+  }
+
+  @keyframes zoom {
+    0% {
+      transform: scale(0.6);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @media only screen and (max-width: 1023px) {
+    .desc-text {
+      height: 150px;
+      overflow: hidden;
+    }
+
+    .openDesc {
+      height: auto !important;
+      overflow: visible;
+    }
+
+    .show-more {
+      color: #3ba5ac;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 10px;
+      cursor: pointer;
+      white-space: normal;
+    }
+
+    .desktopImage,
+    .desk-desc {
+      display: none;
+    }
+
+    .mobileImage,
+    .mob-desc {
+      display: block;
+    }
+
+    .closeButton {
+      top: 20px;
+      right: 20px;
+    }
+  }
+
+  @media only screen and (max-width: 500px) {
+    .popup :global(img),
+    .popup :global(video) {
+      height: auto;
+      width: 100%;
+    }
+  }
+
+</style>

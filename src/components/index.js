@@ -38,3 +38,4 @@ export { default as LockedContent } from "./LockedContent.svelte";
 export { default as RoyaltyRecipient } from "./RoyaltyRecipient.svelte";
 export { default as RoyaltyRecipientAdd } from "./RoyaltyRecipientAdd.svelte";
 export { default as RoyaltyRecipientList } from "./RoyaltyRecipientList.svelte";
+export { default as RoyaltyInfo } from "./RoyaltyInfo.svelte";
