@@ -54,7 +54,7 @@
   } from "$lib/utils";
   import { ProgressLinear } from "$comp";
   import Select from "svelte-select";
-  import {RoyaltyRecipientList} from "$comp";
+  import { RoyaltyRecipientList } from "$comp";
 
   let { id } = $page.params;
   $: requireLogin($page);
@@ -101,12 +101,10 @@
           end,
         });
 
-      defaultRoyaltyRecipients = (await query(getDefaultRoyaltyRecipients())).default_royalty_recipients;
-      
-      if (
-        defaultRoyaltyRecipients &&
-        defaultRoyaltyRecipients.length 
-      ) {
+      defaultRoyaltyRecipients = (await query(getDefaultRoyaltyRecipients()))
+        .default_royalty_recipients;
+
+      if (defaultRoyaltyRecipients && defaultRoyaltyRecipients.length) {
         for (let index = 0; index < defaultRoyaltyRecipients.length; index++) {
           const { address, amount, name } = defaultRoyaltyRecipients[index];
           if (!artwork.royalty_recipients.find((e) => e.address === address)) {
@@ -200,7 +198,7 @@
     await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
 
-      await query(createTransaction, {
+    await query(createTransaction, {
       transaction: {
         amount: sats(artwork.asking_asset, list_price),
         artwork_id: artwork.id,
@@ -386,69 +384,7 @@
     artwork && artwork.transferred_at
       ? Object.keys(tickers)
       : [...Object.keys(tickers), undefined];
-
 </script>
-
-<style>
-  .container {
-    background-color: #ecf6f7;
-    width: 100% !important;
-    min-height: 100vh;
-    margin: 0;
-    max-width: 100%;
-  }
-
-  input {
-    @apply rounded-lg mb-4 mt-2;
-    &:disabled {
-      @apply bg-gray-100;
-    }
-  }
-
-  .tooltip {
-    cursor: pointer;
-  }
-  .tooltip .tooltip-text {
-    visibility: hidden;
-    padding: 15px;
-    position: absolute;
-    z-index: 100;
-    width: 300px;
-    font-style: normal;
-  }
-  .tooltip:hover .tooltip-text {
-    visibility: visible;
-  }
-
-  input[type="checkbox"]:checked {
-    appearance: none;
-    border: 5px solid #fff;
-    outline: 2px solid #6ed8e0;
-    background-color: #6ed8e0;
-    padding: 2px;
-    border-radius: 0;
-  }
-
-  input[type="radio"]:checked {
-    appearance: none;
-    border: 7px solid #6ed8e0;
-    background-color: #fff;
-    padding: 2px;
-    border-radius: 100%;
-  }
-
-  @media only screen and (max-width: 768px) {
-    .container {
-      background: none;
-    }
-    .tooltip .tooltip-text {
-      width: 100%;
-      left: 0px;
-      top: 30px;
-    }
-  }
-
-</style>
 
 <div class="container mx-auto md:p-20">
   <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
@@ -488,7 +424,7 @@
                   disabled={auction_underway}
                 />
                 <p class="mb-2 whitespace-nowrap">
-                  {asset ? assetLabel(asset) : 'Unlisted'}
+                  {asset ? assetLabel(asset) : "Unlisted"}
                 </p>
               </label>
             {/each}
@@ -498,7 +434,8 @@
         {#if artwork.asking_asset}
           <div class="flex w-full sm:w-3/4 mb-4">
             <div class="relative mt-1 rounded-md w-2/3 mr-6">
-              <label for="price">Price
+              <label for="price"
+                >Price
                 <span class="tooltip">
                   <i class="text-midblue text-xl tooltip">
                     <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
@@ -511,10 +448,11 @@
                     immediately purchase the artwork.
                     <br /><br />
                     Changing the price involves sending an on-chain cancellation
-                    transaction to invalidate your half of the atomic swap
-                    transaction and will incur a transaction fee.
+                    transaction to invalidate your half of the atomic swap transaction
+                    and will incur a transaction fee.
                   </span>
-                </span></label>
+                </span></label
+              >
               <input
                 id="price"
                 class="form-input block w-full pl-7 pr-12"
@@ -531,7 +469,8 @@
             </div>
             {#if $user.id === artwork.artist_id}
               <div class="relative mt-1 rounded-md">
-                <label for="royalty">Royalty Rate
+                <label for="royalty"
+                  >Royalty Rate
                   <span class="tooltip">
                     <i class="ml-3 text-midblue text-xl tooltip">
                       <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
@@ -542,7 +481,8 @@
                       co-sign on transfers if they pay the specified royalty to
                       the original artist.
                     </span>
-                  </span></label>
+                  </span></label
+                >
                 <input
                   id="royalty"
                   class="form-input block w-full pl-7 pr-12"
@@ -569,7 +509,9 @@
                       bind:checked={multi_royalty_recipients_enabled}
                       disabled={auction_underway}
                     />
-                    <span class="ml-3 text-xl">Additional Royalty Recipients</span>
+                    <span class="ml-3 text-xl"
+                      >Additional Royalty Recipients</span
+                    >
                     <span class="tooltip">
                       <i class="ml-3 text-midblue text-xl tooltip">
                         <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
@@ -705,3 +647,63 @@
     {/if}
   </div>
 </div>
+
+<style>
+  .container {
+    background-color: #ecf6f7;
+    width: 100% !important;
+    min-height: 100vh;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  input {
+    @apply rounded-lg mb-4 mt-2;
+    &:disabled {
+      @apply bg-gray-100;
+    }
+  }
+
+  .tooltip {
+    cursor: pointer;
+  }
+  .tooltip .tooltip-text {
+    visibility: hidden;
+    padding: 15px;
+    position: absolute;
+    z-index: 100;
+    width: 300px;
+    font-style: normal;
+  }
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+  }
+
+  input[type="checkbox"]:checked {
+    appearance: none;
+    border: 5px solid #fff;
+    outline: 2px solid #6ed8e0;
+    background-color: #6ed8e0;
+    padding: 2px;
+    border-radius: 0;
+  }
+
+  input[type="radio"]:checked {
+    appearance: none;
+    border: 7px solid #6ed8e0;
+    background-color: #fff;
+    padding: 2px;
+    border-radius: 100%;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .container {
+      background: none;
+    }
+    .tooltip .tooltip-text {
+      width: 100%;
+      left: 0px;
+      top: 30px;
+    }
+  }
+</style>
