@@ -1,11 +1,23 @@
 <style>
+  h2 {
+    @apply mt-8;
+  }
+
+  h4 {
+    @apply text-xl;
+  }
+
+  .card {
+    @apply p-4 border rounded bg-gray-800;
+  }
+
   p {
     @apply mb-4;
   }
 
   img {
     max-width: 200px;
-  } 
+  }
 
 </style>
 
@@ -53,7 +65,6 @@
         </p>
       </div>
       <img src="/teak.png" class="ml-4" style="max-width: 300px" />
-
     </div>
   </div>
   <div class="grid grid-cols-3 gap-4 mt-36">
@@ -98,6 +109,96 @@
         The growth of the avocado market in healthy lifestyle plans and the
         demand for teak hardwood create the likelihood of a high ROI.
       </p>
+    </div>
+  </div>
+
+  <h2>Avocado</h2>
+  <p>
+    Varieties of avocado have been planted in the Vida Verde Agroforestry farm.
+  </p>
+  <p>Avocado’s health benefits have put this fruit in high demand globally.</p>
+  <p>
+    Avocado trees begin producing in year 3 to 5 and by mixing the varieties
+    there is production every year thereafter resulting in steady ROI to add to
+    the more periodic returns of the teak trees.
+  </p>
+
+  <div class="grid grid-cols-3 gap-4">
+    <div class="card">
+      <div>
+        <h4>Phase 1</h4>
+        <p>2021 to 2024</p>
+      </div>
+      <div>
+        Your opportunity to invest in this young avocado orchard will allow you
+        to enter this lucrative business and see returns as soon as year 3 to 4.
+      </div>
+    </div>
+    <div class="card">
+      <div>
+        <h4>Phase 2</h4>
+        <p>2025 - 2027</p>
+      </div>
+      <div>
+        As the trees mature to 5 or 6 years old, they begin to produce fruit in
+        growing quantities. This phase of your ownership results in your first
+        returns. .
+      </div>
+    </div>
+    <div class="card">
+      <div>
+        <h4>Phase 3</h4>
+        <p>2028 - 2045</p>
+      </div>
+      <div>
+        As the avocado trees reach full maturity, production is maximized. With
+        multiple varieties having been planted they alternating high production
+        years. .
+      </div>
+    </div>
+  </div>
+
+  <h2>Teak</h2>
+
+  <p>
+    Teak is used worldwide in furniture, the marine industry and for other
+    luxury items where a wood that is hard, resistant to weather and resistant
+    to termites is required. Teak is one of the most valuable woods in the world
+    and the demand and price per board foot has risen steadily for a century.
+  </p>
+
+  <div class="grid grid-cols-3 gap-4">
+    <div class="card">
+      <div class="mb-2 text-center">
+        <img src="/family.svg" class="mx-auto" />
+        <h4>Investment</h4>
+      </div>
+      <div>
+        Your investment gives you the contractual rights to the harvest earnings
+        of your parcel of this precious timber.
+      </div>
+    </div>
+    <div class="card">
+      <div class="mb-2 text-center">
+        <img src="/nature.svg" class="mx-auto" />
+        <h4>Return After Thinnings</h4>
+      </div>
+      <div>
+        During the growth phase, several thinnings are done (generally years 9,
+        16 and 20) resulting in payouts to investors during the lifecycle of the
+        trees.
+      </div>
+    </div>
+    <div class="card">
+      <div class="mb-2 text-center">
+        <img src="/growth.svg" class="mx-auto" />
+        <h4>The Big Return</h4>
+      </div>
+      <div>
+        Between years 22 and 25 the mature trees are harvested, and new trees
+        are replanted. This final harvest results in a very lucrative payout for
+        investors.
+      </div>
     </div>
   </div>
 </div>
