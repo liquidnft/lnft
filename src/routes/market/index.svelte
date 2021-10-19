@@ -134,15 +134,10 @@
 
 <div
   class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20">
-  <h2 class="md:mb-0">Market</h2>
+  <h2 class="md:mb-0">Harvest Shares</h2>
   {#if $user && $user.is_artist}
     <a href="/artwork/create" class="primary-btn">Submit a new artwork</a>
   {/if}
-</div>
-<div class="container mx-auto mt-10">
-  <div class="flex items-center search">
-    <Search />
-  </div>
 </div>
 <div class="container mx-auto">
   <div
@@ -150,14 +145,6 @@
     <div
       class="w-full lg:w-auto mb-3 flex filter-container justify-between pt-10 xl:py-10 xl:pb-30 mt-50">
       <div class="switch">
-        <div
-          class="flex cursor-pointer lg:hidden mb-8 font-bold"
-          on:click={() => (showFilters = !showFilters)}>
-          <div>FILTERS</div>
-          <div class="my-auto">
-            <Fa icon={faSlidersH} class="ml-3" />
-          </div>
-        </div>
       </div>
       <Sort bind:filtered />
     </div>

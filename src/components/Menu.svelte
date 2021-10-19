@@ -62,12 +62,10 @@
 </style>
 
 <div class="flex justify-between items-center menu relative">
-  <a href="/harvest"><button on:click={toggle}>Harvest Rights</button></a>
-  <a href="/market"><button on:click={toggle}>Purchase / Resell</button></a>
-  <a href="/market"><button on:click={toggle}>Artwork</button></a>
-  <a href="/give"><button on:click={toggle}>Give Back</button></a>
-  <a href="/about"><button on:click={toggle}>About</button></a>
-  <a href="/news"><button on:click={toggle}>News</button></a>
+  <a href="/harvest" style="color: #83e68d"><button on:click={toggle}>Category</button></a>
+  <a href="/market" style="color: #83e68d"><button on:click={toggle}>List</button></a>
+  <a href="/about" style="color: #83e68d"><button on:click={toggle}>About</button></a>
+  <a href="/news" style="color: #83e68d"><button on:click={toggle}>News</button></a>
   {#if $user}
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
@@ -76,5 +74,5 @@
       <button on:click={toggle} class="flex">
         <Avatar user={$user} />
       </button></a>
-  {:else}<a href="/login"><button on:click={toggle}>Sign In</button></a>{/if}
+  {:else}<a href="/login" style="color: #83e68d"><button on:click={toggle}>Sign In</button></a>{/if}
 </div>

@@ -51,7 +51,7 @@
   .header h5 {
     font-size: 22px;
     line-height: 36px;
-    color: #2d2e32;
+    color: #ffc43b;
     margin-top: 24px;
     margin-bottom: 34px;
   }
