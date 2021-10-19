@@ -36,8 +36,8 @@
   export let showFilters;
   export let initialArtworks;
 
-  $: load(initialArtworks)
-  let load = (a) => ($artworks = a.artworks);
+  $: init(initialArtworks)
+  let init = (a) => ($artworks = a.artworks);
 
   let filtered = [];
 
