@@ -19,6 +19,11 @@
   import { countArtworks, getArtworks } from "$queries/artworks";
 
   export let showFilters;
+  export let initialArtworks;
+
+  $: init(initialArtworks)
+  let init = (a) => ($artworks = a.artworks);
+
   let filtered = [];
 
   let loading;
