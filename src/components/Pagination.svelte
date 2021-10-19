@@ -34,7 +34,7 @@
 <svelte:window bind:scrollY={y} />
 
 {#if artworks && offset}
-  <div class="fixed full-width bottom-0 flex bg-white p-4 mx-auto" class:hidden>
+  <div class="fixed full-width bottom-0 flex bg-black p-4 mx-auto" class:hidden>
     <div class="mx-auto">
       {#each pages as _, i}
         <button
