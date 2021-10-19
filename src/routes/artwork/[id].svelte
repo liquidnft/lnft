@@ -68,15 +68,6 @@
       .then((res) => {
         artwork = res.artworks_by_pk;
         $art = artwork;
-
-        query(getArtworksByArtist(artwork.artist_id))
-          .then(
-            (res) =>
-              (others = res.artworks
-                .filter((a) => a.id !== artwork.id)
-                .slice(0, 4))
-          )
-          .catch(err);
       })
       .catch(err);
 
@@ -604,26 +595,6 @@
             thumb={false}
             popup={true} />
         </div>
-
-        {#if others.length}
-          <div class="w-full mt-64">
-            <h2 class="text-2xl font-bold primary-color py-10 px-0">
-              More by this artist
-            </h2>
-            <div class="w-full flex flex-wrap">
-              {#each others as artwork (artwork.id)}
-                <div class="w-full px-0 mb-20">
-                  <Card {artwork} showDetails={false} />
-                </div>
-              {/each}
-              <div class="flex w-full">
-                <a
-                  class="primary-btn mx-auto mb-12"
-                  href={`/artist/${artwork.artist.username}`}>View all</a>
-              </div>
-            </div>
-          </div>
-        {/if}
       </div>
     </div>
   {:else}
