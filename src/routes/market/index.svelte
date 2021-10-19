@@ -1,3 +1,16 @@
+<script context="module">
+	export async function load({ fetch }) {
+    const initialArtworks = await fetch('/artworks.json').then((r) => r.json());
+
+		return {
+      maxage: 90,
+			props: {
+				initialArtworks
+			}
+		};
+	}
+</script>
+
 <script>
   import { onMount } from "svelte";
   import { ProgressLinear } from "$comp";
@@ -21,6 +34,11 @@
   import { countArtworks, getArtworks } from "$queries/artworks";
 
   export let showFilters;
+  export let initialArtworks;
+
+  $: load(initialArtworks)
+  let load = (a) => ($artworks = a.artworks);
+
   let filtered = [];
 
   let loading;
@@ -30,55 +48,54 @@
 
   $: reset($filterCriteria, $sortCriteria);
   let reset = async () => {
-    try {
-      where = { _or: [] };
-      if ($filterCriteria.listPrice)
-        where._or.push({ list_price: { _is_null: false } });
-      if ($filterCriteria.openBid) where._or.push({ bid: {} });
-      if ($filterCriteria.ownedByCreator)
-        where._or.push({ artist_owned: { _eq: true } });
-      if ($filterCriteria.hasSold)
-        where._or.push({ transferred_at: { _is_null: false } });
+    console.log("reset");
+    where = { _or: [] };
+    if ($filterCriteria.listPrice)
+      where._or.push({ list_price: { _is_null: false } });
+    if ($filterCriteria.openBid) where._or.push({ bid: {} });
+    if ($filterCriteria.ownedByCreator)
+      where._or.push({ artist_owned: { _eq: true } });
+    if ($filterCriteria.hasSold)
+      where._or.push({ transferred_at: { _is_null: false } });
 
-      if (!where._or.length) delete where._or;
+    if (!where._or.length) delete where._or;
 
-      order_by = {
-        newest: {
-          created_at: "desc",
-        },
-        oldest: {
-          created_at: "asc",
-        },
-        highest: {
-          list_price: "desc_nulls_last",
-        },
-        lowest: {
-          list_price: "asc_nulls_last",
-        },
-        ending_soon: {
-          auction_end: "asc_nulls_last",
-        },
-        most_viewed: {
-          views: "desc",
-        },
-      }[$sortCriteria];
+    order_by = {
+      newest: {
+        created_at: "desc",
+      },
+      oldest: {
+        created_at: "asc",
+      },
+      highest: {
+        list_price: "desc_nulls_last",
+      },
+      lowest: {
+        list_price: "asc_nulls_last",
+      },
+      ending_soon: {
+        auction_end: "asc_nulls_last",
+      },
+      most_viewed: {
+        views: "desc",
+      },
+    }[$sortCriteria];
 
-      let result = await pub($token)
-        .post({
-          query: countArtworks,
-          variables: { order_by, where },
-        })
-        .json();
+    let result = await pub($token)
+      .post({
+        query: countArtworks,
+        variables: { order_by, where },
+      })
+      .json();
 
-      if (result.data) count = result.data.artworks_aggregate.aggregate.count;
-      else err(result.errors[0]);
+    if (result.data) count = result.data.artworks_aggregate.aggregate.count;
+    else err(result.errors[0]);
 
-      $artworks = [];
-      offset = 0;
-      loadArtworks();
-    } catch (e) {
-      err(e);
-    }
+    console.log("loaded", count);
+
+    $artworks = [];
+    offset = 0;
+    loadArtworks();
   };
 
   const loadArtworks = async () => {
@@ -109,7 +126,7 @@
 
   onMount(async () => {
     new IntersectionObserver(async (e) => {
-      if (e[0].isIntersecting && $artworks.length < count) loadArtworks();
+      // if (e[0].isIntersecting && $artworks.length < count) loadArtworks();
     }).observe(document.querySelector(".footer"));
   });
 
@@ -169,7 +186,7 @@
     </div>
     <Filter bind:filtered {showFilters} />
   </div>
-  <Gallery artworks={filtered} {count} />
+  <Gallery artworks={filtered} bind:count />
 
   {#if loading}
     <ProgressLinear />

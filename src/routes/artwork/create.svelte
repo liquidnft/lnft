@@ -15,7 +15,7 @@
     token,
   } from "$lib/store";
   import { Dropzone, ProgressLinear } from "$comp";
-  import upload from "$lib/upload";
+  import { upload, supportedTypes } from "$lib/upload";
   import { create } from "$queries/artworks";
   import { btc, fade, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
@@ -78,6 +78,8 @@
     if (!file) return;
     ({ type } = file);
     artwork.filetype = type;
+
+    if (supportedTypes.includes(type)) throw new Error("Supported file types are jpg, png, gif, mp4");
 
     if (file.size < 100000000) previewFile(file);
 

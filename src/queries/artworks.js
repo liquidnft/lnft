@@ -1,5 +1,35 @@
 import { fields as txfields } from "./transactions";
 
+const marketFields = `
+  id
+  edition
+  editions
+  title
+  filename
+  filetype
+  favorited
+  list_price
+  auction_start
+  auction_end
+  asking_asset
+  royalty
+  slug
+  owner {
+    id
+    username
+    avatar_url
+  },
+  artist {
+    id
+    username
+    avatar_url
+  },
+  bid {
+    id
+    amount 
+  }
+`
+
 const fields = `
   id,
   asset
@@ -62,6 +92,15 @@ export const getFeatured = `query {
     white 
     artwork {
       ${fields}
+    } 
+  }
+}`;
+
+export const getLimited = `query($where: artworks_bool_exp!, $limit: Int, $offset: Int, $order_by: artworks_order_by!) {
+ artworks(where: $where, limit: $limit, offset: $offset, order_by: [$order_by]) {
+    ${marketFields}
+    tags {
+      tag
     } 
   }
 }`;

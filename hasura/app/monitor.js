@@ -241,7 +241,7 @@ const checkListings = async () => {
 
   setTimeout(checkListings, 5000);
 };
-setTimeout(checkListings, 4000);
+// setTimeout(checkListings, 4000);
 
 setInterval(
   () =>
