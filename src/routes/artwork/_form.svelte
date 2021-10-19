@@ -69,8 +69,8 @@
   input[type="checkbox"]:checked {
     appearance: none;
     border: 5px solid #fff;
-    outline: 2px solid #6ed8e0;
-    background-color: #6ed8e0;
+    outline: 2px solid #83e68d;
+    background-color: #83e68d;
     padding: 2px;
     border-radius: 0;
   }
@@ -80,10 +80,20 @@
     @apply rounded-lg;
   }
 
+  .tags {
+    --background: black;
+    --itemActiveBackground: black;
+    --listBackground: black;
+    --itemColor: white;
+    --itemHoverBG: black;
+    --multiItemBG: black;
+  } 
+
 </style>
 
 <form class="flex flex-col w-full mb-6 mt-20" on:submit autocomplete="off">
   <div class="flex flex-col mb-6">
+    <label for="description">Title</label>
     <input
       class="border-0 border-b-2"
       style="border-radius: 0 !important"
@@ -142,7 +152,7 @@
         maxlength="5" />
     </div>
   {/if}
-  <div class="flex flex-col mb-6">
+  <div class="flex flex-col mb-6 tags">
     <label for="tags">Tags
       <span class="text-gray-400">(e.g. Abstract, monochromatic, etc)</span></label>
     <Select

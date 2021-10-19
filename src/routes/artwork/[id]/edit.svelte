@@ -48,7 +48,7 @@
 </script>
 
 <div class="container mx-auto md:p-20">
-  <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
+  <div class="w-full max-w-4xl mx-auto bg-black md:p-10 rounded-xl">
     {#if artwork}
       <a class="block mb-6 text-midblue" href={`/a/${artwork.slug}`}>
         <div class="flex">

@@ -39,14 +39,14 @@
   .form-container form {
     width: 100%;
     max-width: 450px;
-    background-color: white;
+    background-color: black;
     padding: 40px;
     box-shadow: 0 1px 5px rgb(0 0 0 / 18%);
     border-radius: 10px;
   }
 
   input {
-    @apply appearance-none border rounded text-gray-700 leading-tight;
+    @apply appearance-none border rounded leading-tight;
     padding: 0;
     padding: 10px;
   }
@@ -72,7 +72,7 @@
     autocomplete="off">
     <h2 class="mb-8">Sign In</h2>
     <div class="flex flex-col mb-4">
-      <label class="mb-2 font-medium text-gray-600" for="first_name">Email or
+      <label class="mb-2 font-medium" for="first_name">Email or
         username</label>
       <input
         bind:value={username}
@@ -81,7 +81,7 @@
     </div>
     <div class="flex flex-col mb-4">
       <label
-        class="mb-2 font-medium text-gray-600"
+        class="mb-2 font-medium"
         for="last_name">Password</label>
       <div class="relative">
         {#if show}
