@@ -11,7 +11,7 @@
   let w, h;
   let hidden;
   let maxPages = 7;
-  $: columns = w >= 1024 ? 3 : w >= 640 ? 2 : 1;
+  $: columns = w >= 640 ? 3 : w >= 640 ? 2 : 1;
 
   $: offset =
     artworks &&
@@ -41,45 +41,35 @@
   let y;
 
   let n = 0;
-  let content, rows, rh, newrows, nh, viewportHeight, inview;
+  let content, rh, newrows, nh, viewportHeight, inview;
   $: init(artworks);
-  let init = () => (inview = artworks.slice(0, 6));
+  let init = async () => {
+    count = artworks.length;
+    window.scrollTo(0, 0);
+    inview = artworks.slice(0, 24);
+    await tick();
 
-  $: increase(inview);
-  let increase = () => {
-    console.log("al", artworks.length);
-    console.log("inview", inview);
-    if (!content) return;
-    st = content.getBoundingClientRect().top;
-    console.log("st", st);
-    n = n + 100;
-    // content.style.height = `${h + n}px`;
-    rows = 12 / columns;
-    console.log("count", count);
-    console.log("rows", rows);
-    rh = 690;
+    let el = document.querySelector(".market-gallery");
+    if (!el) return;
+
+    let { top, bottom } = el.getBoundingClientRect();
+    rh = bottom - top;
+    st = top;
+
     newrows = count / columns;
-    console.log("nr", newrows, rh, columns, count);
     nh = rh * newrows;
-    console.log("nh", nh);
-
-    content.style.height = `${nh}px`;
+    content.style.height = `${nh + (columns > 1 ? 200 : 0)}px`;
   };
 
-  let cr;
-  let { log } = console;
+  let a, cr;
   $: scroll(y);
   let scroll = (y) => {
     if (!st || !rh) return;
     cr = Math.round((y - st) / rh);
-    let a = Math.max(0, cr * columns);
-    console.log("y", y, st, rh, a, cr, cr * rh);
-    if (artworks && parseInt(a)) inview = artworks.slice(a, a + 6);
+    a = Math.max(0, cr * columns);
+    if (artworks && a >= 0) inview = artworks.slice(a, a + 12);
   };
 
-
-  let gob = 0;
-  let shift = () => (gob += 100); 
 </script>
 
 <style>
@@ -94,24 +84,22 @@
 
 </style>
 
-<svelte:window bind:scrollY={y} />
+<svelte:window bind:innerWidth={w} bind:scrollY={y} on:resize={init} />
+
+{artworks.length}
 {count}
 
-<button on:click={shift}>SHIFT</button>
-
-{JSON.stringify(artworks.length)}
-
 <div bind:this={content}>
-  <div
-    class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3"
-    bind:clientWidth={w}>
+  <div class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3">
     {#each inview as artwork, i (artwork.id)}
       {#if i % offset === 0}
         <div class="sm:col-span-2 lg:col-span-3 w-full flex invisible h-0">
           <h4 class="mx-auto" id={`artwork-${i}`}>{i / offset + 1}</h4>
         </div>
       {/if}
-      <div class="market-gallery w-full mb-20" style={`transform: translateY(${cr * rh}px)`}>
+      <div
+        class="market-gallery w-full mb-20"
+        style={`transform: translateY(${Math.max(0, cr * rh)}px)`}>
         {#if artwork}
           <Card {artwork} bind:loaded={loaded[artwork.id]} />
         {/if}
