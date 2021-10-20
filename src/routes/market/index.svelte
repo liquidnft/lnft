@@ -45,7 +45,6 @@
 
   $: reset($filterCriteria, $sortCriteria);
   let reset = async () => {
-    console.log("reset");
     where = { _or: [] };
     if ($filterCriteria.listPrice)
       where._or.push({ list_price: { _is_null: false } });
@@ -87,8 +86,6 @@
 
     if (result.data) count = result.data.artworks_aggregate.aggregate.count;
     else err(result.errors[0]);
-
-    console.log("loaded", count);
 
     //    $artworks = [];
     offset = 0;
