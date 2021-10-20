@@ -15,7 +15,7 @@ export async function get({ headers, query }) {
   let { data, errors } = await api
     .post({
       query: getArtworks,
-      variables: { limit: 12, offset, order_by, where },
+      variables: { offset, order_by, where },
     })
     .json();
   if (errors) throw new Error(errors[0].message);

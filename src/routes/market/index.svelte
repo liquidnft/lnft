@@ -1,14 +1,15 @@
 <script context="module">
-	export async function load({ fetch }) {
-    const initialArtworks = await fetch('/artworks.json').then((r) => r.json());
+  export async function load({ fetch }) {
+    const initialArtworks = await fetch("/artworks.json").then((r) => r.json());
 
-		return {
+    return {
       maxage: 90,
-			props: {
-				initialArtworks
-			}
-		};
-	}
+      props: {
+        initialArtworks,
+      },
+    };
+  }
+
 </script>
 
 <script>
@@ -35,9 +36,6 @@
 
   export let showFilters;
   export let initialArtworks;
-
-  $: init(initialArtworks)
-  let init = (a) => ($artworks = a.artworks);
 
   let filtered = [];
 
@@ -93,9 +91,10 @@
 
     console.log("loaded", count);
 
-    $artworks = [];
+    //    $artworks = [];
     offset = 0;
-    loadArtworks();
+    // loadArtworks();
+    $artworks = initialArtworks.artworks;
   };
 
   const loadArtworks = async () => {

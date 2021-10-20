@@ -1,6 +1,6 @@
 <script>
   import { Card, Pagination, LoadingPlaceholder } from "$comp";
-  import { tick } from "svelte";
+  import { onMount, tick } from "svelte";
 
   export let artworks;
   export let offset;
@@ -41,25 +41,45 @@
   let y;
 
   let n = 0;
-  let content;
+  let content, rows, rh, newrows, nh, viewportHeight, inview;
+  $: init(artworks);
+  let init = () => (inview = artworks.slice(0, 6));
+
+  $: increase(inview);
   let increase = () => {
-    console.log("st", content.getBoundingClientRect().top);
+    console.log("al", artworks.length);
+    console.log("inview", inview);
+    if (!content) return;
+    st = content.getBoundingClientRect().top;
+    console.log("st", st);
     n = n + 100;
     // content.style.height = `${h + n}px`;
-    let rows = 12 / columns;
-    console.log("rows", rows, h, st);
-    let rh = h / rows;
-    let newrows = count / columns;
+    rows = 12 / columns;
+    console.log("count", count);
+    console.log("rows", rows);
+    rh = 690;
+    newrows = count / columns;
     console.log("nr", newrows, rh, columns, count);
-    let nh = rh * newrows;
+    nh = rh * newrows;
     console.log("nh", nh);
 
     content.style.height = `${nh}px`;
   };
 
+  let cr;
   let { log } = console;
-  $: log(y);
+  $: scroll(y);
+  let scroll = (y) => {
+    if (!st || !rh) return;
+    cr = Math.round((y - st) / rh);
+    let a = Math.max(0, cr * columns);
+    console.log("y", y, st, rh, a, cr, cr * rh);
+    if (artworks && parseInt(a)) inview = artworks.slice(a, a + 6);
+  };
 
+
+  let gob = 0;
+  let shift = () => (gob += 100); 
 </script>
 
 <style>
@@ -77,19 +97,21 @@
 <svelte:window bind:scrollY={y} />
 {count}
 
-<button on:click={increase}>Increase height</button>
+<button on:click={shift}>SHIFT</button>
 
-<div bind:clientHeight={h} bind:this={content}>
+{JSON.stringify(artworks.length)}
+
+<div bind:this={content}>
   <div
     class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3"
     bind:clientWidth={w}>
-    {#each artworks as artwork, i (artwork.id)}
+    {#each inview as artwork, i (artwork.id)}
       {#if i % offset === 0}
         <div class="sm:col-span-2 lg:col-span-3 w-full flex invisible h-0">
           <h4 class="mx-auto" id={`artwork-${i}`}>{i / offset + 1}</h4>
         </div>
       {/if}
-      <div class="market-gallery w-full mb-20">
+      <div class="market-gallery w-full mb-20" style={`transform: translateY(${cr * rh}px)`}>
         {#if artwork}
           <Card {artwork} bind:loaded={loaded[artwork.id]} />
         {/if}
