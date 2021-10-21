@@ -44,6 +44,7 @@
   let content, rh, newrows, nh, viewportHeight, inview;
   $: init(artworks);
   let init = async () => {
+    console.log("initting");
     count = artworks.length;
     window.scrollTo(0, 0);
     inview = artworks.slice(0, 24);
@@ -61,13 +62,17 @@
     content.style.height = `${nh + (columns > 1 ? 200 : 0)}px`;
   };
 
-  let a, cr;
+  let pad = 200;
+  let a, cr, translate;
   $: scroll(y);
   let scroll = (y) => {
-    if (!st || !rh) return;
-    cr = Math.round((y - st) / rh);
-    a = Math.max(0, cr * columns);
-    if (artworks && a >= 0) inview = artworks.slice(a, a + 12);
+    window.requestAnimationFrame(() => {
+      if (!st || !rh) return;
+      cr = Math.round((y - st) / rh);
+      a = Math.max(0, (cr * columns) - 6);
+      if (artworks && a >= 0) inview = artworks.slice(a, a + 12);
+      translate = Math.max(0, (cr * rh));
+    });
   };
 
 </script>
@@ -86,8 +91,20 @@
 
 <svelte:window bind:innerWidth={w} bind:scrollY={y} on:resize={init} />
 
-{artworks.length}
-{count}
+<div class="fixed bg-white z-50">
+  len
+  {inview.length}<br />
+  a
+  {a}<br />
+  translate
+  {translate}<br />
+  st
+  {st}<br />
+  cr
+  {cr}<br />
+  y
+  {y && y.toFixed(2)}<br />
+</div>
 
 <div bind:this={content}>
   <div class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3">
@@ -99,7 +116,7 @@
       {/if}
       <div
         class="market-gallery w-full mb-20"
-        style={`transform: translateY(${Math.max(0, cr * rh)}px)`}>
+        style={`transform: translateY(${translate}px)`}>
         {#if artwork}
           <Card {artwork} bind:loaded={loaded[artwork.id]} />
         {/if}
