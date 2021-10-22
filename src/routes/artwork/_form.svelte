@@ -112,6 +112,6 @@
       bind:this={input} />
   </div>
   <div class="flex w-full">
-    <Button primary class="w-full">Submit experience</Button>
+    <Button primary class="w-full" type="submit">Submit experience</Button>
   </div>
 </form>

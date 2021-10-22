@@ -67,7 +67,7 @@
       </div>
       <div class="mt-8">
         <a href="/market">
-          <Button primary class="w-32">Start Exploring</Button>
+          <Button primary>Start Exploring</Button>
         </a>
       </div>
     </div>

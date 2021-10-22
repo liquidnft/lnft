@@ -314,13 +314,13 @@
     height: 320px;
   }
 
+  .submitArtwork {
+    box-shadow: 6px 5px 12px 2px #ccc;
+  }
+
   @media only screen and (max-width: 1023px) {
     .upload-button {
       margin-top: 25px;
-    }
-
-    .submitArtwork {
-      box-shadow: none;
     }
 
     .container {
@@ -341,11 +341,24 @@
 </style>
 
 <div class="container mx-auto p-20">
-  <div class="flex w-full mx-auto bg-gray-100 submitArtwork boxShadow">
-    <div class="absolute border-1-l border-1-t w-12 h-12 -ml-3 -mt-3 bg-red" />
+  <div class="absolute border-black border-l border-t w-12 h-12 -ml-5 -mt-5">
+    &nbsp;
+  </div>
+  <!--
+  <div
+    class="absolute right-0 bottom-0 border-black border-r border-b w-12 h-12 mr-12">
+    &nbsp;
+  </div>
+  -->
+  <div class="flex w-full mx-auto bg-gray-100 submitArtwork">
+    <div
+      class="absolute right-16 rounded-full border-black border-l border-t w-8 h-8 -mt-4 z-50 bg-black text-4xl text-center text-white cursor-pointer">
+      <div class="-mt-2">&times;</div>
+    </div>
     <div class="flex flex-col w-1/3">
-      <div class="flex-grow-1 h-full bg-black p-14">
-        <h2 class="text-white">Preview experience</h2>
+      <div class="flex-grow-1 h-full bg-black">
+        <h2 class="text-white p-14">Preview experience</h2>
+        <div style="background-image: url('/stars.png')" class="h-full bg-left mt-auto bg-repeat w-full"></div>
       </div>
     </div>
     <div class="p-14">
