@@ -148,12 +148,13 @@
   $: generateTicker(title);
   let generateTicker = (t) => {
     if (!t) return;
-    artwork.ticker = (t.split(" ").length > 2
-      ? t
-          .split(" ")
-          .map((w) => w[0])
-          .join("")
-      : t
+    artwork.ticker = (
+      t.split(" ").length > 2
+        ? t
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+        : t
     )
       .substr(0, 3)
       .toUpperCase();
@@ -297,11 +298,11 @@
       loading = false;
     }
   };
+
 </script>
 
 <style>
   .container {
-    background-color: #ecf6f7;
     width: 100% !important;
     min-height: 100vh;
     margin: 0;
@@ -326,56 +327,81 @@
       background: none;
     }
   }
+
+  h2 {
+    font-family: "Zen Dots", cursive;
+    font-size: 2em;
+    line-height: 1.25em;
+  }
+
+  h3 {
+    font-size: 1em;
+  }
+
 </style>
 
-<div class="container mx-auto py-20">
-  <div
-    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow">
-    <a
-      class="block mb-6 text-midblue"
-      href="."
-      on:click|preventDefault={() => window.history.back()}>
-      <div class="flex">
-        <Fa icon={faChevronLeft} class="my-auto mr-1" />
-        <div>Back</div>
+<div class="container mx-auto p-20">
+  <div class="flex w-full mx-auto bg-gray-100 submitArtwork boxShadow">
+    <div class="absolute border-1-l border-1-t w-12 h-12 -ml-3 -mt-3 bg-red" />
+    <div class="flex flex-col w-1/3">
+      <div class="flex-grow-1 h-full bg-black p-14">
+        <h2 class="text-white">Preview experience</h2>
       </div>
-    </a>
-    <h2>Submit artwork</h2>
-    <div class="flex flex-wrap flex-col-reverse lg:flex-row">
-      <div class="w-full lg:w-1/2 lg:pr-10">
-        <div class:invisible={!loading}>
-          <ProgressLinear />
-        </div>
-        <div class:invisible={loading}>
-          <Form bind:artwork bind:focus on:submit={submit} bind:title />
-        </div>
+    </div>
+    <div class="p-14">
+      <div class="w-3/5 mx-auto text-center mb-12">
+        <h2>Create Experience</h2>
+        <p>
+          Here at Cozmos we value the experience more than the "Art" itself, in
+          the sense that we will always put the experience given to the buyer
+          1st.
+        </p>
+        <p />
+        <p>
+          <b>Please make sure you are giving an Added value to the "Art"</b>
+        </p>
       </div>
-      {#if percent}
-        <div class="ml-2 flex-1 flex">
-          <div class="upload-button mx-auto">
-            <ArtworkMedia
-              {artwork}
-              {preview}
-              showDetails={false}
-              thumb={false} />
-            <div class="w-full bg-grey-light p-8">
-              <div
-                class="font-light p-4 mx-auto max-w-xs text-center"
-                class:bg-primary={percent >= 100 && artwork.filename}
-                class:bg-yellow-200={percent < 100 || !artwork.filename}
-                style={width}>
-                {#if percent < 100}
-                  {percent}%
-                {:else if artwork.filename}
-                  Upload complete!
-                {:else}Processing...{/if}
+
+      <div class="grid grid-cols-2 gap-4 text-left">
+        <div>
+          <h3>Upload Thumbnail</h3>
+          {#if percent}
+            <div class="ml-2 flex-1 flex max-w-sm">
+              <div class="upload-button mx-auto">
+                <ArtworkMedia
+                  {artwork}
+                  {preview}
+                  showDetails={false}
+                  thumb={false} />
               </div>
             </div>
+          {:else}
+            <Dropzone on:file={uploadFile} style="box" />
+          {/if}
+        </div>
+        <div>
+          <h3>Upload Cover</h3>
+          <Dropzone on:file={uploadFile} style="box" />
+        </div>
+        <div>
+          <h3>Upload Content</h3>
+          <Dropzone on:file={uploadFile} style="box" />
+        </div>
+        <div>
+          <h3>Upload Video Experience Information</h3>
+          <Dropzone on:file={uploadFile} style="box" />
+        </div>
+      </div>
+      <div class="flex flex-wrap flex-col-reverse lg:flex-row">
+        <div class="w-full lg:w-1/2 lg:pr-10">
+          <div class:invisible={!loading}>
+            <ProgressLinear />
+          </div>
+          <div class:invisible={loading}>
+            <Form bind:artwork bind:focus on:submit={submit} bind:title />
           </div>
         </div>
-      {:else}
-        <Dropzone on:file={uploadFile} style="box" />
-      {/if}
+      </div>
     </div>
   </div>
 </div>

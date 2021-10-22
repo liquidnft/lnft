@@ -5,7 +5,7 @@
 
   const dispatch = createEventDispatcher();
 
-  export let title = "Upload Your Artwork";
+  export let title = "PNG, GIF, MP4. Max 100mb.";
   export let style = "box";
 
   let fileInput;
@@ -42,21 +42,18 @@
 
   #drop-area {
     cursor: pointer;
-    border: 2px solid #6ed8e0;
+    border: 1px solid gray;
     border-radius: 10px;
     width: 80%;
-    max-width: 350px;
-    max-height: 350px;
-    margin: 100px auto;
     margin-top: 30px;
   }
 
   form {
-    height: 320px;
+    height: 260px;
   }
 
   #drop-area.highlight {
-    border-color: #6ed8e0;
+    border-color: black;
   }
 
   #fileElem {
@@ -87,13 +84,11 @@
     on:blur={stop}
     on:mouseout={stop}
     on:drop={drop}
-    class:highlight>
-    <form class="text-center">
+    class:highlight class="w-full m-0">
+    <form class="text-center w-full">
       <div class="flex justify-center flex-col align-center h-full">
-        <span class="uppercase">{title}</span>
-        <span class="mx-auto text-center mt-4 text-5xl text-lightblue">
-          <Fa icon={faCloudUploadAlt} />
-        </span>
+        <span class="text-gray-400 mb-8">{title}</span>
+        <button class="primary-btn mx-auto w-36">Choose file</button>
       </div>
       <input
         bind:this={fileInput}

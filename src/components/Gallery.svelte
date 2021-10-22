@@ -53,8 +53,7 @@
 
 <div class="grid md:grid-cols-1 md:gap-16 lg:grid-cols-2 lg:gap-16" bind:clientWidth={w}>
   {#each artworks as artwork, i (artwork.id)}
-    <!-- display only artworks with list price or auctioned -->
-    {#if artwork && (artwork.list_price || (artwork.auction_start && artwork.auction_end))}
+    {#if artwork}
       <div class="market-gallery w-full mb-20">
       {#if artwork}
           <Card {artwork} bind:loaded={loaded[artwork.id]} />

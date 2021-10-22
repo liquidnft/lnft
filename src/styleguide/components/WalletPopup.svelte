@@ -9,8 +9,6 @@
     import { requireLogin } from "$lib/auth";
     import { page } from "$app/stores";
 
-    export let visible;
-
     $: requireLogin($page);
 
     if (!$asset) $asset = btc;
@@ -40,17 +38,12 @@
 <style lang="scss">
     @import "../theme";
     .wallet {
-        display: none;
         font-family: $font-family;
-    }
-
-    .visible {
-        @apply block;
     }
 </style>
 
 {#if ($user)}
-<div class="wallet z-10 absolute left-1/2 bg-white shadow-md w-80 -ml-40 mt-16 rounded-xl overflow-hidden" class:visible >
+<div class="wallet z-10 absolute left-1/2 bg-white shadow-md w-80 -ml-40 mt-16 rounded-xl overflow-hidden">
     <div class="bg-black h-12 p-4 flex items-center justify-between">
         <div class="flex items-center text-white">
             <a href="/wallet" class="flex items-center text-white" on:click>

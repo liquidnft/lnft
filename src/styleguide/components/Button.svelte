@@ -61,5 +61,5 @@
     }
 </style>
 
-<button {type} {disabled} on:click class:ghostWhite class:primary class:hover class="w-auto h-12 px-8 rounded-3xl button flex justify-center items-center {$$props.class || ''}"><slot/></button>
+<button {type} {disabled} on:click class:ghostWhite class:primary class:hover class="h-12 px-8 rounded-3xl button flex justify-center items-center {$$props.class || ''}"><slot/></button>
 

@@ -5,7 +5,7 @@
   import Fa from "svelte-fa";
   import { faWallet, faUser } from "@fortawesome/free-solid-svg-icons";
   import { user } from "$lib/store";
-  import {clickOutside} from '$lib/svelte-actions';
+  import { clickOutside } from "$lib/svelte-actions";
 
   export let open = false;
   let toggle = () => (open = !open);
@@ -23,12 +23,16 @@
   };
 
   function handleWalletClickOutside(e) {
-    if(displayWallet) {
-      if(walletToggleHandler !== e.detail.target && !walletToggleHandler.contains(e.detail.target)) {
+    if (displayWallet) {
+      if (
+        walletToggleHandler !== e.detail.target &&
+        !walletToggleHandler.contains(e.detail.target)
+      ) {
         displayWallet = false;
       }
     }
   }
+
 </script>
 
 <style>
@@ -58,31 +62,38 @@
 
     .menu :global(.search) {
       display: none;
+    }
   }
 
-  }
 </style>
 
 <div class="flex justify-between items-center menu relative whitespace-nowrap">
-  <Search suggest={false} class="mx-4"/>
-  <a class="menu-link" href="/market"><button on:click={toggle}>Experiences</button></a>
+  <Search suggest={false} class="mx-4" />
+  <a class="menu-link" href="/market"><button
+      on:click={toggle}>Experiences</button></a>
   <a class="menu-link" href="/faq"><button on:click={toggle}>FAQ</button></a>
 
   {#if $user}
     {#if $user.is_admin}
-      <a class="menu-link" href="/admin"><button on:click={toggle}>Admin</button></a>
+      <a class="menu-link" href="/admin"><button
+          on:click={toggle}>Admin</button></a>
     {/if}
     <div class="relative flex hidden lg:flex">
-      <button class="toggleWallet" on:click={toggleWallet} bind:this={walletToggleHandler}>
-        <Fa icon={faWallet} size="1.5x"/>
+      <button
+        class="toggleWallet"
+        on:click={toggleWallet}
+        bind:this={walletToggleHandler}>
+        <Fa icon={faWallet} size="1.5x" />
       </button>
       <div use:clickOutside on:clickOutside={handleWalletClickOutside}>
-        <WalletPopup visible={displayWallet}/>
+        {#if displayWallet}
+          <WalletPopup />
+        {/if}
       </div>
     </div>
     <a href={`/u/${$user.username}`} class="hidden lg:inline-block">
       <button on:click={toggle} class="flex">
-        <Fa icon={faUser} size="1.5x"/>
+        <Fa icon={faUser} size="1.5x" />
       </button>
     </a>
   {:else}
