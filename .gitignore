@@ -22,3 +22,4 @@ hasura/ghost-data
 hasura/app/proofs.json
 .idea/
 .svelte-kit
+.pnpm-debug.log

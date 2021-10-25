@@ -8,9 +8,9 @@ const BRANDING = {
     www: 'www.mintalio.com',
     protocol: 'https://mintalio.com',
     external: {
-      twitter: 'https://twitter.com/mintalio',
+      twitter: 'https://twitter.com/mintalionft',
       telegram: 'https://t.me/mintalio',
-      blog: 'https://blog.mintalio.com/',
+      blog: 'https://medium.com/@MintalioNFT',
     }
   },
   
@@ -31,7 +31,7 @@ const BRANDING = {
       logo: {
         header: {
           path: '/branding/logo-default.svg',
-          class: 'w-24 lg:w-28'
+          class: 'w-14 lg:w-14'
         },
         footer: {
           path: '/branding/logo-footer.svg',
