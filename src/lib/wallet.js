@@ -43,7 +43,8 @@ const SERVER_PUBKEY = Buffer.from(
   "02b54e17cf3cb13a3fab821e51381a16affb6db124881f6512e2f7bb3ca45efa0e",
   "hex"
 );
-const network = networks.liquid;
+
+const network = networks[import.meta.env.VITE_NETWORK];
 
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
