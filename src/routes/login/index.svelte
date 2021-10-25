@@ -2,7 +2,7 @@
   import Fa from "svelte-fa";
   import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
-  import { err, goto } from "$lib/utils";
+  import { dev, err, goto } from "$lib/utils";
   import { api } from "$lib/api";
   import cryptojs from "crypto-js";
   import { generateMnemonic } from "bip39";
@@ -12,8 +12,8 @@
   import { user } from "$lib/store";
 
   let show;
-  let username;
-  let password;
+  let username = "";
+  let password = dev ? "liquidart" : "";
 
   let usernameInput;
   let pageChange = () =>

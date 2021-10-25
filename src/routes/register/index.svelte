@@ -1,15 +1,15 @@
 <script>
   import Fa from "svelte-fa";
   import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-  import { err } from "$lib/utils";
+  import { err, dev } from "$lib/utils";
   import { page } from "$app/stores";
   import { register } from "$lib/register";
   import { ProgressLinear } from "$comp";
 
   let show;
-  let username;
-  let password;
-  let email;
+  let username = "";
+  let password = dev ? "liquidart" : "";
+  let email = dev ? makeid(6) + "@a.com" : "";
   let registered;
 
   function makeid(length) {
