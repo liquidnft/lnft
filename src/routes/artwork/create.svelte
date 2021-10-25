@@ -335,7 +335,7 @@
             />
             <div class="w-full bg-grey-light p-8">
               <div
-                class="font-light p-4 mx-auto max-w-xs text-center"
+                class="font-light p-4 mx-auto max-w-xs text-center text-white"
                 class:bg-primary={percent >= 100 && artwork.filename}
                 class:bg-yellow-200={percent < 100 || !artwork.filename}
                 style={width}

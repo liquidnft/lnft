@@ -325,14 +325,14 @@
           <div class="w-full mb-2">
             <a
               href={disabled ? "" : `/artwork/${id}/auction`}
-              class="block text-center text-sm secondary-btn w-full"
+              class="secondary-btn"
               class:disabled>List</a
             >
           </div>
           <div class="w-full mb-2">
             <a
               href={`/artwork/${artwork.id}/transfer`}
-              class="block text-center text-sm secondary-btn w-full"
+              class="secondary-btn"
               class:disabled>Transfer</a
             >
           </div>
@@ -341,7 +341,7 @@
             <div class="w-full mb-2">
               <a
                 href={`/artwork/${id}/edit`}
-                class="block text-center text-sm secondary-btn w-full"
+              class="secondary-btn"
                 class:disabled>Edit</a
               >
             </div>
