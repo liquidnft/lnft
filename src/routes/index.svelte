@@ -151,7 +151,6 @@
       width: fit-content;
     }
   }
-
 </style>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">

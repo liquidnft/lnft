@@ -30,6 +30,7 @@ export const show = writable();
 export const sighash = writable();
 export const snack = writable();
 export const sortCriteria = writable("newest");
+export const secret = writable();
 export const titles = writable([]);
 export const token = writable();
 export const transactions = writable([]);

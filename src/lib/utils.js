@@ -19,6 +19,7 @@ const usd = import.meta.env.VITE_USD;
 const fade = (n, o) => svelteFade(n, { ...o, duration: 50 });
 
 const publicPages = [
+  "password",
   "login",
   "register",
   "activate",

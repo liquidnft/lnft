@@ -2,8 +2,8 @@
   import branding from '$lib/branding';
 </script>
 
-<div class="bg-black px-2 mt-24">
-  <div class="container footer mx-auto flex flex-wrap text-white pt-12">
+<div class="px-2 mt-24 shadow-2xl">
+  <div class="container footer mx-auto flex flex-wrap pt-12">
     <div
       class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first">
       <a href="/"><img src="{branding.meta.general.logo.footer.path}" alt="logo" class="{branding.meta.general.logo.footer.class}" /></a>
