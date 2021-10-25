@@ -61,14 +61,14 @@
 
       <div class="flex">
         <div class="ml-auto mt-8">
-          <a href="/login" class="primary-btn">Continue to Raretoshi</a>
+          <a href="/login" class="primary-btn">Continue to NFT Glee</a>
         </div>
       </div>
     {:else}
       <h2 class="mb-8">Something went wrong</h2>
       <div class="flex">
         <div class="ml-auto mt-8">
-          <a href="/login" class="primary-btn">Continue to Raretoshi</a>
+          <a href="/login" class="primary-btn">Continue to NFT Glee</a>
         </div>
       </div>
     {/if}

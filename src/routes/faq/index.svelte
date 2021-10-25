@@ -15,9 +15,9 @@
         <h3>How do I use them?</h3>
 
         <p>
-          NFT’s can be issued on different blockchains and networks. On Raretoshi,
-          they're created on the Liquid network and can be stored in any wallet that
-          supports Liquid assets. Raretoshi offers a free built-in web wallet that
+          NFT’s can be issued on different blockchains and networks. On NFT Glee,
+          they're created on the Liquid Bitcoin network and can be stored in any wallet that
+          supports Liquid Bitcoin assets. NFT Glee offers a free built-in web wallet that
           gets used by default.
         </p>
 
@@ -26,10 +26,10 @@
         <p>
           When an artist first uploads an image or video file for an artwork, the
           file is added to the IPFS network and assigned a hash number that uniquely
-          identifies the contents of the file. The artist's Raretoshi wallet will
-          then generate a Liquid asset issuance transaction containing the title of
+          identifies the contents of the file. The artist's NFT Glee wallet will
+          then generate a Liquid Bitcoin asset issuance transaction containing the title of
           the artwork and its hash and broadcast it to be permanently recorded in
-          the Liquid blockchain.
+          the Liquid Bitcoin blockchain.
         </p>
 
         <h3>Who can publish their art here?</h3>
@@ -40,34 +40,28 @@
           been accepted.
         </p>
 
-        <h3>What’s different about Raretoshi compared to other NFT platforms?</h3>
+        <h3>What’s different about NFT Glee compared to other NFT platforms?</h3>
 
         <p>
-          Raretoshi is the first NFT platform that uses the Bitcoin Liquid Network
-          instead of Ethereum or Counterparty. The Liquid network is a bitcoin
+          NFT Glee is the first NFT platform that uses the Liquid Bitcoin Network
+          instead of Ethereum or Counterparty. The Liquid Bitcoin network is a bitcoin
           sidechain where transaction fees are denominated in L-BTC, Liquid Bitcoin,
           which is pegged 1:1 to bitcoin.
         </p>
 
         <p>
-          Transaction fees on Liquid are orders of magnitude cheaper than on the
-          bitcoin or ethereum networks. Liquid also supports native asset issuance
+          Transaction fees on Liquid Bitcoin are orders of magnitude cheaper than on the
+          bitcoin or ethereum networks. Liquid Bitcoin also supports native asset issuance
           and atomic swaps which make it possible for people who don't know or trust
           each other to exchange their different tokens and assets directly in a
           single transaction without needing to go through a trusted 3rd party
           escrow agent.
         </p>
-        
-        <h3>How do I get some L-BTC?</h3>
-        
-        <p>
-          Watch <a href="https://www.youtube.com/watch?v=LxY3oxLQhA8" target="_blank">this video tutorial</a> to learn how to use the Side Swap mobile app to turn BTC into L-BTC so you can bid on art listed on Raretoshi.
-        </p>
       </div>
       <div class="contact boxShadow">
         <p>Need more help?</p>
         <h5>Contact us through</h5>
-        <a href="mailto:support@raretoshi.com" target="_blank">support@raretoshi.com</a>
+        <a href="mailto:support@nftglee.com" target="_blank">support@nftglee.com</a>
       </div>
     </div>
   </div>
@@ -101,7 +95,7 @@
     margin-bottom: 10px;
   }
 
-  .contact a, .faq a{
+  .contact a{
     color: #3ba5ac;
   }
 
