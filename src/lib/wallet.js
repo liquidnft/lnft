@@ -44,9 +44,7 @@ const SERVER_PUBKEY = Buffer.from(
   "hex"
 );
 
-// TODO: check if on local or live env
-const network = networks.liquid;
-// const network = networks.regtest;
+const network = networks[import.meta.env.VITE_PUBLIC_NETWORK];
 
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
