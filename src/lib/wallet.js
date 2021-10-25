@@ -13,7 +13,6 @@ import {
   networks,
   Transaction,
 } from "liquidjs-lib";
-import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
 import {
   balances,

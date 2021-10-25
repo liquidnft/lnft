@@ -10,7 +10,6 @@
     query(getUser)
       .then((res) => {
         $user = res.currentuser[0];
-        if (!$user.wallet_initialized) goto("/wallet/setup");
       })
       .catch(err);
 

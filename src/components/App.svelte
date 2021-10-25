@@ -21,13 +21,24 @@
   import { page } from "$app/stores";
   import { refreshToken } from "$lib/auth";
   import { InsufficientFunds, Session } from "$comp";
-  import { etag, publicPages, err, info } from "$lib/utils";
+  import { etag, publicPages, err, info, goto } from "$lib/utils";
   import { createWallet } from "$lib/wallet";
+  import { browser } from "$app/env";
 
   onMount(async () => {
+    await ready();
     refreshToken();
     setInterval(refreshToken, 60000);
   });
+
+  const ready = () =>
+
+    new Promise((r) =>
+      (function wait() {
+        if (!browser || typeof Buffer !== "undefined") return r();
+        setTimeout(wait, 30);
+      })()
+    );
 
   $: if ($error && $error.message && $error.message.includes("Insufficient")) {
     $prompt = InsufficientFunds;
@@ -40,6 +51,9 @@
     lastPage = p.path;
     $error = null;
     $snack = null;
+
+    if ($user && !$user.wallet_initialized && !p.path.includes("create"))
+      goto("/wallet/create");
   };
 
   $: pageChange($page);
