@@ -43,7 +43,7 @@ const SERVER_PUBKEY = Buffer.from(
   "hex"
 );
 
-const network = networks[import.meta.env.VITE_PUBLIC_NETWORK];
+const network = networks[import.meta.env.VITE_NETWORK];
 
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
@@ -623,13 +623,13 @@ export const sign = (sighash = 1) => {
 
   let { privkey } = keypair();
 
-  p.data.inputs.map((_, i) => {
+  p.data.inputs.map((input, i) => {
     try {
       p = p
         .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
         .finalizeInput(i);
     } catch (e) {
-      // console.log("failed to sign", e.message, i, sighash);
+      console.log("failed to sign", e.message, input, i, sighash);
     }
   });
 
@@ -888,14 +888,24 @@ export const createSwap = async (artwork, amount, tx) => {
   if (tx) {
     let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
 
-    p.addInput({
-      index,
-      hash: tx.getId(),
-      nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
-      redeemScript: multisig().redeem.output,
-      witnessScript: multisig().redeem.redeem.output,
-      sighashType: singleAnyoneCanPay,
-    });
+    if (isMultisig(artwork)) {
+      p.addInput({
+        index,
+        hash: tx.getId(),
+        nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+        redeemScript: multisig().redeem.output,
+        witnessScript: multisig().redeem.redeem.output,
+        sighashType: singleAnyoneCanPay,
+      });
+    } else {
+      p.addInput({
+        index,
+        hash: tx.getId(),
+        nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+        redeemScript: singlesig().redeem.output,
+        sighashType: singleAnyoneCanPay,
+      });
+    } 
   } else {
     await fund(
       p,

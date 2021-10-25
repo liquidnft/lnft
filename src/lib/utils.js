@@ -241,6 +241,8 @@ const etag = async (o) => {
     .substring(0, 27);
 };
 
+const dev = import.meta.env.DEV;
+
 export {
   addressLabel,
   addressUser,
@@ -249,6 +251,7 @@ export {
   btc,
   cad,
   copy,
+  dev,
   etag,
   err,
   explorer,

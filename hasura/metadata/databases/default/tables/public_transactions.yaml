@@ -60,6 +60,7 @@ select_permissions:
               _is_null: false
   role: anonymous
 - permission:
+    allow_aggregations: true
     columns:
     - amount
     - artwork_id

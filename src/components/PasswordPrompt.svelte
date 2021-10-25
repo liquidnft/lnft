@@ -2,7 +2,7 @@
   import { tick } from "svelte";
   import { prompt, password, user, token } from "$lib/store";
   import { api } from "$lib/api";
-  import { err } from "$lib/utils";
+  import { err, dev } from "$lib/utils";
   import Fa from "svelte-fa";
   import {
     faTimes,
@@ -10,7 +10,7 @@
     faEyeSlash,
   } from "@fortawesome/free-solid-svg-icons";
 
-  let attempt = "";
+  let attempt = dev ? "liquidart" : "";
   let input;
   let show;
 

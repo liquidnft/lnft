@@ -172,10 +172,10 @@
       tx
     );
 
-    await sign(0x83);
+    $psbt = await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
 
-      await query(createTransaction, {
+    await query(createTransaction, {
       transaction: {
         amount: sats(artwork.asking_asset, list_price),
         artwork_id: artwork.id,

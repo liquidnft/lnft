@@ -27,7 +27,6 @@ function edgtfThemeCursor() {
 		 }
  
 		 var hoverClass = function () {
-			 console.log('hover');
 			 var items = 'a, button, .tp-bullet, .tp-withaction, button, .edgtf-pl-filter, .ui-slider-handle, .edgtf-btn .items-center a';
 			 var addCSSClass = function () {
 				 !cursor.hasClass('edgtf-hovering') && cursor.addClass('edgtf-hovering');
@@ -219,7 +218,6 @@ function edgtfThemeCursor() {
 		 var init = function () {
 			 jquery(document).one('mousemove', function () {
 				 showCursor();
-				 console.log('show');
 			 });
 			 moveCursor();
 			 hoverClass();
@@ -230,7 +228,6 @@ function edgtfThemeCursor() {
  
 		 return {
 			 init: function () { 
-				 console.log('cursor init'); 
 				init();
 			 }
 		 }
