@@ -44,7 +44,7 @@ const SERVER_PUBKEY = Buffer.from(
   "hex"
 );
 
-const network = networks[import.meta.env.VITE_PUBLIC_NETWORK];
+const network = networks[import.meta.env.VITE_NETWORK];
 
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
@@ -780,6 +780,7 @@ export const createIssuance = async (
       else bumpFee(value);
     }
   } else {
+    console.log("out", out);
     await fund(p, out, btc, get(fee), 1, false, false);
   }
 
