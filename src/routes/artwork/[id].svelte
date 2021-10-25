@@ -299,7 +299,7 @@
           {#if artwork.list_price}
             <div class="my-2">
               <div class="text-sm mt-auto">List Price</div>
-              <div class="text-lg">{list_price}{ticker}<RoyaltyInfo {artwork} /></div>
+              <div class="text-lg">{list_price} {ticker}<RoyaltyInfo {artwork} /></div>
             </div>
           {/if}
           {#if artwork.reserve_price}

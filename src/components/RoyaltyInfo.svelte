@@ -10,7 +10,7 @@
       <Fa icon={faGem} />
     </i>
     <div class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-      <h3>List price without royalties:</h3>
+      <h3>Additional Royalties</h3>
       <ul>
         {#if artwork.royalty}
           <li>{artwork.artist.username} (Artist): {artwork.royalty}%</li>

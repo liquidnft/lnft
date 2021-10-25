@@ -27,7 +27,7 @@
   }
 
   .snack {
-    @apply relative w-full flex p-4 rounded;
+    @apply relative w-full flex p-4 rounded text-white;
   }
 
   .snack.error {
