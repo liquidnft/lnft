@@ -40,5 +40,5 @@
       <Row {item} {link} />
     {/each}
   </div>
-  <a class="block text-right text-midblue primary-color" href={link}>See all</a>
+  <a class="block text-right" href={link}>See all</a>
 </div>
