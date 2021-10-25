@@ -98,7 +98,7 @@
       </p>
 
       <p class="mt-4">
-        <a href="/login" class="secondary-color">Continue to sign in page</a>
+        <a href="/login" class="text-primary">Continue to sign in page</a>
       </p>
     {:else}
       <h2 class="mb-8">Sign up</h2>
@@ -156,10 +156,10 @@
         </div>
       </div>
       <span class="block w-full">By signing up, you agree to the
-        <a href="/terms-and-conditions" class="text-midblue">Terms and
+        <a href="/terms-and-conditions">Terms and
           Conditions</a>
         and
-        <a href="/privacy-policy" class="text-midblue">Privacy Policy</a></span>
+        <a href="/privacy-policy">Privacy Policy</a></span>
       <div class="flex my-5 justify-end">
         <button class="primary-btn w-full" type="submit">Register</button>
       </div>
