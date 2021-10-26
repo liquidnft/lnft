@@ -31,6 +31,7 @@ const fields = `
   ticker
   views
   transferred_at
+  is_sold
   owner {
     id
     username
@@ -66,12 +67,13 @@ export const getFeatured = `query {
   }
 }`;
 
-export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offset: Int, $order_by: artworks_order_by!) {
- artworks(where: $where, limit: $limit, offset: $offset, order_by: [$order_by]) {
+// REMOVED: , $order_by: artworks_order_by! ///order_by: [$order_by],
+export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offset: Int) {
+ artworks(where: $where, limit: $limit, offset: $offset, distinct_on: [edition_id]) {
     ${fields}
     tags {
       tag
-    } 
+    }
   }
 }`;
 
