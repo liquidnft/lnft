@@ -48,7 +48,7 @@
     <Hamburger bind:open={sidebar} />
   </nav>
   <div>
-    <a href="/">
+    <a href="https://nftglee.com/">
       <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-56" /></a>
   </div>
   <a class="mobileSearch" href="/market">
