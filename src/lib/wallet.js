@@ -888,14 +888,24 @@ export const createSwap = async (artwork, amount, tx) => {
   if (tx) {
     let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
 
-    p.addInput({
-      index,
-      hash: tx.getId(),
-      nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
-      redeemScript: multisig().redeem.output,
-      witnessScript: multisig().redeem.redeem.output,
-      sighashType: singleAnyoneCanPay,
-    });
+    if (isMultisig(artwork)) {
+      p.addInput({
+        index,
+        hash: tx.getId(),
+        nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+        redeemScript: multisig().redeem.output,
+        witnessScript: multisig().redeem.redeem.output,
+        sighashType: singleAnyoneCanPay,
+      });
+    } else {
+      p.addInput({
+        index,
+        hash: tx.getId(),
+        nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+        redeemScript: singlesig().redeem.output,
+        sighashType: singleAnyoneCanPay,
+      });
+    }
   } else {
     await fund(
       p,
