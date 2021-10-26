@@ -85,7 +85,8 @@
 
 <div class="flex justify-between items-center menu relative">
   <a href="https://www.nftglee.com/about-us/"><button on:click={toggle}>About Us</button></a>
-  <a href="/market"><button on:click={toggle}>New Drops</button></a>
+  <a href="https://www.nftglee.com/bit-bot-community/"><button on:click={toggle}>New Drops</button></a>
+  <a href="/market"><button on:click={toggle}>Marketplace</button></a>
   <a href="https://www.nftglee.com/goldenwhalepass/"><button
       on:click={toggle}>Our Work</button></a>
   {#if $user}
@@ -94,7 +95,7 @@
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
     {/if}
     <a href={`/u/${$user.username}`}>
-      <button on:click={toggle} class="flex">
+      <button on:click={toggle} class="flex" style="border: none">
         <Avatar user={$user} />
       </button></a>
   {:else}

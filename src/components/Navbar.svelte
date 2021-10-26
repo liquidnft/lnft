@@ -43,13 +43,13 @@
 </style>
 
 <header
-  class="flex container mx-auto justify-between px-4 py-4 items-center text-gray-600">
+  class="flex w-full mx-auto justify-between px-16 mt-4 items-center text-gray-600">
   <nav class="flex hambuger">
     <Hamburger bind:open={sidebar} />
   </nav>
   <div>
     <a href="/">
-      <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-48" /></a>
+      <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-56" /></a>
   </div>
   <a class="mobileSearch" href="/market">
     <Fa icon={faSearch} />
