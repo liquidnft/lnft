@@ -1,12 +1,14 @@
-FROM node:14-alpine
+FROM node:17-alpine
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 
-WORKDIR /app
+RUN apk add git ffmpeg python3 build-base vips-dev
+RUN npm i -g pnpm
 
+WORKDIR /app
 COPY . ./
-RUN apk add git ffmpeg
-RUN yarn install
+
+RUN pnpm install
 
 # CMD ["sleep", "3600"]
-CMD ["yarn", "start"]
+CMD ["pnpm", "start"]
