@@ -35,6 +35,7 @@ import { btc } from "$lib/utils";
 import { requirePassword } from "$lib/auth";
 import { getActiveBids } from "$queries/transactions";
 import { compareAsc, parseISO } from "date-fns";
+import { variables } from '$lib/variables';
 
 const DUST = 800;
 const satsPerByte = 0.1;
@@ -43,7 +44,8 @@ const SERVER_PUBKEY = Buffer.from(
   "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b",
   "hex"
 );
-const network = networks.regtest;
+
+const network = networks[variables.publicNetwork];
 
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
