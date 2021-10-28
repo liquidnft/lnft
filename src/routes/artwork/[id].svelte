@@ -6,6 +6,8 @@
     faTimes,
   } from "@fortawesome/free-solid-svg-icons";
   import { faHeart, faImage } from "@fortawesome/free-regular-svg-icons";
+  import { getArtwork, getArtworksByArtist } from "$queries/artworks";
+  import { getArtworkTransactions } from "$queries/transactions";
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
   import { Activity, Avatar, Card, ProgressLinear, RoyaltyInfo } from "$comp";
@@ -21,8 +23,6 @@
     psbt,
   } from "$lib/store";
   import countdown from "$lib/countdown";
-  import { getArtwork, getArtworksByArtist } from "$queries/artworks";
-  import { getArtworkTransactions } from "$queries/transactions";
   import { goto, err, explorer, info, units } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import {
@@ -45,7 +45,7 @@
     });
   }
 
-  export let id;
+  export let artwork, others, transactions;
 
   $: disabled =
     !artwork ||
@@ -54,21 +54,16 @@
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
     );
 
-  $: pageChange($page);
-  const pageChange = ({ params }) => {
-    loading = false;
-    if (params.id) {
-      ({ id } = params);
-    }
+  let start_counter, end_counter, now, timeout, loaded;
+
+  let { id } = artwork;
+  $: init(artwork);
+  let init = () => {
+    if (!loaded) api.url("/viewed").post({ id });
+    loaded = true;
   };
 
-  let others = [];
-  let transactions = [];
-
-  let artwork, start_counter, end_counter, now, timeout, loaded;
-
-  $: setup(id);
-  let setup = async () => {
+  let fetch = async () => {
     query(getArtwork(id))
       .then((res) => {
         artwork = res.artworks_by_pk;
@@ -93,7 +88,7 @@
       .catch(err);
   };
 
-  let poll = setInterval(setup, 2500);
+  let poll = setInterval(fetch, 2500);
 
   onDestroy(() => {
     $art = undefined;
@@ -145,7 +140,7 @@
     transaction.psbt = $psbt.toBase64();
     transaction.hash = $psbt.__CACHE.__TX.getId();
     await save();
-    await setup();
+    await fetch();
     offering = false;
   };
 
@@ -222,7 +217,7 @@
       transaction.asset = artwork.asset;
       transaction.user;
 
-      await setup();
+      await fetch();
     } catch (e) {
       err(e);
     }
@@ -236,7 +231,7 @@
 </script>
 
 <div class="container mx-auto mt-10 md:mt-20">
-  {#if artwork}
+  {#if artwork && artwork.id}
     <div class="flex flex-wrap">
       <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">
