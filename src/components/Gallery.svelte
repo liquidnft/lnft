@@ -6,11 +6,12 @@
   export let offset;
 
   let loaded = {};
+  let debug;
 
   let w;
   let hidden;
   let maxPages = 7;
-  $: columns = w >= 640 ? 3 : w >= 640 ? 2 : 1;
+  $: columns = w >= 1024 ? 3 : w >= 640 ? 2 : 1;
 
   $: offset =
     artworks &&
@@ -49,28 +50,34 @@
     inview = artworks.slice(0, 24);
     await tick();
 
+    // make sure we're at scroll top
+    if (y > 0) return setTimeout(() => init(artworks), 50);
+
     let el = document.querySelector(".market-gallery");
-    if (!el) return;
+    if (!el) return console.log("no el");
 
     let { top, bottom } = el.getBoundingClientRect();
     rh = bottom - top;
     st = top;
 
+    console.log(columns);
+
     newrows = count / columns;
-    nh = rh * newrows;
+    nh = rh * (newrows + 1)
     content.style.height = `${nh + (columns > 1 ? 200 : 0)}px`;
   };
 
-  let pad = 200;
-  let a, cr, translate;
-  $: scroll(y);
+  let a, cr, translate, sf;
+  let c = 30;
+  $: scroll(y, c);
   let scroll = (y) => {
     window.requestAnimationFrame(() => {
       if (!st || !rh) return;
       cr = Math.round((y - st) / rh);
-      a = Math.max(0, (cr * columns) - 6);
-      if (artworks && a >= 0) inview = artworks.slice(a, a + 12);
-      translate = Math.max(0, (cr * rh));
+      let p = 2 * columns;
+      a = Math.max(p, cr * columns);
+      if (artworks && a >= 0) inview = artworks.slice(a - p, a + p);
+      translate = Math.max(0, cr * rh - rh);
     });
   };
 
@@ -90,20 +97,32 @@
 
 <svelte:window bind:innerWidth={w} bind:scrollY={y} on:resize={init} />
 
-<div class="fixed bg-white z-50">
+{#if debug}
+<div class="fixed bg-white z-50 left-2">
+  w
+  {w}<br />
   len
   {inview.length}<br />
   a
   {a}<br />
+  c
+  <input bind:value={c} /><br />
   translate
-  {translate}<br />
+  <input bind:value={translate} /><br />
   st
   {st}<br />
+  rh
+  {rh}<br />
   cr
   {cr}<br />
+  cr*rh
+  {cr * rh}<br />
+  sf
+  {sf && sf.toFixed(2)}<br />
   y
   {y && y.toFixed(2)}<br />
 </div>
+{/if}
 
 <div bind:this={content}>
   <div class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3">
@@ -129,4 +148,4 @@
   {/each}
 </div>
 
-<Pagination {artworks} {hidden} {offset} />
+  <!-- <Pagination {artworks} {hidden} {offset} /> -->

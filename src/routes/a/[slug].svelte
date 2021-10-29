@@ -16,8 +16,6 @@
   import Artwork from "../artwork/[id].svelte";
 
   export let artwork, transactions, others;
-
-  console.log('lo', artwork);
 </script>
 
 {#if artwork}

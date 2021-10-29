@@ -60,7 +60,7 @@ const addressLabel = (address) => {
 const assetLabel = (asset) => {
   let $titles = get(titles);
   let r = $titles && $titles.find((u) => u.asset === asset);
-  
+
   return r
     ? r.title
       ? r.title + (r.editions > 1 ? ` ${r.edition}/${r.editions}` : "")
@@ -253,13 +253,12 @@ const etag = async (o) => {
 const dev = import.meta.env.DEV;
 
 const linkify = (text) => {
-    var urlRegex =
-      /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-    return text.replace(urlRegex, function (url) {
-      return '<a href="' + url + '">' + url + "</a>";
-    });
-  }
-
+  var urlRegex =
+    /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  return text.replace(urlRegex, function (url) {
+    return '<a href="' + url + '">' + url + "</a>";
+  });
+};
 
 export {
   addressLabel,
