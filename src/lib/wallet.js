@@ -13,7 +13,6 @@ import {
   networks,
   Transaction,
 } from "liquidjs-lib";
-import { Buffer } from "buffer";
 import reverse from "buffer-reverse";
 import {
   balances,
@@ -40,12 +39,8 @@ import { variables } from '$lib/variables';
 const DUST = 800;
 const satsPerByte = 0.1;
 
-const SERVER_PUBKEY = Buffer.from(
-  "03c3722bb4260f8c449fc8f266a58348d99410a26096fba84fb15c1d66d868f87b",
-  "hex"
-);
-
-const network = networks[variables.publicNetwork];
+const serverKey = Buffer.from(import.meta.env.VITE_PUBKEY, "hex");
+const network = networks[import.meta.env.VITE_NETWORK];
 
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
@@ -192,7 +187,7 @@ export const multisig = (key) => {
 
   let redeem = payments.p2ms({
     m: 2,
-    pubkeys: [key.pubkey, SERVER_PUBKEY].sort((a, b) =>
+    pubkeys: [key.pubkey, serverKey].sort((a, b) =>
       a.toString("hex").localeCompare(b.toString("hex"))
     ),
     network,
@@ -909,14 +904,24 @@ export const createSwap = async (artwork, amount, tx) => {
   if (tx) {
     let index = tx.outs.findIndex((o) => parseAsset(o.asset) === asset);
 
-    p.addInput({
-      index,
-      hash: tx.getId(),
-      nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
-      redeemScript: multisig().redeem.output,
-      witnessScript: multisig().redeem.redeem.output,
-      sighashType: singleAnyoneCanPay,
-    });
+    if (isMultisig(artwork)) {
+      p.addInput({
+        index,
+        hash: tx.getId(),
+        nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+        redeemScript: multisig().redeem.output,
+        witnessScript: multisig().redeem.redeem.output,
+        sighashType: singleAnyoneCanPay,
+      });
+    } else {
+      p.addInput({
+        index,
+        hash: tx.getId(),
+        nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+        redeemScript: singlesig().redeem.output,
+        sighashType: singleAnyoneCanPay,
+      });
+    }
   } else {
     await fund(
       p,

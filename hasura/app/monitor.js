@@ -123,8 +123,8 @@ const isSpent = async ({ ins }, artwork_id) => {
     result.errors ||
     compareAsc(
       parseISO(result.data.transactions[0].created_at),
-      subMinutes(new Date(), 2) > 0
-    )
+      subMinutes(new Date(), 2)
+    ) > 0
   )
     return console.log("skipping", artwork_id);
 

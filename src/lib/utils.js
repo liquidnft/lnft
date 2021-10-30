@@ -13,7 +13,9 @@ import { goto as svelteGoto } from "$app/navigation";
 import { tick } from "svelte";
 import { variables } from '$lib/variables';
 
-let {publicCad: cad, publicBtc: btc, publicUsd: usd} = variables;
+const btc = import.meta.env.VITE_BTC;
+const cad = import.meta.env.VITE_CAD;
+const usd = import.meta.env.VITE_USD;
 
 const fade = (n, o) => svelteFade(n, { ...o, duration: 50 });
 
@@ -120,10 +122,7 @@ const goto = (path) => {
   if (window) window.history.pushState(null, null, path);
 };
 
-const explorer =
-  import.meta && import.meta.env && import.meta.env !== "production"
-    ? import.meta.env.VITE_PUBLIC_EXPLORER
-    : "https://blockstream.info/liquid";
+const explorer = import.meta.env.VITE_EXPLORER
 
 const copy = (v) => {
   let textArea = document.createElement("textarea");
@@ -251,6 +250,8 @@ const etag = async (o) => {
     .substring(0, 27);
 };
 
+const dev = import.meta.env.DEV;
+
 export {
   addressLabel,
   addressUser,
@@ -259,6 +260,7 @@ export {
   btc,
   cad,
   copy,
+  dev,
   etag,
   err,
   explorer,
