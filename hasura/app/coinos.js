@@ -17,7 +17,7 @@ app.post("/bitcoin", auth, async (req, res) => {
 
   let { address } = await coinos
     .url("/address")
-    .query({ network, type: "bech32" })
+    .query({ network, type: "p2sh-segwit" })
     .get()
     .json();
 
