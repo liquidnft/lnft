@@ -87,16 +87,29 @@ setInterval(async () => {
       let artwork = artworks[i];
       let bid = artwork.bid[0];
 
+      hasura
+        .post({
+          query: close,
+          variables: {
+            id: artwork.id,
+            artwork: {
+              auction_start: null,
+              auction_end: null,
+            },
+          },
+        })
+        .json()
+        .catch(console.log);
+
       console.log("finalizing auction for", artwork.slug);
       console.log("reserve price", artwork.reserve_price);
 
       try {
         if (
           !bid.psbt ||
-          compareAsc(
-            parseISO(bid.created_at),
-            parseISO(artwork.auction_end)
-          ) > 0 || bid.amount < artwork.reserve_price
+          compareAsc(parseISO(bid.created_at), parseISO(artwork.auction_end)) >
+            0 ||
+          bid.amount < artwork.reserve_price
         )
           throw new Error("no bid");
 
@@ -134,8 +147,7 @@ setInterval(async () => {
 
           console.log("released to current owner");
 
-          let result =  
-          await hasura
+          let result = await hasura
             .post({
               query: releaseQuery,
               variables: {
@@ -150,23 +162,10 @@ setInterval(async () => {
             })
             .json();
 
-          if (result.errors && result.errors.length) throw new Error(JSON.stringify(result.errors[0].message));
+          if (result.errors && result.errors.length)
+            throw new Error(JSON.stringify(result.errors[0].message));
         } catch (e) {
           console.log("problem releasing", e);
-
-          hasura
-            .post({
-              query: close,
-              variables: {
-                id: artwork.id,
-                artwork: {
-                  auction_start: null,
-                  auction_end: null,
-                },
-              },
-            })
-            .json()
-            .catch(console.log);
         }
       }
     }

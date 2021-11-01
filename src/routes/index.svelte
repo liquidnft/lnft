@@ -166,6 +166,11 @@
   </div>
 </div>
 
+<div>
+      <img
+        src="/api/public/QmPFKmr6F4fCWdA5UoA9iuYFcZSjehfyudUpfWkUCp3QeL" />
+    </div>
+
 {#if featured[current]}
   <div class="flex secondary-header marg-bottom">
     <div

@@ -35,6 +35,6 @@
     "wretch": "^1.7.4"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   }
 }
