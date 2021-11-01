@@ -27,7 +27,7 @@
     {#if user || src}
       <img
         key={user && user.username}
-        src={user ? `/api/ipfs/${user.avatar_url}` : src.startsWith('data') ? src : `/api/ipfs/${src}`}
+        src={user ? `/api/public/${user.avatar_url}` : src.startsWith('data') ? src : `/api/ipfs/${src}`}
         alt={user ? user.username : 'lovely avatar'}
         class="absolute w-full h-full object-cover object-center visible overflow-hidden" />
     {/if}

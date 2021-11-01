@@ -14,6 +14,7 @@ const marketFields = `
   asking_asset
   royalty
   slug
+  created_at
   owner {
     id
     username
@@ -215,8 +216,8 @@ export const getArtwork = (id) => `query {
   }
 }`;
 
-export const countArtworks = `query($where: artworks_bool_exp!, $order_by: artworks_order_by!) {
-  artworks_aggregate(where: $where, order_by: [$order_by]) {
+export const countArtworks = `query($where: artworks_bool_exp!) {
+  artworks_aggregate(where: $where) {
     aggregate {
       count
     }

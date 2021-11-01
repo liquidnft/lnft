@@ -268,6 +268,7 @@ export {
   goto,
   go,
   info,
+  linkify,
   pick,
   sats,
   kebab,
