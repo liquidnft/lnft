@@ -1,9 +1,8 @@
 <script>
-  import { Card, Pagination, LoadingPlaceholder } from "$comp";
+  import { Card, Pagination } from "$comp";
   import { onMount, tick } from "svelte";
 
   export let artworks;
-  export let offset;
 
   let loaded = {};
   let debug;
@@ -13,65 +12,38 @@
   let maxPages = 7;
   $: columns = w >= 1024 ? 3 : w >= 640 ? 2 : 1;
 
-  $: offset =
-    artworks &&
-    artworks.length / maxPages -
-      ((artworks.length / maxPages) % columns) +
-      columns;
-
-  $: artworks &&
-    tick().then(() => {
-      let visible = {};
-      let observers = {};
-      let observe = (s) => {
-        let el = document.querySelector(s);
-        if (observers[s]) observers[s].unobserve();
-        observers[s] = new IntersectionObserver((e) => {
-          visible[s] = e[0].isIntersecting;
-          hidden = visible[".controls"] || visible[".footer"];
-        });
-        if (el) observers[s].observe(el);
-      };
-
-      observe(".controls");
-      observe(".footer");
-    });
-
   let st;
   let y;
 
-  let n = 0;
   let content, rh, newrows, nh, viewportHeight, inview;
   $: init(artworks);
   let init = async () => {
-    console.log("initting");
-    count = artworks.length;
     window.scrollTo(0, 0);
     inview = artworks.slice(0, 24);
     await tick();
 
-    // make sure we're at scroll top
     if (y > 0) return setTimeout(() => init(artworks), 50);
 
     let el = document.querySelector(".market-gallery");
-    if (!el) return console.log("no el");
+    if (!el) return;
 
     let { top, bottom } = el.getBoundingClientRect();
     rh = bottom - top;
     st = top;
 
-    console.log(columns);
-
-    newrows = count / columns;
+    newrows = artworks.length / columns;
     nh = rh * (newrows + 1);
     content.style.height = `${nh + (columns > 1 ? 200 : 0)}px`;
   };
 
   let a, cr, translate, sf;
   let c = 30;
+  let timeout;
+
   $: scroll(y, c);
   let scroll = (y) => {
     window.requestAnimationFrame(() => {
+      clearTimeout(timeout);
       if (!st || !rh) return;
       cr = Math.round((y - st) / rh);
       let p = 2 * columns;
@@ -84,10 +56,6 @@
 </script>
 
 <style>
-  .invisible {
-    height: 0;
-  }
-
   .market-gallery :global(.card-link img),
   .market-gallery :global(.card-link video) {
     height: 350px;
@@ -126,16 +94,11 @@
 
 <div bind:this={content}>
   <div class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3">
-    {#each inview as artwork, i (artwork.id)}
-      {#if i % offset === 0}
-        <div class="sm:col-span-2 lg:col-span-3 w-full flex invisible h-0">
-          <h4 class="mx-auto" id={`artwork-${i}`}>{i / offset + 1}</h4>
-        </div>
-      {/if}
+    {#each inview as artwork, i}
       <div
         class="market-gallery w-full mb-20"
         style={`transform: translateY(${translate}px)`}>
-        <Card {artwork} bind:loaded={loaded[artwork.id]} />
+          <Card {artwork} bind:loaded={loaded[artwork.id]} />
       </div>
     {/if}
     <div class="market-gallery w-full mb-20">
@@ -146,4 +109,3 @@
   {/each}
 </div>
 
-<!-- <Pagination {artworks} {hidden} {offset} /> -->

@@ -1,8 +1,8 @@
-import { getArtworks } from "$queries/artworks";
+import { countArtworks, getLimited } from "$queries/artworks";
 import wretch from "wretch";
 
 export async function get({ headers, query }) {
-  let limit = 12;
+  let limit = 2000;
   let offset = 0;
   let where = {};
   let order_by = {
@@ -15,7 +15,7 @@ export async function get({ headers, query }) {
   if (authorization) api = api.auth(authorization);
   let { data, errors } = await api
     .post({
-      query: getArtworks,
+      query: getLimited,
       variables: { limit, offset, order_by, where },
     })
     .json();

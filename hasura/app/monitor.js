@@ -10,10 +10,32 @@ const updateAvatars = async () => {
       data: { users },
     } = await hasura
       .post({
-        query: `query { users { avatar_url }}`,
+        query: `query { users { id, avatar_url }}`,
       })
       .json()
       .catch(console.log);
+
+    let query = `mutation update_user($user: users_set_input!, $id: uuid!) {
+      update_users_by_pk(pk_columns: { id: $id }, _set: $user) {
+        id
+      }
+    }`;
+
+    users.map((user) => {
+      let f = files.find((f) => f.startsWith(user.avatar_url));
+      if (f && f !== user.avatar_url) {
+        user.avatar_url = f;
+        console.log("updating user", user.avatar_url);
+
+        hasura
+          .post({
+            query,
+            variables: { user, id: user.id },
+          })
+          .json(console.log)
+          .catch(console.log);
+      }
+    });
   });
 };
 

@@ -23,7 +23,7 @@
     psbt,
   } from "$lib/store";
   import countdown from "$lib/countdown";
-  import { goto, err, explorer, info, units } from "$lib/utils";
+  import { goto, err, explorer, info, linkify, units } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import {
     createOffer,

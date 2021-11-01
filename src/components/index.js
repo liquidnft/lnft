@@ -14,7 +14,6 @@ export { default as Head } from "./Head.svelte";
 export { default as Heart } from "./Heart.svelte";
 export { default as InsufficientFunds } from "./InsufficientFunds.svelte";
 export { default as LatestPiecesCard } from "./LatestPiecesCard.svelte";
-export { default as LoadingPlaceholder } from "./LoadingPlaceholder.svelte";
 export { default as Menu } from "./Menu.svelte";
 export { default as Navbar } from "./Navbar.svelte";
 export { default as Offers } from "./Offers.svelte";
