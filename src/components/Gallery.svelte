@@ -64,7 +64,7 @@
     console.log(columns);
 
     newrows = count / columns;
-    nh = rh * (newrows + 1)
+    nh = rh * (newrows + 1);
     content.style.height = `${nh + (columns > 1 ? 200 : 0)}px`;
   };
 
@@ -99,30 +99,30 @@
 <svelte:window bind:innerWidth={w} bind:scrollY={y} on:resize={init} />
 
 {#if debug}
-<div class="fixed bg-white z-50 left-2">
-  w
-  {w}<br />
-  len
-  {inview.length}<br />
-  a
-  {a}<br />
-  c
-  <input bind:value={c} /><br />
-  translate
-  <input bind:value={translate} /><br />
-  st
-  {st}<br />
-  rh
-  {rh}<br />
-  cr
-  {cr}<br />
-  cr*rh
-  {cr * rh}<br />
-  sf
-  {sf && sf.toFixed(2)}<br />
-  y
-  {y && y.toFixed(2)}<br />
-</div>
+  <div class="fixed bg-white z-50 left-2">
+    w
+    {w}<br />
+    len
+    {inview.length}<br />
+    a
+    {a}<br />
+    c
+    <input bind:value={c} /><br />
+    translate
+    <input bind:value={translate} /><br />
+    st
+    {st}<br />
+    rh
+    {rh}<br />
+    cr
+    {cr}<br />
+    cr*rh
+    {cr * rh}<br />
+    sf
+    {sf && sf.toFixed(2)}<br />
+    y
+    {y && y.toFixed(2)}<br />
+  </div>
 {/if}
 
 <div bind:this={content}>
@@ -136,12 +136,10 @@
       <div
         class="market-gallery w-full mb-20"
         style={`transform: translateY(${translate}px)`}>
-        {#if artwork}
-          <Card {artwork} bind:loaded={loaded[artwork.id]} />
-        {/if}
+        <Card {artwork} bind:loaded={loaded[artwork.id]} />
       </div>
     {/each}
   </div>
 </div>
 
-  <!-- <Pagination {artworks} {hidden} {offset} /> -->
+<!-- <Pagination {artworks} {hidden} {offset} /> -->

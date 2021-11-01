@@ -1,8 +1,27 @@
-const { api, hasura, electrs, registry } = require("./api");
+const { api, ipfs, hasura, electrs, registry } = require("./api");
 const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
 const reverse = require("buffer-reverse");
 const fs = require("fs");
 const { Psbt } = require("liquidjs-lib");
+
+const updateAvatars = async () => {
+  fs.readdir("/export", async (err, files) => {
+    let {
+      data: { users },
+    } = await hasura
+      .post({
+        query: `query { users { avatar_url }}`,
+      })
+      .json()
+      .catch(console.log);
+  });
+};
+
+try {
+  updateAvatars();
+} catch (e) {
+  console.log(e);
+}
 
 const setConfirmed = `
   mutation setConfirmed($id: uuid!) {

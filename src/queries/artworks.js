@@ -26,6 +26,10 @@ const marketFields = `
   },
   bid {
     id
+    user {
+      id
+      username
+    } 
     amount 
   }
 `

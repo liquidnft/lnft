@@ -18,7 +18,7 @@
   let comp, loading;
 
   let canCancel = ({ artwork, created_at, type, user: { id } }) =>
-    type === "bid" && isCurrent(artwork, created_at, type) && $user.id === id;
+    type === "bid" && isCurrent(artwork, created_at, type) && $user && $user.id === id;
 
   let isCurrent = ({ transferred_at: t }, created_at, type) =>
     type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);

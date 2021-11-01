@@ -2,6 +2,7 @@ import { getArtworks } from "$queries/artworks";
 import wretch from "wretch";
 
 export async function get({ headers, query }) {
+  let limit = 12;
   let offset = 0;
   let where = {};
   let order_by = {
@@ -15,7 +16,7 @@ export async function get({ headers, query }) {
   let { data, errors } = await api
     .post({
       query: getArtworks,
-      variables: { offset, order_by, where },
+      variables: { limit, offset, order_by, where },
     })
     .json();
   if (errors) throw new Error(errors[0].message);

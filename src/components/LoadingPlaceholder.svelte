@@ -10,19 +10,6 @@
     overflow: hidden;
   }
 
-  .card-header {
-    height: 350px;
-  }
-
-  .card-content {
-    background-color: #fff;
-    padding: 30px;
-  }
-
-  .card-content h3 {
-    margin-bottom: 10px;
-  }
-
   .animated-bg {
     background-image: linear-gradient(
       to right,
@@ -47,13 +34,14 @@
 
 </style>
 
-<div class="card">
-  <div class="card-header animated-bg" id="header">&nbsp;</div>
+  <div
+    class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full"
+    in:fade>
   {#if showDetails}
-    <div class="card-content">
-      <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
-      <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
-      <h3 class="card-title animated-bg animated-bg-text" id="title">&nbsp;</h3>
+    <div class="p-4">
+      <h3 class="animated-bg animated-bg-text" id="title">&nbsp;</h3>
+      <h3 class="animated-bg animated-bg-text" id="title">&nbsp;</h3>
+      <h3 class="animated-bg animated-bg-text" id="title">&nbsp;</h3>
     </div>
   {/if}
 </div>
