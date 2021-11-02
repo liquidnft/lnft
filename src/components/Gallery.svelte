@@ -3,6 +3,7 @@
   import { onMount, tick } from "svelte";
 
   export let artworks;
+  export let count;
 
   let loaded = {};
   let debug;
@@ -16,29 +17,34 @@
   let y;
 
   let content, rh, newrows, nh, viewportHeight, inview;
+
+  let resize = async () => {
+    st = undefined;
+    window.scrollTo(0, 0);
+    setTimeout(init, 50);
+  };
+
   $: init(artworks);
   let init = async () => {
-    window.scrollTo(0, 0);
-    inview = artworks.slice(0, 24);
+    if (!inview || !inview.length) inview = artworks.slice(0, 24);
     await tick();
-
-    if (y > 0) return setTimeout(() => init(artworks), 50);
 
     let el = document.querySelector(".market-gallery");
     if (!el) return;
 
     let { top, bottom } = el.getBoundingClientRect();
     rh = bottom - top;
-    st = top;
+    if (!st) st = top;
 
-    newrows = artworks.length / columns;
-    nh = rh * (newrows + 1);
+    newrows = Math.ceil(count / columns);
+    nh = rh * (newrows + 1) - y;
     content.style.height = `${nh + (columns > 1 ? 200 : 0)}px`;
   };
 
   let a, cr, translate, sf;
   let c = 30;
   let timeout;
+  let justScrolled;
 
   $: scroll(y, c);
   let scroll = (y) => {
@@ -50,6 +56,8 @@
       a = Math.max(p, cr * columns);
       if (artworks && a >= 0) inview = artworks.slice(a - p, a + p);
       translate = Math.max(0, cr * rh - rh);
+      justScrolled = true;
+      setTimeout(() => (justScrolled = false), 250);
     });
   };
 
@@ -63,10 +71,12 @@
 
 </style>
 
-<svelte:window bind:innerWidth={w} bind:scrollY={y} on:resize={init} />
+<svelte:window bind:innerWidth={w} bind:scrollY={y} on:resize={resize} />
 
 {#if debug}
   <div class="fixed bg-white z-50 left-2">
+    nh
+    {nh}<br />
     w
     {w}<br />
     len
@@ -95,17 +105,13 @@
 <div bind:this={content}>
   <div class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3">
     {#each inview as artwork, i}
-      <div
-        class="market-gallery w-full mb-20"
-        style={`transform: translateY(${translate}px)`}>
-          <Card {artwork} bind:loaded={loaded[artwork.id]} />
-      </div>
-    {/if}
-    <div class="market-gallery w-full mb-20">
       {#if artwork}
-        <Card {artwork} bind:loaded={loaded[artwork.id]} />
+        <div
+          class="market-gallery w-full mb-20"
+          style={`transform: translateY(${translate}px)`}>
+          <Card {artwork} bind:justScrolled bind:loaded={loaded[artwork.id]} />
+        </div>
       {/if}
-    </div>
-  {/each}
+    {/each}
+  </div>
 </div>
-

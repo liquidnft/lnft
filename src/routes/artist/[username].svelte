@@ -1,20 +1,30 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    let { username } = page.params;
+    const r = await fetch(`/artworks/username/${username}.json`).then((r) => r.json());
+
+    return {
+      maxage: 720,
+      props: {
+        count: r.count,
+        artworks: r.artworks,
+        username
+      },
+    };
+  }
+
+</script>
+
 <script>
   import { query } from "$lib/api";
-  import { page } from "$app/stores";
-  import { getArtworksByUsername } from "$queries/artworks";
   import { Gallery } from "$comp";
-  import { err } from "$lib/utils";
 
-  let { username } = $page.params;
-  let artworks = [];
-
-  $: query(getArtworksByUsername(username))
-    .then((res) => (artworks = res.artworks))
-    .catch(err);
-
+  export let artworks;
+  export let count;
+  export let username;
 </script>
 
 <div class="container mx-auto mt-10 md:mt-20">
   <h2 class="mb-10">{username}</h2>
-  <Gallery {artworks} />
+  <Gallery {artworks} bind:count />
 </div>

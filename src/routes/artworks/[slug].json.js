@@ -1,3 +1,4 @@
+import { validate } from "uuid";
 import {
   getArtwork,
   getArtworksByArtist,
@@ -13,8 +14,13 @@ export async function get({ headers, params }) {
     let { slug } = params;
     auth(headers);
 
-    let { artworks } = await q(getArtworkBySlug(slug));
-    let artwork = artworks[0];
+    let artwork;
+    if (validate(slug)) {
+      ({ artworks_by_pk: artwork } = await q(getArtwork(slug)));
+    } else {
+      let { artworks } = await q(getArtworkBySlug(slug));
+      artwork = artworks[0];
+    }
 
     let { artworks: others } = await q(getArtworksByArtist(artwork.artist_id));
 

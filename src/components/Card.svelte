@@ -4,6 +4,7 @@
   import { fade, goto, units } from "$lib/utils";
   import { onMount } from "svelte";
 
+  export let justScrolled = false;
   export let artwork;
   export let columns = 3;
   export let showDetails = true;
@@ -52,7 +53,11 @@
     class="{showDetails ? 'card' : ''} flex flex-col justify-between h-full"
     in:fade>
     <a href={`/a/${artwork.slug}`}>
-      <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
+      {#if !loaded && justScrolled}
+        <div style="height: 350px" class="bg-gray-100 w-full object-cover"></div>
+      {:else}
+        <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
+      {/if}
     </a>
     {#if showDetails}
       <div class="p-4">

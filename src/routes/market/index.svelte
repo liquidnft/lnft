@@ -1,10 +1,11 @@
 <script context="module">
   export async function load({ fetch }) {
-    const r = await fetch("/artworks.json").then((r) => r.json());
+    const r = await fetch("/artworks.json?limit=12").then((r) => r.json());
 
     return {
-      maxage: 90,
+      maxage: 720,
       props: {
+        count: r.count,
         initialArtworks: r.artworks,
       },
     };
@@ -31,24 +32,26 @@
   import { requirePassword } from "$lib/auth";
   import { pub } from "$lib/api";
 
+  export let count;
   export let showFilters;
   export let initialArtworks;
 
   let filtered = [];
 
   let offset = 0;
-  let count;
 
   $: reset($filterCriteria, $sortCriteria);
   let reset = async () => {
     if (initialArtworks && initialArtworks.length) {
       $artworks = initialArtworks;
-      count = $artworks.length;
       filtered = $artworks;
     }
   };
 
-  onMount(reset);
+  onMount(async () => {
+    const r = await fetch("/artworks.json").then((r) => r.json());
+    $artworks = r.artworks;
+  });
 
 </script>
 

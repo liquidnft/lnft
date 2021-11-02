@@ -1,3 +1,17 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const props = await fetch(`/artworks/${page.params.id}.json`).then((r) =>
+      r.json()
+    );
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
   import Fa from "svelte-fa";
   import {
@@ -48,7 +62,7 @@
 
   let start_counter, end_counter, now, timeout, loaded;
 
-  let { id } = artwork;
+  let id = artwork ? artwork.id : $page.params.id;
   $: init(artwork);
   let init = () => {
     if (!loaded) api.url("/viewed").post({ id });
