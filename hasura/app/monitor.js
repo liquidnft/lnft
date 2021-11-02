@@ -192,22 +192,23 @@ const isSpent = async ({ ins }, artwork_id) => {
 };
 
 const checkBids = async () => {
-  let result = await hasura
-    .post({
-      query: `query {
+  try {
+    let result = await hasura
+      .post({
+        query: `query {
         activebids(where: { type: { _eq: "bid" }}) {
           id
           artwork_id
           psbt
         }
       }`,
-    })
-    .json()
-    .catch(console.log);
+      })
+      .json()
+      .catch(console.log);
 
-  if (!result.data) return console.log("problem checking bids", result);
+    if (!result.data) return console.log("problem checking bids", result);
 
-  let query = `mutation ($id: uuid!) {
+    let query = `mutation ($id: uuid!) {
     update_transactions_by_pk(
       pk_columns: { id: $id }, 
       _set: { 
@@ -218,20 +219,23 @@ const checkBids = async () => {
     }
   }`;
 
-  let {
-    data: { activebids },
-  } = result;
+    let {
+      data: { activebids },
+    } = result;
 
-  for (let i = 0; i < activebids.length; i++) {
-    let tx = activebids[i];
+    for (let i = 0; i < activebids.length; i++) {
+      let tx = activebids[i];
 
-    let p = Psbt.fromBase64(tx.psbt);
-    let variables = { id: tx.id };
-    if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
-      hasura
-        .post({ query, variables })
-        .json(() => console.log("cancelled bid", tx.id))
-        .catch(console.log);
+      let p = Psbt.fromBase64(tx.psbt);
+      let variables = { id: tx.id };
+      if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
+        hasura
+          .post({ query, variables })
+          .json(() => console.log("cancelled bid", tx.id))
+          .catch(console.log);
+    }
+  } catch (e) {
+    console.log("problem checking bids", e);
   }
 
   setTimeout(checkBids, 5000);

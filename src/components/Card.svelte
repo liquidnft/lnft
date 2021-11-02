@@ -92,13 +92,13 @@
             </div>
             <div class="w-1/2 text-sm font-medium">List Price</div>
           </div>
-          {#if artwork.bid[0] && artwork.bid[0].user}
+          {#if artwork.bid && artwork.bid.user}
             <div class="1/2 flex-1">
-              <div class="price">{val(artwork.bid[0].amount)} {ticker}</div>
+              <div class="price">{val(artwork.bid.amount)} {ticker}</div>
               <div class="text-sm font-medium">
                 Current bid by
                 <a
-                  href={`/u/${artwork.bid[0].user.username}`}>@{artwork.bid[0].user.username}</a>
+                  href={`/u/${artwork.bid.user.username}`}>@{artwork.bid.user.username}</a>
               </div>
             </div>
           {/if}

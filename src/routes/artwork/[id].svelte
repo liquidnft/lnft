@@ -49,8 +49,10 @@
   import { Psbt } from "liquidjs-lib";
   import { api, query } from "$lib/api";
   import { SocialShare } from "$comp";
+  import branding from "$lib/branding";
 
   export let artwork, others, transactions;
+  const { title, image, url }  = branding.meta.artwork(artwork);
 
   $: disabled =
     !artwork ||
@@ -162,11 +164,11 @@
 
     if (result.errors) {
       console.log("errors", result.errors);
-      if (artwork && artwork.bid[0]) {
+      if (artwork && artwork.bid) {
         return err(
           `Problem placing bid, minimum bid is ${Math.max(
             val(artwork.reserve_price),
-            val(artwork.bid[0].amount + artwork.bid_increment)
+            val(artwork.bid.amount + artwork.bid_increment)
           )}`
         );
       } else return err(result.errors[0]);
@@ -381,6 +383,16 @@
 
 </style>
 
+<svelte:head>
+  <title>{title}</title>
+  <meta property="og:title" content={title} />
+  <meta property="og:image" content={image} />
+  <meta property="og:url" content={url} />
+
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:image" content={image} />
+</svelte:head>
+
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork && artwork.id}
     <div class="flex flex-wrap">
@@ -453,10 +465,10 @@
               </div>
             </div>
           {/if}
-          {#if artwork.bid.length && artwork.bid[0].amount}
+          {#if artwork.bid && artwork.bid.amount}
             <div class="my-2">
               <div class="text-sm mt-auto">Current bid</div>
-              <div class="text-lg">{val(artwork.bid[0].amount)} {ticker}</div>
+              <div class="text-lg">{val(artwork.bid.amount)} {ticker}</div>
             </div>
           {/if}
         </div>

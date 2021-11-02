@@ -1,24 +1,30 @@
 <script>
-  import { art } from "$lib/store";
   import branding from "$lib/branding";
+
+  const {
+    meta: {
+      description,
+      keywords,
+      title,
+      image,
+      url,
+      twitter
+    } 
+  } = branding;
 </script>
 
 <svelte:head>
-  <meta name="twitter:card" content={branding.meta.general.twitter.card} />
-  <meta name="twitter:site" content={branding.meta.general.twitter.site} />
-  <meta name="twitter:creator" content={branding.meta.general.twitter.creator} />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="keywords" content={keywords} />
 
-  {#if $art}
-    <meta property="og:title" content={branding.meta.artPage($art).og.title} />
-    <meta property="og:image" content={branding.meta.artPage($art).og.image} />
-    <meta property="og:url" content={branding.meta.artPage($art).og.url} />
-    <meta name="twitter:title" content={branding.meta.artPage($art).twitter.title} />
-    <meta name="twitter:image" content={branding.meta.artPage($art).twitter.image} />
-  {:else}
-    <meta property="og:title" content={branding.meta.general.og.title} />
-    <meta property="og:image" content={branding.meta.general.og.image} />
-    <meta property="og:url" content={branding.meta.general.og.url} />
-    <meta name="twitter:title" content={branding.meta.general.twitter.title} />
-    <meta name="twitter:image" content={branding.meta.general.twitter.image} />
-  {/if}
+  <meta property="og:title" content={title} />
+  <meta property="og:image" content={image} />
+  <meta property="og:url" content={url} />
+
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:image" content={image} />
+  <meta name="twitter:card" content={twitter.card} />
+  <meta name="twitter:site" content={twitter.site} />
+  <meta name="twitter:creator" content={twitter.creator} />
 </svelte:head>

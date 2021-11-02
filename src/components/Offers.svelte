@@ -49,7 +49,7 @@
       <div class="mx-2 whitespace-no-wrap text-center">
         {val(offer.transaction.artwork.asking_asset, offer.transaction.amount)}
         {ticker(offer.transaction.artwork.asking_asset)}
-        from @{offer.transaction.artwork.bid[0].user.username}
+        from @{offer.transaction.artwork.bid.user.username}
         <button on:click={() => comp.accept(offer.transaction)}>Accept</button>
       </div>
     </div>
