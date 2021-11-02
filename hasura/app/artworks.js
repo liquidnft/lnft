@@ -222,14 +222,14 @@ app.post("/transaction", auth, async (req, res) => {
       },
     });
 
-    if (bid.length && bid[0].user) {
+    if (bid && bid.user) {
       locals.outbid = true;
 
       await mail.send({
         template: "notify-bid",
         locals,
         message: {
-          to: bid[0].user.display_name,
+          to: bid.user.display_name,
         },
       });
     }

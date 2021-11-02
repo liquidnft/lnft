@@ -35,6 +35,7 @@
   import { Psbt } from "liquidjs-lib";
   import { api, query } from "$lib/api";
   import { SocialShare } from "$comp";
+  import branding from "$lib/branding";
 
   function linkify(text) {
     var urlRegex =
@@ -45,8 +46,6 @@
   }
 
   export let id;
-
-  const requestPolicy = "cache-and-network";
 
   $: disabled =
     !artwork ||
@@ -236,6 +235,164 @@
   let showActivity = false;
 </script>
 
+<<<<<<< HEAD
+=======
+<style>
+  :global(.description a) {
+    color: #3ba5ac;
+  }
+
+  .disabled {
+    @apply text-gray-400 border-gray-400;
+  }
+
+  button {
+    @apply mb-2 w-full text-sm;
+    &:hover {
+      @apply border-green-700;
+    }
+  }
+
+  .popup {
+    position: fixed;
+    z-index: 900;
+    width: 100%;
+    height: 100vh;
+    padding: 5px;
+    text-align: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: white;
+    scroll-behavior: contain;
+    transform: scale(0);
+  }
+
+  .showPopup {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    animation: zoom 0.2s ease forwards;
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background: whitesmoke;
+    padding: 11px 15px;
+    cursor: pointer;
+  }
+
+  .mob-desc {
+    display: none;
+  }
+
+  .mobileImage {
+    display: none;
+    margin-bottom: 40px;
+  }
+
+  .mobileImage :global(.cover) {
+    width: 100%;
+  }
+
+  .popup :global(video) {
+    width: 50%;
+    height: auto !important;
+    margin: 0 auto;
+  }
+
+  .popup :global(div) {
+    width: 100%;
+    height: auto;
+  }
+
+  .popup :global(.card-link) {
+    height: auto !important;
+  }
+
+  .popup :global(img) {
+    margin: 0 auto;
+    height: 95vh;
+    object-fit: contain !important;
+  }
+
+  .desktopImage :global(img),
+  .desktopImage :global(video) {
+    margin: 0 auto;
+  }
+
+  @keyframes zoom {
+    0% {
+      transform: scale(0.6);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @media only screen and (max-width: 1023px) {
+    .desc-text {
+      height: 150px;
+      overflow: hidden;
+    }
+
+    .openDesc {
+      height: auto !important;
+      overflow: visible;
+    }
+
+    .show-more {
+      color: #3ba5ac;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 10px;
+      cursor: pointer;
+      white-space: normal;
+    }
+
+    .desktopImage,
+    .desk-desc {
+      display: none;
+    }
+
+    .mobileImage,
+    .mob-desc {
+      display: block;
+    }
+
+    .closeButton {
+      top: 20px;
+      right: 20px;
+    }
+  }
+
+  @media only screen and (max-width: 500px) {
+    .popup :global(img),
+    .popup :global(video) {
+      height: auto;
+      width: 100%;
+    }
+  }
+
+</style>
+
+<svelte:head>
+  <title>{title}</title>
+  <meta property="og:title" content={title} />
+  <meta property="og:image" content={image} />
+  <meta property="og:url" content={url} />
+
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:image" content={image} />
+</svelte:head>
+
+>>>>>>> ff8eeb67... change bid column to not be computed
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork}
     <div class="flex flex-wrap">
@@ -309,7 +466,11 @@
               </div>
             </div>
           {/if}
+<<<<<<< HEAD
           {#if artwork.bid.length && artwork.bid.amount}
+=======
+          {#if artwork.bid && artwork.bid.amount}
+>>>>>>> ff8eeb67... change bid column to not be computed
             <div class="my-2">
               <div class="text-sm mt-auto">Current bid</div>
               <div class="text-lg">{val(artwork.bid.amount)} {ticker}</div>

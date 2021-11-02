@@ -5,6 +5,9 @@ object_relationships:
 - name: artist
   using:
     foreign_key_constraint_on: artist_id
+- name: bid
+  using:
+    foreign_key_constraint_on: bid_id
 - name: owner
   using:
     foreign_key_constraint_on: owner_id
@@ -43,12 +46,6 @@ computed_fields:
       name: artwork_artist_owned
       schema: public
   name: artist_owned
-- comment: ""
-  definition:
-    function:
-      name: artwork_bid2
-      schema: public
-  name: bid
 - definition:
     function:
       name: artwork_favorited
@@ -120,6 +117,7 @@ select_permissions:
     - auction_end
     - auction_start
     - auction_tx
+    - bid_id
     - bid_increment
     - created_at
     - description
@@ -164,6 +162,7 @@ select_permissions:
     - auction_end
     - auction_start
     - auction_tx
+    - bid_id
     - bid_increment
     - created_at
     - description
