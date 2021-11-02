@@ -52,6 +52,7 @@
   import branding from "$lib/branding";
 
   export let artwork, others, transactions;
+  const { title, image, url }  = branding.meta.artwork(artwork);
 
   $: disabled =
     !artwork ||
@@ -235,6 +236,16 @@
   let showMore = false;
   let showActivity = false;
 </script>
+
+<svelte:head>
+  <title>{title}</title>
+  <meta property="og:title" content={title} />
+  <meta property="og:image" content={image} />
+  <meta property="og:url" content={url} />
+
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:image" content={image} />
+</svelte:head>
 
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork && artwork.id}

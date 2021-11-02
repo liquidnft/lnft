@@ -1,42 +1,42 @@
 const BRANDING = {
-  projectName: 'Raretoshi',
+  projectName: 'Maven',
   
-  superUserName: 'raretoshi',
+  superUserName: 'maven',
   
   urls: {
-    base: 'raretoshi.com',
-    www: 'www.raretoshi.com',
-    protocol: 'https://raretoshi.com',
+    base: 'mavennft.io',
+    www: 'www.mavennft.io',
+    protocol: 'https://mavennft.io',
     external: {
-      twitter: 'https://twitter.com/raretoshi',
-      telegram: 'https://t.me/raretoshi',
-      blog: 'https://blog.raretoshi.com/',
+      twitter: 'https://twitter.com/mavennft',
+      telegram: 'https://t.me/maven_nft',
+      blog: 'https://blog.mavennft.io/',
     }
   },
   
   meta: {
-      title: 'Raretoshi',
-      keywords: "Bitcoin Liquid NFT Art",
-      description: "Upload, collect, and transact rare digital art on the Liquid Network",
-        image: 'https://raretoshi.com/splash.png',
-        url: 'https://raretoshi.com/',
+      title: 'Maven',
+      keywords: "Bitcoin Asset Backed NFTs",
+      description: "An asset backed NFT marketplace",
+        image: 'https://mavennft.io/splash.png',
+        url: 'https://mavennft.io/',
 
       twitter: {
         card: 'summary_large_image',
-        creator: '@raretoshi',
-        site: '@raretoshi',
+        creator: '@maven',
+        site: '@maven',
       },
     
     artwork: (art) => ({
-      title: `Raretoshi - ${art.title}`,
+      title: `Maven - ${art.title}`,
       image: `/api/ipfs/${art.filename}`,
-      url: `https://raretoshi.com/a/${art.slug}`,
+      url: `https://mavennft.io/a/${art.slug}`,
     })
     
   },
   
   emails: {
-    support : 'support@raretoshi.com'
+    support : 'support@mavennft.io'
   }
 };
 
