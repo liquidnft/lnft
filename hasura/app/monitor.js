@@ -39,11 +39,17 @@ const updateAvatars = async () => {
   });
 };
 
-try {
-  updateAvatars();
-} catch (e) {
-  console.log(e);
-}
+app.post("/updateAvatars", async (req, res) => {
+  if (req.headers["x-hasura-admin"] !== process.env.HASURA_SECRET)
+    return res.code(401).send("unauthorized");
+
+  try {
+    await updateAvatars();
+    res.send({ ok: true });
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 const setConfirmed = `
   mutation setConfirmed($id: uuid!) {
