@@ -1,5 +1,5 @@
 import { countArtworks, getLimited } from "$queries/artworks";
-import wretch from "wretch";
+import { auth, q } from "$lib/api";
 
 export async function get({ headers, query }) {
   let limit = 2000;
@@ -9,18 +9,12 @@ export async function get({ headers, query }) {
     created_at: "desc",
   };
 
-  let { authorization } = headers;
-  let api = wretch().url("http://localhost:8080/v1/graphql");
+  auth(headers);
 
-  if (authorization) api = api.auth(authorization);
-  let { data, errors } = await api
-    .post({
-      query: getLimited,
-      variables: { limit, offset, order_by, where },
-    })
-    .json();
-  if (errors) throw new Error(errors[0].message);
-  let { artworks } = data;
+  let { artworks } = await q(
+getLimited,
+      { limit, offset, order_by, where }
+    );
 
   return {
     body: {
