@@ -5,7 +5,7 @@
   import { fade } from "svelte/transition";
   import { user } from "$lib/store";
   import { topCollectors, topArtists } from "$queries/users";
-  import { getFeatured } from "$queries/artworks";
+  import { getFeatured, getLatestArtwork } from "$queries/artworks";
   import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
   import { err, goto } from "$lib/utils";
   import { getRecentActivity, getLatestPieces } from "$queries/transactions";
@@ -13,6 +13,7 @@
   let featured = [];
   let recent = [];
   let latest = [];
+  let artwork = [];
 
   onMount(() => {
     query(getFeatured)
@@ -25,6 +26,10 @@
 
     query(getLatestPieces(3))
       .then((res) => (latest = res.transactions))
+      .catch(err);
+
+    query(getLatestArtwork)
+      .then(res => (artwork = res.artworks))
       .catch(err);
   });
 
@@ -164,10 +169,10 @@
     </p>
     <div class="mt-10">
       <a
-        href={`/market`}
+        href={artwork.length ? `/a/${artwork[0].slug}` : `/market`}
         class="edgtf-btn edgtf-btn-solid"
-        data-text="Start exploring">
-        <span class="edgtf-btn-text">Start exploring</span>
+        data-text="Buy Now">
+        <span class="edgtf-btn-text">Buy Now</span>
       </a>
     </div>
   </div>

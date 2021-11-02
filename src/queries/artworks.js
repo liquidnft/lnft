@@ -67,9 +67,17 @@ export const getFeatured = `query {
   }
 }`;
 
-// REMOVED: , $order_by: artworks_order_by! ///order_by: [$order_by],
 export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offset: Int) {
  artworks(where: $where, limit: $limit, offset: $offset, distinct_on: [edition_id]) {
+    ${fields}
+    tags {
+      tag
+    }
+  }
+}`;
+
+export const getLatestArtwork = `query {
+ artworks(where: {is_sold: {_eq: false}}, limit: 1, order_by: [{created_at: desc, edition: asc}]) {
     ${fields}
     tags {
       tag
