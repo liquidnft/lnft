@@ -179,10 +179,10 @@
 
   let bidding, amountInput, offering;
   let startBidding = async () => {
-    if (!artwork.held)
-      return err(
-        "Can't construct bid transaction, token not currently held in known address for owner"
-      );
+    // if (!artwork.held)
+    //   return err(
+    //     "Can't construct bid transaction, token not currently held in known address for owner"
+    //   );
     bidding = true;
     await tick();
     amountInput.focus();
@@ -205,10 +205,9 @@
       transaction.type = "purchase";
 
       $psbt = await executeSwap(artwork);
-      debugger;
       $psbt = await sign();
 
-      if (artwork.royalty || artwork.auction_end) {
+      if (artwork.has_royalty || artwork.auction_end) {
         $psbt = await requestSignature($psbt);
       }
 

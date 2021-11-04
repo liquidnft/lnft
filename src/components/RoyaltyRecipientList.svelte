@@ -4,13 +4,13 @@
   import { err, royaltyRecipientTypes } from "$lib/utils";
 
   export let items;
+  export let royaltyValue;
   export let maxTotalRate;
   export let askingAsset;
+  export let artist;
 
   const validate = (newRecipient) => {
-    const currentItemsRoyaltySum = items.reduce((a, b) => {
-      return a + b["amount"];
-    }, 0);
+    const currentItemsRoyaltySum = calculateRoyaltyValue();
 
     if (maxTotalRate - currentItemsRoyaltySum - newRecipient.amount < 0) {
       err("Sum of royalty rates should not be more than 100%");
@@ -20,20 +20,37 @@
     return true;
   };
 
+  const calculateRoyaltyValue = () => {
+    return items.reduce((a, b) => {
+      return a + b["amount"];
+    }, 0);
+  };
+
   const addRecipient = (e) => {
-    const {newRecipient, cb} = e.detail;
+    const { newRecipient, cb } = e.detail;
 
     if (validate(newRecipient)) {
       items = [...items, newRecipient];
-      cb()
+      royaltyValue = calculateRoyaltyValue();
+      cb();
     }
   };
+
   const removeRecipient = (e) => {
     items = items.filter((recipient) => recipient.name !== e.detail);
+    royaltyValue = calculateRoyaltyValue();
   };
+
+  const addressIsInList = (address) => {
+    return !!items.find(item => item.address === address)
+  }
 </script>
 
-<RoyaltyRecipientAdd on:addrecipient={addRecipient} />
+<RoyaltyRecipientAdd
+  defaultAddress={!addressIsInList(artist.address) ? artist.address : ""}
+  defaultName={!addressIsInList(artist.address) ? `${artist.username} (Artist)` : ""}
+  on:addrecipient={addRecipient}
+/>
 <div class="rounded-lg mb-6">
   {#if items.length === 0}
     <div class="bg-gray-200 w-full rounded-lg p-4 text-center">
@@ -42,8 +59,8 @@
   {:else}
     {#each items as recipient}
       <RoyaltyRecipient
-        askingAsset={askingAsset}
-        recipient={recipient}
+        {askingAsset}
+        {recipient}
         on:removerecipient={removeRecipient}
       />
     {/each}

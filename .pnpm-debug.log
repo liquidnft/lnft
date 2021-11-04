@@ -1,0 +1,30 @@
+{
+  "0 info pnpm": {
+    "message": "Using hooks from: /Users/marius/dev/lnft-fresh/.pnpmfile.cjs",
+    "prefix": "/Users/marius/dev/lnft-fresh"
+  },
+  "1 info pnpm": {
+    "message": "readPackage hook is declared. Manifests of dependencies might get overridden",
+    "prefix": "/Users/marius/dev/lnft-fresh"
+  },
+  "2 debug pnpm:scope": {
+    "selected": 1
+  },
+  "3 error pnpm": {
+    "code": "ELIFECYCLE",
+    "errno": "ENOENT",
+    "syscall": "spawn",
+    "file": "sh",
+    "pkgid": "raretoshi@0.0.1",
+    "stage": "dev",
+    "script": "TAILWIND_MODE=watch svelte-kit dev",
+    "pkgname": "raretoshi",
+    "err": {
+      "name": "pnpm",
+      "message": "raretoshi@0.0.1 dev: `TAILWIND_MODE=watch svelte-kit dev`\nspawn ENOENT",
+      "code": "ELIFECYCLE",
+      "stack": "pnpm: raretoshi@0.0.1 dev: `TAILWIND_MODE=watch svelte-kit dev`\nspawn ENOENT\n    at ChildProcess.<anonymous> (/Users/marius/.nvm/versions/node/v16.1.0/pnpm-global/5/node_modules/.pnpm/pnpm@6.19.1/node_modules/pnpm/dist/pnpm.cjs:92977:22)\n    at ChildProcess.emit (node:events:365:28)\n    at maybeClose (node:internal/child_process:1067:16)\n    at Process.ChildProcess._handle.onexit (node:internal/child_process:301:5)"
+    }
+  },
+  "4 warn pnpm:global": " Local package.json exists, but node_modules missing, did you mean to install?"
+}

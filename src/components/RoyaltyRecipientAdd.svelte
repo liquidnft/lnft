@@ -1,8 +1,10 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import Select from "svelte-select";
   import { royaltyRecipientIndividualType, err } from "$lib/utils";
   const dispatch = createEventDispatcher();
+
+  export let defaultName;
+  export let defaultAddress;
 
   const recipientModel = {
     name: "",
@@ -11,7 +13,7 @@
     type: royaltyRecipientIndividualType
   };
 
-  let recipient = { ...recipientModel };
+  let recipient = { ...recipientModel, ...{address: defaultAddress, name: defaultName} };
 
   const onSubmit = (e) => {
     if (!recipient.name.length)

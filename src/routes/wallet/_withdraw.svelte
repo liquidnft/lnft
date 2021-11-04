@@ -39,7 +39,7 @@
       $psbt = await pay(artwork, to.trim(), sats($asset, amount));
       await sign();
 
-      if (artwork && (artwork.auction_end || artwork.royalty)) {
+      if (artwork && (artwork.auction_end || artwork.has_royalty)) {
         $psbt = await requestSignature($psbt);
       }
 

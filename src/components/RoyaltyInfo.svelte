@@ -4,7 +4,7 @@
   export let artwork;
 </script>
 
-{#if artwork.royalty || artwork.royalty_recipients.length}
+{#if artwork.royalty_recipients.length}
   <span class="tooltip">
     <i class="text-midblue text-xl">
       <Fa icon={faGem} />
@@ -12,9 +12,6 @@
     <div class="tooltip-text bg-gray-100 shadow ml-4 rounded">
       <h3>List price without royalties:</h3>
       <ul>
-        {#if artwork.royalty}
-          <li>{artwork.artist.username} (Artist): {artwork.royalty}%</li>
-        {/if}
         {#if artwork.royalty_recipients.length}
           {#each artwork.royalty_recipients as recipient}
             <li>{recipient.name}: {recipient.amount}%</li>
