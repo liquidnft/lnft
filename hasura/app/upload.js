@@ -10,6 +10,7 @@ app.register(require("fastify-multipart"));
 app.post("/upload", async function (req, res) {
   const ipfs = ipfsClient(process.env.IPFS_URL);
   const data = await req.file();
+  console.log(req.headers['x-test']);
 
   const s1 = new Clone(data.file);
   const s2 = new Clone(data.file);

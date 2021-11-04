@@ -5,14 +5,26 @@ import {
   getArtworkBySlug,
 } from "$queries/artworks";
 import { getArtworkTransactions } from "$queries/transactions";
-import { auth, q } from "$lib/api";
+import { auth, q, hbp } from "$lib/api";
+import { refreshToken } from "$lib/auth";
 
 const err = console.log;
 
-export async function get({ headers, params }) {
+export async function get({ headers, locals, params }) {
   try {
     let { slug } = params;
-    auth(headers);
+
+    /*
+    console.log("woo", headers);
+  let hum = await hbp
+    .headers(headers)
+    .url("/auth/token/refresh")
+    .get()
+    .json();
+    console.log(hum, headers);
+    */
+    // auth(headers);
+
 
     let artwork;
     if (validate(slug)) {
@@ -21,6 +33,9 @@ export async function get({ headers, params }) {
       let { artworks } = await q(getArtworkBySlug(slug));
       artwork = artworks[0];
     }
+
+    console.log("artwork", artwork);
+
 
     let { artworks: others } = await q(getArtworksByArtist(artwork.artist_id));
 
@@ -37,5 +52,6 @@ export async function get({ headers, params }) {
     };
   } catch (e) {
     console.log(e);
+    return {};
   }
 }

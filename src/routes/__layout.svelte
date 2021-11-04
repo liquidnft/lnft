@@ -1,3 +1,15 @@
+<script context="module">
+  export async function load({ session }) {
+    console.log(session);
+    return {
+      props: {
+        sessionUser: session.user
+      },
+    };
+  }
+
+</script>
+
 <script>
   import { page } from "$app/stores";
   import decode from "jwt-decode";
@@ -17,8 +29,11 @@
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
 
+  export let sessionUser;
   let open = false;
   let ready;
+
+  $user = sessionUser;
 
   onMount(async () => {
     ready = true;
