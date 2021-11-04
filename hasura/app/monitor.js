@@ -193,7 +193,7 @@ const isSpent = async ({ ins }, artwork_id) => {
 
 const checkBids = async () => {
   try {
-    let result = await hasura
+    let { errors, data } = await hasura
       .post({
         query: `query {
         activebids(where: { type: { _eq: "bid" }}) {
@@ -206,23 +206,20 @@ const checkBids = async () => {
       .json()
       .catch(console.log);
 
-    if (!result || !result.data)
-      return console.log("problem checking bids", result);
+    if (errors) throw new Error(errors[0].message);
 
     let query = `mutation ($id: uuid!) {
-    update_transactions_by_pk(
-      pk_columns: { id: $id }, 
-      _set: { 
-        type: "cancelled_bid"
+      update_transactions_by_pk(
+        pk_columns: { id: $id }, 
+        _set: { 
+          type: "cancelled_bid"
+        }
+      ) {
+       id
       }
-    ) {
-     id
-    }
-  }`;
+    }`;
 
-    let {
-      data: { activebids },
-    } = result;
+    let { activebids } = data;
 
     for (let i = 0; i < activebids.length; i++) {
       let tx = activebids[i];

@@ -23,6 +23,7 @@
 				"buffer": "^6.0.3",
 				"buffer-reverse": "^1.0.1",
 				"cipher-base": "github:asoltys/cipher-base",
+				"cookie": "^0.4.1",
 				"crypto-js": "^4.0.0",
 				"cypress": "^8.7.0",
 				"cypress-file-upload": "^5.0.8",

@@ -20,7 +20,7 @@
   import { getUser, getUsersAddresses } from "$queries/users";
   import { page } from "$app/stores";
   import { refreshToken } from "$lib/auth";
-  import { InsufficientFunds, Session } from "$comp";
+  import { InsufficientFunds } from "$comp";
   import { etag, publicPages, err, info, goto } from "$lib/utils";
   import { createWallet } from "$lib/wallet";
   import { browser } from "$app/env";
@@ -80,10 +80,6 @@
   };
 
 </script>
-
-{#if $loggedIn}
-  <Session />
-{/if}
 
 <div in:fade>
   <slot />

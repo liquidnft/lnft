@@ -24,11 +24,16 @@ export const query = async (query, variables) => {
   return data;
 };
 
+export const hbp = wretch().url('http://localhost:3400');
+
 let serverApi = wretch().url(import.meta.env.VITE_HASURA);
 export const auth = (headers) => {
   let { authorization } = headers;
   if (authorization) serverApi = serverApi.auth(authorization);
 };
+
+export const test = {}
+export const log = () => console.log(test);
 
 export const q = async (query, variables) => {
   let { data, errors } = await serverApi

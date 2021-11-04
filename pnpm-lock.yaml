@@ -14,6 +14,7 @@ specifiers:
   buffer: ^6.0.3
   buffer-reverse: ^1.0.1
   cipher-base: github:asoltys/cipher-base
+  cookie: ^0.4.1
   crypto-js: ^4.0.0
   cypress: ^8.7.0
   cypress-file-upload: ^5.0.8
@@ -60,6 +61,7 @@ devDependencies:
   buffer: 6.0.3
   buffer-reverse: 1.0.1
   cipher-base: github.com/asoltys/cipher-base/c77307d86b71ece25f65079b5a8c3041f9f8b735
+  cookie: 0.4.1
   crypto-js: 4.1.1
   cypress: 8.7.0
   cypress-file-upload: 5.0.8_cypress@8.7.0
@@ -855,6 +857,11 @@ packages:
 
   /concat-map/0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    dev: true
+
+  /cookie/0.4.1:
+    resolution: {integrity: sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==}
+    engines: {node: '>= 0.6'}
     dev: true
 
   /core-util-is/1.0.2:
