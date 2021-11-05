@@ -498,7 +498,7 @@
                     </i>
                     <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
                       Setting a royalty involves transferring the artwork to a
-                      2-of-2 multisig address with Raretoshi. Our server will
+                      2-of-2 multisig address with Maven. Our server will
                       co-sign on transfers if they pay the specified royalty to
                       the original artist.
                     </span>

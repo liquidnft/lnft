@@ -1,4 +1,4 @@
-    <script>
+<script>
   import { onMount } from "svelte";
   import { query } from "$lib/api";
   import { Summary } from "$comp";
@@ -155,14 +155,14 @@
 
 <div class="flex header-container mx-auto justify-center marg-bottom">
   <div class="header text-center">
-    <h1 class="text-left md:text-center md:w-full">
-      NFTs
-    </h1>
+    <h2 class="text-left md:text-center md:w-full">
+      The Future of NFTs is here!
+    </h2>
 
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      Eco-Friendly Avocado & Teak Harvest Rights 
+      Invest in decentralized Asset based NFTs.
     </h5>
-    <a class="primary-btn" href={`/market`}>Start exploring</a>
+    <a class="primary-btn" href={`/market`}>Get started</a>
   </div>
 </div>
 
@@ -205,26 +205,3 @@
   </div>
 {/if}
 
-<div class="container mx-auto px-10">
-  <h3>Recent Activity</h3>
-</div>
-<div class="container mx-auto flex overflow-x-auto">
-  {#each recent as transaction}
-    <RecentActivityCard {transaction} />
-  {/each}
-</div>
-<div class="container more marg-bottom">
-  <a class="secondary-btn" href={'/activity'}>View more</a>
-</div>
-
-<div class="container mx-auto px-10">
-  <h3>Latest Pieces</h3>
-</div>
-<div class="container mx-auto flex pb-1 overflow-x-auto">
-  {#each latest as transaction}
-    <LatestPiecesCard {transaction} />
-  {/each}
-</div>
-<div class="container more marg-bottom">
-  <a class="secondary-btn" href={'/market'}>View gallery</a>
-</div>

@@ -61,7 +61,7 @@ export const refreshToken = () => {
 };
 
 const clearCache = () => {
-  let req = indexedDB.deleteDatabase("raretoshi");
+  let req = indexedDB.deleteDatabase("maven");
   req.onblocked = async (e) => {
     setTimeout(clearCache, 500);
   };

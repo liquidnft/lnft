@@ -62,7 +62,7 @@
 </style>
 
 <div class="flex justify-between items-center menu relative">
-  <a href="/market" style="color: #83e68d"><button on:click={toggle}>Purchase</button></a>
+  <a href="/market" style="color: #83e68d"><button on:click={toggle}>Marketplace</button></a>
   <a href="/about" style="color: #83e68d"><button on:click={toggle}>About</button></a>
   <a href="/news" style="color: #83e68d"><button on:click={toggle}>News</button></a>
   {#if $user}

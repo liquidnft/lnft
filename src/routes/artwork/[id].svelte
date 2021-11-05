@@ -145,11 +145,11 @@
 
     if (result.errors) {
       console.log("errors", result.errors);
-      if (artwork && artwork.bid[0]) {
+      if (artwork && artwork.bid) {
         return err(
           `Problem placing bid, minimum bid is ${Math.max(
             val(artwork.reserve_price),
-            val(artwork.bid[0].amount + artwork.bid_increment)
+            val(artwork.bid.amount + artwork.bid_increment)
           )}`
         );
       } else return err(result.errors[0]);
@@ -436,10 +436,10 @@
               </div>
             </div>
           {/if}
-          {#if artwork.bid.length && artwork.bid[0].amount}
+          {#if artwork.bid.length && artwork.bid.amount}
             <div class="my-2">
               <div class="text-sm mt-auto">Current bid</div>
-              <div class="text-lg">{val(artwork.bid[0].amount)} {ticker}</div>
+              <div class="text-lg">{val(artwork.bid.amount)} {ticker}</div>
             </div>
           {/if}
         </div>

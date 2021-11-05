@@ -1,5 +1,13 @@
 {
-  "0 debug pnpm:scope": {
+  "0 info pnpm": {
+    "message": "Using hooks from: /home/adam/la/.pnpmfile.cjs",
+    "prefix": "/home/adam/la"
+  },
+  "1 info pnpm": {
+    "message": "readPackage hook is declared. Manifests of dependencies might get overridden",
+    "prefix": "/home/adam/la"
+  },
+  "2 debug pnpm:scope": {
     "selected": 1
   }
 }
