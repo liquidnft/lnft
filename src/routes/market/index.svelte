@@ -134,7 +134,7 @@
 
 <div
   class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20">
-  <h2 class="md:mb-0">Harvest Shares</h2>
+  <h2 class="md:mb-0">Market</h2>
   {#if $user && $user.is_artist}
     <a href="/artwork/create" class="primary-btn">Submit a new artwork</a>
   {/if}
