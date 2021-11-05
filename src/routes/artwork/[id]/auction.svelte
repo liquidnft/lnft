@@ -6,12 +6,9 @@
   import { Buffer } from "buffer";
   import { onMount, tick } from "svelte";
   import { page } from "$app/stores";
-  import { getDefaultRoyaltyRecipients } from "$queries/royalty_recipients";
-  import { updateArtworkWithRoyaltyRecipients } from "$queries/artworks";
-  import { getArtwork, updateArtwork } from "$queries/artworks";
+  import { getArtwork, updateArtworkWithRoyaltyRecipients } from "$queries/artworks";
   import { api, query } from "$lib/api";
   import { getDefaultRoyaltyRecipients } from "$queries/royalty_recipients";
-  import { updateArtworkWithRoyaltyRecipients } from "$queries/artworks";
   import {
     fee,
     password,
@@ -57,7 +54,6 @@
   import { ProgressLinear, RoyaltyRecipientList } from "$comp";
   import Select from "svelte-select";
   import branding from "$lib/branding";
-  import { RoyaltyRecipientList } from "$comp";
 
   let { id } = $page.params;
   $: requireLogin($page);
