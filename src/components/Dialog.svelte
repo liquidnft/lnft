@@ -45,10 +45,10 @@
       </div>
 
       <span
-        class="hidden sm:inline-block sm:align-middle sm:h-screen"
+        class="hidden sm:inline-block sm:align-middle sm:h-screen bg-black"
         aria-hidden="true">&#8203;</span>
       <div
-        class="dialog inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+        class="dialog inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full bg-gray-800"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-headline">

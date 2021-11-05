@@ -49,7 +49,7 @@
 
 {#if artwork}
   <div
-    class="{showDetails ? 'card' : ''} bg-gray-900 flex flex-col justify-between h-full"
+    class="{showDetails ? 'card' : ''} flex flex-col justify-between h-full"
     in:fade>
     <a href={`/a/${artwork.slug}`}>
       <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
