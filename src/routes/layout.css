@@ -1,3 +1,7 @@
+a {
+  @apply text-primary;
+} 
+
 body {
   font-family: "SecondaryFont", system-ui, -apple-system, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
@@ -11,6 +15,30 @@ body {
   body {
     font-size: 16px;
   }
+}
+
+h1,
+h2,
+h3 {
+  font-family: "PrimaryFont", Helvetica, Arial, sans-serif;
+  color: #2d2e32;
+  font-weight: bold;
+}
+
+/* Mobile Phones */
+h1 {
+  font-size: 48px !important;
+  line-height: 52px !important;
+}
+
+h2 {
+  font-size: 32px !important;
+  line-height: 38px !important;
+}
+
+h3 {
+  font-size: 26px !important;
+  line-height: 30px !important;
 }
 
 input[type="checkbox"]:checked {
@@ -35,6 +63,27 @@ input[type="radio"]:checked {
   right: 0;
 }
 
+<<<<<<< HEAD
+=======
+/* Big Screen  desktops */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 90px;
+    line-height: 100px;
+  }
+
+  h2 {
+    font-size: 48px;
+    line-height: 52px;
+  }
+
+  h3 {
+    font-size: 32px;
+    line-height: 40px;
+  }
+}
+
+>>>>>>> multi-royalty-recipients
 /**
   Brand Colors
   */

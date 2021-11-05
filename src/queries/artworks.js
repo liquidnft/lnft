@@ -24,7 +24,7 @@ const defaultFields = `
   bid_increment
   extension_interval
   max_extensions
-  royalty
+  has_royalty
   royalty_recipients {
     id
     name

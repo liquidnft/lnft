@@ -12,7 +12,14 @@ const artworkfields = `
   filename
   filetype
   asking_asset
-  royalty
+  has_royalty
+  royalty_recipients {
+    id
+    asking_asset
+    amount
+    address
+    name
+  }
   auction_start
   auction_end
   transferred_at

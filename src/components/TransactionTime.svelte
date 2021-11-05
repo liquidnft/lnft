@@ -43,28 +43,9 @@
 
   let cancel = ({ id }) => {
     loading = true;
-    api
-      .auth(`Bearer ${$token}`)
-      .url("/cancel")
-      .post({ id })
-      .json()
-      .catch(err);
+    api.auth(`Bearer ${$token}`).url("/cancel").post({ id }).json().catch(err);
   };
-
 </script>
-
-<style>
-  div,
-  a,
-  span {
-    @apply break-all;
-  }
-
-  .pending {
-    @apply rounded bg-yellow-200 text-center rounded-full text-xs p-1 px-2;
-  }
-
-</style>
 
 <AcceptOffer bind:this={comp} />
 
@@ -83,7 +64,8 @@
       <a
         href="/"
         on:click|preventDefault={() => comp.accept(transaction)}
-        class="text-sm secondary-color">
+        class="text-sm secondary-color"
+      >
         [accept]
       </a>
     {/if}
@@ -91,12 +73,25 @@
       <a
         href="/"
         on:click|preventDefault={() => cancel(transaction)}
-        class="text-sm secondary-color">
+        class="text-sm secondary-color"
+      >
         [cancel]
       </a>
     {/if}
-    {#if ['creation', 'purchase', 'accept', 'royalty', 'auction', 'release', 'cancel'].includes(transaction.type) && !(transaction.type === 'auction' && transaction.artwork.royalty) && !transaction.confirmed}
+    {#if ["creation", "purchase", "accept", "royalty", "auction", "release", "cancel"].includes(transaction.type) && !(transaction.type === "auction" && transaction.artwork.has_royalty) && !transaction.confirmed}
       <span class="pending">Pending</span>
     {/if}
   </div>
 {/if}
+
+<style>
+  div,
+  a,
+  span {
+    @apply break-all;
+  }
+
+  .pending {
+    @apply rounded bg-yellow-200 text-center rounded-full text-xs p-1 px-2;
+  }
+</style>

@@ -12,9 +12,7 @@ export default {
     adapter: node(),
     target: "#svelte",
     vite: {
-      plugins: [
-        shim(),
-      ],
+      plugins: [shim()],
       resolve: {
         alias: {
           $comp: path.resolve("src/components/index.js"),

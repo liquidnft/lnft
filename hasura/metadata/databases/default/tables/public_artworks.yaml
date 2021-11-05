@@ -56,6 +56,12 @@ computed_fields:
     session_argument: hasura_session
     table_argument: artwork_row
   name: favorited
+- definition:
+    function:
+      name: artwork_has_royalty
+      schema: public
+    table_argument: artwork_row
+  name: has_royalty
 - comment: ""
   definition:
     function:
@@ -104,7 +110,6 @@ insert_permissions:
     - max_extensions
     - owner_id
     - reserve_price
-    - royalty
     - slug
     - ticker
     - title
@@ -139,7 +144,6 @@ select_permissions:
     - max_extensions
     - owner_id
     - reserve_price
-    - royalty
     - slug
     - ticker
     - title
@@ -148,6 +152,7 @@ select_permissions:
     computed_fields:
     - artist_owned
     - favorited
+    - has_royalty
     - last_active
     - locked_content
     - num_favorites
@@ -184,7 +189,6 @@ select_permissions:
     - max_extensions
     - owner_id
     - reserve_price
-    - royalty
     - slug
     - ticker
     - title
@@ -193,6 +197,7 @@ select_permissions:
     computed_fields:
     - artist_owned
     - favorited
+    - has_royalty
     - last_active
     - locked_content
     - num_favorites
@@ -237,7 +242,6 @@ update_permissions:
     - max_extensions
     - owner_id
     - reserve_price
-    - royalty
     - title
     filter:
       owner_id:
