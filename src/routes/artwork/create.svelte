@@ -289,7 +289,7 @@
 
 <style>
   .container {
-    background-color: #ecf6f7;
+    background-color: #111;
     width: 100% !important;
     min-height: 100vh;
     margin: 0;
@@ -318,7 +318,7 @@
 
 <div class="container mx-auto py-20">
   <div
-    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow">
+    class="w-full mx-auto max-w-5xl md:p-14 rounded-xl submitArtwork boxShadow bg-black">
     <a
       class="block mb-6 text-midblue"
       href="."
@@ -346,7 +346,7 @@
               {preview}
               showDetails={false}
               thumb={false} />
-            <div class="w-full bg-grey-light p-8">
+            <div class="w-full p-8">
               <div
                 class="font-light p-4 mx-auto max-w-xs text-center"
                 class:bg-primary={percent >= 100 && artwork.filename}

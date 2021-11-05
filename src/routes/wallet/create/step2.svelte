@@ -35,14 +35,14 @@
     padding: 10px;
     display: inline-block;
     border-radius: 10px;
-    background-color: whitesmoke;
+    background-color: black;
+    color: white;
     font-weight: bold;
   }
 
   .word b {
     margin-right: 10px;
     font-size: 15px;
-    color: gray;
   }
 </style>
 

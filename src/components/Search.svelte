@@ -83,7 +83,7 @@
     {#if suggest}
       {#await search(debounced) then r}
         {#if r.tag || r.artwork || r.user}
-          <div class="absolute w-1/3 bg-white shadow z-10">
+          <div class="absolute w-1/3 shadow z-10">
             <div class="flex p-4">
               {#each r.tag || [] as o}
                 <div

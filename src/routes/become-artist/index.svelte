@@ -114,7 +114,7 @@
 
 <style>
   .container {
-    background-color: #ecf6f7;
+    background-color: #111;
     height: auto;
     min-height: 100vh;
     margin: 0;
@@ -154,7 +154,7 @@
 <div class="container mx-auto py-20">
   {#if form && $user}
     <div
-      class="mb-4 w-full max-w-5xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row bg-white">
+      class="mb-4 w-full max-w-5xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row bg-black">
       <a class="block mb-6 text-midblue" href={`/u/${$user.username}`}>
         <div class="flex">
           <Fa icon={faChevronLeft} class="my-auto mr-1" />

@@ -22,7 +22,7 @@
     type="checkbox"
     name="toggle"
     {id}
-    class="toggle-checkbox absolute p-0 block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"
+    class="toggle-checkbox absolute p-0 block w-6 h-6 rounded-full border-4 appearance-none cursor-pointer outline-none"
     bind:checked
     on:change />
   <label
