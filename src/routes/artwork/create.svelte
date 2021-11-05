@@ -105,7 +105,7 @@
   let hash, tx;
   const issue = async (ticker) => {
     let contract;
-    let domain = "mintalio.coinos.io";
+    let domain = "mavennft.io";
     let error, success;
 
     await requirePassword();
