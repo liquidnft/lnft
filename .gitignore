@@ -20,6 +20,7 @@ hasura/gdk-server/__pycache__
 hasura/ipfs
 hasura/ghost-data
 hasura/app/proofs.json
+hasura/app/.pnpm-store
 .idea/
 .svelte-kit
 .pnpm-debug.log
