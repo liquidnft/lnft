@@ -220,7 +220,7 @@ button:hover {
   color: rgb(84, 110, 157);
 }
 
-:global(input),
+input,
 textarea,
 select {
   @apply border bg-black text-white focus:outline-none;

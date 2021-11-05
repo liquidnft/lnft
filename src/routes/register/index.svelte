@@ -63,7 +63,7 @@
   }
 
   input {
-    @apply appearance-none border rounded text-gray-700 leading-tight;
+    @apply appearance-none border rounded leading-tight;
     padding: 0;
     padding: 10px;
   }

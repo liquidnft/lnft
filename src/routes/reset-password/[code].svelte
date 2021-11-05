@@ -47,7 +47,7 @@
   }
 
   input {
-    @apply appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
+    @apply appearance-none border rounded py-4 px-3 leading-tight;
   }
 
   @media only screen and (max-width: 640px) {
