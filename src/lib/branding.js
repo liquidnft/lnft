@@ -44,7 +44,7 @@ const BRANDING = {
       },
       metaDescription: 'Upload, collect, and transact rare digital art on the Liquid Network',
       metaKeywords: 'Bitcoin Liquid NFT Art',
-      homeHeroText: 'Upload, collect, and transact rare digital art on the Liquid Network'
+      homeHeroText: 'Create, Collect and Trade Exclusive NFT Art on the Liquid Network'
     },
     // for art page we use art info in <header> meta
     artPage: (art) => ({

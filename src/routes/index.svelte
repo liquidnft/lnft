@@ -44,11 +44,6 @@
     margin-top: 128px;
   }
 
-  .header .primary-btn {
-    width: 240px;
-    margin: 0 auto;
-  }
-
   .header h5 {
     font-size: 22px;
     line-height: 36px;
@@ -92,10 +87,6 @@
     margin-top: 36px;
   }
 
-  .more .secondary-btn {
-    width: 180px;
-  }
-
   .header-button {
     width: 200px;
     border: 1px solid;
@@ -129,10 +120,6 @@
       margin-bottom: 24px;
     }
 
-    .header .primary-btn {
-      width: 100%;
-    }
-
     .secondary-header {
       height: 400px !important;
     }
@@ -151,17 +138,31 @@
       width: fit-content;
     }
   }
+
 </style>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">
   <div class="header text-center">
-    <h1 class="text-left md:text-center md:w-full">
-      {branding.projectName}
-    </h1>
+    <h1 class="text-left md:text-center md:w-full">{branding.projectName}</h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
       {branding.meta.general.homeHeroText}
     </h5>
-    <a class="primary-btn" href={`/market`}>Start exploring</a>
+    <h4 class="md:max-w-lg mx-auto text-left md:text-center text-green-500">
+      This site is currently in Beta
+    </h4>
+    <h4 class="md:max-w-lg mx-auto text-left md:text-center mb-8">
+      Join our
+      <a class="text-blue-400" href="https://t.me/mintalio">Telegram Group</a>
+      for updates and support
+    </h4>
+    <div class="grid grid-cols-2 gap-4 mx-auto max-w-lg">
+      <div>
+      <a class="primary-btn" href={`/market`}>Discover</a>
+    </div>
+    <div>
+      <a class="secondary-btn" href={`/artwork/create`}>Create</a>
+    </div>
+    </div>
   </div>
 </div>
 

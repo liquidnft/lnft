@@ -12,7 +12,7 @@
     Snack,
     Head,
   } from "$comp";
-  import { secret, show, user, password, token } from "$lib/store";
+  import { show, user, password, token } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
@@ -26,13 +26,9 @@
   onMount(async () => {
     ready = true;
 
-    if (!$secret) $secret = window.localStorage.getItem("secret");
     if (!$password) $password = window.sessionStorage.getItem("password");
     if (!$token) $token = window.sessionStorage.getItem("token");
   });
-
-  $: saveSecret($secret);
-  let saveSecret = (s) => browser && s === "peace" && window.localStorage.setItem("secret", s);
 
   let y;
 
@@ -46,29 +42,20 @@
 <Head />
 <Snack />
 
-{#if $secret === 'peace'}
-  {#if ready}
-    <Sidebar bind:open />
-    <div class={y > 50 ? 'sticky' : ''} in:fade>
-      <Navbar bind:sidebar={open} />
-    </div>
-    <Dialog />
-
-    <main>
-      <div class="mx-auto min-h-screen">
-        <App>
-          <slot />
-        </App>
-      </div>
-    </main>
-
-    <Footer />
-  {/if}
-{:else}
-  <div class="flex w-full h-screen">
-    <div class="m-auto text-center">
-      <div>Enter Password</div>
-      <input bind:value={$secret} />
-    </div>
+{#if ready}
+  <Sidebar bind:open />
+  <div class={y > 50 ? 'sticky' : ''} in:fade>
+    <Navbar bind:sidebar={open} />
   </div>
+  <Dialog />
+
+  <main>
+    <div class="mx-auto min-h-screen">
+      <App>
+        <slot />
+      </App>
+    </div>
+  </main>
+
+  <Footer />
 {/if}
