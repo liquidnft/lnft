@@ -28,13 +28,13 @@ const publicPages = [
   "activate",
 ];
 
-const royaltyRecipientSystemType = 'system';
-const royaltyRecipientIndividualType = 'individual';
+const royaltyRecipientSystemType = "system";
+const royaltyRecipientIndividualType = "individual";
 
 const royaltyRecipientTypes = {
-  [royaltyRecipientSystemType] : "System",
-  [royaltyRecipientIndividualType] : "Individual"
-}
+  [royaltyRecipientSystemType]: "System",
+  [royaltyRecipientIndividualType]: "Individual",
+};
 
 const addressUser = (a) =>
   get(addresses) &&
@@ -120,7 +120,7 @@ const goto = (path) => {
   if (window) window.history.pushState(null, null, path);
 };
 
-const explorer = import.meta.env.VITE_EXPLORER
+const explorer = import.meta.env.VITE_EXPLORER;
 
 const copy = (v) => {
   let textArea = document.createElement("textarea");
@@ -258,6 +258,17 @@ const linkify = (text) => {
   });
 };
 
+function post(endpoint, data) {
+	return fetch(endpoint, {
+		method: 'POST',
+		credentials: 'include',
+		body: JSON.stringify(data || {}),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+}
+
 export {
   addressLabel,
   addressUser,
@@ -288,5 +299,5 @@ export {
   publicPages,
   royaltyRecipientSystemType,
   royaltyRecipientIndividualType,
-  royaltyRecipientTypes
+  royaltyRecipientTypes,
 };

@@ -1,7 +1,7 @@
 <script>
   import { page } from "$app/stores";
   import { onMount, tick } from "svelte";
-  import { wordlists } from "bip39";
+  import wordlist from "$lib/wordlist";
   import { ToggleSwitch } from "$comp";
   import { password, token, user } from "$lib/store";
   import { err, goto, info } from "$lib/utils";
@@ -65,7 +65,7 @@
   let bulk = false;
 
   let suggestions;
-  $: suggestions = wordlists.EN.filter((w) =>
+  $: suggestions = wordlist.filter((w) =>
     w.startsWith(words[curr])
   ).slice(0, 5);
 
