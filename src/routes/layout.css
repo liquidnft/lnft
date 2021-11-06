@@ -63,8 +63,6 @@ input[type="radio"]:checked {
   right: 0;
 }
 
-<<<<<<< HEAD
-=======
 /* Big Screen  desktops */
 @media (min-width: 768px) {
   h1 {
@@ -83,7 +81,6 @@ input[type="radio"]:checked {
   }
 }
 
->>>>>>> multi-royalty-recipients
 /**
   Brand Colors
   */

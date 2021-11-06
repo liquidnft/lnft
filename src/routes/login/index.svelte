@@ -5,7 +5,6 @@
   import { dev, err, goto } from "$lib/utils";
   import { api } from "$lib/api";
   import cryptojs from "crypto-js";
-  import { generateMnemonic } from "bip39";
   import { tick } from "svelte";
   import { keypair, singlesig, multisig } from "$lib/wallet";
   import { login } from "$lib/auth";
