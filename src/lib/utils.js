@@ -11,6 +11,7 @@ import {
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
 import { tick } from "svelte";
+import { variables } from '$lib/variables';
 
 const btc = import.meta.env.VITE_BTC;
 const cad = import.meta.env.VITE_CAD;
@@ -28,6 +29,14 @@ const publicPages = [
   "privacy-policy",
   "activate",
 ];
+
+const royaltyRecipientSystemType = 'system';
+const royaltyRecipientIndividualType = 'individual';
+
+const royaltyRecipientTypes = {
+  [royaltyRecipientSystemType] : "System",
+  [royaltyRecipientIndividualType] : "Individual"
+}
 
 const addressUser = (a) =>
   get(addresses) &&
@@ -279,4 +288,7 @@ export {
   val,
   validateEmail,
   publicPages,
+  royaltyRecipientSystemType,
+  royaltyRecipientIndividualType,
+  royaltyRecipientTypes
 };

@@ -254,7 +254,8 @@ const checkListings = async () => {
     .json()
     .catch(console.log);
 
-  if (!result.data) return console.log("problem checking listings", result);
+  if (!result || !result.data)
+    return console.log("problem checking listings", result);
 
   let query = `mutation ($id: uuid!, $artwork_id: uuid!) {
     update_artworks_by_pk(
@@ -397,7 +398,7 @@ app.get("/transactions", auth, async (req, res) => {
       } 
     }`;
 
-    let { data } = await api(req.headers).post({ query }).json();
+    let { data } = await api(req.headers).post({ query }).json();    
     let user = data.currentuser[0];
 
     let get = (addr) => electrs.url(`/address/${addr}/txs`).get().json();
