@@ -235,8 +235,6 @@
   let showActivity = false;
 </script>
 
-<<<<<<< HEAD
-=======
 <style>
   :global(.description a) {
     color: #3ba5ac;
@@ -392,7 +390,6 @@
   <meta name="twitter:image" content={image} />
 </svelte:head>
 
->>>>>>> ff8eeb67... change bid column to not be computed
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork}
     <div class="flex flex-wrap">
@@ -466,11 +463,7 @@
               </div>
             </div>
           {/if}
-<<<<<<< HEAD
-          {#if artwork.bid.length && artwork.bid.amount}
-=======
           {#if artwork.bid && artwork.bid.amount}
->>>>>>> ff8eeb67... change bid column to not be computed
             <div class="my-2">
               <div class="text-sm mt-auto">Current bid</div>
               <div class="text-lg">{val(artwork.bid.amount)} {ticker}</div>
