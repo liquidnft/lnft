@@ -12,7 +12,6 @@ const marketFields = `
   auction_start
   auction_end
   asking_asset
-  royalty
   slug
   created_at
   owner {

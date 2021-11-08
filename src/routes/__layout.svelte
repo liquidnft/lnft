@@ -1,9 +1,13 @@
 <script context="module">
-  export async function load({ session }) {
-    console.log(session);
+  export async function load({ fetch, session }) {
+    let { user } = await fetch('/user.json');
+
+    console.log("user", user);
+
     return {
       props: {
-        sessionUser: session.user
+        u: user,
+        t: session.token
       },
     };
   }
@@ -29,11 +33,14 @@
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
 
-  export let sessionUser;
+  export let u;
+  export let t;
+
   let open = false;
   let ready;
 
-  $user = sessionUser;
+  $user = u;
+  $token = t;
 
   onMount(async () => {
     ready = true;
