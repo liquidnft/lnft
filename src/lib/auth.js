@@ -21,6 +21,8 @@ export const requireLogin = async (page) => {
   if (page && page.path === "/login") return;
   let $token = get(token);
 
+  console.log("OOPS", $token);
+
   if (expired($token)) {
     try {
       await refreshToken();
