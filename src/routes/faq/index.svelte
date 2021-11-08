@@ -48,10 +48,9 @@
 
 <div class="container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
-    <h2 class="mb-10">FAQ</h2>
+    <h2 class="mb-10">What's an NFT?</h2>
     <div class="faq-content">
       <div class="faq">
-        <h3 class="mb-10">What is an NFT?</h3>
         <div class="flex mb-8">
           <div class="my-auto">
             <p>

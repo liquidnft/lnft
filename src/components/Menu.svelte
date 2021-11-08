@@ -64,7 +64,7 @@
 <div class="flex justify-between items-center menu relative">
   <a href="/market" style="color: #83e68d"><button on:click={toggle}>Marketplace</button></a>
   <a href="/about" style="color: #83e68d"><button on:click={toggle}>About</button></a>
-  <a href="/faq" style="color: #83e68d"><button on:click={toggle}>FAQ</button></a>
+  <a href="/faq" style="color: #83e68d"><button on:click={toggle}>What's an NFT?</button></a>
   {#if $user}
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>

@@ -235,161 +235,6 @@
   let showActivity = false;
 </script>
 
-<style>
-  :global(.description a) {
-    color: #3ba5ac;
-  }
-
-  .disabled {
-    @apply text-gray-400 border-gray-400;
-  }
-
-  button {
-    @apply mb-2 w-full text-sm;
-    &:hover {
-      @apply border-green-700;
-    }
-  }
-
-  .popup {
-    position: fixed;
-    z-index: 900;
-    width: 100%;
-    height: 100vh;
-    padding: 5px;
-    text-align: center;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: white;
-    scroll-behavior: contain;
-    transform: scale(0);
-  }
-
-  .showPopup {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    animation: zoom 0.2s ease forwards;
-  }
-
-  .closeButton {
-    position: absolute;
-    top: 50px;
-    right: 50px;
-    width: 40px;
-    height: 40px;
-    border-radius: 100%;
-    background: whitesmoke;
-    padding: 11px 15px;
-    cursor: pointer;
-  }
-
-  .mob-desc {
-    display: none;
-  }
-
-  .mobileImage {
-    display: none;
-    margin-bottom: 40px;
-  }
-
-  .mobileImage :global(.cover) {
-    width: 100%;
-  }
-
-  .popup :global(video) {
-    width: 50%;
-    height: auto !important;
-    margin: 0 auto;
-  }
-
-  .popup :global(div) {
-    width: 100%;
-    height: auto;
-  }
-
-  .popup :global(.card-link) {
-    height: auto !important;
-  }
-
-  .popup :global(img) {
-    margin: 0 auto;
-    height: 95vh;
-    object-fit: contain !important;
-  }
-
-  .desktopImage :global(img),
-  .desktopImage :global(video) {
-    margin: 0 auto;
-  }
-
-  @keyframes zoom {
-    0% {
-      transform: scale(0.6);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  @media only screen and (max-width: 1023px) {
-    .desc-text {
-      height: 150px;
-      overflow: hidden;
-    }
-
-    .openDesc {
-      height: auto !important;
-      overflow: visible;
-    }
-
-    .show-more {
-      color: #3ba5ac;
-      font-weight: bold;
-      text-align: right;
-      margin-top: 10px;
-      cursor: pointer;
-      white-space: normal;
-    }
-
-    .desktopImage,
-    .desk-desc {
-      display: none;
-    }
-
-    .mobileImage,
-    .mob-desc {
-      display: block;
-    }
-
-    .closeButton {
-      top: 20px;
-      right: 20px;
-    }
-  }
-
-  @media only screen and (max-width: 500px) {
-    .popup :global(img),
-    .popup :global(video) {
-      height: auto;
-      width: 100%;
-    }
-  }
-
-</style>
-
-<svelte:head>
-  <title>{title}</title>
-  <meta property="og:title" content={title} />
-  <meta property="og:image" content={image} />
-  <meta property="og:url" content={url} />
-
-  <meta name="twitter:title" content={title} />
-  <meta name="twitter:image" content={image} />
-</svelte:head>
-
 <div class="container mx-auto mt-10 md:mt-20">
   {#if artwork}
     <div class="flex flex-wrap">
@@ -397,26 +242,6 @@
         <h1 class="text-3xl font-black primary-color">
           {artwork.title || "Untitled"}
         </h1>
-        <div class="flex mt-4 mb-6">
-          <div class="my-auto">
-            Edition
-            {artwork.edition}
-            of
-            {artwork.editions}
-          </div>
-          {#if artwork.is_physical}
-            <div
-              class="flex ml-auto py-1 px-4 bg-gray-100 rounded rounded-full my-auto"
-            >
-              <div class="my-auto">
-                <Fa icon={faImage} class="mr-1" />
-              </div>
-              <div class="my-auto mb-1">
-                <span class="text-sm">Physical artwork</span>
-              </div>
-            </div>
-          {/if}
-        </div>
 
         <div class="flex flex-wrap justify-between text-left">
           <a href={`/u/${artwork.artist.username}`}>
@@ -424,7 +249,7 @@
               <Avatar user={artwork.artist} />
               <div class="ml-2 secondary-color">
                 <div>@{artwork.artist.username}</div>
-                <div class="text-xs text-gray-600">Artist</div>
+                <div class="text-xs text-gray-600">Creator</div>
               </div>
             </div>
           </a>

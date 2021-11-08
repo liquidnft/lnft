@@ -105,7 +105,7 @@
                 <Avatar user={artwork.artist} />
                 <div class="ml-2">
                   <div class="break-all">@{artwork.artist.username}</div>
-                  <div class="text-xs text-gray-600">Artist</div>
+                  <div class="text-xs text-gray-600">Creator</div>
                 </div>
               </div>
             </a>
