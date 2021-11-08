@@ -10,7 +10,6 @@ import {
   titles,
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
-import { tick } from "svelte";
 
 const btc = import.meta.env.VITE_BTC;
 const cad = import.meta.env.VITE_CAD;
