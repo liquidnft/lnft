@@ -12,7 +12,14 @@ const artworkfields = `
   filename
   filetype
   asking_asset
-  royalty
+  has_royalty
+  royalty_recipients {
+    id
+    asking_asset
+    amount
+    address
+    name
+  }
   auction_start
   auction_end
   transferred_at
@@ -70,7 +77,7 @@ export const fields = `
 `;
 
 export const getArtworkTransactions = (id) => `query {
-  transactions(order_by: {created_at: desc}, where: {_and: {artwork_id: {_eq: "${id}"}, type: {_neq: "receipt"}}}) {
+  transactions(order_by: {created_at: desc}, where: {_and: {artwork_id: {_eq: "${id}"}}}) {
     ${fields}
   }
 }`;
@@ -82,7 +89,7 @@ export const getTransaction = (id) => `query {
 }`;
 
 export const getTransactions = (limit = 10) => `query {
-  transactions(where: {artwork_id: {_is_null: false}, type: {_neq: "receipt"}}, order_by: {created_at: desc}, limit: ${limit}) {
+  transactions(where: {artwork_id: {_is_null: false}}, order_by: {created_at: desc}, limit: ${limit}) {
     ${fields}
   }
 }`;

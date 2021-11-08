@@ -6,6 +6,77 @@ const crypto = require("crypto");
 const wretch = require("wretch");
 const { HASURA_URL, SERVER_URL } = process.env;
 
+app.post("/cancel", auth, async (req, res) => {
+  let { id } = req.body;
+
+  let query = `query { 
+    transactions_by_pk(id: "${id}") {
+      user_id
+    }
+  }`;
+
+  let r = await hasura.post({ query }).json().catch(console.error);
+
+  query = `query {
+      currentuser {
+        id
+      } 
+    }`;
+
+  let { data } = await api(req.headers).post({ query }).json();
+  let user = data.currentuser[0];
+
+  if (r.errors) return res.code(500).send("could not fetch transaction");
+  if (r.data.transactions_by_pk.user_id !== user.id)
+    return res.code(401).send();
+
+  query = `mutation ($id: uuid!) {
+    update_transactions_by_pk(
+      pk_columns: { id: $id }, 
+      _set: { 
+        type: "cancelled_bid"
+      }
+    ) {
+     id
+    }
+  }`;
+
+  r = await hasura
+    .post({ query, variables: { id } })
+    .json()
+    .catch(console.error);
+
+  res.send(r);
+});
+
+app.post("/transfer", auth, async (req, res) => {
+  let { address, transaction } = req.body;
+  await new Promise((r) => setTimeout(r, 2000));
+
+  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+
+  let held = !!utxos.find((tx) => tx.asset === transaction.asset);
+
+  if (held) {
+    let query = `mutation create_transaction($transaction: transactions_insert_input!) {
+      insert_transactions_one(object: $transaction) {
+        id,
+        artwork_id
+      } 
+    }`;
+
+    transaction.user_id = req.body.id;
+    transaction.type = "receipt";
+
+    r = await hasura
+      .post({ query, variables: { transaction } })
+      .json()
+      .catch(console.error);
+  }
+
+  res.send({});
+});
+
 app.post("/viewed", async (req, res) => {
   let query = `mutation ($id: uuid!) {
     update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {

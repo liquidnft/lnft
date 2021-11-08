@@ -4,6 +4,7 @@
   import { activate } from "$lib/auth";
   import { ProgressLinear } from "$comp";
   import { err } from "$lib/utils";
+  import branding from "$lib/branding";
 
   let loading = true;
   let success;

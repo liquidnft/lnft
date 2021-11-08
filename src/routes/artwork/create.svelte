@@ -28,6 +28,7 @@
   } from "$lib/wallet";
   import reverse from "buffer-reverse";
   import { ArtworkMedia } from "$comp";
+  import branding from "$lib/branding";
 
   import Form from "./_form.svelte";
   import Issuing from "./_issuing.svelte";
@@ -105,6 +106,7 @@
   let hash, tx;
   const issue = async (ticker) => {
     let contract;
+
     let domain = "mavennft.io";
     let error, success;
 

@@ -12,7 +12,7 @@
       await requirePassword();
       $psbt = Psbt.fromBase64(base64);
       $psbt = await sign();
-      if (artwork.royalty || artwork.auction_end) {
+      if (artwork.has_royalty || artwork.auction_end) {
         $psbt = await requestSignature($psbt);
       }
 

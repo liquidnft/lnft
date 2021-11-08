@@ -72,23 +72,6 @@ const transferOwnership = async ({
       psbt,
       artwork: { asset },
     } = transaction;
-
-    await hasura
-      .post({
-        query: insertTransaction,
-        variables: {
-          transaction: {
-            type: "receipt",
-            user_id: transaction.artwork.owner_id,
-            artwork_id,
-            hash,
-            psbt,
-            amount: -1,
-            asset,
-          },
-        },
-      })
-      .json();
   }
 
   hasura.post({
@@ -140,8 +123,8 @@ const isSpent = async ({ ins }, artwork_id) => {
     result.errors ||
     compareAsc(
       parseISO(result.data.transactions[0].created_at),
-      subMinutes(new Date(), 2) > 0
-    )
+      subMinutes(new Date(), 2)
+    ) > 0
   )
     return console.log("skipping", artwork_id);
 
@@ -175,7 +158,8 @@ const checkBids = async () => {
     .json()
     .catch(console.log);
 
-  if (!result.data) return console.log("problem checking bids", result);
+  if (!result || !result.data)
+    return console.log("problem checking bids", result);
 
   let query = `mutation ($id: uuid!) {
     update_transactions_by_pk(
@@ -222,7 +206,8 @@ const checkListings = async () => {
     .json()
     .catch(console.log);
 
-  if (!result.data) return console.log("problem checking listings", result);
+  if (!result || !result.data)
+    return console.log("problem checking listings", result);
 
   let query = `mutation ($id: uuid!, $artwork_id: uuid!) {
     update_artworks_by_pk(
@@ -365,7 +350,7 @@ app.get("/transactions", auth, async (req, res) => {
       } 
     }`;
 
-    let { data } = await api(req.headers).post({ query }).json();
+    let { data } = await api(req.headers).post({ query }).json();    
     let user = data.currentuser[0];
 
     let get = (addr) => electrs.url(`/address/${addr}/txs`).get().json();

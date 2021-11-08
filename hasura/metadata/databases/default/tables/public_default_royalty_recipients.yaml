@@ -1,0 +1,26 @@
+table:
+  name: default_royalty_recipients
+  schema: public
+select_permissions:
+- permission:
+    allow_aggregations: true
+    columns:
+    - address
+    - amount
+    - created_at
+    - id
+    - name
+    - updated_at
+    filter: {}
+  role: anonymous
+- permission:
+    allow_aggregations: true
+    columns:
+    - address
+    - amount
+    - created_at
+    - id
+    - name
+    - updated_at
+    filter: {}
+  role: user

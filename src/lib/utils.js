@@ -11,6 +11,7 @@ import {
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
 import { tick } from "svelte";
+import { variables } from '$lib/variables';
 
 const btc = import.meta.env.VITE_BTC;
 const cad = import.meta.env.VITE_CAD;
@@ -28,6 +29,14 @@ const publicPages = [
   "privacy-policy",
   "activate",
 ];
+
+const royaltyRecipientSystemType = 'system';
+const royaltyRecipientIndividualType = 'individual';
+
+const royaltyRecipientTypes = {
+  [royaltyRecipientSystemType] : "System",
+  [royaltyRecipientIndividualType] : "Individual"
+}
 
 const addressUser = (a) =>
   get(addresses) &&
@@ -51,7 +60,7 @@ const addressLabel = (address) => {
 const assetLabel = (asset) => {
   let $titles = get(titles);
   let r = $titles && $titles.find((u) => u.asset === asset);
-
+  
   return r
     ? r.title
       ? r.title + (r.editions > 1 ? ` ${r.edition}/${r.editions}` : "")
@@ -241,6 +250,8 @@ const etag = async (o) => {
     .substring(0, 27);
 };
 
+const dev = import.meta.env.DEV;
+
 export {
   addressLabel,
   addressUser,
@@ -249,6 +260,7 @@ export {
   btc,
   cad,
   copy,
+  dev,
   etag,
   err,
   explorer,
@@ -267,4 +279,7 @@ export {
   val,
   validateEmail,
   publicPages,
+  royaltyRecipientSystemType,
+  royaltyRecipientIndividualType,
+  royaltyRecipientTypes
 };

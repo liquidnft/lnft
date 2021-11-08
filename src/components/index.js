@@ -34,3 +34,7 @@ export { default as ToggleSwitch } from "./ToggleSwitch.svelte";
 export { default as Transaction } from "./Transaction.svelte";
 export { default as TransactionText } from "./TransactionText.svelte";
 export { default as TransactionTime } from "./TransactionTime.svelte";
+export { default as RoyaltyRecipient } from "./RoyaltyRecipient.svelte";
+export { default as RoyaltyRecipientAdd } from "./RoyaltyRecipientAdd.svelte";
+export { default as RoyaltyRecipientList } from "./RoyaltyRecipientList.svelte";
+export { default as RoyaltyInfo } from "./RoyaltyInfo.svelte";

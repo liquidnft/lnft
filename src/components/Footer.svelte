@@ -1,3 +1,7 @@
+<script>
+  import branding from '$lib/branding';
+</script>
+
 <div class="bg-black px-2 mt-24">
   <div class="container footer mx-auto flex flex-wrap text-white pt-12">
     <div

@@ -75,7 +75,7 @@ export const topArtists = (limit) => `query {
 }`;
 
 export const getUsersAddresses = `query {
-  users {
+  users(order_by: { username: asc }) {
     id
     address
     multisig

@@ -3,7 +3,7 @@
   import { tick } from "svelte";
   import { asset, assets, balances, psbt, user, token } from "$lib/store";
   import { broadcast, pay, keypair, requestSignature } from "$lib/wallet";
-  import { btc, err, info, sats, val, assetLabel } from "$lib/utils";
+  import { btc, dev, err, info, sats, val, assetLabel } from "$lib/utils";
   import sign from "$lib/sign";
   import { ProgressLinear } from "$comp";
   import { requirePassword } from "$lib/auth";
@@ -12,8 +12,9 @@
   export let withdrawing = false;
 
   let amount;
-  let to =
-    "AzppkpkTHBGfGcvU89AKH9JNuoe24LZvjbNCDStpykLLUj2S3n3zPFPVhQCiC8akswapzRrEqHnJUmMQ";
+  let to = dev
+    ? "AzppkpkTHBGfGcvU89AKH9JNuoe24LZvjbNCDStpykLLUj2S3n3zPFPVhQCiC8akswapzRrEqHnJUmMQ"
+    : "";
 
   let loading;
   let artwork;
@@ -38,7 +39,7 @@
       $psbt = await pay(artwork, to.trim(), sats($asset, amount));
       await sign();
 
-      if (artwork && (artwork.auction_end || artwork.royalty)) {
+      if (artwork && (artwork.auction_end || artwork.has_royalty)) {
         $psbt = await requestSignature($psbt);
       }
 
