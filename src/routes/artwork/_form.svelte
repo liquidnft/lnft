@@ -165,6 +165,6 @@
       isCreatable={true} />
   </div>
   <div class="flex">
-    <button type="submit" class="primary-btn">Submit</button>
+    <button id="submit" type="submit" class="primary-btn">Submit</button>
   </div>
 </form>

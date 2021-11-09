@@ -14,8 +14,6 @@
   } from "$lib/store";
   import { info, err, goto } from "$lib/utils";
   import { Gallery, Results, Search } from "$comp";
-  import Filter from "./_filter.svelte";
-  import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";
   import { pub } from "$lib/api";
   import { countArtworks, getArtworks } from "$queries/artworks";
@@ -27,6 +25,7 @@
   let count = 0;
   let offset = 0;
   let where, order_by;
+  let series;
 
   $: reset($filterCriteria, $sortCriteria);
   let reset = async () => {
@@ -101,6 +100,8 @@
           (a) => !$artworks.find((b) => a.id === b.id)
         ),
       ];
+
+      filtered = $artworks;
     } else {
       err(result.errors[0]);
     }
@@ -146,16 +147,6 @@
   {/if}
 </div>
 <div class="container mx-auto">
-  <div
-    class="flex flex-wrap justify-between items-center md:flex-row-reverse controls">
-    <div
-      class="w-full lg:w-auto mb-3 flex filter-container justify-between pt-10 xl:py-10 xl:pb-30 mt-50">
-      <div class="switch">
-      </div>
-      <Sort bind:filtered />
-    </div>
-    <Filter bind:filtered {showFilters} />
-  </div>
   <Gallery artworks={filtered} {count} />
 
   {#if loading}

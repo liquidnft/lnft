@@ -22,3 +22,5 @@ hasura/ghost-data
 hasura/app/proofs.json
 hasura/app/.pnpm-store
 .svelte-kit
+cypress/fixtures/*.mp4
+cypress/videos

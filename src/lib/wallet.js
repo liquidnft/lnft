@@ -514,6 +514,7 @@ const fund = async (
       input.witnessScript = redeem.redeem.output;
     }
 
+    console.log("adding", input.hash, input.index);
     p.addInput(input);
   }
 

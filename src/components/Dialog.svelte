@@ -62,6 +62,7 @@
         {#if !hideControls}
           <div class="border-t px-4 py-6 sm:px-6 sm:flex sm:flex-row-reverse">
             <button
+              id="continue"
               bind:this={ok}
               on:click={comp.submit}
               class="primary-btn mb-2 sm:mb-0 sm:ml-2">

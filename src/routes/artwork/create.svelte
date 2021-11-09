@@ -64,6 +64,7 @@
   let percent;
   let progress = async (event) => {
     percent = Math.round((event.loaded / event.total) * 100);
+    console.log("progress", percent);
 
     if (percent >= 100) {
       await tick();
@@ -340,6 +341,7 @@
           <Form bind:artwork bind:focus on:submit={submit} bind:title />
         </div>
       </div>
+      <span>oh my gosh slosh</span>
       {#if percent}
         <div class="ml-2 flex-1 flex">
           <div class="upload-button mx-auto">
