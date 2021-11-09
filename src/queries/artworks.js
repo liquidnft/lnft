@@ -1,5 +1,40 @@
 import { fields as txfields } from "./transactions";
 
+const marketFields = `
+  id
+  edition
+  editions
+  title
+  filename
+  filetype
+  favorited
+  list_price
+  auction_start
+  auction_end
+  asking_asset
+  has_royalty
+  slug
+  created_at
+  owner {
+    id
+    username
+    avatar_url
+  },
+  artist {
+    id
+    username
+    avatar_url
+  },
+  bid {
+    id
+    user {
+      id
+      username
+    } 
+    amount 
+  }
+`
+
 const fields = `
   id,
   asset
