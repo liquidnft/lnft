@@ -12,6 +12,11 @@ import {
 import { goto as svelteGoto } from "$app/navigation";
 import { tick } from "svelte";
 
+export const UPLOAD_DESTINATION = {
+  'IPFS': 'ipfs',
+  'STORAGE': 'storage',
+};
+
 let cad, btc, usd;
 
 btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";

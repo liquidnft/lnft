@@ -5,40 +5,66 @@ const ffmpeg = require("fluent-ffmpeg");
 const { PassThrough } = require("stream");
 const Clone = require("readable-stream-clone");
 
+const UPLOAD_DESTINATION = {
+  IPFS: 'ipfs',         // in case if we need to save the file to ipfs for future use as nft
+  STORAGE: 'storage',   // for user files like profile cover
+}
+
 app.register(require("fastify-multipart"));
 
 app.post("/upload", async function (req, res) {
-  const ipfs = ipfsClient(process.env.IPFS_URL);
+  
+  const destination = req.headers['x-destination'];
   const data = await req.file();
-
-  const s1 = new Clone(data.file);
-  const s2 = new Clone(data.file);
-  const s3 = new Clone(data.file);
-  const s4 = new Clone(data.file);
-
-  const { cid } = await ipfs.add(s1);
-  const name = cid.toString();
-
   const ext = data.mimetype.split("/")[1];
-  const path = `/export/${name}.${ext}`;
-
-  try {
-    if (ext === "gif") throw new Error("Can't process gifs");
-    if (ext === "mp4") {
-      await createFragmentPreview(s2, s3, path);
-    } else {
+  
+  if(destination === UPLOAD_DESTINATION.STORAGE) {
+    // save image to storage directory
+    
+    const name = data.filename;
+    
+    // @todo finish file saving
+    
+    // const directory = (process.env && process.env.STORAGE_DIR) || __dirname + '/storage';
+    // const path = `${directory}/${name}.${ext}`;
+    // await pump(data.file, fs.createWriteStream(path));
+    
+    res.send(`File "${name}.${ext}" will be uploaded when you finish its saving to filesystem`);
+    
+  } else if (!destination || destination === UPLOAD_DESTINATION.IPFS) {
+    // save to ipfs
+  
+    const ipfs = ipfsClient(process.env.IPFS_URL);
+  
+    const s1 = new Clone(data.file);
+    const s2 = new Clone(data.file);
+    const s3 = new Clone(data.file);
+    const s4 = new Clone(data.file);
+    const { cid } = await ipfs.add(s1);
+    
+    const name = cid.toString();
+    
+    const path = `/export/${name}.${ext}`;
+    
+    try {
+      if (ext === "gif") throw new Error("Can't process gifs");
+      if (ext === "mp4") {
+        await createFragmentPreview(s2, s3, path);
+      } else {
+        let ws = fs.createWriteStream(path);
+        let t = sharp().rotate().resize(1000).webp();
+        s2.pipe(t).pipe(ws);
+      }
+    } catch (e) {
+      console.log("Processing failed", e);
+      console.log("Writing full file to thumbnail", path);
       let ws = fs.createWriteStream(path);
-      let t = sharp().rotate().resize(1000).webp();
-      s2.pipe(t).pipe(ws);
+      s4.pipe(ws);
     }
-  } catch (e) {
-    console.log("Processing failed", e);
-    console.log("Writing full file to thumbnail", path);
-    let ws = fs.createWriteStream(path);
-    s4.pipe(ws);
+    
+    res.send(name);
+    
   }
-
-  res.send(name);
 });
 
 const createFragmentPreview = async (
