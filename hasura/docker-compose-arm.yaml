@@ -87,7 +87,7 @@ services:
       - ./custom:/app/custom
   ipfs:
     container_name: ipfs
-    image: ipfs/go-ipfs
+    image: linuxserver/ipfs
     ports:
       - 8081:8080
       - 4001:4001
@@ -142,7 +142,7 @@ services:
     image: vulpemventures/esplora:latest
     container_name: esplora-liquid
     environment:
-      API_URL: ${LIQUID_ELECTRS_URL}
+      API_URL: http://${DOMAIN}:${LIQUID_ELECTRS_PORT}
       NATIVE_ASSET_ID: 5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225
       IS_ELEMENTS: 1
     ports:

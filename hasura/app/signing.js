@@ -13,7 +13,14 @@ const query = `
       id 
       asset
       asking_asset
-      royalty
+      has_royalty
+      royalty_recipients {
+        id
+        asking_asset
+        amount
+        address
+        name
+      }
       auction_start
       auction_end
       list_price
@@ -70,7 +77,8 @@ const check = async (psbt) => {
   artworks.map(
     ({
       asset,
-      royalty,
+      has_royalty,
+      royalty_recipients,
       artist,
       owner,
       list_price,
@@ -79,10 +87,15 @@ const check = async (psbt) => {
       auction_end,
     }) => {
       let outs = outputs.filter((o) => o.asset === asking_asset);
-      let toArtist = outs
-        .filter(
-          (o) => o.address === artist.address || o.address === artist.multisig
-        )
+
+      let toRoyaltyRecipients = outs
+        .filter((o) => {
+          const recipientsWithOuts = royalty_recipients.find((recipient) => {
+
+            return recipient.address === o.address;
+          });
+          return !!recipientsWithOuts;
+        })
         .reduce((a, b) => (a += b.value), 0);
 
       let toOwner = outs
@@ -95,14 +108,24 @@ const check = async (psbt) => {
         let start = parseISO(auction_start);
         let end = parseISO(auction_end);
 
-        if (toOwner !== list_price && isWithinInterval(new Date(), { start, end }))
+        if (
+          toOwner !== list_price &&
+          isWithinInterval(new Date(), { start, end })
+        )
           throw new Error("Auction underway");
       }
 
-      if (royalty) {
+      if (has_royalty) {
         if (toOwner) {
-          let amountDue = Math.round((toOwner * royalty) / 100);
-          if (toArtist < amountDue && artist.id !== owner.id)
+          let amountDue = 0;
+
+          for (let i = 0; i < royalty_recipients.length; i++) {
+            const element = royalty_recipients[i];
+
+            amountDue += Math.round((toOwner * element.amount) / 100);
+          }
+
+          if (toRoyaltyRecipients < amountDue && artist.id !== owner.id)
             throw new Error("Royalty not paid");
         }
 
