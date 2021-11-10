@@ -35,7 +35,7 @@ export async function handle({ request, resolve }) {
   }
 
   headers.authorization = `Bearer ${jwt}`;
-  if (!headers.authorization) delete headers.authorization;
+  if (!jwt || !headers.authorization) delete headers.authorization;
 
   request.locals = {
     jwt,
