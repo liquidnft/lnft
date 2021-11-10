@@ -8,7 +8,7 @@
   export let justScrolled = false;
   export let artwork;
   export let columns = 3;
-  export let showDetails = $painting && $variation;
+  export let showDetails;
   export let loaded = false;
   export let thumb = true;
   export let popup = false;
@@ -31,10 +31,11 @@
   count();
 
   let makeSelection = (e) => {
+    let words = artwork.title.split(" ");
+    let n = parseInt(words[words.length - 1]);
     if (!$painting) e.preventDefault();
-    else $variation = artwork.id;
-
-    $painting = artwork.name;
+    else $variation = n;
+    $painting = n;
   };
 
 </script>

@@ -47,12 +47,17 @@
     }
   };
 
-  $: if ($artworks)
-    filtered = $artworks.filter((a) => {
-      if (!$painting) return a.ticker.includes('S2');
-      if (!$variation) return a.title === $painting;
-      return true;
+  $: filter($artworks, $painting, $variation)
+  let filter = (a, p, v) => {
+    if (!a) return;
+    filtered = $artworks.filter(({ title }) => {
+      let words = title.split(" ");
+      let n = parseInt(words[words.length - 1]);
+      if (!n) return false;
+      if (!p) return n % 100 === 0;
+      if (!v) return n <= p && n > p - 100;
     });
+  }
 
   onMount(async () => {
     const r = await fetch("/artworks.json").then((r) => r.json());
@@ -83,5 +88,5 @@
   {/if}
 </div>
 <div class="container mx-auto">
-  <Gallery artworks={filtered} bind:count />
+  <Gallery bind:filtered bind:count />
 </div>
