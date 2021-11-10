@@ -17,7 +17,6 @@
   import { onMount } from "svelte";
   import { ProgressLinear } from "$comp";
   import Fa from "svelte-fa";
-  import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
   import {
     artworks,
     filterCriteria,

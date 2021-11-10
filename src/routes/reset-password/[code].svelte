@@ -1,6 +1,5 @@
 <script>
   import { page } from "$app/stores";
-  import { login } from "$lib/auth";
   import { api } from "$lib/api";
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";

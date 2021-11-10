@@ -3,7 +3,6 @@
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
   import { Psbt } from "liquidjs-lib";
-  import { Buffer } from "buffer";
   import { onMount, tick } from "svelte";
   import { page } from "$app/stores";
   import { getDefaultRoyaltyRecipients } from "$queries/royalty_recipients";

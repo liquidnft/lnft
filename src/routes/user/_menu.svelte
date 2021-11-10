@@ -1,6 +1,5 @@
 <script>
   import Fa from "svelte-fa";
-  import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
   import { faSignOutAlt, faWallet } from "@fortawesome/free-solid-svg-icons";
   import { user } from "$lib/store";
   import { goto } from "$lib/utils";
