@@ -43,7 +43,7 @@
 </style>
 
 <header
-  class="flex container mx-auto justify-between px-4 py-4 items-center text-gray-600">
+  class="flex container mx-auto justify-between px-4 py-4 items-center text-gray-300">
   <nav class="flex hambuger">
     <Hamburger bind:open={sidebar} />
   </nav>

@@ -119,7 +119,7 @@
               <Avatar size="large" user={subject} />
               <div class="ml-12">
                 <h3>{subject.full_name}</h3>
-                <div class="text-gray-600">@{subject.username}</div>
+                <div class="text-gray-300">@{subject.username}</div>
               </div>
             </div>
             <div class="flex mt-5">

@@ -105,7 +105,7 @@
               <Avatar user={artwork.artist} />
               <div class="ml-2">
                 <div class="break-all">@{artwork.artist.username}</div>
-                <div class="text-xs text-gray-600">Artist</div>
+                <div class="text-xs text-gray-300">Creator</div>
               </div>
             </div>
           </a>
@@ -113,12 +113,12 @@
 
         {#if artwork.owner.id !== artwork.artist.id}
           <div class="ml-auto">
-            <a href={`/u/${artwork.artist.username}`}>
+            <a href={`/u/${artwork.owner.username}`}>
               <div class="flex">
                 <Avatar user={artwork.owner} />
                 <div class="ml-2">
-                  <div class="break-all">@{artwork.artist.username}</div>
-                  <div class="text-xs text-gray-600">Creator</div>
+                  <div class="break-all">@{artwork.owner.username}</div>
+                  <div class="text-xs text-gray-300">Owner</div>
                 </div>
               </div>
             </a>

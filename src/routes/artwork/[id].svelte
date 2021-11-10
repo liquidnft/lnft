@@ -426,21 +426,23 @@
             <Avatar user={artwork.artist} />
             <div class="ml-2 secondary-color">
               <div>@{artwork.artist.username}</div>
-              <div class="text-xs text-gray-600">Artist</div>
+              <div class="text-xs text-gray-300">Creator</div>
             </div>
           </div>
         </a>
+        {#if artwork.owner.id !== artwork.artist.id}
         <a href={`/u/${artwork.owner.username}`}>
           <div class="flex mb-6 secondary-color">
             <Avatar user={artwork.owner} />
             <div class="ml-2">
               <div>@{artwork.owner.username}</div>
-              <div class="text-xs text-gray-600">
+              <div class="text-xs text-gray-300">
                 {artwork.held ? '' : 'Presumed '}Owner
               </div>
             </div>
           </div>
         </a>
+      {/if}
       </div>
 
       <div class="mobileImage">
@@ -566,7 +568,7 @@
 
       {#if artwork.description}
         <div
-          class="mob-desc description text-gray-600 whitespace-pre-wrap break-words">
+          class="mob-desc description text-gray-300 whitespace-pre-wrap break-words">
           <h4 class="mt-10 font-bold">About this artwork</h4>
           <div class="desc-text {showMore ? 'openDesc' : ''}">
             {@html linkify(artwork.description)}
@@ -606,7 +608,7 @@
       </div>
 
       {#if artwork.description}
-        <div class="desk-desc description text-gray-600 break-words">
+        <div class="desk-desc description text-gray-300 break-words">
           <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
           <div class="whitespace-pre-wrap">
             {@html linkify(artwork.description)}
