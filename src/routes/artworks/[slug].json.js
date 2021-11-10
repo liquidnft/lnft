@@ -6,7 +6,6 @@ import {
 } from "$queries/artworks";
 import { getArtworkTransactions } from "$queries/transactions";
 import { hbp } from "$lib/api";
-import { refreshToken } from "$lib/auth";
 
 const err = console.log;
 
@@ -23,9 +22,10 @@ export async function get({ headers, locals, params }) {
       artwork = artworks[0];
     }
 
-    if (!artwork) return {
-      status: 500
-    } 
+    if (!artwork)
+      return {
+        status: 500,
+      };
 
     let { artworks: others } = await q(getArtworksByArtist(artwork.artist_id));
 
@@ -39,7 +39,7 @@ export async function get({ headers, locals, params }) {
         others,
         transactions,
       },
-      headers
+      headers,
     };
   } catch (e) {
     console.log(e);

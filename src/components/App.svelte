@@ -19,7 +19,6 @@
   import { getTitles } from "$queries/artworks";
   import { getUser, getUsersAddresses } from "$queries/users";
   import { page } from "$app/stores";
-  import { refreshToken } from "$lib/auth";
   import { InsufficientFunds } from "$comp";
   import { etag, publicPages, err, info, goto } from "$lib/utils";
   import { createWallet } from "$lib/wallet";
