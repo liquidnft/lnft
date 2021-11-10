@@ -1,13 +1,14 @@
 <script>
   import { Avatar, ArtworkMedia, Heart } from "$comp";
+  import { painting, variation } from "$lib/store";
   import countdown from "$lib/countdown";
-  import { goto, units } from "$lib/utils";
+  import { units } from "$lib/utils";
   import { onMount } from "svelte";
 
   export let justScrolled = false;
   export let artwork;
   export let columns = 3;
-  export let showDetails = true;
+  export let showDetails = $painting && $variation;
   export let loaded = false;
   export let thumb = true;
   export let popup = false;
@@ -29,6 +30,13 @@
   };
   count();
 
+  let makeSelection = (e) => {
+    if (!$painting) e.preventDefault();
+    else $variation = artwork.id;
+
+    $painting = artwork.name;
+  };
+
 </script>
 
 <style>
@@ -49,7 +57,7 @@
 </style>
 
 <div class="{showDetails ? 'card' : ''} flex flex-col justify-between h-full">
-  <a href={`/a/${artwork.slug}`}>
+  <a href={`/a/${artwork.slug}`} on:click={makeSelection}>
     {#if !loaded && justScrolled}
       <div style="height: 350px" class="bg-gray-100 w-full object-cover" />
     {:else}

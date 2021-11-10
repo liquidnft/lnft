@@ -23,6 +23,8 @@
     results,
     show,
     sortCriteria,
+    painting,
+    variation,
     token,
     user,
   } from "$lib/store";
@@ -42,9 +44,15 @@
   let reset = async () => {
     if (initialArtworks && initialArtworks.length) {
       $artworks = initialArtworks;
-      filtered = $artworks;
     }
   };
+
+  $: if ($artworks)
+    filtered = $artworks.filter((a) => {
+      if (!$painting) return a.ticker.includes('S2');
+      if (!$variation) return a.title === $painting;
+      return true;
+    });
 
   onMount(async () => {
     const r = await fetch("/artworks.json").then((r) => r.json());
