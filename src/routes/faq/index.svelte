@@ -26,11 +26,6 @@
     margin-bottom: 10px;
   }
 
-  .contact a,
-  .faq a {
-    color: #3ba5ac;
-  }
-
   @media only screen and (max-width: 1023px) {
     h3 {
       font-weight: bold;

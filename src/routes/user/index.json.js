@@ -1,4 +1,3 @@
-import { getUser } from "$queries/users";
 
 export async function get(req) {
   let user;

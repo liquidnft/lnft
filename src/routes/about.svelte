@@ -3,20 +3,8 @@
     @apply mt-8;
   }
 
-  h4 {
-    @apply text-xl;
-  }
-
-  .card {
-    @apply p-4 border rounded bg-gray-800;
-  }
-
   p {
     @apply mb-4;
-  }
-
-  img {
-    max-width: 200px;
   }
 
 </style>
