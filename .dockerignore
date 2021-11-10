@@ -2,3 +2,4 @@
 build
 hasura
 node_modules
+cypress/fixtures/*.mp4

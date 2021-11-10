@@ -1,5 +1,16 @@
 version: '3.6'
 services:
+  svelte:
+    depends_on:
+      - lapp
+    container_name: svelte
+    image: asoltys/vida
+    restart: on-failure
+    ports:
+      - '3001:3000'
+    environment:
+      VITE_HBP: '${HBP_URL}'
+      VITE_APP: '${APP_URL}'
   lapp:
     depends_on:
       - hbp
