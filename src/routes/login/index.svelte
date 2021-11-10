@@ -10,7 +10,6 @@
   import { keypair, singlesig, multisig } from "$lib/wallet";
   import { user } from "$lib/store";
 
-
   let show;
   let email = "";
   let password = dev ? "liquidart" : "";

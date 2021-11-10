@@ -21,17 +21,6 @@ export const requireLogin = async (page) => {
   if (page && page.path === "/login") return;
   let $token = get(token);
 
-  console.log("OOPS", $token);
-
-  if (expired($token)) {
-    try {
-      await refreshToken();
-      await tick();
-    } catch (e) {}
-  }
-
-  $token = get(token);
-
   if (expired($token)) {
     goto("/login");
     throw new Error("Login required");
@@ -50,16 +39,6 @@ export const requirePassword = async () => {
   );
   unsub();
   await tick();
-};
-
-export const refreshToken = () => {
-  return;
-  return api
-    .url("/auth/token/refresh")
-    .get()
-    .json(({ jwt_token }) => {
-      token.set(jwt_token);
-    });
 };
 
 const clearCache = () => {
@@ -85,28 +64,6 @@ export const logout = () => {
     .url("/auth/logout")
     .post()
     .res(() => goto("/login"));
-};
-
-export const login = (email, password) => {
-  api
-    .url("/login")
-    .post({
-      email,
-      password,
-    })
-    .unauthorized(err)
-    .badRequest(err)
-    .json(({ jwt_token: t }) => {
-      loggedIn.set(false);
-      token.set(t);
-      // window.sessionStorage.setItem("token", t);
-      pw.set(password);
-      prompt.set(false);
-      goto("/");
-    })
-    .catch(() => {
-      err("Login failed");
-    });
 };
 
 export const activate = (ticket) => {

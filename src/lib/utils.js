@@ -144,7 +144,6 @@ const pick = (obj, ...keys) =>
   Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));
 
 const err = (e) => {
-  console.log("ERR");
   if (typeof e === "string") e = { message: e };
   error.set(e);
   let msg = e.message;
