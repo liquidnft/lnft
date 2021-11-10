@@ -17,10 +17,11 @@ describe("issue assets", () => {
       console.log(res);
       let next = res.body.data.artworks_aggregate.aggregate.count + 1;
 
-      let j = 1;
+      next = 7;
+      let j = 0;
       cy.fixture("files.json").then((files) => {
         files.map((file) => {
-          for (let i = 0; i < 10; i++) {
+          for (let i = 0; i < 1; i++) {
             j++;
             let name = `Vida Verde Harvest Share ${j}`;
             let ticker = `HS${j}`;
