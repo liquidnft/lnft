@@ -130,23 +130,7 @@ const transferOwnership = async ({
   });
 };
 
-const confirmTransactions = (result) => {
-  let {
-    data: { transactions },
-  } = result;
-  transactions.map((tx) => {
-    electrs
-      .url(`/tx/${tx.hash}/status`)
-      .get()
-      .json(
-        ({ confirmed }) =>
-          confirmed &&
-          hasura
-            .post({ query: setConfirmed, variables: { id: tx.id } })
-            .json(transferOwnership)
-      );
-  });
-};
+const confirmTransactions = (result) => {};
 
 const isSpent = async ({ ins }, artwork_id) => {
   let query = `query($artwork_id: uuid!) { 
@@ -179,6 +163,7 @@ const isSpent = async ({ ins }, artwork_id) => {
     let { index, hash } = ins[i];
     let txid = reverse(hash).toString("hex");
 
+    await new Promise((r) => setTimeout(r, 500));
     let { spent } = await electrs
       .url(`/tx/${txid}/outspend/${index}`)
       .get()
@@ -293,11 +278,10 @@ const checkListings = async () => {
 };
 setTimeout(checkListings, 4000);
 
-setInterval(
-  () =>
-    hasura
-      .post({
-        query: `query {
+const checkTransactions = async () => {
+  let { data, errors } = await hasura
+    .post({
+      query: `query {
           transactions(where: {
             confirmed: {_eq: false},
             type: {_in: ["purchase", "creation", "royalty", "accept", "release", "auction", "cancel"] },
@@ -309,11 +293,31 @@ setInterval(
             } 
           }
         }`,
-      })
-      .json(confirmTransactions)
-      .catch(console.log),
-  5000
-);
+    })
+    .json()
+    .catch(console.log);
+
+  if (errors) return console.log(errors);
+
+  for (let i; i < data.transactions; i++) {
+    let tx = data.transactions[i];
+    await new Promise((r) => setTimeout(r, 500));
+    await electrs
+      .url(`/tx/${tx.hash}/status`)
+      .get()
+      .json(
+        ({ confirmed }) =>
+          confirmed &&
+          hasura
+            .post({ query: setConfirmed, variables: { id: tx.id } })
+            .json(transferOwnership)
+      );
+  }
+
+  setTimeout(checkTransactions, 5000);
+};
+
+setTimeout(checkTransactions, 8000);
 
 app.post("/asset/register", async (req, res) => {
   let { asset } = req.body;
@@ -423,6 +427,7 @@ app.get("/transactions", auth, async (req, res) => {
 
       for (let j = 0; j < vin.length; j++) {
         let { txid: prev, vout } = vin[j];
+        await new Promise((r) => setTimeout(r, 500));
         let tx = await electrs.url(`/tx/${prev}`).get().json();
         let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
 
