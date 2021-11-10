@@ -48,7 +48,7 @@
 
 </style>
 
-<div class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full">
+<div class="{showDetails ? 'card' : ''} flex flex-col justify-between h-full">
   <a href={`/a/${artwork.slug}`}>
     {#if !loaded && justScrolled}
       <div style="height: 350px" class="bg-gray-100 w-full object-cover" />

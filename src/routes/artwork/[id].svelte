@@ -240,10 +240,6 @@
 </script>
 
 <style>
-  .listContainer {
-    overflow: hidden;
-  }
-
   :global(.description a) {
     color: #3ba5ac;
   }

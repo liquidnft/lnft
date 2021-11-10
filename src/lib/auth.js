@@ -53,12 +53,12 @@ export const requirePassword = async () => {
 };
 
 export const refreshToken = () => {
+  return;
   return api
     .url("/auth/token/refresh")
     .get()
     .json(({ jwt_token }) => {
       token.set(jwt_token);
-      window.sessionStorage.setItem("token", jwt_token);
     });
 };
 
@@ -99,7 +99,7 @@ export const login = (email, password) => {
     .json(({ jwt_token: t }) => {
       loggedIn.set(false);
       token.set(t);
-      window.sessionStorage.setItem("token", t);
+      // window.sessionStorage.setItem("token", t);
       pw.set(password);
       prompt.set(false);
       goto("/");

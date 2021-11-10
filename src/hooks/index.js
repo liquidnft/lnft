@@ -1,6 +1,10 @@
+import wretch from "wretch";
+import { getUser } from "$queries/users";
 import decode from "jwt-decode";
 import cookie from "cookie";
-import { hbp, q, refresh, sessions } from "$lib/api";
+import { hbp } from "$lib/api";
+
+const sessions = {};
 
 export async function handle({ request, resolve }) {
   const { headers } = request;
@@ -14,25 +18,51 @@ export async function handle({ request, resolve }) {
     decode(jwt);
   } catch (e) {
     try {
-      ({ jwt, user, setCookie } = await refresh(headers));
+      let res = await hbp
+        .headers({ cookie: `refresh_token=${refresh_token}` })
+        .url("/auth/token/refresh")
+        .get()
+        .res();
+
+      ({ jwt_token: jwt } = await res.json());
+      setCookie = res.headers.get("set-cookie");
       sessions[refresh_token] = jwt;
-      headers.authorization = `Bearer ${jwt}`;
+      ({ refresh_token } = cookie.parse(setCookie));
+      sessions[refresh_token] = jwt;
     } catch (e) {
-      console.log(e);
+      jwt = undefined;
     }
   }
 
-  request.locals = { 
-    q: sapi(headers),
-    user
+  headers.authorization = `Bearer ${jwt}`;
+  if (!headers.authorization) delete headers.authorization;
+
+  request.locals = {
+    jwt,
+    async q(query, variables) {
+      let { data, errors } = await wretch()
+        .url(import.meta.env.VITE_HASURA)
+        .headers(headers)
+        .post({ query, variables })
+        .json();
+
+      if (errors) throw new Error(errors[0].message);
+      return data;
+    },
   };
 
-  const response = await resolve(request);
+  try {
+    let { currentuser } = await request.locals.q(getUser);
+    user = currentuser[0];
+  } catch (e) {
+  }
 
-  if (setCookie) response.headers["set-cookie"] = setCookie;
+  request.locals.user = user;
+
+  const response = await resolve(request);
+  if (setCookie && request.path !== '/login') response.headers["set-cookie"] = setCookie;
 
   return response;
 }
 
-export const getSession = ({ locals: { user }}) => ({ user });
-
+export const getSession = ({ locals: { jwt, user } }) => ({ jwt, user });

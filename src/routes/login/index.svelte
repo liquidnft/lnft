@@ -2,28 +2,30 @@
   import Fa from "svelte-fa";
   import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
-  import { dev, err, goto } from "$lib/utils";
+  import { dev, err, goto, post } from "$lib/utils";
   import { api } from "$lib/api";
   import cryptojs from "crypto-js";
   import { generateMnemonic } from "bip39";
   import { tick } from "svelte";
   import { keypair, singlesig, multisig } from "$lib/wallet";
-  import { login } from "$lib/auth";
   import { user } from "$lib/store";
 
+
   let show;
-  let username = "";
+  let email = "";
   let password = dev ? "liquidart" : "";
 
-  let usernameInput;
+  let emailInput;
   let pageChange = () =>
-    setTimeout(() => usernameInput && usernameInput.select(), 50);
-  $: if (usernameInput) pageChange($page);
+    setTimeout(() => emailInput && emailInput.select(), 50);
+  $: if (emailInput) pageChange($page);
 
   $: if ($user) {
     if ($user.wallet_initialized) goto("/");
     else goto("/wallet/setup");
   }
+
+  let login = () => post('auth/login', { email, password }).then(() => window.location = '/')
 </script>
 
 <style>
@@ -68,15 +70,15 @@
 <div class="form-container bg-lightblue px-4">
   <form
     class="mb-6"
-    on:submit|preventDefault={() => login(username, password)}
+    on:submit|preventDefault={login}
     autocomplete="off">
     <h2 class="mb-8">Sign In</h2>
     <div class="flex flex-col mb-4">
       <label class="mb-2 font-medium" for="first_name">Email or
-        username</label>
+        email</label>
       <input
-        bind:value={username}
-        bind:this={usernameInput}
+        bind:value={email}
+        bind:this={emailInput}
         autocapitalize="off" />
     </div>
     <div class="flex flex-col mb-4">

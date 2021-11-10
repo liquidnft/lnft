@@ -84,26 +84,11 @@
     margin-top: 20px;
   }
 
-  .container.more {
-    display: flex;
-    justify-content: center;
-    margin: 0 auto;
-    margin-top: 36px;
-  }
-
-  .more .secondary-btn {
-    width: 180px;
-  }
-
   .header-button {
     width: 200px;
     border: 1px solid;
     border-radius: 30px;
     padding: 0.7rem 1.5rem !important;
-  }
-
-  h3 {
-    margin-bottom: 36px;
   }
 
   .marg-bottom {
@@ -119,10 +104,6 @@
       margin-top: 64px;
     }
 
-    h3 {
-      margin-bottom: 32px;
-    }
-
     .header h5 {
       margin-top: 24px;
       margin-bottom: 24px;
@@ -134,10 +115,6 @@
 
     .secondary-header {
       height: 400px !important;
-    }
-
-    .container.more {
-      margin-top: 48px;
     }
 
     .marg-bottom {

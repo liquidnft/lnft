@@ -29,7 +29,6 @@
       .json((r) => {
         $token = r.jwt_token;
         window.sessionStorage.setItem("password", attempt);
-        window.sessionStorage.setItem("token", $token);
         $password = attempt;
         $prompt = undefined;
       });

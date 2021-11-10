@@ -1,13 +1,21 @@
 import { getUser } from "$queries/users";
-import { sapi } from "$lib/api";
 
-export async function get({ locals: { q }}) {
-    let { currentuser } = await q(getUser);
+export async function get(req) {
+  let user;
+
+  try {
+    let { currentuser } = await req.locals.q(getUser);
     user = currentuser[0];
+  } catch (e) {
+    console.log(e);
+  }
 
-    return {
-      body: {
-        user
-      },
-    };
+  req.locals.user = user;
+  console.log("USER", req.locals.user);
+
+  return {
+    body: {
+      user,
+    },
+  };
 }

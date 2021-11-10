@@ -1,21 +1,5 @@
-<script context="module">
-  export async function load({ fetch, session }) {
-    let { user } = await fetch('/user.json');
-
-    console.log("user", user);
-
-    return {
-      props: {
-        u: user,
-        t: session.token
-      },
-    };
-  }
-
-</script>
-
 <script>
-  import { page } from "$app/stores";
+  import { session } from "$app/stores";
   import decode from "jwt-decode";
   import {
     App,
@@ -33,20 +17,16 @@
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
 
-  export let u;
-  export let t;
-
   let open = false;
   let ready;
 
-  $user = u;
-  $token = t;
+  $user = $session.user;
+  $token = $session.jwt;
 
   onMount(async () => {
     ready = true;
 
     if (!$password) $password = window.sessionStorage.getItem("password");
-    if (!$token) $token = window.sessionStorage.getItem("token");
   });
 
   let y;

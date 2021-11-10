@@ -144,6 +144,7 @@ const pick = (obj, ...keys) =>
   Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));
 
 const err = (e) => {
+  console.log("ERR");
   if (typeof e === "string") e = { message: e };
   error.set(e);
   let msg = e.message;
@@ -260,6 +261,17 @@ const linkify = (text) => {
   });
 };
 
+function post(endpoint, data) {
+	return fetch(endpoint, {
+		method: 'POST',
+		credentials: 'include',
+		body: JSON.stringify(data || {}),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+}
+
 export {
   addressLabel,
   addressUser,
@@ -279,6 +291,7 @@ export {
   info,
   linkify,
   pick,
+  post,
   sats,
   kebab,
   ticker,

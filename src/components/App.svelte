@@ -27,8 +27,8 @@
 
   onMount(async () => {
     await ready();
-    refreshToken();
-    setInterval(refreshToken, 60000);
+    //refreshToken();
+    //setInterval(refreshToken, 60000);
   });
 
   const ready = () =>
