@@ -33,7 +33,6 @@
   import { pub } from "$lib/api";
 
   export let count;
-  export let showFilters;
   export let initialArtworks;
 
   let filtered = [];
@@ -56,15 +55,6 @@
 </script>
 
 <style>
-  @media only screen and (max-width: 1023px) {
-    .search :global(input) {
-      width: 90%;
-      appearance: none;
-      border: 0;
-      border-bottom: 1px solid #6ed8e0;
-    }
-  }
-
   @media only screen and (max-width: 767px) {
     .primary-btn {
       width: 300px;
