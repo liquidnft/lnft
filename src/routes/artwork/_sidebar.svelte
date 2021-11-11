@@ -53,14 +53,14 @@
   {/if}
 
   {#if showDetails}
-    <div class="text-sm text-gray-600 break-all mt-6 mb-2">
+    <div class="text-sm text-gray-300 break-all mt-6 mb-2">
       <div class="text-xs">Liquid Asset Id</div>
       <a
         href={`${explorer}/asset/${artwork.asset}`}
         class="secondary-color">{artwork.asset}</a>
     </div>
 
-    <div class="text-sm text-gray-600 break-all mb-6">
+    <div class="text-sm text-gray-300 break-all mb-6">
       <div class="text-xs">IPFS Hash</div>
       <a
         href={`https://ipfs.io/ipfs/${artwork.filename}`}

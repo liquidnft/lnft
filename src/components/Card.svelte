@@ -1,13 +1,14 @@
 <script>
   import { Avatar, ArtworkMedia, Heart } from "$comp";
+  import { painting, variation } from "$lib/store";
   import countdown from "$lib/countdown";
-  import { goto, units } from "$lib/utils";
+  import { units } from "$lib/utils";
   import { onMount } from "svelte";
 
   export let justScrolled = false;
   export let artwork;
   export let columns = 3;
-  export let showDetails = true;
+  export let showDetails;
   export let loaded = false;
   export let thumb = true;
   export let popup = false;
@@ -29,6 +30,14 @@
   };
   count();
 
+  let makeSelection = (e) => {
+    let words = artwork.title.split(" ");
+    let n = parseInt(words[words.length - 1]);
+    if (!$painting) e.preventDefault();
+    else $variation = n;
+    $painting = n;
+  };
+
 </script>
 
 <style>
@@ -49,7 +58,7 @@
 </style>
 
 <div class="{showDetails ? 'card' : ''} flex flex-col justify-between h-full">
-  <a href={`/a/${artwork.slug}`}>
+  <a href={`/a/${artwork.slug}`} on:click={makeSelection}>
     {#if !loaded && justScrolled}
       <div style="height: 350px" class="bg-gray-100 w-full object-cover" />
     {:else}
@@ -105,7 +114,7 @@
               <Avatar user={artwork.artist} />
               <div class="ml-2">
                 <div class="break-all">@{artwork.artist.username}</div>
-                <div class="text-xs text-gray-600">Artist</div>
+                <div class="text-xs text-gray-300">Creator</div>
               </div>
             </div>
           </a>
@@ -113,12 +122,12 @@
 
         {#if artwork.owner.id !== artwork.artist.id}
           <div class="ml-auto">
-            <a href={`/u/${artwork.artist.username}`}>
+            <a href={`/u/${artwork.owner.username}`}>
               <div class="flex">
                 <Avatar user={artwork.owner} />
                 <div class="ml-2">
-                  <div class="break-all">@{artwork.artist.username}</div>
-                  <div class="text-xs text-gray-600">Creator</div>
+                  <div class="break-all">@{artwork.owner.username}</div>
+                  <div class="text-xs text-gray-300">Owner</div>
                 </div>
               </div>
             </a>

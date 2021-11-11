@@ -104,7 +104,7 @@
       <h2 class="mb-8">Sign up</h2>
       <div class="flex flex-col mb-4">
         <label
-          class="mb-2 font-medium text-gray-600"
+          class="mb-2 font-medium text-gray-300"
           for="first_name">Email</label>
         <input
           id="email"
@@ -115,7 +115,7 @@
       </div>
       <div class="flex flex-col mb-4">
         <label
-          class="mb-2 font-medium text-gray-600"
+          class="mb-2 font-medium text-gray-300"
           for="first_name">Username</label>
         <input
           id="username"
@@ -126,7 +126,7 @@
       </div>
       <div class="flex flex-col mb-4">
         <label
-          class="mb-2 font-medium text-gray-600"
+          class="mb-2 font-medium text-gray-300"
           for="last_name">Password</label>
         <div class="relative">
           {#if show}

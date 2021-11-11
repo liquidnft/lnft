@@ -67,7 +67,7 @@
         We'll send a recovery link to the email associated with your account.
       </p>
       <div class="flex flex-col mb-4">
-        <label class="mb-2 font-medium text-gray-600" for="email">Email</label>
+        <label class="mb-2 font-medium text-gray-300" for="email">Email</label>
         <input placeholder="Email" bind:value={email} bind:this={ref} />
       </div>
       <div class="flex">

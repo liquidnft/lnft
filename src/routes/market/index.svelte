@@ -23,6 +23,8 @@
     results,
     show,
     sortCriteria,
+    painting,
+    variation,
     token,
     user,
   } from "$lib/store";
@@ -34,17 +36,23 @@
   export let count;
   export let initialArtworks;
 
+  $artworks = initialArtworks;
+
   let filtered = [];
 
   let offset = 0;
 
-  $: reset($filterCriteria, $sortCriteria);
-  let reset = async () => {
-    if (initialArtworks && initialArtworks.length) {
-      $artworks = initialArtworks;
-      filtered = $artworks;
-    }
-  };
+  $: filter($artworks, $painting, $variation)
+  let filter = (a, p, v) => {
+    if (!a) return;
+    filtered = $artworks.filter(({ title }) => {
+      let words = title.split(" ");
+      let n = parseInt(words[words.length - 1]);
+      if (!n) return false;
+      if (!p) return n % 100 === 0;
+      if (!v) return n <= p && n > p - 100 && n % 10 === 0;
+    });
+  }
 
   onMount(async () => {
     const r = await fetch("/artworks.json").then((r) => r.json());
@@ -75,5 +83,5 @@
   {/if}
 </div>
 <div class="container mx-auto">
-  <Gallery artworks={filtered} bind:count />
+  <Gallery bind:filtered bind:count />
 </div>

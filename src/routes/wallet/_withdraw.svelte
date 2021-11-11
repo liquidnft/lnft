@@ -60,7 +60,7 @@
   textarea,
   input,
   select {
-    @apply rounded-lg p-2 text-black;
+    @apply rounded-lg p-2 text-white;
     margin-top: 10px;
   }
 

@@ -1,12 +1,15 @@
 <script>
+  import { variation } from "$lib/store";
   import { Card, Pagination } from "$comp";
   import { onMount, tick } from "svelte";
 
-  export let artworks;
+  export let filtered;
   export let count;
 
   let loaded = {};
   let debug;
+
+  $: showDetails = !!$variation;
 
   let w;
   let hidden;
@@ -24,9 +27,9 @@
     setTimeout(init, 50);
   };
 
-  $: init(artworks);
+  $: init(filtered);
   let init = async () => {
-    if (!inview || !inview.length) inview = artworks.slice(0, 24);
+    inview = filtered.slice(0, 24);
     await tick();
 
     let el = document.querySelector(".market-gallery");
@@ -54,7 +57,7 @@
       cr = Math.round((y - st) / rh);
       let p = 2 * columns;
       a = Math.max(p, cr * columns);
-      if (artworks && a >= 0) inview = artworks.slice(a - p, a + p);
+      if (filtered && a >= 0) inview = filtered.slice(a - p, a + p);
       translate = Math.max(0, cr * rh - rh);
       justScrolled = true;
       setTimeout(() => (justScrolled = false), 250);

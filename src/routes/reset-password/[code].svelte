@@ -67,7 +67,7 @@
   <form class="mb-6" on:submit|preventDefault={reset} autocomplete="off">
     <h2 class="mb-8">Reset password</h2>
     <div class="flex flex-col mb-4">
-      <label class="mb-2 font-medium text-gray-600" for="password">New password</label>
+      <label class="mb-2 font-medium text-gray-300" for="password">New password</label>
       <input
         type="password"
         placeholder="Password"

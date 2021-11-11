@@ -53,7 +53,7 @@
   <ProgressLinear />
 {:else if transaction}
   <div class="flex items-center mt-2">
-    <span class="font-medium text-gray-600 text-xs">
+    <span class="font-medium text-gray-300 text-xs">
       {formatDistanceStrict(new Date(transaction.created_at), new Date())}
       ago
     </span>

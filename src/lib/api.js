@@ -24,5 +24,5 @@ export const query = async (query, variables) => {
   return data;
 };
 
-export const hbp = wretch().url("http://localhost:3400");
-export const serverApi = wretch().url("http://localhost:8091");
+export const hbp = wretch().url(import.meta.env.VITE_HBP);
+export const serverApi = wretch().url(import.meta.env.VITE_APP);
