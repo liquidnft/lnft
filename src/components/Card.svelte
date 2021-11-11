@@ -67,7 +67,6 @@
               </h1>
               {#if artwork.editions > 1}
                 <h2 class="text-sm text-gray-400 font-light">
-                  Edition
                   {artwork.edition}
                   of
                   {artwork.editions}

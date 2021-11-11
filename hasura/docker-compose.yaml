@@ -4,7 +4,7 @@ services:
     depends_on:
       - hbp
     container_name: lapp
-    image: asoltys/lnft-server
+    image: asoltys/lnft-server:nftglee
     restart: on-failure
     environment:
       SERVER_URL: '${SERVER_URL}'

@@ -382,7 +382,6 @@
         </h1>
         <div class="flex mt-4 mb-6">
           <div class="my-auto">
-            Edition
             {artwork.edition}
             of
             {artwork.editions}

@@ -1,2 +1,4 @@
 hasura
 node_modules
+build
+cypress

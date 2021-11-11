@@ -85,24 +85,29 @@
 </style>
 
 <div class="flex mx-auto justify-center">
-  <div class="header mt-10 md:mt-20 text-center">
-    <h1 class="mb-10 text-left md:text-center w-2/3 md:w-full">
-      Forever Whale
+  <div class="header mt-10 md:mt-20 text-center text-2xl">
+    <h1 class="mb-10 text-center w-full">
+      Discover, Collect, & Sell.
     </h1>
-    <p class="md:max-w-md mx-auto text-left md:text-center">
-      Artist Collab - Paul Milinski - Olivia Steele - Anchorball - Vincent Ubags
-      - Tommy - Ronin
+    <p class="md:max-w-md mx-auto text-center">
+      Curated NFT Platform.
     </p>
-    <div class="mt-10">
-      <a
-        href={`/market`}
-        class="edgtf-btn edgtf-btn-solid"
-        data-text="Start exploring">
-        <span class="edgtf-btn-text">Start exploring</span>
+    <p class="md:max-w-md mx-auto text-center">
+      Art, Access + Utility NFTs.
+    </p>
+    <p class="md:max-w-md mx-auto text-center">
+      Minted on Bitcoin. Low Fees.
+    </p>
+    <div class="mt-10 relative">
+      <a class="edgtf-btn bg-black text-white px-20 py-2"
+        href={`/market`}>
+        <span>Enter</span>
       </a>
+<img src="/greencrypto.png" class="w-52 lg:absolute mx-auto py-10 bottom-4 xl:-bottom-8 right-16" />
     </div>
   </div>
 </div>
+
 
 <div class="flex secondary-header mt-20 mb-20 text-white">
   <video
@@ -111,31 +116,7 @@
     muted
     playsinline
     loop>
-    <source src="/api/ipfs/QmY3358vMspxuHy8DNDShpGummjQ7SZ5LDe9DzizEAib9t" />
+    <source src="/bob.mp4" />
     Your browser does not support HTML5 video.
   </video>
-</div>
-
-<div class="container mx-auto px-10">
-  <h3>Recent Activity</h3>
-</div>
-<div class="container mx-auto flex overflow-x-auto">
-  {#each recent as transaction}
-    <RecentActivityCard {transaction} />
-  {/each}
-</div>
-<div class="container more marg-bottom">
-  <a class="secondary-btn" href={'/activity'}>View more</a>
-</div>
-
-<div class="container mx-auto px-10">
-  <h3>Latest Pieces</h3>
-</div>
-<div class="container mx-auto flex pb-1 overflow-x-auto">
-  {#each latest as transaction}
-    <LatestPiecesCard {transaction} />
-  {/each}
-</div>
-<div class="container more marg-bottom">
-  <a class="secondary-btn" href={'/market'}>View gallery</a>
 </div>

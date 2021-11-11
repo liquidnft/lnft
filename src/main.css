@@ -300,7 +300,7 @@ select {
   width: auto;
   margin: 0;
   font-family: Oswald,sans-serif;
-  font-size: 15px;
+  font-size: 2em;
   font-weight: 700;
   text-transform: uppercase;
   text-align: left;
@@ -336,7 +336,7 @@ position: absolute;
   -webkit-transition: all .5s;
   -o-transition: all .5s;
   transition: all .5s;
-  font-size: 35px;
+  font-size: 22px;
 }
 .edgtf-btn.edgtf-btn-solid:after {
   content: attr(data-text);
