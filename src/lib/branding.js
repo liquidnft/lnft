@@ -8,7 +8,8 @@ const BRANDING = {
     www: 'www.mavennft.io',
     protocol: 'https://mavennft.io',
     external: {
-      twitter: 'https://twitter.com/mavennft',
+      instagram: 'https://www.instagram.com/maven_nft/',
+      twitter: 'https://twitter.com/maven_nft',
       telegram: 'https://t.me/maven_nft',
       blog: 'https://blog.mavennft.io/',
     }

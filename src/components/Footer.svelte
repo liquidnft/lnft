@@ -12,10 +12,9 @@
     <div class="w-full lg:w-1/4 mb-10">
       <h4 class="font-bold mb-4">Follow US</h4>
       <ul class="list-none">
-        <li class="mb-2">
-          <a href="https://twitter.com/mavennft">Twitter</a>
-        </li>
-        <li class="mb-2"><a href="https://t.me/maven_nft">Telegram</a></li>
+        <li class="mb-2"><a target="_blank" href="{branding.urls.external.twitter}">Twitter</a></li>
+        <li class="mb-2"><a target="_blank" href="{branding.urls.external.telegram}">Telegram</a></li>
+        <li class="mb-2"><a target="_blank" href="{branding.urls.external.instagram}">Instagram</a></li>
       </ul>
     </div>
     <div class="w-full lg:w-1/4 mb-10">
