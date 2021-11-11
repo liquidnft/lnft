@@ -64,7 +64,6 @@
   let percent;
   let progress = async (event) => {
     percent = Math.round((event.loaded / event.total) * 100);
-    console.log("progress", percent);
 
     if (percent >= 100) {
       await tick();

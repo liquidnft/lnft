@@ -232,9 +232,10 @@ const checkListings = async () => {
 setTimeout(checkListings, 4000);
 
 const checkTransactions = async () => {
-  let { data, errors } = await hasura
-    .post({
-      query: `query {
+  try {
+    let { data, errors } = await hasura
+      .post({
+        query: `query {
           transactions(where: {
             confirmed: {_eq: false},
             type: {_in: ["purchase", "creation", "royalty", "accept", "release", "auction", "cancel"] },
@@ -246,25 +247,27 @@ const checkTransactions = async () => {
             } 
           }
         }`,
-    })
-    .json()
-    .catch(console.log);
+      })
+      .json();
 
-  if (errors) return console.log(errors);
+    if (errors) return console.log(errors);
 
-  for (let i; i < data.transactions; i++) {
-    let tx = data.transactions[i];
-    await new Promise((r) => setTimeout(r, 500));
-    await electrs
-      .url(`/tx/${tx.hash}/status`)
-      .get()
-      .json(
-        ({ confirmed }) =>
-          confirmed &&
-          hasura
-            .post({ query: setConfirmed, variables: { id: tx.id } })
-            .json(transferOwnership)
-      );
+    for (let i; i < data.transactions; i++) {
+      let tx = data.transactions[i];
+      await new Promise((r) => setTimeout(r, 500));
+      await electrs
+        .url(`/tx/${tx.hash}/status`)
+        .get()
+        .json(
+          ({ confirmed }) =>
+            confirmed &&
+            hasura
+              .post({ query: setConfirmed, variables: { id: tx.id } })
+              .json(transferOwnership)
+        );
+    }
+  } catch (e) {
+    console.log(e);
   }
 
   setTimeout(checkTransactions, 5000);

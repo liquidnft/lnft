@@ -12,9 +12,7 @@
   let img, vid;
   $: path =
     artwork &&
-    (thumb
-      ? `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`
-      : `/api/ipfs/${artwork.filename}`);
+    (`/api/ipfs/${artwork.filename}`);
 
   $: cover = !showDetails;
   $: contain = showDetails;

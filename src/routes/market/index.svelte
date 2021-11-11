@@ -55,6 +55,8 @@
   }
 
   onMount(async () => {
+    $painting = undefined;
+    $variation = undefined;
     const r = await fetch("/artworks.json").then((r) => r.json());
     $artworks = r.artworks;
   });
@@ -76,7 +78,7 @@
 <Results />
 
 <div
-  class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20">
+  class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between my-10 md:mt-20">
   <h2 class="md:mb-0">Market</h2>
   {#if $user && $user.is_artist}
     <a href="/artwork/create" class="primary-btn">Submit a new asset</a>

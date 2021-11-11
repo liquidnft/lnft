@@ -9,8 +9,6 @@
   let loaded = {};
   let debug;
 
-  $: showDetails = !!$variation;
-
   let w;
   let hidden;
   let maxPages = 7;
@@ -39,7 +37,7 @@
     rh = bottom - top;
     if (!st) st = top;
 
-    newrows = Math.ceil(count / columns);
+    newrows = Math.ceil(filtered.length / columns);
     nh = rh * (newrows + 1) - y;
     content.style.height = `${nh + (columns > 1 ? 200 : 0)}px`;
   };

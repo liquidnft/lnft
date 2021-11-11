@@ -65,8 +65,12 @@
 
   let id = artwork ? artwork.id : $page.params.id;
   $: init(artwork);
-  let init = () => {
-    if (!loaded) api.url("/viewed").post({ id });
+  let init = async () => {
+    if (!loaded) {
+      try {
+        await api.url("/viewed").post({ id });
+      } catch (e) {}
+    }
     loaded = true;
   };
 
@@ -431,18 +435,18 @@
           </div>
         </a>
         {#if artwork.owner.id !== artwork.artist.id}
-        <a href={`/u/${artwork.owner.username}`}>
-          <div class="flex mb-6 secondary-color">
-            <Avatar user={artwork.owner} />
-            <div class="ml-2">
-              <div>@{artwork.owner.username}</div>
-              <div class="text-xs text-gray-300">
-                {artwork.held ? '' : 'Presumed '}Owner
+          <a href={`/u/${artwork.owner.username}`}>
+            <div class="flex mb-6 secondary-color">
+              <Avatar user={artwork.owner} />
+              <div class="ml-2">
+                <div>@{artwork.owner.username}</div>
+                <div class="text-xs text-gray-300">
+                  {artwork.held ? '' : 'Presumed '}Owner
+                </div>
               </div>
             </div>
-          </div>
-        </a>
-      {/if}
+          </a>
+        {/if}
       </div>
 
       <div class="mobileImage">

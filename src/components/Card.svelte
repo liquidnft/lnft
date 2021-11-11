@@ -8,7 +8,7 @@
   export let justScrolled = false;
   export let artwork;
   export let columns = 3;
-  export let showDetails;
+  export let showDetails = true;
   export let loaded = false;
   export let thumb = true;
   export let popup = false;
