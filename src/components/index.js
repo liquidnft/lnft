@@ -24,7 +24,6 @@ export { default as RecentActivityCard } from "./RecentActivityCard.svelte";
 export { default as Results } from "./Results.svelte";
 export { default as Row } from "./Row.svelte";
 export { default as Search } from "./Search.svelte";
-export { default as Session } from "./Session.svelte";
 export { default as Sidebar } from "./Sidebar.svelte";
 export { default as SocialShare } from "./SocialShare.svelte";
 export { default as Snack } from "./Snack.svelte";

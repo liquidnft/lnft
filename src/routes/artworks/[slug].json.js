@@ -5,14 +5,14 @@ import {
   getArtworkBySlug,
 } from "$queries/artworks";
 import { getArtworkTransactions } from "$queries/transactions";
-import { auth, q } from "$lib/api";
+import { hbp } from "$lib/api";
 
 const err = console.log;
 
-export async function get({ headers, params }) {
+export async function get({ headers, locals, params }) {
   try {
     let { slug } = params;
-    auth(headers);
+    let { q } = locals;
 
     let artwork;
     if (validate(slug)) {
@@ -21,6 +21,11 @@ export async function get({ headers, params }) {
       let { artworks } = await q(getArtworkBySlug(slug));
       artwork = artworks[0];
     }
+
+    if (!artwork)
+      return {
+        status: 500,
+      };
 
     let { artworks: others } = await q(getArtworksByArtist(artwork.artist_id));
 
@@ -34,8 +39,10 @@ export async function get({ headers, params }) {
         others,
         transactions,
       },
+      headers,
     };
   } catch (e) {
     console.log(e);
+    return {};
   }
 }

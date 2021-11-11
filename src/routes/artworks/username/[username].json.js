@@ -1,11 +1,8 @@
-import { auth, q } from "$lib/api";
 import { getArtworksByUsername } from "$queries/artworks";
 
-export async function get({ headers, query, params }) {
+export async function get({ locals, params }) {
   let { username } = params;
-  auth(headers);
-
-  let { artworks } = await q(getArtworksByUsername(username));
+  let { artworks } = await locals.q(getArtworksByUsername(username));
 
   return {
     body: {
