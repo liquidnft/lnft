@@ -11,6 +11,7 @@
 - "!include public_collectors.yaml"
 - "!include public_currentuser.yaml"
 - "!include public_default_royalty_recipients.yaml"
+- "!include public_designs.yaml"
 - "!include public_favorites.yaml"
 - "!include public_featured.yaml"
 - "!include public_follows.yaml"

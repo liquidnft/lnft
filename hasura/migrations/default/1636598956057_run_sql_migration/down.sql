@@ -1,0 +1,3 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- create view designs as SELECT * from artworks where regexp_replace(title, '^.* ', '')::int % 100 = 0;
