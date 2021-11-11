@@ -110,8 +110,8 @@ export const getFeatured = `query {
   }
 }`;
 
-export const getLimited = `query {
- designs {
+export const getLimited = `query ($where: artworks_bool_exp!, $limit: Int, $offset: Int, $order_by: artworks_order_by!)  {
+ artworks(where: $where, limit: $limit, offset: $offset, order_by: [$order_by]) {
     ${marketFields}
     tags {
       tag
