@@ -311,10 +311,32 @@ setInterval(
           }
         }`,
       })
-      .json(confirmTransactions)
-      .catch(console.log),
-  5000
-);
+      .json()
+
+    if (errors) throw new Error(errors[0].message);
+
+    for (let i = 0; i < data.transactions.length; i++) {
+      let tx = data.transactions[i];
+      await new Promise((r) => setTimeout(r, 500));
+      await electrs
+        .url(`/tx/${tx.hash}/status`)
+        .get()
+        .json(
+          ({ confirmed }) =>
+            confirmed &&
+            hasura
+              .post({ query: setConfirmed, variables: { id: tx.id } })
+              .json(transferOwnership)
+        );
+    }
+  } catch (e) {
+    console.log(e);
+  }
+
+  setTimeout(checkTransactions, 5000);
+};
+
+setTimeout(checkTransactions, 8000);
 
 app.post("/asset/register", async (req, res) => {
   let { asset } = req.body;
