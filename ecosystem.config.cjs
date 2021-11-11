@@ -3,8 +3,8 @@ module.exports = {
     {
       name: "raretoshi",
       watch: ["src"],
-      script: "npm",
-      args: "start",
+      script: "node",
+      args: "build",
       env_production: {
         NODE_ENV: "production",
       },
