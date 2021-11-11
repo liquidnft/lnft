@@ -1,5 +1,5 @@
 <script>
-  import { painting, variation } from "$lib/store";
+  import { variation } from "$lib/store";
   import { Card, Pagination } from "$comp";
   import { onMount, tick } from "svelte";
 
@@ -9,7 +9,7 @@
   let loaded = {};
   let debug;
 
-  $: showDetails = $painting && $variation;
+  $: showDetails = !!$variation;
 
   let w;
   let hidden;

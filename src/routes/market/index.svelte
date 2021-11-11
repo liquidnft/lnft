@@ -36,16 +36,11 @@
   export let count;
   export let initialArtworks;
 
+  $artworks = initialArtworks;
+
   let filtered = [];
 
   let offset = 0;
-
-  $: reset($filterCriteria, $sortCriteria);
-  let reset = async () => {
-    if (initialArtworks && initialArtworks.length) {
-      $artworks = initialArtworks;
-    }
-  };
 
   $: filter($artworks, $painting, $variation)
   let filter = (a, p, v) => {
@@ -55,7 +50,7 @@
       let n = parseInt(words[words.length - 1]);
       if (!n) return false;
       if (!p) return n % 100 === 0;
-      if (!v) return n <= p && n > p - 100;
+      if (!v) return n <= p && n > p - 100 && n % 10 === 0;
     });
   }
 
