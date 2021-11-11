@@ -21,5 +21,6 @@ hasura/ipfs
 hasura/ghost-data
 hasura/app/proofs.json
 hasura/app/.pnpm-store
+cypress
 .pnpm-debug
 .svelte-kit
