@@ -7,12 +7,12 @@ export async function get({ headers, locals, query }) {
   let offset = 0;
   let where = {};
   let order_by = {
-    created_at: "desc",
+    sequence: "asc",
   };
 
   try {
     let { artworks_aggregate: a } = await q(countArtworks, { where });
-    let { artworks } = await q(getLimited, { limit, offset, order_by, where });
+    let { sequenced: artworks } = await q(getLimited, { limit, offset, order_by, where });
 
     return {
       body: {

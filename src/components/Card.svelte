@@ -34,10 +34,14 @@
     let words = artwork.title.split(" ");
     let n = parseInt(words[words.length - 1]);
     if (!$painting) e.preventDefault();
-    else $variation = n;
+    else {
+      window.scrollTo(0, 0);
+      $variation = n;
+    }
     $painting = n;
   };
 
+  $: title = $variation ? artwork.title : $painting ? 'Shares ' : 'XX';
 </script>
 
 <style>

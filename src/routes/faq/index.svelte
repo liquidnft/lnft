@@ -116,28 +116,6 @@
             </p>
 
             <p>
-              Unfortunately, early uses of NFTs has been very heavily slanted
-              towards digital art. And often pretty weird digital art! Not that
-              artwork is a bad example of something that can be owned through an
-              NFT, but that is just one of a million examples of what NFTs can
-              be used for. 
-            </p>
-
-            <p>
-              Vida Verde Agroforestry is using this amazing NFT and blockchain
-              technology to allow people to have a secure digital contract
-              granting them the earnings for a portion of harvest produce for
-              one of our teak and avocado farms! That is, in a real producing
-              farm in Central America. Not a digital farm, a real farm beside
-              the beautiful dormant Cosiguina volcano overlooking the Gulf of
-              Fonseca and the Pacific Ocean. This has never been done before!
-              NFTs allow the farms production earnings to be broken down into
-              very affordable pieces for almost everyone to buy into. Your
-              Harvest Rights NFT is a binding digital contract between you and
-              Vida Verde Agroforestry.
-            </p>
-
-            <p>
               Your NFTs can be traded on the Maven NFT marketplace, an online
               NFT marketplace that specializes in NFTs that represent real world
               assets or tangible things. With your NFT able to be sold on the

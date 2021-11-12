@@ -1,0 +1,11 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE OR REPLACE FUNCTION public.artwork_sequence(artwork_row artworks)
+--  RETURNS integer
+--  LANGUAGE sql
+--  STABLE
+-- AS $function$
+--     SELECT regexp_replace(artworks.title, '^.* ', '')::int
+--     FROM artworks
+--     LIMIT 1
+-- $function$;

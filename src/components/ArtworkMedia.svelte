@@ -11,8 +11,8 @@
   export let popup = false;
   let img, vid;
   $: path =
-    artwork &&
-    (`/api/ipfs/${artwork.filename}`);
+    thumb ?
+    `/api/public/${artwork.filename}.jpg` : `/api/public/${artwork.filename}`;
 
   $: cover = !showDetails;
   $: contain = showDetails;
@@ -112,7 +112,7 @@
 
 </style>
 
-{#if artwork.filetype && artwork.filetype.includes('video')}
+{#if !thumb && artwork.filetype && artwork.filetype.includes('video')}
   <div
     class="w-full"
     class:inline-block={!popup}

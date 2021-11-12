@@ -1,0 +1,5 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE OR REPLACE VIEW "public"."sequenced" AS
+-- SELECT *, regexp_replace(artworks.title, '^.* ', '')::int as sequence
+-- FROM artworks;

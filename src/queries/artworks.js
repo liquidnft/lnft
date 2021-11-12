@@ -7,12 +7,10 @@ const marketFields = `
   title
   filename
   filetype
-  favorited
   list_price
   auction_start
   auction_end
   asking_asset
-  has_royalty
   slug
   created_at
   owner {
@@ -25,14 +23,6 @@ const marketFields = `
     username
     avatar_url
   },
-  bid {
-    id
-    user {
-      id
-      username
-    } 
-    amount 
-  }
 `
 
 const fields = `
@@ -110,12 +100,9 @@ export const getFeatured = `query {
   }
 }`;
 
-export const getLimited = `query ($where: artworks_bool_exp!, $limit: Int, $offset: Int, $order_by: artworks_order_by!)  {
- artworks(where: $where, limit: $limit, offset: $offset, order_by: [$order_by]) {
+export const getLimited = `query ($where: sequenced_bool_exp!, $limit: Int, $offset: Int, $order_by: sequenced_order_by!)  {
+ sequenced(where: $where, limit: $limit, offset: $offset, order_by: [$order_by]) {
     ${marketFields}
-    tags {
-      tag
-    } 
   }
 }`;
 

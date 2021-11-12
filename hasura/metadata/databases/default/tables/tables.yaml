@@ -21,6 +21,7 @@
 - "!include public_royalty_recipients.yaml"
 - "!include public_samples.yaml"
 - "!include public_search.yaml"
+- "!include public_sequenced.yaml"
 - "!include public_tags.yaml"
 - "!include public_transactions.yaml"
 - "!include public_users.yaml"

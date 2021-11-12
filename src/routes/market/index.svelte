@@ -1,6 +1,6 @@
 <script context="module">
   export async function load({ fetch }) {
-    const r = await fetch("/artworks.json?limit=12").then((r) => r.json());
+    const r = await fetch("/artworks.json").then((r) => r.json());
 
     return {
       maxage: 720,
@@ -37,8 +37,7 @@
   export let initialArtworks;
 
   $artworks = initialArtworks;
-
-  let filtered = [];
+  let filtered = initialArtworks;
 
   let offset = 0;
 

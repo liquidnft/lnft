@@ -1,6 +1,25 @@
 table:
-  name: designs
+  name: sequenced
   schema: public
+object_relationships:
+- name: artist
+  using:
+    manual_configuration:
+      column_mapping:
+        owner_id: id
+      insertion_order: null
+      remote_table:
+        name: users
+        schema: public
+- name: owner
+  using:
+    manual_configuration:
+      column_mapping:
+        owner_id: id
+      insertion_order: null
+      remote_table:
+        name: users
+        schema: public
 select_permissions:
 - permission:
     columns:
@@ -13,6 +32,7 @@ select_permissions:
     - extension_interval
     - max_extensions
     - reserve_price
+    - sequence
     - views
     - asking_asset
     - asset
@@ -68,5 +88,6 @@ select_permissions:
     - auction_tx
     - held
     - bid_id
+    - sequence
     filter: {}
   role: user
