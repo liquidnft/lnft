@@ -8,9 +8,13 @@
   export let artwork;
   export let columns = 3;
   export let showDetails = true;
-  export let loaded = false;
   export let thumb = true;
   export let popup = false;
+
+  let loaded;
+  let ready = (id) => {
+    loaded = true;
+  } 
 
   let sats, val, ticker;
   $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
@@ -53,10 +57,11 @@
     class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full"
     in:fade>
     <a href={`/a/${artwork.slug}`}>
-      {#if !loaded && justScrolled}
+      {#if !loaded}
         <div style="height: 350px" class="bg-gray-100 w-full object-cover"></div>
-      {:else}
-        <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
+      {/if}
+      {#if loaded || !justScrolled}
+        <ArtworkMedia {artwork} {showDetails} {popup} bind:thumb bind:ready />
       {/if}
     </a>
     {#if showDetails}

@@ -5,10 +5,12 @@
 
   export let artwork;
   export let showDetails;
-  export let loaded = false;
   export let thumb = true;
   export let preview = false;
   export let popup = false;
+  export let ready;
+  export let loaded;
+
   let img, vid;
   $: path =
     artwork &&
@@ -20,14 +22,18 @@
   $: contain = showDetails;
   $: setLoaded(img, vid);
   let setLoaded = (img, vid) => {
+    loaded = true;
+
     img &&
       (img.onload = () => {
         loaded = true;
+        ready(artwork.id);
       });
 
     vid &&
       (vid.onloadeddata = () => {
         loaded = true;
+        ready(artwork.id);
       });
   };
 
@@ -120,6 +126,7 @@
     class:inline-block={!popup}
     class:cover
     class:contain
+    class:hidden={!loaded}
     on:mouseover={over}
     on:focus={over}
     on:mouseout={out}

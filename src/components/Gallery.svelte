@@ -5,7 +5,7 @@
   export let artworks;
   export let count;
 
-  let loaded = {};
+  let inview = artworks.slice(0, 24);
   let debug;
 
   let w, h;
@@ -16,7 +16,7 @@
   let st;
   let y;
 
-  let content, rh, newrows, nh, viewportHeight, inview;
+  let content, rh, newrows, nh, viewportHeight
 
   let resize = async () => {
     st = undefined;
@@ -26,7 +26,7 @@
 
   $: init(artworks);
   let init = async () => {
-    if (!inview || !inview.length) inview = artworks.slice(0, 24);
+    
     await tick();
 
     let el = document.querySelector(".market-gallery");
@@ -39,6 +39,7 @@
     newrows = Math.ceil(count / columns);
     nh = rh * (newrows + 1) - y;
     content.style.height = `${nh + (columns > 1 ? 200 : 0)}px`;
+    scroll(y);
   };
 
   let a, cr, translate, sf;
@@ -54,8 +55,9 @@
       cr = Math.round((y - st) / rh);
       let p = 2 * columns;
       a = Math.max(p, cr * columns);
-      if (artworks && a >= 0) inview = artworks.slice(a - p, a + p);
-      translate = Math.max(0, cr * rh - rh);
+      if (a >= 0) inview = artworks.slice(a - p, a + p);
+      let x = parseInt(((y - cr*rh)/(columns * 5)));
+      translate = Math.max(0, cr * rh - rh - x);
       justScrolled = true;
       setTimeout(() => (justScrolled = false), 250);
     });
@@ -99,6 +101,7 @@
     {sf && sf.toFixed(2)}<br />
     y
     {y && y.toFixed(2)}<br />
+    {y && ((y - cr*rh)/10).toFixed(2)}<br />
   </div>
 {/if}
 
@@ -109,7 +112,7 @@
       <div
         class="market-gallery w-full mb-20"
         style={`transform: translateY(${translate}px)`}>
-          <Card {artwork} bind:justScrolled bind:loaded={loaded[artwork.id]} />
+          <Card {artwork} bind:justScrolled />
       </div>
     {/if}
     {/each}

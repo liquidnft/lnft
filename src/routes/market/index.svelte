@@ -38,7 +38,7 @@
   export let showFilters;
   export let initialArtworks;
 
-  let filtered = [];
+  let filtered = initialArtworks;
 
   let offset = 0;
 
