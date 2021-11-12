@@ -4,6 +4,9 @@ const reverse = require("buffer-reverse");
 const fs = require("fs");
 const { Psbt } = require("liquidjs-lib");
 
+const sleep = (n) => new Promise((r) => setTimeout(r, n));
+const txcache = {}
+
 const updateAvatars = async () => {
   fs.readdir("/export", async (err, files) => {
     let {
@@ -127,24 +130,6 @@ const transferOwnership = async ({
       id: transaction.artwork_id,
       owner_id,
     },
-  });
-};
-
-const confirmTransactions = (result) => {
-  let {
-    data: { transactions },
-  } = result;
-  transactions.map((tx) => {
-    electrs
-      .url(`/tx/${tx.hash}/status`)
-      .get()
-      .json(
-        ({ confirmed }) =>
-          confirmed &&
-          hasura
-            .post({ query: setConfirmed, variables: { id: tx.id } })
-            .json(transferOwnership)
-      );
   });
 };
 
@@ -296,7 +281,7 @@ const checkListings = async () => {
 
 const checkTransactions = async () => {
   try {
-    hasura
+    let { data, errors } = await hasura
       .post({
         query: `query {
           transactions(where: {
@@ -311,13 +296,13 @@ const checkTransactions = async () => {
           }
         }`,
       })
-      .json()
+      .json();
 
     if (errors) throw new Error(errors[0].message);
 
     for (let i = 0; i < data.transactions.length; i++) {
       let tx = data.transactions[i];
-      await new Promise((r) => setTimeout(r, 500));
+      await sleep(50);
       await electrs
         .url(`/tx/${tx.hash}/status`)
         .get()
@@ -446,7 +431,11 @@ app.get("/transactions", auth, async (req, res) => {
 
       for (let j = 0; j < vin.length; j++) {
         let { txid: prev, vout } = vin[j];
-        let tx = await electrs.url(`/tx/${prev}`).get().json();
+
+        let tx =
+          txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
+        txcache[prev] = tx;
+
         let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
 
         if ([user.address, user.multisig].includes(a)) {
