@@ -294,8 +294,8 @@ const checkListings = async () => {
 };
 // setTimeout(checkListings, 4000);
 
-setInterval(
-  () =>
+const checkTransactions = async () => {
+  try {
     hasura
       .post({
         query: `query {
