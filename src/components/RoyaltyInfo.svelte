@@ -5,12 +5,12 @@
 </script>
 
 {#if artwork.royalty_recipients.length}
-  <span class="tooltip">
+  <span class="tooltip bg-black">
     <i class="text-midblue text-xl">
       <Fa icon={faGem} />
     </i>
-    <div class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-      <h3>List price without royalties:</h3>
+    <div class="tooltip-text bg-black shadow ml-4 rounded">
+      <h3>Additional Royalties</h3>
       <ul>
         {#if artwork.royalty_recipients.length}
           {#each artwork.royalty_recipients as recipient}

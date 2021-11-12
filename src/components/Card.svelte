@@ -41,7 +41,17 @@
     $painting = n;
   };
 
-  $: title = $variation ? artwork.title : $painting ? 'Shares ' : 'XX';
+  let words, n, step, st, end;
+  $: update(artwork, $painting, $variation)
+  let update = (a, p, v) => {
+    words = artwork.title.split(" ");
+    n = parseInt(words[words.length - 1]);
+    step =  (p ? 10 : 100);
+    st = n - step + 1;
+    end = n;
+  }
+
+  $: title = $variation ? artwork.title : `Shares ${st}-${end}`;
 </script>
 
 <style>
@@ -61,7 +71,7 @@
 
 </style>
 
-<div class="{showDetails ? 'card' : ''} flex flex-col justify-between h-full">
+<div class="{showDetails ? 'card' : ''} flex flex-col justify-between h-full" key={artwork.id}>
   <a href={`/a/${artwork.slug}`} on:click={makeSelection}>
     {#if !loaded && justScrolled}
       <div style="height: 350px" class="bg-gray-100 w-full object-cover" />
@@ -75,7 +85,7 @@
         <a href={`/a/${artwork.slug}`}>
           <div>
             <h1 class="text-xl">
-              {artwork.title || 'Untitled'}
+              {title}
               {#if !(artwork.transferred_at || artwork.asking_asset)}
                 (unlisted)
               {/if}
