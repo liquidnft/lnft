@@ -53,7 +53,7 @@ setInterval(async () => {
         filetype
         reserve_price
         asking_asset
-        royalty
+        has_royalty
         auction_end
         transferred_at
         list_price_tx
@@ -139,7 +139,7 @@ setInterval(async () => {
         console.log("released to high bidder");
       } catch (e) {
         console.log("couldn't release to bidder,", e.message);
-        if (artwork.royalty) continue;
+        if (artwork.has_royalty) continue;
 
         try {
           let psbt = await sign(artwork.auction_release_tx);

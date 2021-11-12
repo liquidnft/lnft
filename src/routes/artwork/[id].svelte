@@ -24,7 +24,7 @@
   import { getArtworkTransactions } from "$queries/transactions";
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
-  import { Activity, Avatar, Card, ProgressLinear } from "$comp";
+  import { Activity, Avatar, Card, ProgressLinear, RoyaltyInfo } from "$comp";
   import Sidebar from "./_sidebar.svelte";
   import { tick, onDestroy } from "svelte";
   import {
@@ -180,10 +180,10 @@
 
   let bidding, amountInput, offering;
   let startBidding = async () => {
-    if (!artwork.held)
-      return err(
-        "Can't construct bid transaction, token not currently held in known address for owner"
-      );
+    // if (!artwork.held)
+    //   return err(
+    //     "Can't construct bid transaction, token not currently held in known address for owner"
+    //   );
     bidding = true;
     await tick();
     amountInput.focus();
@@ -205,10 +205,10 @@
       transaction.amount = -artwork.list_price;
       transaction.type = "purchase";
 
-      $psbt = await executeSwap(artwork, 500);
+      $psbt = await executeSwap(artwork);
       $psbt = await sign();
 
-      if (artwork.royalty || artwork.auction_end) {
+      if (artwork.has_royalty || artwork.auction_end) {
         $psbt = await requestSignature($psbt);
       }
 
@@ -235,10 +235,16 @@
   let showPopup = false;
   let showMore = false;
   let showActivity = false;
-
 </script>
 
 <style>
+  .listContainer {
+    overflow: hidden;
+  }
+
+  svelte-virtual-list-viewport {
+    overflow: hidden;
+  }
   :global(.description a) {
     color: #3ba5ac;
   }
@@ -398,7 +404,7 @@
     <div class="flex flex-wrap">
       <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">
-          {artwork.title || 'Untitled'}
+          {artwork.title || "Untitled"}
         </h1>
         <div class="flex mt-4 mb-6">
           <div class="my-auto">
@@ -409,7 +415,8 @@
           </div>
           {#if artwork.is_physical}
             <div
-              class="flex ml-auto py-1 px-4 bg-gray-100 rounded rounded-full my-auto">
+              class="flex ml-auto py-1 px-4 bg-gray-100 rounded rounded-full my-auto"
+            >
               <div class="my-auto">
                 <Fa icon={faImage} class="mr-1" />
               </div>
@@ -436,7 +443,7 @@
               <div class="ml-2">
                 <div>@{artwork.owner.username}</div>
                 <div class="text-xs text-gray-600">
-                  {artwork.held ? '' : 'Presumed '}Owner
+                  {artwork.held ? "" : "Presumed "}Owner
                 </div>
               </div>
             </div>
@@ -453,7 +460,7 @@
           {#if artwork.list_price}
             <div class="my-2">
               <div class="text-sm mt-auto">List Price</div>
-              <div class="text-lg">{list_price} {ticker}</div>
+              <div class="text-lg">{list_price}{ticker}<RoyaltyInfo {artwork} /></div>
             </div>
           {/if}
           {#if artwork.reserve_price}
@@ -478,15 +485,17 @@
         {:else if $user && $user.id === artwork.owner_id && artwork.held}
           <div class="w-full mb-2">
             <a
-              href={disabled ? '' : `/artwork/${id}/auction`}
+              href={disabled ? "" : `/artwork/${id}/auction`}
               class="block text-center text-sm secondary-btn w-full"
-              class:disabled>List</a>
+              class:disabled>List</a
+            >
           </div>
           <div class="w-full mb-2">
             <a
               href={`/artwork/${artwork.id}/transfer`}
               class="block text-center text-sm secondary-btn w-full"
-              class:disabled>Transfer</a>
+              class:disabled>Transfer</a
+            >
           </div>
 
           {#if $user.id === artwork.artist_id}
@@ -494,7 +503,8 @@
               <a
                 href={`/artwork/${id}/edit`}
                 class="block text-center text-sm secondary-btn w-full"
-                class:disabled>Edit</a>
+                class:disabled>Edit</a
+              >
             </div>
           {/if}
           <!--
@@ -511,7 +521,8 @@
               on:click={buyNow}
               class="secondary-btn"
               {disabled}
-              class:disabled>Buy now</button>
+              class:disabled>Buy now</button
+            >
           {/if}
           {#if bidding}
             {#if offering}
@@ -526,9 +537,11 @@
                         class="form-input block w-full pl-7"
                         placeholder={val(0)}
                         bind:value={amount}
-                        bind:this={amountInput} />
+                        bind:this={amountInput}
+                      />
                       <div
-                        class="absolute inset-y-0 right-0 flex items-center mr-2">
+                        class="absolute inset-y-0 right-0 flex items-center mr-2"
+                      >
                         {ticker}
                       </div>
                     </div>
@@ -542,7 +555,8 @@
               on:click={startBidding}
               class="secondary-btn"
               {disabled}
-              class:disabled>Make an offer</button>
+              class:disabled>Make an offer</button
+            >
           {/if}
         {/if}
 
@@ -562,7 +576,7 @@
           <div class="bg-gray-100 px-4 p-1 mt-6 rounded">
             <div class="mt-auto text-sm">Auction ended at</div>
             <div class="mt-1">
-              {format(parseISO(artwork.auction_end), 'yyyy-MM-dd HH:mm')}
+              {format(parseISO(artwork.auction_end), "yyyy-MM-dd HH:mm")}
             </div>
           </div>
         {/if}
@@ -571,14 +585,15 @@
 
         {#if artwork.description}
           <div
-            class="mob-desc description text-gray-600 whitespace-pre-wrap break-words">
+            class="mob-desc description text-gray-600 whitespace-pre-wrap break-words"
+          >
             <h4 class="mt-10 font-bold">About this artwork</h4>
             <div class="desc-text {showMore ? 'openDesc' : ''}">
               {@html linkify(artwork.description)}
             </div>
             <div class="show-more" on:click={() => (showMore = !showMore)}>
               SHOW
-              {showMore ? 'LESS -' : 'MORE +'}
+              {showMore ? "LESS -" : "MORE +"}
             </div>
           </div>
         {/if}
@@ -592,8 +607,9 @@
             {#if transactions.length > 3}
               <div
                 class="flex text-xs cursor-pointer"
-                on:click={() => (showActivity = !showActivity)}>
-                <div>View {showActivity ? 'less' : 'more'}</div>
+                on:click={() => (showActivity = !showActivity)}
+              >
+                <div>View {showActivity ? "less" : "more"}</div>
                 <div class="my-auto ml-1">
                   <Fa icon={showActivity ? faChevronUp : faChevronDown} />
                 </div>
@@ -622,14 +638,16 @@
         <div
           on:click={() => (showPopup = !showPopup)}
           class:showPopup
-          class="popup">
+          class="popup"
+        >
           <span class="closeButton"><Fa icon={faTimes} /></span>
           <Card
             {artwork}
             columns={1}
             showDetails={false}
             thumb={false}
-            popup={true} />
+            popup={true}
+          />
         </div>
 
         {#if others.length}
@@ -646,7 +664,8 @@
               <div class="flex w-full">
                 <a
                   class="primary-btn mx-auto mb-12"
-                  href={`/artist/${artwork.artist.username}`}>View all</a>
+                  href={`/artist/${artwork.artist.username}`}>View all</a
+                >
               </div>
             </div>
           </div>
@@ -657,3 +676,4 @@
     <ProgressLinear />
   {/if}
 </div>
+

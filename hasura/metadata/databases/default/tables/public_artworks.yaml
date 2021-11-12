@@ -19,6 +19,13 @@ array_relationships:
       table:
         name: favorites
         schema: public
+- name: royalty_recipients
+  using:
+    foreign_key_constraint_on:
+      column: artwork_id
+      table:
+        name: royalty_recipients
+        schema: public
 - name: tags
   using:
     foreign_key_constraint_on:
@@ -46,6 +53,12 @@ computed_fields:
     session_argument: hasura_session
     table_argument: artwork_row
   name: favorited
+- definition:
+    function:
+      name: artwork_has_royalty
+      schema: public
+    table_argument: artwork_row
+  name: has_royalty
 - comment: ""
   definition:
     function:
@@ -87,7 +100,6 @@ insert_permissions:
     - max_extensions
     - owner_id
     - reserve_price
-    - royalty
     - slug
     - ticker
     - title
@@ -123,7 +135,6 @@ select_permissions:
     - max_extensions
     - owner_id
     - reserve_price
-    - royalty
     - slug
     - ticker
     - title
@@ -132,6 +143,7 @@ select_permissions:
     computed_fields:
     - artist_owned
     - favorited
+    - has_royalty
     - last_active
     - num_favorites
     filter:
@@ -168,7 +180,6 @@ select_permissions:
     - max_extensions
     - owner_id
     - reserve_price
-    - royalty
     - slug
     - ticker
     - title
@@ -177,6 +188,7 @@ select_permissions:
     computed_fields:
     - artist_owned
     - favorited
+    - has_royalty
     - last_active
     - num_favorites
     filter:
@@ -220,7 +232,6 @@ update_permissions:
     - max_extensions
     - owner_id
     - reserve_price
-    - royalty
     - title
     filter:
       owner_id:
