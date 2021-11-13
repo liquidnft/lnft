@@ -80,15 +80,15 @@ app.post("/transfer", auth, async (req, res) => {
 app.post("/viewed", async (req, res) => {
   try {
     let query = `mutation ($id: uuid!) {
-    update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
-      id
-      owner {
-        address
-        multisig
-      } 
-      asset
-    }
-  }`;
+      update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
+        id
+        owner {
+          address
+          multisig
+        } 
+        asset
+      }
+    }`;
 
     let result = await hasura
       .post({
@@ -96,7 +96,7 @@ app.post("/viewed", async (req, res) => {
         variables: { id: req.body.id },
       })
       .json()
-      .catch(console.log);
+
 
     if (result.data) {
       let { asset, owner } = result.data.update_artworks_by_pk;
@@ -126,7 +126,6 @@ app.post("/viewed", async (req, res) => {
           variables: { id: req.body.id, held },
         })
         .json()
-        .catch(console.log);
 
       if (errors) throw new Error("problem updating held status");
     }

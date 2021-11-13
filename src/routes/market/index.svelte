@@ -15,7 +15,6 @@
 
 <script>
   import { onMount } from "svelte";
-  import { ProgressLinear } from "$comp";
   import Fa from "svelte-fa";
   import {
     artworks,
@@ -23,15 +22,17 @@
     results,
     show,
     sortCriteria,
+    edition,
     painting,
     variation,
     token,
     user,
   } from "$lib/store";
   import { info, err, goto } from "$lib/utils";
-  import { Gallery, Results, Search } from "$comp";
+  import { Gallery, Results, ProgressLinear, Search } from "$comp";
   import { requirePassword } from "$lib/auth";
   import { pub } from "$lib/api";
+  import Armando from "$components/Armando.svelte";
 
   export let count;
   export let initialArtworks;
@@ -41,8 +42,8 @@
 
   let offset = 0;
 
-  $: filter($artworks, $painting, $variation)
-  let filter = (a, p, v) => {
+  $: filter($artworks, $painting, $variation, $edition)
+  let filter = (a, p, v, e) => {
     if (!a) return;
     filtered = $artworks.filter(({ title }) => {
       let words = title.split(" ");
@@ -50,10 +51,12 @@
       if (!n) return false;
       if (!p) return n % 100 === 0;
       if (!v) return n <= p && n > p - 100 && n % 10 === 0;
+      if (!e) return n <= v && n > v - 10;
     });
   }
 
   onMount(async () => {
+    $edition = undefined;
     $painting = undefined;
     $variation = undefined;
     const r = await fetch("/artworks.json").then((r) => r.json());
@@ -73,6 +76,10 @@
   }
 
 </style>
+
+{#if $painting > 300 && $painting <= 400} 
+<Armando />
+{/if}
 
 <Results />
 

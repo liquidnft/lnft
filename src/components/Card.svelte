@@ -1,6 +1,6 @@
 <script>
   import { Avatar, ArtworkMedia, Heart } from "$comp";
-  import { painting, variation } from "$lib/store";
+  import { edition, painting, variation } from "$lib/store";
   import countdown from "$lib/countdown";
   import { units } from "$lib/utils";
   import { onMount } from "svelte";
@@ -31,18 +31,22 @@
   count();
 
   let makeSelection = (e) => {
+    window.scrollTo(0, 0);
     let words = artwork.title.split(" ");
     let n = parseInt(words[words.length - 1]);
-    if (!$painting) e.preventDefault();
-    else {
-      window.scrollTo(0, 0);
+    if (!$variation) e.preventDefault();
+
+    if (!$painting) {
+      $painting = n;
+    } else if (!$variation) {
       $variation = n;
-    }
-    $painting = n;
+    } else {
+      $edition = n;
+    } 
   };
 
   let words, n, step, st, end;
-  $: update(artwork, $painting, $variation)
+  $: update(artwork, $painting, $variation, $edition)
   let update = (a, p, v) => {
     words = artwork.title.split(" ");
     n = parseInt(words[words.length - 1]);

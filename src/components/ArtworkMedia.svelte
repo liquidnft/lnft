@@ -12,7 +12,7 @@
   let img, vid;
   $: path =
     thumb ?
-    `/api/public/${artwork.filename}.jpg` : `/api/public/${artwork.filename}`;
+    `/api/public/${artwork.filename}.jpg` : `/api/ipfs/${artwork.filename}`;
 
   $: cover = !showDetails;
   $: contain = showDetails;
