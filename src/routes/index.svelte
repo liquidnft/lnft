@@ -5,7 +5,7 @@
   import { fade } from "svelte/transition";
   import { user } from "$lib/store";
   import { topCollectors, topArtists } from "$queries/users";
-  import { getFeatured } from "$queries/artworks";
+  import { getFeatured, getLatestArtwork } from "$queries/artworks";
   import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
   import { err, goto } from "$lib/utils";
   import { getRecentActivity, getLatestPieces } from "$queries/transactions";
@@ -13,6 +13,7 @@
   let featured = [];
   let recent = [];
   let latest = [];
+  let artwork = [];
 
   onMount(() => {
     query(getFeatured)
@@ -25,6 +26,10 @@
 
     query(getLatestPieces(3))
       .then((res) => (latest = res.transactions))
+      .catch(err);
+
+    query(getLatestArtwork)
+      .then(res => (artwork = res.artworks))
       .catch(err);
   });
 
@@ -100,7 +105,8 @@
     </p>
     <div class="mt-10 relative">
       <a class="edgtf-btn bg-black text-white px-20 py-2"
-        href={`/market`}>
+         href={artwork.length ? `/a/${artwork[0].slug}` : `/market`}
+      >
         <span>Enter</span>
       </a>
 <img src="/greencrypto.png" class="w-52 lg:absolute mx-auto py-10 bottom-4 xl:-bottom-8 right-16" />

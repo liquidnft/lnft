@@ -31,14 +31,14 @@
   $: reset($filterCriteria, $sortCriteria);
   let reset = async () => {
     try {
-      where = { _or: [] };
-      if ($filterCriteria.listPrice)
-        where._or.push({ list_price: { _is_null: false } });
-      if ($filterCriteria.openBid) where._or.push({ bid: {} });
-      if ($filterCriteria.ownedByCreator)
-        where._or.push({ artist_owned: { _eq: true } });
-      if ($filterCriteria.hasSold)
-        where._or.push({ transferred_at: { _is_null: false } });
+    where = { _or: [], _and: {is_sold: {_eq: false}} };
+    if ($filterCriteria.listPrice)
+      where._or.push({ list_price: { _is_null: false } });
+    if ($filterCriteria.openBid) where._or.push({ bid: {} });
+    if ($filterCriteria.ownedByCreator)
+      where._or.push({ artist_owned: { _eq: true } });
+    if ($filterCriteria.hasSold)
+      where._or.push({ transferred_at: { _is_null: false } });
 
       if (!where._or.length) delete where._or;
 
@@ -88,7 +88,8 @@
     let result = await pub($token)
       .post({
         query: getArtworks,
-        variables: { limit: 12, offset, order_by, where },
+        // order_by: [$order_by],
+        variables: { limit: 12, offset, where },
       })
       .json();
 

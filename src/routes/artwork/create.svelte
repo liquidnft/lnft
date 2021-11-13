@@ -230,6 +230,8 @@
 
       if (artwork.editions > 1) $prompt = Issuing;
 
+      artwork.edition_id = v4();
+
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
         if ($edition > 1) {
           artwork.ticker = tickers[$edition - 1];
