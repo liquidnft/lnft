@@ -64,7 +64,7 @@
 
 <div class="flex justify-between items-center menu relative">
   <Search suggest={false} />
-  <a href="/market"><button on:click={toggle}>Market</button></a>
+  <a sveltekit:prefetch href="/market"><button on:click={toggle}>Market</button></a>
   <a href="/activity"><button on:click={toggle}>Activity</button></a>
   <!--
   <a href="/galleries"><button on:click={toggle}>Galleries</button></a>

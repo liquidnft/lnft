@@ -98,7 +98,7 @@
       </p>
 
       <p class="mt-4">
-        <a href="/login" class="text-primary">Continue to sign in page</a>
+        <a href="/login" class="text-secondary">Continue to sign in page</a>
       </p>
     {:else}
       <h2 class="mb-8">Sign up</h2>

@@ -10,8 +10,6 @@ import {
   titles,
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
-import { tick } from "svelte";
-import { variables } from "$lib/variables";
 
 const btc = import.meta.env.VITE_BTC;
 const cad = import.meta.env.VITE_CAD;
@@ -2303,6 +2301,13 @@ const wordlist = [
   "zone",
   "zoo",
 ];
+const linkify = (text) => {
+  var urlRegex =
+    /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  return text.replace(urlRegex, function (url) {
+    return '<a href="' + url + '">' + url + "</a>";
+  });
+};
 
 export {
   addressLabel,
@@ -2321,6 +2326,7 @@ export {
   goto,
   go,
   info,
+  linkify,
   pick,
   sats,
   kebab,

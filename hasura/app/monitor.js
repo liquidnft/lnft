@@ -1,8 +1,58 @@
-const { api, hasura, electrs, registry } = require("./api");
+const { api, ipfs, hasura, electrs, registry } = require("./api");
 const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
 const reverse = require("buffer-reverse");
 const fs = require("fs");
 const { Psbt } = require("liquidjs-lib");
+
+const sleep = (n) => new Promise((r) => setTimeout(r, n));
+const txcache = {}
+
+const updateAvatars = async () => {
+  fs.readdir("/export", async (err, files) => {
+    let {
+      data: { users },
+    } = await hasura
+      .post({
+        query: `query { users { id, avatar_url }}`,
+      })
+      .json()
+      .catch(console.log);
+
+    let query = `mutation update_user($user: users_set_input!, $id: uuid!) {
+      update_users_by_pk(pk_columns: { id: $id }, _set: $user) {
+        id
+      }
+    }`;
+
+    users.map((user) => {
+      let f = files.find((f) => f.startsWith(user.avatar_url));
+      if (f && f !== user.avatar_url) {
+        user.avatar_url = f;
+        console.log("updating user", user.avatar_url);
+
+        hasura
+          .post({
+            query,
+            variables: { user, id: user.id },
+          })
+          .json(console.log)
+          .catch(console.log);
+      }
+    });
+  });
+};
+
+app.post("/updateAvatars", async (req, res) => {
+  if (req.headers["x-hasura-admin"] !== process.env.HASURA_SECRET)
+    return res.code(401).send("unauthorized");
+
+  try {
+    await updateAvatars();
+    res.send({ ok: true });
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 const setConfirmed = `
   mutation setConfirmed($id: uuid!) {
@@ -83,24 +133,6 @@ const transferOwnership = async ({
   });
 };
 
-const confirmTransactions = (result) => {
-  let {
-    data: { transactions },
-  } = result;
-  transactions.map((tx) => {
-    electrs
-      .url(`/tx/${tx.hash}/status`)
-      .get()
-      .json(
-        ({ confirmed }) =>
-          confirmed &&
-          hasura
-            .post({ query: setConfirmed, variables: { id: tx.id } })
-            .json(transferOwnership)
-      );
-  });
-};
-
 const isSpent = async ({ ins }, artwork_id) => {
   let query = `query($artwork_id: uuid!) { 
     transactions(
@@ -145,23 +177,24 @@ const isSpent = async ({ ins }, artwork_id) => {
 };
 
 const checkBids = async () => {
-  let result = await hasura
-    .post({
-      query: `query {
+  try {
+    let result = await hasura
+      .post({
+        query: `query {
         activebids(where: { type: { _eq: "bid" }}) {
           id
           artwork_id
           psbt
         }
       }`,
-    })
-    .json()
-    .catch(console.log);
+      })
+      .json()
+      .catch(console.log);
 
   if (!result || !result.data)
     return console.log("problem checking bids", result);
 
-  let query = `mutation ($id: uuid!) {
+    let query = `mutation ($id: uuid!) {
     update_transactions_by_pk(
       pk_columns: { id: $id }, 
       _set: { 
@@ -172,20 +205,23 @@ const checkBids = async () => {
     }
   }`;
 
-  let {
-    data: { activebids },
-  } = result;
+    let {
+      data: { activebids },
+    } = result;
 
-  for (let i = 0; i < activebids.length; i++) {
-    let tx = activebids[i];
+    for (let i = 0; i < activebids.length; i++) {
+      let tx = activebids[i];
 
-    let p = Psbt.fromBase64(tx.psbt);
-    let variables = { id: tx.id };
-    if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
-      hasura
-        .post({ query, variables })
-        .json(() => console.log("cancelled bid", tx.id))
-        .catch(console.log);
+      let p = Psbt.fromBase64(tx.psbt);
+      let variables = { id: tx.id };
+      if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
+        hasura
+          .post({ query, variables })
+          .json(() => console.log("cancelled bid", tx.id))
+          .catch(console.log);
+    }
+  } catch (e) {
+    console.log("problem checking bids", e);
   }
 
   setTimeout(checkBids, 5000);
@@ -243,11 +279,11 @@ const checkListings = async () => {
 
   setTimeout(checkListings, 5000);
 };
-setTimeout(checkListings, 4000);
+// setTimeout(checkListings, 4000);
 
-setInterval(
-  () =>
-    hasura
+const checkTransactions = async () => {
+  try {
+    let { data, errors } = await hasura
       .post({
         query: `query {
           transactions(where: {
@@ -262,10 +298,32 @@ setInterval(
           }
         }`,
       })
-      .json(confirmTransactions)
-      .catch(console.log),
-  5000
-);
+      .json();
+
+    if (errors) throw new Error(errors[0].message);
+
+    for (let i = 0; i < data.transactions.length; i++) {
+      let tx = data.transactions[i];
+      await sleep(50);
+      await electrs
+        .url(`/tx/${tx.hash}/status`)
+        .get()
+        .json(
+          ({ confirmed }) =>
+            confirmed &&
+            hasura
+              .post({ query: setConfirmed, variables: { id: tx.id } })
+              .json(transferOwnership)
+        );
+    }
+  } catch (e) {
+    console.log(e);
+  }
+
+  setTimeout(checkTransactions, 5000);
+};
+
+setTimeout(checkTransactions, 8000);
 
 app.post("/asset/register", async (req, res) => {
   let { asset } = req.body;
@@ -375,7 +433,11 @@ app.get("/transactions", auth, async (req, res) => {
 
       for (let j = 0; j < vin.length; j++) {
         let { txid: prev, vout } = vin[j];
-        let tx = await electrs.url(`/tx/${prev}`).get().json();
+
+        let tx =
+          txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
+        txcache[prev] = tx;
+
         let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
 
         if ([user.address, user.multisig].includes(a)) {

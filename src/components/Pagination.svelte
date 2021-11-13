@@ -9,6 +9,7 @@
 
   $: pages = [...Array(Math.ceil(artworks.length / offset)).keys()];
   let y;
+  /*
   $: current = pages.findIndex((_, i) => {
     return (
       i === pages.length - 1 ||
@@ -20,6 +21,8 @@
         y < document.getElementById(`artwork-${(i + 1) * offset}`).offsetTop)
     );
   });
+   */
+  $: current = 0
 
 </script>
 

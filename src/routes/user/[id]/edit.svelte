@@ -12,7 +12,7 @@
   import { user, token } from "$lib/store";
   import { err, info, goto, validateEmail } from "$lib/utils";
   import { Avatar } from "$comp";
-  import upload from "$lib/upload";
+  import { upload } from "$lib/upload";
   import { updateUser } from "$queries/users";
   import { query } from "$lib/api";
 

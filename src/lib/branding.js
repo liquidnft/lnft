@@ -16,17 +16,13 @@ const BRANDING = {
   
   meta: {
     general: {
-      og: {
-        title: 'Mintalio',
-        image: 'https://mintalio.com/branding/splash.png',
-        url: 'https://mintalio.com/',
-      },
+      title: 'Mintalio',
+      image: 'https://mintalio.com/branding/splash.png',
+      url: 'https://mintalio.com/',
       twitter: {
         card: 'summary_large_image',
         creator: '@mintalio',
         site: '@mintalio',
-        title: 'Mintalio',
-        image: 'https://mintalio.com/branding/splash.png',
       },
       logo: {
         header: {
@@ -42,21 +38,14 @@ const BRANDING = {
         primary: '#3C63C4',
         secondary: '#32373C',
       },
-      metaDescription: 'Upload, collect, and transact rare digital art on the Liquid Network',
-      metaKeywords: 'Bitcoin Liquid NFT Art',
+      description: 'Upload, collect, and transact rare digital art on the Liquid Network',
+      keywords: 'Bitcoin Liquid NFT Art',
       homeHeroText: 'Create, Collect and Trade Exclusive NFT Art on the Liquid Network'
     },
-    // for art page we use art info in <header> meta
-    artPage: (art) => ({
-      og: {
+    artwork: (art) => ({
         title: `Mintalio - ${art.title}`,
         image: `/api/ipfs/${art.filename}`,
         url: `https://mintalio.com/a/${art.slug}`,
-      },
-      twitter: {
-        title: `Mintalio - ${art.title}`,
-        image: `/api/ipfs/${art.filename}`,
-      },
     })
     
   },

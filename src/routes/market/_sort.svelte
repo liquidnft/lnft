@@ -1,8 +1,12 @@
 <script>
   import { differenceInMilliseconds } from "date-fns";
   import { onMount } from "svelte";
-  import { sortCriteria } from "$lib/store";
-  export const filtered = undefined;
+  import { artworks, sortCriteria } from "$lib/store";
+  export let filtered = undefined;
+
+  $: update($sortCriteria, $artworks);
+  let update = () => (filtered = $artworks.sort(sort));
+  onMount(update);
 
   let sort = (a, b) =>
     ({

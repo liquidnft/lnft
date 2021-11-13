@@ -1,3 +1,17 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const props = await fetch(`/artworks/${page.params.id}.json`).then((r) =>
+      r.json()
+    );
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
   import Fa from "svelte-fa";
   import {
@@ -6,6 +20,8 @@
     faTimes,
   } from "@fortawesome/free-solid-svg-icons";
   import { faHeart, faImage } from "@fortawesome/free-regular-svg-icons";
+  import { getArtwork, getArtworksByArtist } from "$queries/artworks";
+  import { getArtworkTransactions } from "$queries/transactions";
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
   import { Activity, Avatar, Card, ProgressLinear, RoyaltyInfo } from "$comp";
@@ -21,9 +37,7 @@
     psbt,
   } from "$lib/store";
   import countdown from "$lib/countdown";
-  import { getArtwork, getArtworksByArtist } from "$queries/artworks";
-  import { getArtworkTransactions } from "$queries/transactions";
-  import { goto, err, explorer, info, units } from "$lib/utils";
+  import { goto, err, explorer, info, linkify, units } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import {
     createOffer,
@@ -35,18 +49,11 @@
   import { Psbt } from "liquidjs-lib";
   import { api, query } from "$lib/api";
   import { LockedContent } from "$comp";
+  import { SocialShare } from "$comp";
+  import branding from "$lib/branding";
 
-  function linkify(text) {
-    var urlRegex =
-      /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-    return text.replace(urlRegex, function (url) {
-      return '<a href="' + url + '">' + url + "</a>";
-    });
-  }
-
-  export let id;
-
-  const requestPolicy = "cache-and-network";
+  export let artwork, others, transactions;
+  const { title, image, url }  = branding.meta.artwork(artwork);
 
   $: disabled =
     !artwork ||
@@ -55,21 +62,16 @@
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
     );
 
-  $: pageChange($page);
-  const pageChange = ({ params }) => {
-    loading = false;
-    if (params.id) {
-      ({ id } = params);
-    }
+  let start_counter, end_counter, now, timeout, loaded;
+
+  let id = artwork ? artwork.id : $page.params.id;
+  $: init(artwork);
+  let init = () => {
+    if (!loaded) api.url("/viewed").post({ id });
+    loaded = true;
   };
 
-  let others = [];
-  let transactions = [];
-
-  let artwork, start_counter, end_counter, now, timeout, loaded;
-
-  $: setup(id);
-  let setup = async () => {
+  let fetch = async () => {
     query(getArtwork(id))
       .then((res) => {
         artwork = res.artworks_by_pk;
@@ -94,7 +96,7 @@
       .catch(err);
   };
 
-  let poll = setInterval(setup, 2500);
+  let poll = setInterval(fetch, 2500);
 
   onDestroy(() => {
     $art = undefined;
@@ -146,7 +148,7 @@
     transaction.psbt = $psbt.toBase64();
     transaction.hash = $psbt.__CACHE.__TX.getId();
     await save();
-    await setup();
+    await fetch();
     offering = false;
   };
 
@@ -163,11 +165,11 @@
 
     if (result.errors) {
       console.log("errors", result.errors);
-      if (artwork && artwork.bid[0]) {
+      if (artwork && artwork.bid) {
         return err(
           `Problem placing bid, minimum bid is ${Math.max(
             val(artwork.reserve_price),
-            val(artwork.bid[0].amount + artwork.bid_increment)
+            val(artwork.bid.amount + artwork.bid_increment)
           )}`
         );
       } else return err(result.errors[0]);
@@ -223,7 +225,7 @@
       transaction.asset = artwork.asset;
       transaction.user;
 
-      await setup();
+      await fetch();
     } catch (e) {
       err(e);
     }
@@ -239,6 +241,13 @@
 </script>
 
 <style>
+  .listContainer {
+    overflow: hidden;
+  }
+
+  svelte-virtual-list-viewport {
+    overflow: hidden;
+  }
   :global(.description a) {
     color: #3ba5ac;
   }
@@ -383,8 +392,18 @@
 
 </style>
 
+<svelte:head>
+  <title>{title}</title>
+  <meta property="og:title" content={title} />
+  <meta property="og:image" content={image} />
+  <meta property="og:url" content={url} />
+
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:image" content={image} />
+</svelte:head>
+
 <div class="container mx-auto mt-10 md:mt-20">
-  {#if artwork}
+  {#if artwork && artwork.id}
     <div class="flex flex-wrap">
       <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
         <h1 class="text-3xl font-black primary-color">
@@ -459,10 +478,10 @@
               </div>
             </div>
           {/if}
-          {#if artwork.bid.length && artwork.bid[0].amount}
+          {#if artwork.bid && artwork.bid.amount}
             <div class="my-2">
               <div class="text-sm mt-auto">Current bid</div>
-              <div class="text-lg">{val(artwork.bid[0].amount)} {ticker}</div>
+              <div class="text-lg">{val(artwork.bid.amount)} {ticker}</div>
             </div>
           {/if}
         </div>
@@ -665,3 +684,4 @@
       bind:visible={showLockedContent} />
   {/if}
 </div>
+

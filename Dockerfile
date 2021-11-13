@@ -1,6 +1,6 @@
 FROM node:alpine
 
-RUN apk add git
+RUN apk add git python3 vim iputils build-base vips-dev
 RUN npm i -g pnpm
 WORKDIR /app
 COPY . /app

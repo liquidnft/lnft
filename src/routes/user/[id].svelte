@@ -109,7 +109,7 @@
         <div>
           <div class="flex flex-col">
             <div class="flex items-center">
-              <Avatar size="large" src={subject.avatar_url} />
+              <Avatar size="large" user={subject} />
               <div class="ml-12">
                 <h3>{subject.full_name}</h3>
                 <div class="text-gray-600">@{subject.username}</div>

@@ -1,5 +1,5 @@
 <script>
-  import { page } from "$app/stores";
+  import { session } from "$app/stores";
   import decode from "jwt-decode";
   import {
     App,
@@ -23,11 +23,13 @@
   let open = false;
   let ready;
 
+  $user = $session.user;
+  $token = $session.jwt;
+
   onMount(async () => {
     ready = true;
 
     if (!$password) $password = window.sessionStorage.getItem("password");
-    if (!$token) $token = window.sessionStorage.getItem("token");
   });
 
   let y;

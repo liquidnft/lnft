@@ -4,12 +4,17 @@
   import { fade, goto, units } from "$lib/utils";
   import { onMount } from "svelte";
 
+  export let justScrolled = false;
   export let artwork;
   export let columns = 3;
   export let showDetails = true;
-  export let loaded = false;
   export let thumb = true;
   export let popup = false;
+
+  let loaded;
+  let ready = (id) => {
+    loaded = true;
+  } 
 
   let sats, val, ticker;
   $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
@@ -52,7 +57,12 @@
     class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full"
     in:fade>
     <a href={`/a/${artwork.slug}`}>
-      <ArtworkMedia {artwork} {showDetails} {popup} bind:loaded bind:thumb />
+      {#if !loaded}
+        <div style="height: 350px" class="bg-gray-100 w-full object-cover"></div>
+      {/if}
+      {#if loaded || !justScrolled}
+        <ArtworkMedia {artwork} {showDetails} {popup} bind:thumb bind:ready />
+      {/if}
     </a>
     {#if showDetails}
       <div class="p-4">
@@ -87,13 +97,13 @@
             </div>
             <div class="w-1/2 text-sm font-medium">List Price</div>
           </div>
-          {#if artwork.bid[0] && artwork.bid[0].user}
+          {#if artwork.bid && artwork.bid.user}
             <div class="1/2 flex-1">
-              <div class="price">{val(artwork.bid[0].amount)} {ticker}</div>
+              <div class="price">{val(artwork.bid.amount)} {ticker}</div>
               <div class="text-sm font-medium">
                 Current bid by
                 <a
-                  href={`/u/${artwork.bid[0].user.username}`}>@{artwork.bid[0].user.username}</a>
+                  href={`/u/${artwork.bid.user.username}`}>@{artwork.bid.user.username}</a>
               </div>
             </div>
           {/if}

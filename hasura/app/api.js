@@ -10,6 +10,7 @@ const {
   COINOS_URL,
   COINOS_TOKEN,
   HBP_URL,
+  IPFS_WEB_URL,
 } = process.env;
 
 const hasura = wretch().url(`${HASURA_URL}/v1/graphql`);
@@ -19,6 +20,7 @@ const adminApi = hasura.headers({ "x-hasura-admin-secret": HASURA_SECRET });
 const electrs = wretch().url(LIQUID_ELECTRS_URL);
 const registry = wretch().url("https://assets.blockstream.info/");
 const coinos = wretch().url(COINOS_URL).auth(`Bearer ${COINOS_TOKEN}`);
+const ipfs = wretch().url(IPFS_WEB_URL);
 
 const cf = wretch()
   .url(
@@ -28,4 +30,4 @@ const cf = wretch()
 
 const hbp = wretch().url(HBP_URL);
 
-module.exports = { hasura: adminApi, api, electrs, registry, cf, hbp, coinos };
+module.exports = { hasura: adminApi, api, electrs, registry, cf, hbp, coinos, ipfs };
