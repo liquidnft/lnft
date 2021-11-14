@@ -65,7 +65,7 @@
     }
   };
 
-  let tab = "collection";
+  let tab = "creations";
 
 </script>
 

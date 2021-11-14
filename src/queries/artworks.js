@@ -223,7 +223,7 @@ export const updateTags = `mutation insert_tags($tags: [tags_insert_input!]!, $a
   }
 }`;
 
-export const getArtwork = (id, fields = fields) => `query {
+export const getArtwork = (id) => `query {
   artworks_by_pk(id: "${id}") {
     ${fields}
     tags {

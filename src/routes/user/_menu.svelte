@@ -7,20 +7,6 @@
   import { logout } from "$lib/auth";
 </script>
 
-<style>
-  .menu {
-    display: flex;
-    flex-direction: column;
-    font-size: 15px;
-  }
-  .menu a {
-    margin: 10px 0;
-  }
-  .menu span {
-    margin-left: 8px;
-  }
-</style>
-
 <div class="mt-10 mb-5">
   <a class="primary-btn w-1/2" href={`/user/${$user.id}/edit`}>Edit Profile</a>
 </div>
@@ -35,6 +21,8 @@
         <div><span>Become an Artist</span></div>
       </div>
     </a>
+  {:else}
+    <a href="/artwork/create" class="primary-btn">Submit a new artwork</a>
   {/if}
   <a href="/wallet">
     <div class="flex">
@@ -53,3 +41,17 @@
     </div>
   </a>
 </div>
+
+<style>
+  .menu {
+    display: flex;
+    flex-direction: column;
+    font-size: 15px;
+  }
+  .menu a {
+    margin: 10px 0;
+  }
+  .menu span {
+    margin-left: 8px;
+  }
+</style>

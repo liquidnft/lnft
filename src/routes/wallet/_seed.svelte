@@ -65,9 +65,9 @@
   let bulk = false;
 
   let suggestions;
-  $: suggestions = wordlist.filter((w) =>
-    w.startsWith(words[curr])
-  ).slice(0, 5);
+  $: suggestions = wordlist
+    .filter((w) => w.startsWith(words[curr]))
+    .slice(0, 5);
 
   let take = async (suggestion) => {
     words[curr] = suggestion;
@@ -84,8 +84,106 @@
     if (e.key === "Enter" || (e.key === "Tab" && !e.shiftKey))
       return suggestions[0] && take(suggestions[0]);
   };
-
 </script>
+
+<div class="p-5">
+  <div class="flex flex-col">
+    <p>Enter your backup phrase in the correct order:</p>
+
+    {#if !bulk}
+      <div class="text-right mt-5">
+        <ToggleSwitch
+          id="list-price"
+          label="Show words"
+          on:change={(e) => (show = e.target.checked)}
+          checked={show}
+        />
+      </div>
+    {/if}
+  </div>
+
+  {#if bulk}
+    <textarea
+      bind:value={typed}
+      placeholder="Type or paste your seed here"
+      class="my-4 w-full"
+      on:blur={setMnemonic}
+    />
+  {:else}
+    <div class="flex flex-wrap mb-2">
+      <div class="mr-2 sm:mr-0 flex-grow w-1/4 sm:w-1/2">
+        {#each words.slice(0, 6) as word, i (i)}
+          <div class="flex">
+            <div class="my-auto w-1/12">{i + 1}.</div>
+            {#if show}
+              <input
+                autocomplete="off"
+                bind:value={words[i]}
+                on:keydown={(e) => keyup(i, e)}
+                key={i}
+                bind:this={inputs[i]}
+              />
+            {:else}
+              <input
+                autocomplete="off"
+                bind:value={words[i]}
+                on:keydown={(e) => keyup(i, e)}
+                key={i}
+                bind:this={inputs[i]}
+                type="password"
+              />
+            {/if}
+          </div>
+        {/each}
+      </div>
+      <div class="flex-grow w-1/4 sm:w-1/2">
+        {#each words.slice(6, 12) as word, i (i)}
+          <div class="flex">
+            <div class="my-auto w-1/12">{i + 6 + 1}.</div>
+            {#if show}
+              <input
+                autocomplete="off"
+                bind:value={words[i + 6]}
+                on:keydown={(e) => keyup(i + 6, e)}
+                bind:this={inputs[i + 6]}
+                key={i + 6}
+              />
+            {:else}
+              <input
+                autocomplete="off"
+                bind:value={words[i + 6]}
+                on:keydown={(e) => keyup(i + 6, e)}
+                bind:this={inputs[i + 6]}
+                key={i + 6}
+                type="password"
+              />
+            {/if}
+          </div>
+        {/each}
+      </div>
+    </div>
+    <div class="suggestions mt-8 flex flex-wrap justify-center">
+      {#each suggestions as suggestion}
+        <button
+          class="primary-btn w-auto border m-1"
+          on:click={() => take(suggestion)}>{suggestion}</button
+        >
+      {/each}
+    </div>
+  {/if}
+
+  <p class="my-4">
+    {#if bulk}
+      <a class="secondary-color my-2" href="/" on:click|preventDefault={toggle}
+        >I want to enter one word at a time</a
+      >
+    {:else}
+      <a class="secondary-color my-2" href="/" on:click|preventDefault={toggle}
+        >I want to type in a text box</a
+      >
+    {/if}
+  </p>
+</div>
 
 <style>
   input {
@@ -102,95 +200,4 @@
       width: 100vw;
     }
   }
-
 </style>
-
-<div class="p-5">
-  <div class="flex flex-col">
-    <p>Enter your backup phrase in the correct order:</p>
-
-    {#if !bulk}
-      <div class="text-right mt-5">
-        <ToggleSwitch
-          id="list-price"
-          label="Show words"
-          on:change={(e) => (show = e.target.checked)}
-          checked={show} />
-      </div>
-    {/if}
-  </div>
-
-  {#if bulk}
-    <textarea
-      bind:value={typed}
-      placeholder="Type or paste your seed here"
-      class="my-4 w-full"
-      on:blur={setMnemonic} />
-  {:else}
-    <div class="flex flex-wrap mb-2">
-      <div class="mr-2 sm:mr-0 flex-grow w-1/4 sm:w-1/2">
-        {#each words.slice(0, 6) as word, i (i)}
-          <div class="flex">
-            <div class="my-auto w-1/12">{i + 1}.</div>
-            {#if show}
-              <input
-                bind:value={words[i]}
-                on:keydown={(e) => keyup(i, e)}
-                key={i}
-                bind:this={inputs[i]} />
-            {:else}
-              <input
-                bind:value={words[i]}
-                on:keydown={(e) => keyup(i, e)}
-                key={i}
-                bind:this={inputs[i]}
-                type="password" />
-            {/if}
-          </div>
-        {/each}
-      </div>
-      <div class="flex-grow w-1/4 sm:w-1/2">
-        {#each words.slice(6, 12) as word, i (i)}
-          <div class="flex">
-            <div class="my-auto w-1/12">{i + 6 + 1}.</div>
-            {#if show}
-              <input
-                bind:value={words[i + 6]}
-                on:keydown={(e) => keyup(i + 6, e)}
-                bind:this={inputs[i + 6]}
-                key={i + 6} />
-            {:else}
-              <input
-                bind:value={words[i + 6]}
-                on:keydown={(e) => keyup(i + 6, e)}
-                bind:this={inputs[i + 6]}
-                key={i + 6}
-                type="password" />
-            {/if}
-          </div>
-        {/each}
-      </div>
-    </div>
-    <div class="suggestions mt-8 flex flex-wrap justify-center">
-      {#each suggestions as suggestion}
-        <button
-          class="primary-btn w-auto border m-1"
-          on:click={() => take(suggestion)}>{suggestion}</button>
-      {/each}
-    </div>
-  {/if}
-
-  <p class="my-4">
-    {#if bulk}
-      <a
-        class="secondary-color my-2"
-        href="/"
-        on:click|preventDefault={toggle}>I want to enter one word at a time</a>
-    {:else}
-      <a
-        class="secondary-color my-2"
-        href="/"
-        on:click|preventDefault={toggle}>I want to type in a text box</a>
-    {/if}
-  </p>
-</div>

@@ -155,7 +155,7 @@
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-
+    
     let result = await api
       .auth(`Bearer ${$token}`)
       .url("/transaction")
@@ -181,10 +181,10 @@
 
   let bidding, amountInput, offering;
   let startBidding = async () => {
-    // if (!artwork.held)
-    //   return err(
-    //     "Can't construct bid transaction, token not currently held in known address for owner"
-    //   );
+    if (!artwork.held)
+      return err(
+        "Can't construct bid transaction, token not currently held in known address for owner"
+      );
     bidding = true;
     await tick();
     amountInput.focus();

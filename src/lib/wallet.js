@@ -435,7 +435,6 @@ const fund = async (
       return t;
     });
 
-
   utxos = shuffle(
     utxos.filter(
       (o) =>
@@ -798,10 +797,16 @@ export const signOver = async ({ asset }, tx) => {
   let p = new Psbt();
 
   if (!tx) {
-    let utxos = await electrs
-      .url(`/address/${multisig().address}/utxo`)
-      .get()
-      .json();
+    let utxos = [
+      ...(await electrs
+        .url(`/address/${get(user).address}/utxo`)
+        .get()
+        .json()),
+      ...(await electrs
+        .url(`/address/${get(user).multisig}/utxo`)
+        .get()
+        .json()),
+    ];
     let prevout = utxos.find((o) => o.asset === asset);
     let hex = await getHex(prevout.txid);
     tx = Transaction.fromHex(hex);

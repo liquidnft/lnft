@@ -95,4 +95,6 @@ select_permissions:
                 _is_null: false
             - artist_id:
                 _eq: X-Hasura-User-Id
+        - type:
+            _neq: royalty
   role: user
