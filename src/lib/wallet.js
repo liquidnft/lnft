@@ -1,7 +1,7 @@
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { api, electrs, hasura } from "$lib/api";
-import * as middlewares from "wretch-middlewares";
+// import * as middlewares from "wretch-middlewares";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
@@ -35,7 +35,7 @@ import { requirePassword } from "$lib/auth";
 import { getActiveBids } from "$queries/transactions";
 import { compareAsc, parseISO } from "date-fns";
 
-const { retry } = middlewares.default || middlewares;
+// const { retry } = middlewares.default || middlewares;
 
 const DUST = 800;
 const satsPerByte = 0.1;
@@ -640,10 +640,10 @@ export const broadcast = (disableRetries = false) => {
   let tx = get(psbt).extractTransaction();
   let hex = tx.toHex();
   let middlewares = [
-    retry({
-      delayTimer: 6000,
-      maxAttempts: 3,
-    }),
+    // retry({
+    //   delayTimer: 6000,
+    //   maxAttempts: 3,
+    // }),
   ];
 
   if (disableRetries) middlewares = [];

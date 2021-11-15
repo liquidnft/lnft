@@ -241,13 +241,6 @@
 </script>
 
 <style>
-  .listContainer {
-    overflow: hidden;
-  }
-
-  svelte-virtual-list-viewport {
-    overflow: hidden;
-  }
   :global(.description a) {
     color: #3ba5ac;
   }
