@@ -3,7 +3,6 @@
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
   import reverse from "buffer-reverse";
-  import { Buffer } from "buffer";
   import { onMount } from "svelte";
   import { electrs, hasura, pub } from "$lib/api";
   import { getTransaction } from "$queries/transactions";
