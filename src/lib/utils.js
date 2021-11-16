@@ -249,7 +249,7 @@ const etag = async (o) => {
     .substring(0, 27);
 };
 
-const dev = import.meta.env.DEV;
+const dev = import.meta.env.NODE_ENV === "development";
 
 const wordlist = [
   "abandon",
