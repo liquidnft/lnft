@@ -584,8 +584,9 @@ export const pay = async (artwork, to, amount) => {
 
   await construct(p);
   addFee(p);
-  estimateFee(p);
 
+
+  estimateFee(p, Address.isConfidential(to));
   await construct(p2);
 
   addFee(p2);
@@ -593,8 +594,8 @@ export const pay = async (artwork, to, amount) => {
   return p2;
 };
 
-const estimateFee = (p) => {
-  let size = estimateTxSize(p.data.inputs.length, p.data.outputs.length);
+const estimateFee = (p, isConfidential = false) => {
+  let size = estimateTxSize(p.data.inputs.length, p.data.outputs.length, isConfidential);
   fee.set(Math.ceil(size * satsPerByte));
 };
 
@@ -1071,9 +1072,9 @@ export const requestSignature = async (psbt) => {
 export const getAddress = (out) =>
   Address.fromOutputScript(out.script, network);
 
-export function estimateTxSize(numInputs, numOutputs) {
+export function estimateTxSize(numInputs, numOutputs, isConfidential = false) {
   const base = calcTxSize(false, numInputs, numOutputs, false) + 200;
-  const total = calcTxSize(true, numInputs, numOutputs, false);
+  const total = calcTxSize(true, numInputs, numOutputs, isConfidential);
   const weight = base * 3 + total;
   const vsize = (weight + 3) / 4;
 
