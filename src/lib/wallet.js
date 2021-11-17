@@ -587,7 +587,14 @@ export const pay = async (artwork, to, amount) => {
   addFee(p);
 
 
-  estimateFee(p, Address.isConfidential(to));
+  let confidential;
+  try {
+    confidential = Address.isConfidential(to);
+  } catch(e) {
+    confidential = false;
+  } 
+
+  estimateFee(p, confidential);
   await construct(p2);
 
   addFee(p2);
