@@ -342,8 +342,6 @@
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
 
-      console.log("HERE WE GO", asking_asset);
-
       query(updateArtworkWithRoyaltyRecipients, {
         artwork: {
           asking_asset,

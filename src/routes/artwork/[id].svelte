@@ -439,7 +439,7 @@
             <div class="my-2">
               <div class="text-sm mt-auto">List Price</div>
               <div class="text-lg">
-                {list_price}{ticker}
+                {list_price} {ticker}
                 <RoyaltyInfo {artwork} />
               </div>
             </div>
