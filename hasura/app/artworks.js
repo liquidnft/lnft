@@ -240,7 +240,6 @@ app.post("/transaction", auth, async (req, res) => {
       console.error(err);
     }
 
-    console.log("INSERT", transaction);
     query = `mutation create_transaction($transaction: transactions_insert_input!) {
     insert_transactions_one(object: $transaction) {
       id,

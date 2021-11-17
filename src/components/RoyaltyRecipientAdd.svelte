@@ -8,7 +8,7 @@
 
   const recipientModel = {
     name: "",
-    amount: 0,
+    amount: 1,
     address: "",
     type: royaltyRecipientIndividualType
   };
@@ -54,6 +54,7 @@
         class="form-input block w-full pl-4 pr-1"
         type="number"
         step="1"
+        min="1"
         bind:value={recipient.amount}
         placeholder="Amount Percent"
         id="recipientAmount"

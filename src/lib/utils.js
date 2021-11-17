@@ -153,6 +153,7 @@ const err = (e) => {
     msg = JSON.parse(msg).message;
   } catch {}
   if (!msg) msg = "An error occurred";
+  if (msg.includes("EPIPE")) return;
   if (msg.includes("Insufficient")) return;
   if (msg.includes("socket")) return;
   if (msg.includes("JWT")) return;

@@ -48,7 +48,7 @@
 
 <RoyaltyRecipientAdd
   defaultAddress={!addressIsInList(artist.address) ? artist.address : ""}
-  defaultName={!addressIsInList(artist.address) ? `${artist.username} (Artist)` : ""}
+  defaultName={!addressIsInList(artist.address) ? `${artist.username}` : ""}
   on:addrecipient={addRecipient}
 />
 <div class="rounded-lg mb-6">
