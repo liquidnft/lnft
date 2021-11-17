@@ -27,13 +27,13 @@
     img &&
       (img.onload = () => {
         loaded = true;
-        ready(artwork.id);
+        if (ready) ready(artwork.id);
       });
 
     vid &&
       (vid.onloadeddata = () => {
         loaded = true;
-        ready(artwork.id);
+        if (ready) ready(artwork.id);
       });
   };
 

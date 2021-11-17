@@ -250,7 +250,7 @@ app.post("/transaction", auth, async (req, res) => {
     .json()
     .catch(console.error);
 
-  // console.log("bid placed", title, bid[0].amount);
+  console.log("bid placed", title, bid.amount);
 
   res.send(r);
 });

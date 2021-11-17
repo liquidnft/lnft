@@ -5,40 +5,43 @@ const fs = require("fs");
 const { Psbt } = require("liquidjs-lib");
 
 const sleep = (n) => new Promise((r) => setTimeout(r, n));
-const txcache = {}
+const txcache = {};
 
 const updateAvatars = async () => {
   fs.readdir("/export", async (err, files) => {
-    let {
-      data: { users },
-    } = await hasura
-      .post({
-        query: `query { users { id, avatar_url }}`,
-      })
-      .json()
-      .catch(console.log);
+    try {
+      let {
+        data: { users },
+      } = await hasura
+        .post({
+          query: `query { users { id, avatar_url }}`,
+        })
+        .json();
 
-    let query = `mutation update_user($user: users_set_input!, $id: uuid!) {
+      let query = `mutation update_user($user: users_set_input!, $id: uuid!) {
       update_users_by_pk(pk_columns: { id: $id }, _set: $user) {
         id
       }
     }`;
 
-    users.map((user) => {
-      let f = files.find((f) => f.startsWith(user.avatar_url));
-      if (f && f !== user.avatar_url) {
-        user.avatar_url = f;
-        console.log("updating user", user.avatar_url);
+      users.map((user) => {
+        let f = files.find((f) => f.startsWith(user.avatar_url));
+        if (f && f !== user.avatar_url) {
+          user.avatar_url = f;
+          console.log("updating user", user.avatar_url);
 
-        hasura
-          .post({
-            query,
-            variables: { user, id: user.id },
-          })
-          .json(console.log)
-          .catch(console.log);
-      }
-    });
+          hasura
+            .post({
+              query,
+              variables: { user, id: user.id },
+            })
+            .json(console.log)
+            .catch(console.log);
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
   });
 };
 
@@ -164,11 +167,11 @@ const isSpent = async ({ ins }, artwork_id) => {
     let { index, hash } = ins[i];
     let txid = reverse(hash).toString("hex");
 
+    await sleep(50);
     let { spent } = await electrs
       .url(`/tx/${txid}/outspend/${index}`)
       .get()
-      .json()
-      .catch(console.log);
+      .json();
 
     if (spent) return true;
   }
@@ -191,8 +194,8 @@ const checkBids = async () => {
       .json()
       .catch(console.log);
 
-  if (!result || !result.data)
-    return console.log("problem checking bids", result);
+    if (!result || !result.data)
+      return console.log("problem checking bids", result);
 
     let query = `mutation ($id: uuid!) {
     update_transactions_by_pk(
@@ -229,23 +232,23 @@ const checkBids = async () => {
 setTimeout(checkBids, 2000);
 
 const checkListings = async () => {
-  let result = await hasura
-    .post({
-      query: `query {
+  try {
+    let result = await hasura
+      .post({
+        query: `query {
         activelistings {
           id
           artwork_id
           psbt
         }
       }`,
-    })
-    .json()
-    .catch(console.log);
+      })
+      .json();
 
-  if (!result || !result.data)
-    return console.log("problem checking listings", result);
+    if (!result || !result.data)
+      return console.log("problem checking listings", result);
 
-  let query = `mutation ($id: uuid!, $artwork_id: uuid!) {
+    let query = `mutation ($id: uuid!, $artwork_id: uuid!) {
     update_artworks_by_pk(
       pk_columns: { id: $artwork_id }, 
       _set: { 
@@ -265,16 +268,19 @@ const checkListings = async () => {
     }
   }`;
 
-  let {
-    data: { activelistings },
-  } = result;
+    let {
+      data: { activelistings },
+    } = result;
 
-  for (let i = 0; i < activelistings.length; i++) {
-    let tx = activelistings[i];
-    let p = Psbt.fromBase64(tx.psbt);
-    let variables = { id: tx.id, artwork_id: tx.artwork_id };
-    if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
-      hasura.post({ query, variables }).json(console.log).catch(console.log);
+    for (let i = 0; i < activelistings.length; i++) {
+      let tx = activelistings[i];
+      let p = Psbt.fromBase64(tx.psbt);
+      let variables = { id: tx.id, artwork_id: tx.artwork_id };
+      if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
+        await hasura.post({ query, variables }).json();
+    }
+  } catch (e) {
+    console.log(e);
   }
 
   setTimeout(checkListings, 5000);
@@ -355,10 +361,7 @@ app.post("/asset/register", async (req, res) => {
   }`;
 
   try {
-    let r = await hasura
-      .post({ query, variables: { asset } })
-      .json()
-      .catch(console.log);
+    let r = await hasura.post({ query, variables: { asset } }).json();
 
     if (!r.data) throw new Error();
 
@@ -408,7 +411,7 @@ app.get("/transactions", auth, async (req, res) => {
       } 
     }`;
 
-    let { data } = await api(req.headers).post({ query }).json();    
+    let { data } = await api(req.headers).post({ query }).json();
     let user = data.currentuser[0];
 
     let get = (addr) => electrs.url(`/address/${addr}/txs`).get().json();
@@ -490,7 +493,7 @@ app.get("/transactions", auth, async (req, res) => {
           }
         }`;
 
-        let insert = await hasura.post({ query }).json().catch(console.log);
+        let insert = await hasura.post({ query }).json();
 
         if (!insert.data) {
           continue;
