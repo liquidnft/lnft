@@ -248,7 +248,7 @@ const etag = async (o) => {
     .substring(0, 27);
 };
 
-const dev = import.meta.env.NODE_ENV === "development";
+const dev = import.meta.env.DEV;
 
 const linkify = (text) => {
   var urlRegex =
