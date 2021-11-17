@@ -88,7 +88,7 @@ setInterval(async () => {
 
     for (let i = 0; i < artworks.length; i++) {
       let artwork = artworks[i];
-      let bid = artwork.bid[0];
+      let { bid } = artwork;
 
       hasura
         .post({
