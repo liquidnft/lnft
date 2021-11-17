@@ -185,9 +185,10 @@ app.post("/claim", auth, async (req, res) => {
 });
 
 app.post("/transaction", auth, async (req, res) => {
-  const { transaction } = req.body;
+  try {
+    const { transaction } = req.body;
 
-  let query = `query {
+    let query = `query {
     artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
       owner {
         display_name
@@ -204,55 +205,60 @@ app.post("/transaction", auth, async (req, res) => {
     }
   }`;
 
-  let r = await hasura.post({ query }).json().catch(console.error);
-  let { owner, title, bid, slug } = r.data.artworks[0];
+    let { data, errors } = await hasura.post({ query }).json();
+    if (errors) throw new Error(errors[0].message);
+    let { owner, title, bid, slug } = data.artworks[0];
 
-  let locals = {
-    outbid: false,
-    title,
-    url: `${SERVER_URL}/a/${slug}`,
-  };
+    let locals = {
+      outbid: false,
+      title,
+      url: `${SERVER_URL}/a/${slug}`,
+    };
 
-  try {
-    await mail.send({
-      template: "notify-bid",
-      locals,
-      message: {
-        to: owner.display_name,
-      },
-    });
-
-    if (bid && bid.user) {
-      locals.outbid = true;
-
+    try {
       await mail.send({
         template: "notify-bid",
         locals,
         message: {
-          to: bid.user.display_name,
+          to: owner.display_name,
         },
       });
-    }
-  } catch (err) {
-    console.error("Unable to send email");
-    console.error(err);
-  }
 
-  query = `mutation create_transaction($transaction: transactions_insert_input!) {
+      if (bid && bid.user) {
+        locals.outbid = true;
+
+        await mail.send({
+          template: "notify-bid",
+          locals,
+          message: {
+            to: bid.user.display_name,
+          },
+        });
+      }
+    } catch (err) {
+      console.error("Unable to send email");
+      console.error(err);
+    }
+
+    console.log("INSERT", transaction);
+    query = `mutation create_transaction($transaction: transactions_insert_input!) {
     insert_transactions_one(object: $transaction) {
       id,
       artwork_id
     } 
   }`;
 
-  r = await api(req.headers)
-    .post({ query, variables: { transaction } })
-    .json()
-    .catch(console.error);
+    ({ data, errors } = await api(req.headers)
+      .post({ query, variables: { transaction } })
+      .json());
 
-  console.log("bid placed", title, bid.amount);
+    if (errors) throw new Error(errors[0].message);
 
-  res.send(r);
+    res.send(data.insert_transactions_one);
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
+  }
 });
 
 app.post("/release/update", auth, async (req, res) => {

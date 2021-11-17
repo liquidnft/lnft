@@ -53,7 +53,7 @@
   import branding from "$lib/branding";
 
   export let artwork, others, transactions;
-  const { title, image, url }  = branding.meta.artwork(artwork);
+  const { title, image, url } = branding.meta.artwork(artwork);
 
   $: disabled =
     !artwork ||
@@ -130,50 +130,39 @@
   $: transaction.amount = sats && sats(amount);
 
   let makeOffer = async (e) => {
-    if (e) e.preventDefault();
-    offering = true;
-    transaction.type = "bid";
-
-    await requirePassword();
-
     try {
+      if (e) e.preventDefault();
+      offering = true;
+      transaction.type = "bid";
+
+      await requirePassword();
+
       $psbt = await createOffer(artwork, transaction.amount);
+      $psbt = await sign();
+      transaction.psbt = $psbt.toBase64();
+      transaction.hash = $psbt.__CACHE.__TX.getId();
+      await save();
+      await fetch();
+      offering = false;
     } catch (e) {
+      console.log(e);
       err(e);
       offering = false;
-      return;
     }
-
-    $psbt = await sign();
-    transaction.psbt = $psbt.toBase64();
-    transaction.hash = $psbt.__CACHE.__TX.getId();
-    await save();
-    await fetch();
-    offering = false;
   };
 
   let save = async (e) => {
     transaction.artwork_id = artwork.id;
     transaction.asset = artwork.asking_asset;
-    
-    let result = await api
+
+    let { data, errors } = await api
       .auth(`Bearer ${$token}`)
       .url("/transaction")
       .post({ transaction })
-      .json()
-      .catch(err);
+      .json();
 
-    if (result.errors) {
-      console.log("errors", result.errors);
-      if (artwork && artwork.bid) {
-        return err(
-          `Problem placing bid, minimum bid is ${Math.max(
-            val(artwork.reserve_price),
-            val(artwork.bid.amount + artwork.bid_increment)
-          )}`
-        );
-      } else return err(result.errors[0]);
-    }
+    if (errors) throw new Error(errors[0].message);
+
     if (transaction.type === "purchase") info("Sold! Congratulations!");
     if (transaction.type === "bid") info("Bid placed!");
     bidding = false;
@@ -181,10 +170,6 @@
 
   let bidding, amountInput, offering;
   let startBidding = async () => {
-    if (!artwork.held)
-      return err(
-        "Can't construct bid transaction, token not currently held in known address for owner"
-      );
     bidding = true;
     await tick();
     amountInput.focus();
@@ -456,8 +441,7 @@
             <div class="my-2">
               <div class="text-sm mt-auto">List Price</div>
               <div class="text-lg">
-                {list_price}
-                {ticker}
+                {list_price}{ticker}
                 <RoyaltyInfo {artwork} />
               </div>
             </div>
@@ -485,13 +469,13 @@
           <div class="w-full mb-2">
             <a
               href={disabled ? '' : `/artwork/${id}/auction`}
-              class="secondary-btn"
+              class="block text-center text-sm secondary-btn w-full"
               class:disabled>List</a>
           </div>
           <div class="w-full mb-2">
             <a
               href={`/artwork/${artwork.id}/transfer`}
-              class="secondary-btn"
+              class="block text-center text-sm secondary-btn w-full"
               class:disabled>Transfer</a>
           </div>
 
@@ -499,27 +483,10 @@
             <div class="w-full mb-2">
               <a
                 href={`/artwork/${id}/edit`}
-                class="secondary-btn"
+                class="block text-center text-sm secondary-btn w-full"
                 class:disabled>Edit</a>
             </div>
           {/if}
-          {#if artwork.locked_content}
-            <div class="w-full mb-2">
-              <button
-                on:click|preventDefault={(e) => (showLockedContent = true)}
-                class="secondary-btn"
-                class:disabled>View Locked Content</button
-              >
-            </div>
-          {/if}
-          <!--
-          <div class="w-full mb-2">
-            <a
-              href={disabled ? '' : `/artwork/${id}/auction`}
-              class="block text-center text-sm secondary-btn w-full"
-              class:disabled>Send</a>
-          </div>
-          -->
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
             <button
@@ -677,4 +644,3 @@
       bind:visible={showLockedContent} />
   {/if}
 </div>
-
