@@ -9,6 +9,7 @@
   import { faHeart as solidHeart } from "@fortawesome/free-solid-svg-icons";
 
   export let artwork;
+  export let size = '1.5x';
 
   let { favorited } = artwork;
 
@@ -44,5 +45,5 @@
 </style>
 
 <div on:click={favorite} class:favorited>
-  <Fa icon={favorited ? solidHeart : faHeart} size="1.5x" />
+  <Fa icon={favorited ? solidHeart : faHeart} size={size} />
 </div>
