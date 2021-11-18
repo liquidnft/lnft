@@ -241,10 +241,12 @@
   }
 
   $: actionClassName = artwork && artwork.list_price ? 'buy-now-button-bg' : 'place-bid-button-bg';
+
+  $: coverImage = artwork && artwork.cover_filename ? `/api/ipfs/${artwork.cover_filename}` : 'https://blogs.esa.int/space19plus/files/2019/03/nebula.jpg';
 </script>
 
 {#if artwork}
-  <div class="w-full h-96 bg-center bg-cover" style="background-image: url('https://blogs.esa.int/space19plus/files/2019/03/nebula.jpg');">
+  <div class="w-full h-96 bg-center bg-cover" style={`background-image: url('${coverImage}')`}>
 
   </div>
 
@@ -258,6 +260,13 @@
           <div class="mt-8">
             <a href={`/artwork/${id}/edit`}>
               <Button primary class="w-full">Edit</Button>
+            </a>
+          </div>
+          <div class="mt-4">
+            <a
+                href={disabled ? "" : `/artwork/${id}/auction`}
+            >
+              <Button primary class="w-full">List</Button>
             </a>
           </div>
         {/if}
