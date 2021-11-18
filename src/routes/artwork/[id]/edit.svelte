@@ -26,7 +26,7 @@
   let update = async (e) => {
     e.preventDefault();
 
-    let { id: artwork_id, description, filename, title, tags } = artwork;
+    let { id: artwork_id, description, filename, title, tags, package_content } = artwork;
 
     query(updateTags, {
       tags: tags.map(({ tag }) => ({ tag, artwork_id })),
@@ -34,7 +34,7 @@
     })
       .then(() => {
         query(updateArtwork, {
-          artwork: { description, title },
+          artwork: { description, title, package_content },
           id,
         })
           .then(() => {
