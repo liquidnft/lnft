@@ -29,7 +29,6 @@
   };
 
   onMount(() => {
-    if (artwork.title) input.value = artwork.title;
     query(`query { tags { tag } }`)
       .then(
         (res) =>
@@ -41,8 +40,8 @@
       .catch(err);
   });
 
-  $: focus($page);
-  export let focus = (p) => p && tick().then(() => input && input.select());
+  // $: focus($page);
+  // export let focus = (p) => p && tick().then(() => input && input.select());
 
   let selectedValue;
   $: selectedValue = artwork.tags.map(({ tag }) => ({
