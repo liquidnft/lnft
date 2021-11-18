@@ -123,7 +123,7 @@
 
 </style>
 
-<form class="flex flex-col w-full mb-6 mt-20" on:submit autocomplete="off">
+<form class="flex flex-col w-full mb-6" on:submit autocomplete="off">
 
   <!-- Artwork title -->
 

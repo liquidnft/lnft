@@ -277,7 +277,7 @@
 <!--        </div>-->
       </div>
       <div class="flex flex-wrap flex-col-reverse lg:flex-row">
-        <div class="w-full lg:pr-10">
+        <div class="w-full">
           <div class:invisible={!loading}>
             <ProgressLinear />
           </div>
