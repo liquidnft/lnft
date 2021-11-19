@@ -1,7 +1,6 @@
 export { default as Activity } from "./Activity.svelte";
 export { default as AcceptOffer } from "./AcceptOffer.svelte";
 export { default as Amount } from "./Amount.svelte";
-export { default as App } from "./App.svelte";
 export { default as ArtworkMedia } from "./ArtworkMedia.svelte";
 export { default as Avatar } from "./Avatar.svelte";
 export { default as Card } from "./Card.svelte";
