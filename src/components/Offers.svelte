@@ -1,15 +1,6 @@
 <script>
-  import Fa from "svelte-fa";
-  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-  import { onMount, tick } from "svelte";
-  import { AcceptOffer, Card } from "$comp";
-  import { snack, prompt, psbt, token } from "$lib/store";
-  import { Psbt } from "liquidjs-lib";
-  import { getOffers } from "$queries/transactions";
-  import { broadcast } from "$lib/wallet";
-  import { goto, val, ticker } from "$lib/utils";
-  import { requirePassword } from "$lib/auth";
-  import { pub } from "$lib/api";
+  import { AcceptOffer, ArtworkMedia, Activity, Card } from "$comp";
+  import { val, ticker } from "$lib/utils";
 
   let offers = [];
   let comp;
@@ -38,22 +29,15 @@
 </style>
 
 <AcceptOffer bind:this={comp} />
-<div class="flex flex-wrap px-6">
+<div class="flex flex-wrap">
   {#each offers as offer}
-    <div class="w-full md:w-1/2 p-4">
-      <Card
-        artwork={offer.transaction.artwork}
-        columns={1}
-        showDetails={false}
-        shadow={false} />
-      <div class="mx-2 whitespace-no-wrap text-center">
-        {val(offer.transaction.artwork.asking_asset, offer.transaction.amount)}
-        {ticker(offer.transaction.artwork.asking_asset)}
-        from @{offer.transaction.artwork.bid.user.username}
-        <button on:click={() => comp.accept(offer.transaction)}>Accept</button>
-      </div>
+    <div class="order-last md:order-first my-auto mx-auto sm:mx-auto p-4">
+      <Activity transaction={offer.transaction} />  
+    </div>
+    <div class="mx-auto w-full md:w-32">
+      <ArtworkMedia artwork={offer.transaction.artwork} />
     </div>
   {:else}
-    <div class="mx-auto">No offers yet</div>
+    <div class="col-span-4 mx-auto">No offers yet</div>
   {/each}
 </div>

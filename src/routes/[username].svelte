@@ -1,3 +1,19 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const { subject } = await fetch(`/user/${page.params.username}.json`).then((r) =>
+      r.json()
+    );
+
+    return {
+      maxage: 90,
+      props: {
+        subject
+      },
+    };
+  }
+
+</script>
+
 <script>
   import Fa from "svelte-fa";
   import {
@@ -14,7 +30,7 @@
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getUserArtworks } from "$queries/artworks";
   import { createFollow, deleteFollow } from "$queries/follows";
-  import Menu from "./_menu.svelte";
+  import Menu from "./user/_menu.svelte";
   import { fade } from "svelte/transition";
   import { query } from "$lib/api";
 
@@ -30,12 +46,14 @@
 
   $: init(id);
   let init = (id) =>
-    query(getUserArtworks(id))
+    query(getUserArtworks, { id })
       .then((res) => {
         artworks = res.artworks;
       })
       .catch(err);
 
+  let collection = [];
+  let creations = [];
   let favorites = [];
 
   let artworks;
@@ -44,6 +62,10 @@
   let sort = (a, b) => b.edition - a.edition;
   let applyFilters = (artworks, subject) => {
     if (!(artworks && subject)) return;
+    creations = artworks.filter((a) => a.artist_id === subject.id).sort(sort);
+    collection = artworks.filter(
+      (a) => a.owner_id === subject.id && a.artist_id !== a.owner_id
+    );
     favorites = artworks.filter((a) => a.favorited);
   };
 
@@ -59,7 +81,7 @@
     }
   };
 
-  let tab = "creations";
+  let tab = "collection";
 
 </script>
 
@@ -69,10 +91,17 @@
     height: 350px;
   }
 
+  .hover {
+    @apply border-b-2;
+    border-bottom: 3px solid #6ed8e0;
+  }
 
   .tabs div {
     @apply mb-auto h-10 mx-2 md:mx-4;
-
+    &:hover {
+      @apply border-b-2;
+      border-bottom: 3px solid #6ed8e0;
+    }
   }
 
   .social-details {
@@ -212,15 +241,14 @@
         </div>
         {#if tab === 'creations'}
           <div class="w-full justify-center">
-            HOHOHO
-            <div class="w-full max-w-sm mx-auto mb-4 mt-14">
+            <div class="w-full max-w-sm mx-auto mb-12">
               {#if $user && $user.is_artist && $user.id === subject.id}
                 <a href="/artwork/create" class="primary-btn">Submit a new
                   artwork</a>
               {/if}
             </div>
             <div class="w-full flex flex-wrap">
-              {#each subject.creations as artwork (artwork.id)}
+              {#each creations as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>
@@ -232,7 +260,7 @@
         {:else if tab === 'collection'}
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">
-              {#each subject.holdings as artwork (artwork.id)}
+              {#each collection as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>
@@ -242,7 +270,7 @@
             </div>
           </div>
         {:else if tab === 'offers'}
-          <Offers />
+          <Offers offers={subject.offers} />
         {:else}
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">

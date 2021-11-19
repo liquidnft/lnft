@@ -54,10 +54,8 @@
     img = qr.createSvgTag({});
   };
 
-  onMount(async () => {
-    await getBalances();
-    await tick();
-  });
+  onDestroy(() => clearInterval(poll));
+  let poll = setInterval(() => getBalances.catch(err), 5000);
 
   let confidential = false;
   let toggleConfidential = () => {
@@ -71,6 +69,7 @@
   $: incoming && (confirming = true);
   $: newBalance(current);
   let newBalance = () => {
+    console.log("SKOO");
     if (confirming) {
       confirmed = true;
       confirming = false;

@@ -49,8 +49,8 @@
     <Hamburger bind:open={sidebar} />
   </nav>
   <div>
-    <a href="/">
-      <img src={branding.meta.general.logo.header.path}  alt="logo" class={branding.meta.general.logo.header.class} /></a>
+    <a href="/" sveltekit:prefetch>
+      <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-48" /></a>
   </div>
   <a class="mobileSearch" href="/market">
     <Fa icon={faSearch} />

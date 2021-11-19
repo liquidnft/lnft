@@ -23,6 +23,6 @@ hasura/app/proofs.json
 hasura/app/.pnpm-store
 .idea/
 cypress
-.pnpm-debug
+**/.pnpm-debug
 .svelte-kit
 .pnpm-debug.log
