@@ -1,4 +1,5 @@
 <script>
+  import { browser } from "$app/env";
   import { Card, Pagination } from "$comp";
   import { onMount, tick } from "svelte";
 
@@ -18,7 +19,8 @@
 
   let content, rh, newrows, nh, viewportHeight
 
-  let resize = async () => {
+  let resize = () => {
+    if (!window) return;
     st = undefined;
     window.scrollTo(0, 0);
     setTimeout(init, 50);
@@ -26,7 +28,7 @@
 
   $: init(artworks);
   let init = async () => {
-    
+    if (!window) return setTimeout(init, 50);
     await tick();
 
     let el = document.querySelector(".market-gallery");
@@ -47,7 +49,7 @@
   let timeout;
   let justScrolled;
 
-  $: scroll(y, c);
+  $: browser && scroll(y, c);
   let scroll = (y) => {
     window.requestAnimationFrame(() => {
       clearTimeout(timeout);

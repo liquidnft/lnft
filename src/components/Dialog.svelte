@@ -8,7 +8,7 @@
 
   $: hideControls = comp && comp.hide;
 
-  let focus = (p) => p && tick().then(() => ok && ok.focus());
+  let focus = (p) => p && tick().then(() => ok && ok.focus() && console.log("HOY"));
   $: focus($prompt);
 
 </script>

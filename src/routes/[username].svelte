@@ -241,6 +241,12 @@
         </div>
         {#if tab === 'creations'}
           <div class="w-full justify-center">
+            <div class="w-full max-w-sm mx-auto mb-12">
+              {#if $user && $user.is_artist && $user.id === subject.id}
+                <a href="/artwork/create" class="primary-btn">Submit a new
+                  artwork</a>
+              {/if}
+            </div>
             <div class="w-full flex flex-wrap">
               {#each creations as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
@@ -249,12 +255,6 @@
               {:else}
                 <div class="mx-auto">No creations yet</div>
               {/each}
-            </div>
-            <div class="w-full max-w-sm mx-auto mb-4 mt-14">
-              {#if $user && $user.is_artist && $user.id === subject.id}
-                <a href="/artwork/create" class="primary-btn">Submit a new
-                  artwork</a>
-              {/if}
             </div>
           </div>
         {:else if tab === 'collection'}

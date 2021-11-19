@@ -4,8 +4,6 @@
       r.json()
     );
 
-    console.log("PROPS", props);
-
     return {
       maxage: 90,
       props,

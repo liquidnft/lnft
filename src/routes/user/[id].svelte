@@ -36,8 +36,6 @@
       })
       .catch(err);
 
-  let collection = [];
-  let creations = [];
   let favorites = [];
 
   let artworks;
@@ -46,10 +44,6 @@
   let sort = (a, b) => b.edition - a.edition;
   let applyFilters = (artworks, subject) => {
     if (!(artworks && subject)) return;
-    creations = artworks.filter((a) => a.artist_id === subject.id).sort(sort);
-    collection = artworks.filter(
-      (a) => a.owner_id === subject.id && a.artist_id !== a.owner_id
-    );
     favorites = artworks.filter((a) => a.favorited);
   };
 
@@ -225,8 +219,15 @@
         </div>
         {#if tab === 'creations'}
           <div class="w-full justify-center">
+            HOHOHO
+            <div class="w-full max-w-sm mx-auto mb-4 mt-14">
+              {#if $user && $user.is_artist && $user.id === subject.id}
+                <a href="/artwork/create" class="primary-btn">Submit a new
+                  artwork</a>
+              {/if}
+            </div>
             <div class="w-full flex flex-wrap">
-              {#each creations as artwork (artwork.id)}
+              {#each subject.creations as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>
@@ -234,17 +235,11 @@
                 <div class="mx-auto">No creations yet</div>
               {/each}
             </div>
-            <div class="w-full max-w-sm mx-auto mb-4 mt-14">
-              {#if $user && $user.is_artist && $user.id === subject.id}
-                <a href="/artwork/create" class="primary-btn">Submit a new
-                  artwork</a>
-              {/if}
-            </div>
           </div>
         {:else if tab === 'collection'}
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">
-              {#each collection as artwork (artwork.id)}
+              {#each subject.holdings as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>

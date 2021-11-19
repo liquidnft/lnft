@@ -124,7 +124,8 @@
       await broadcast(true);
       await tick();
     } catch (e) {
-      console.log(e);
+      console.log(e, "wee", e.message.includes("Insufficient"));
+      if (e.message.includes("Insufficient")) throw e;
       throw new Error("Issuance failed: " + e.message);
     }
 

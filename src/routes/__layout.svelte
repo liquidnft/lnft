@@ -1,8 +1,19 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const props = await fetch(`/addresses.json`).then((r) => r.json());
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
   import { session } from "$app/stores";
   import decode from "jwt-decode";
   import {
-    App,
     Avatar,
     ProgressLinear,
     Sidebar,
@@ -12,20 +23,30 @@
     Snack,
     Head,
   } from "$comp";
-  import { show, user, password, token } from "$lib/store";
+  import {
+    addresses as addressesStore,
+    prompt,
+    show,
+    user,
+    password,
+    titles as titlesStore,
+    token,
+  } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
 
+  export let addresses, titles;
+
   let open = false;
-  let ready;
 
   $user = $session.user;
   $token = $session.jwt;
 
-  onMount(async () => {
-    ready = true;
+  $addressesStore = addresses;
+  $titlesStore = titles;
 
+  onMount(() => {
     if (!$password) $password = window.sessionStorage.getItem("password");
   });
 
@@ -41,20 +62,16 @@
 <Head />
 <Snack />
 
-{#if ready}
-  <Sidebar bind:open />
-  <div class={y > 50 ? 'sticky' : ''} in:fade>
-    <Navbar bind:sidebar={open} />
+<Sidebar bind:open />
+<div class={y > 50 ? 'sticky' : ''} in:fade>
+  <Navbar bind:sidebar={open} />
+</div>
+<Dialog />
+
+<main>
+  <div class="mx-auto min-h-screen">
+    <slot />
   </div>
-  <Dialog />
+</main>
 
-  <main>
-    <div class="mx-auto min-h-screen">
-      <App>
-        <slot />
-      </App>
-    </div>
-  </main>
-
-  <Footer />
-{/if}
+<Footer />
