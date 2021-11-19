@@ -56,7 +56,7 @@
   <div
     class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full"
     in:fade>
-    <a href={`/a/${artwork.slug}`}>
+    <a href={`/a/${artwork.slug}`} sveltekit:prefetch>
       {#if !loaded}
         <div style="height: 350px" class="bg-gray-100 w-full object-cover"></div>
       {/if}

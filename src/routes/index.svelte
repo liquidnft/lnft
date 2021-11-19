@@ -1,38 +1,35 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const props = await fetch(`/artworks/recent.json`).then((r) => r.json());
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
-  import { onMount } from "svelte";
+  import { onDestroy } from "svelte";
   import { query } from "$lib/api";
   import { Summary } from "$comp";
   import { fade } from "svelte/transition";
   import { user } from "$lib/store";
-  import { topCollectors, topArtists } from "$queries/users";
-  import { getFeatured } from "$queries/artworks";
   import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
   import { err, goto } from "$lib/utils";
-  import { getRecentActivity, getLatestPieces } from "$queries/transactions";
   import branding from "$lib/branding";
 
-  let featured = [];
-  let recent = [];
-  let latest = [];
+  export let featured;
+  export let recent;
+  export let latest;
 
-  onMount(() => {
-    query(getFeatured)
-      .then((res) => (featured = res.featured))
-      .catch(err);
-
-    query(getRecentActivity(3))
-      .then((res) => (recent = res.recentactivity))
-      .catch(err);
-
-    query(getLatestPieces(3))
-      .then((res) => (latest = res.transactions))
-      .catch(err);
-  });
-
-  setInterval(() => {
+  let interval = setInterval(() => {
     current++;
     if (current >= featured.length) current = 0;
   }, 6000);
+
+  onDestroy(() => clearInterval(interval));
 
   let current = 0;
 

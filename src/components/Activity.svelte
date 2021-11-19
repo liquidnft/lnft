@@ -1,3 +1,17 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const props = await fetch(`/artworks/${page.params.id}.json`).then((r) =>
+      r.json()
+    );
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
   import { Avatar, Card, TransactionTime, TransactionText } from "$comp";
   import { user } from "$lib/store";

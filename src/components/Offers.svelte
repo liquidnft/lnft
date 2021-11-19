@@ -1,29 +1,9 @@
 <script>
-  import Fa from "svelte-fa";
-  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-  import { onMount, tick } from "svelte";
   import { AcceptOffer, Card } from "$comp";
-  import { snack, prompt, psbt, token } from "$lib/store";
-  import { Psbt } from "liquidjs-lib";
-  import { getOffers } from "$queries/transactions";
-  import { broadcast } from "$lib/wallet";
-  import { goto, val, ticker } from "$lib/utils";
-  import { requirePassword } from "$lib/auth";
-  import { pub } from "$lib/api";
+  import { val, ticker } from "$lib/utils";
 
-  let offers = [];
+  export let offers;
   let comp;
-
-  onMount(async () => {
-    let result = await pub($token)
-      .post({
-        query: getOffers,
-      })
-      .json();
-
-    if (result.data) offers = result.data.offers;
-    else err(result.errors[0]);
-  });
 
 </script>
 
@@ -49,7 +29,6 @@
       <div class="mx-2 whitespace-no-wrap text-center">
         {val(offer.transaction.artwork.asking_asset, offer.transaction.amount)}
         {ticker(offer.transaction.artwork.asking_asset)}
-        from @{offer.transaction.artwork.bid.user.username}
         <button on:click={() => comp.accept(offer.transaction)}>Accept</button>
       </div>
     </div>

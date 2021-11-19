@@ -4,6 +4,8 @@
       r.json()
     );
 
+    console.log("PROPS", props);
+
     return {
       maxage: 90,
       props,
@@ -15,9 +17,9 @@
 <script>
   import Artwork from "../artwork/[id].svelte";
 
-  export let artwork, transactions, others;
+  export let artwork, others;
 </script>
 
 {#if artwork}
-  <Artwork {artwork} {others} {transactions} />
+  <Artwork {artwork} {others} />
 {/if}

@@ -26,7 +26,6 @@ export async function handle({ request, resolve }) {
 
       ({ jwt_token: jwt } = await res.json());
       setCookie = res.headers.get("set-cookie");
-      sessions[refresh_token] = jwt;
       ({ refresh_token } = cookie.parse(setCookie));
       sessions[refresh_token] = jwt;
     } catch (e) {
@@ -47,22 +46,21 @@ export async function handle({ request, resolve }) {
     return data;
   };
 
-  request.locals = {
-    jwt,
-    async q(q, v) {
-      try {
-        let r = await fn(q, v);
-        return r;
-      } catch (e) {
-        if (headers.authorization) delete headers.authorization;
-        let r = await fn(q, v);
-        return r;
-      }
-    },
+  let q = async (q, v) => {
+    try {
+      let r = await fn(q, v);
+      return r;
+    } catch (e) {
+      if (headers.authorization) delete headers.authorization;
+      let r = await fn(q, v);
+      return r;
+    }
   };
 
+  request.locals = { jwt, q };
+
   try {
-    let { currentuser } = await request.locals.q(getUser);
+    let { currentuser } = await q(getUser);
     user = currentuser[0];
   } catch (e) {}
 

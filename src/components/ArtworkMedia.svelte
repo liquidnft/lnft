@@ -8,7 +8,7 @@
   export let thumb = true;
   export let preview = false;
   export let popup = false;
-  export let ready;
+  export let ready = false;
   export let loaded;
 
   let img, vid;

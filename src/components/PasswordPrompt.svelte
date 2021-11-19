@@ -32,7 +32,7 @@
         window.sessionStorage.setItem("token", $token);
         $password = attempt;
         $prompt = undefined;
-      });
+      }).catch(err);
   };
 
 </script>
