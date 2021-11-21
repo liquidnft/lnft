@@ -585,13 +585,12 @@ export const pay = async (artwork, to, amount) => {
   await construct(p);
   addFee(p);
 
-
   let confidential;
   try {
     confidential = Address.isConfidential(to);
-  } catch(e) {
+  } catch (e) {
     confidential = false;
-  } 
+  }
 
   estimateFee(p, confidential);
   await construct(p2);
@@ -602,7 +601,11 @@ export const pay = async (artwork, to, amount) => {
 };
 
 const estimateFee = (p, isConfidential = false) => {
-  let size = estimateTxSize(p.data.inputs.length, p.data.outputs.length, isConfidential);
+  let size = estimateTxSize(
+    p.data.inputs.length,
+    p.data.outputs.length,
+    isConfidential
+  );
   fee.set(Math.ceil(size * satsPerByte));
 };
 
@@ -1067,11 +1070,11 @@ export const sendToMultisig = async (artwork) => {
   return p;
 };
 
-export const requestSignature = async (psbt) => {
+export const requestSignature = async (psbt, metaData = {}) => {
   let { base64 } = await api
     .url("/sign")
     .headers({ authorization: `Bearer ${get(token)}` })
-    .post({ psbt: psbt.toBase64() })
+    .post({ psbt: psbt.toBase64(), metaData })
     .json();
   return Psbt.fromBase64(base64);
 };

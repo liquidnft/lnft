@@ -131,7 +131,7 @@
         }
       }
 
-      royalty_recipients = artwork.royalty_recipients;
+      royalty_recipients = royalty_recipients ?? artwork.royalty_recipients;
 
       if (!list_price && artwork.list_price)
         list_price = val(artwork.asking_asset, artwork.list_price);

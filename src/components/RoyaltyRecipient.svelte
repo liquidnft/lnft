@@ -25,7 +25,7 @@
       <div class="md:w-2/12 w-1/2">
         {`${recipient.amount}% in ${tickers[askingAsset].ticker}`}
       </div>
-      <div class="w-full break-all text-wrap text-sm text-secondary">{recipient.address}</div>
+      <div class="w-full break-all text-wrap text-sm text-gray-400">{recipient.address}</div>
     </div>
     {#if recipient.type === royaltyRecipientIndividualType}
       <div

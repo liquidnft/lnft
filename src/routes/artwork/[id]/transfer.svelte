@@ -47,7 +47,7 @@
       await sign();
 
       if (artwork.has_royalty) {
-        $psbt = await requestSignature($psbt);
+        $psbt = await requestSignature($psbt, { forTransfer: true });
       }
 
       await broadcast();
@@ -82,19 +82,7 @@
     }
     loading = false;
   };
-
 </script>
-
-<style>
-  .disabled {
-    @apply text-gray-400 border-gray-400;
-  }
-
-  :global(.huh) {
-    @apply rounded-lg px-8 py-4 text-black w-full !important;
-  }
-
-</style>
 
 <div class="container mx-auto sm:justify-between mt-10 md:mt-20">
   <h2 class="mb-4">Transfer Artwork</h2>
@@ -110,18 +98,29 @@
         className="w-full"
         inputClassName="huh"
         labelFieldName="username"
-        bind:selectedItem={selectedValue}>
+        bind:selectedItem={selectedValue}
+      >
         <div class="flex" slot="item" let:item let:label>
           <Avatar class="my-auto" user={item} />
           <div class="ml-1 my-auto">{item.username}</div>
         </div>
       </AutoComplete>
-    <a
-      href="/"
-      on:click|preventDefault={send}
-      class:disabled
-      class="mt-8 text-center text-md secondary-btn w-full">Send</a>
+      <a
+        href="/"
+        on:click|preventDefault={send}
+        class:disabled
+        class="mt-8 text-center text-md secondary-btn w-full">Send</a
+      >
     </div>
-
   {/if}
 </div>
+
+<style>
+  .disabled {
+    @apply text-gray-400 border-gray-400;
+  }
+
+  :global(.huh) {
+    @apply rounded-lg px-8 py-4 text-black w-full !important;
+  }
+</style>
