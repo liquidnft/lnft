@@ -488,6 +488,15 @@
                 class:disabled>Edit</a>
             </div>
           {/if}
+          {#if artwork.locked_content}
+            <div class="w-full mb-2">
+              <button
+                on:click|preventDefault={(e) => (showLockedContent = true)}
+                class="secondary-btn"
+                class:disabled>View Locked Content</button
+              >
+            </div>
+          {/if}
         {:else if artwork.asking_asset}
           {#if artwork.list_price}
             <button
