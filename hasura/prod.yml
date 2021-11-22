@@ -1,13 +1,11 @@
 version: '3.6'
 services:
   app:
-  depends_on:
-      - hbp
     container_name: app
-      image: junglelab/lnft-server
+    build:
+      context: ./app
     restart: on-failure
     environment:
-      SERVER_URL: '${SERVER_URL}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       CLOUDFLARE_TOKEN: '${CLOUDFLARE_TOKEN}'
       CLOUDFLARE_ZONE: '${CLOUDFLARE_ZONE}'
@@ -77,6 +75,7 @@ services:
   hbp:
     container_name: hbp
     image: nhost/hasura-backend-plus:v2.2.3
+    restart: unless-stopped
     depends_on:
       - 'minio'
     ports:
@@ -108,6 +107,7 @@ services:
   ipfs:
     container_name: ipfs
     image: ipfs/go-ipfs
+    restart: unless-stopped
     ports:
       - 8081:8080
       - 4001:4001
