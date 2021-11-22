@@ -1,15 +1,36 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const { artwork } = await fetch(`/artworks/${page.params.id}.json`).then(
+      (r) => r.json()
+    );
+
+    const { default_royalty_recipients } = await fetch(`/royalties.json`).then(
+      (r) => r.json()
+    );
+
+    return {
+      maxage: 90,
+      props: {
+        artwork,
+        default_royalty_recipients,
+      },
+    };
+  }
+
+</script>
+
 <script>
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-  import { Psbt } from "@asoltys/liquidjs-lib";
-  import { Buffer } from "buffer";
-  import { tick } from "svelte";
+  import { Psbt } from "liquidjs-lib";
+  import { onMount, tick } from "svelte";
   import { page } from "$app/stores";
-  import { getArtwork } from "$queries/artworks";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
-  import { updateArtwork } from "$queries/artworks";
-  import { api } from "$lib/api";
+  import {
+    updateArtwork,
+    updateArtworkWithRoyaltyRecipients,
+  } from "$queries/artworks";
+  import { api, query } from "$lib/api";
   import {
     fee,
     password,
@@ -39,7 +60,6 @@
     parse,
     parseISO,
     addMinutes,
-    addSeconds,
   } from "date-fns";
   import {
     btc,
@@ -51,9 +71,13 @@
     val,
     tickers,
     assetLabel,
+    royaltyRecipientSystemType,
   } from "$lib/utils";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear, RoyaltyRecipientList } from "$comp";
   import Select from "svelte-select";
+  import branding from "$lib/branding";
+
+  export let artwork, default_royalty_recipients;
 
   let { id } = $page.params;
   $: requireLogin($page);
@@ -64,50 +88,91 @@
   $: focus(initialized);
 
   let loading = true;
-  let artwork, list_price, royalty;
-  subscription(operationStore(getArtwork(id)), (a, b) => {
-    artwork = {
-      ...b.artworks_by_pk,
-    };
+  let list_price,
+    royalty_value,
+    start_date,
+    end_date,
+    start_time,
+    end_time,
+    auction_enabled,
+    auction_underway,
+    multi_royalty_recipients_enabled,
+    royalty_recipients;
+  $: setup($token);
 
-    if (!artwork.asking_asset) artwork.asking_asset = btc;
-    auction_enabled =
-      compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
+  let reserve_price;
 
-    let start, end;
-    if (artwork.auction_start) {
-      start = parseISO(artwork.auction_start);
-      start_date = format(start, "yyyy-MM-dd");
-      start_time = format(start, "HH:mm");
+  let setup = async (t) => {
+    if (!t) return;
+
+    try {
+      if (!artwork.asking_asset) artwork.asking_asset = btc;
+      auction_enabled =
+        auction_enabled ||
+        compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
+
+      let start, end;
+      if (artwork.auction_start) {
+        start = parseISO(artwork.auction_start);
+        start_date = format(start, "yyyy-MM-dd");
+        start_time = format(start, "HH:mm");
+      }
+
+      if (artwork.auction_end) {
+        end = parseISO(artwork.auction_end);
+        end_date = format(end, "yyyy-MM-dd");
+        end_time = format(end, "HH:mm");
+      }
+
+      auction_underway =
+        auction_enabled &&
+        isWithinInterval(new Date(), {
+          start,
+          end,
+        });
+
+      if (default_royalty_recipients && default_royalty_recipients.length) {
+        for (
+          let index = 0;
+          index < default_royalty_recipients.length;
+          index++
+        ) {
+          const { address, amount, name } = default_royalty_recipients[index];
+          if (!artwork.royalty_recipients.find((e) => e.address === address)) {
+            artwork.royalty_recipients.push({
+              address,
+              amount,
+              name,
+              type: royaltyRecipientSystemType,
+            });
+          }
+        }
+      }
+
+      royalty_recipients = artwork.royalty_recipients;
+
+      if (!list_price && artwork.list_price)
+        list_price = val(artwork.asking_asset, artwork.list_price);
+      if (!royalty_value)
+        royalty_value = royalty_recipients.reduce(
+          (a, b) => a + (b["amount"] || 0),
+          0
+        );
+      multi_royalty_recipients_enabled = !!royalty_value;
+      if (!reserve_price && artwork.reserve_price)
+        reserve_price = val(artwork.asking_asset, artwork.reserve_price);
+    } catch (e) {
+      err(e);
     }
-
-    if (artwork.auction_end) {
-      end = parseISO(artwork.auction_end);
-      end_date = format(end, "yyyy-MM-dd");
-      end_time = format(end, "HH:mm");
-    }
-
-    auction_underway =
-      auction_enabled &&
-      isWithinInterval(new Date(), {
-        start,
-        end,
-      });
-
-    if (!list_price && artwork.list_price)
-      list_price = val(artwork.asking_asset, artwork.list_price);
-    if (!royalty) royalty = artwork.royalty;
 
     initialized = true;
     loading = false;
-  });
-
-  const updateArtwork$ = mutation(updateArtwork);
+  };
 
   const spendPreviousSwap = async () => {
     if (
       !list_price ||
-      royalty ||
+      royalty_value ||
       artwork.auction_end ||
       parseInt(artwork.list_price || 0) ===
         sats(artwork.asking_asset, list_price)
@@ -119,12 +184,12 @@
     if (artwork.list_price_tx) {
       $psbt = await cancelSwap(artwork, 500);
 
-      if (artwork.royalty || artwork.auction_end) {
+      if (artwork.has_royalty || artwork.auction_end) {
         $psbt = await requestSignature($psbt);
       }
       try {
         await signAndBroadcast();
-        await createTransaction$({
+        await query(createTransaction, {
           transaction: {
             amount: artwork.list_price,
             artwork_id: artwork.id,
@@ -134,6 +199,8 @@
             type: "cancel",
           },
         });
+
+        stale = true;
       } catch (e) {
         if (e.message.includes("already"))
           throw new Error(
@@ -166,7 +233,7 @@
     await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
 
-    await createTransaction$({
+    await query(createTransaction, {
       transaction: {
         amount: sats(artwork.asking_asset, list_price),
         artwork_id: artwork.id,
@@ -180,7 +247,6 @@
     info("List price updated!");
   };
 
-  let createTransaction$ = mutation(createTransaction);
   let setupAuction = async () => {
     if (!auction_enabled) return true;
 
@@ -195,33 +261,34 @@
     if (compareAsc(start, new Date()) < 1)
       throw new Error("Start date can't be in the past");
 
-    if (compareAsc(start, end) === 1)
+    if (compareAsc(start, end) > 0)
       throw new Error("Start date must precede end date");
 
-    let newAuction = !artwork.auction_end;
-
-    if (newAuction) {
+    if (
+      !artwork.auction_end ||
+      compareAsc(parseISO(artwork.auction_end), new Date()) < 1
+    ) {
       await requirePassword();
 
       let base64, tx;
-      if (artwork.royalty) {
+      if (royalty_value) {
         tx = await signOver(artwork, tx);
-        artwork.list_price_tx = $psbt.toBase64();
+        artwork.auction_tx = $psbt.toBase64();
       } else {
         $psbt = await sendToMultisig(artwork);
         $psbt = await signAndBroadcast();
         base64 = $psbt.toBase64();
         tx = $psbt.extractTransaction();
 
-        tx = (await signOver(artwork, tx));
-        artwork.list_price_tx = $psbt.toBase64();
+        tx = await signOver(artwork, tx);
+        artwork.auction_tx = $psbt.toBase64();
 
         artwork.auction_release_tx = (
           await createRelease(artwork, tx)
         ).toBase64();
       }
 
-      await createTransaction$({
+      await query(createTransaction, {
         transaction: {
           amount: 1,
           artwork_id: artwork.id,
@@ -241,8 +308,7 @@
 
   let stale;
   let setupRoyalty = async () => {
-    if (artwork.royalty || !royalty) return true;
-    artwork.royalty = royalty;
+    if (artwork.has_royalty || !royalty_value) return true;
 
     if (!artwork.auction_end) {
       await requirePassword();
@@ -250,7 +316,7 @@
       await signAndBroadcast();
     }
 
-    await createTransaction$({
+    await query(createTransaction, {
       transaction: {
         amount: 1,
         artwork_id: artwork.id,
@@ -278,48 +344,45 @@
       await setupSwaps();
 
       let {
-        id: artwork_id,
         asking_asset,
-        auction_start,
-        auction_end,
         asset,
-        description,
-        filename,
-        reserve_price,
-        list_price_tx,
+        auction_end,
         auction_release_tx,
-        title,
+        auction_start,
+        auction_tx,
         bid_increment,
-        max_extensions,
         extension_interval,
+        list_price_tx,
+        max_extensions,
       } = artwork;
 
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
 
-      let result = await updateArtwork$({
+      query(updateArtworkWithRoyaltyRecipients, {
         artwork: {
+          asking_asset,
+          auction_end,
+          auction_release_tx,
+          auction_start,
+          auction_tx,
+          bid_increment,
+          extension_interval,
           list_price: sats(artwork.asking_asset, list_price),
           list_price_tx,
-          auction_release_tx,
-          reserve_price: sats(artwork.asking_asset, reserve_price),
-          auction_start,
-          auction_end,
-          asking_asset,
-          bid_increment,
           max_extensions,
-          extension_interval,
-          royalty,
+          reserve_price: sats(artwork.asking_asset, reserve_price),
         },
         id,
-      });
-
-      console.log(result);
-      if (result.error) {
-        throw new Error(
-          `Problem updating artwork record ${result.error.message}`
-        );
-      }
+        royaltyRecipients: royalty_value
+          ? royalty_recipients.map((item) => {
+              delete item.id;
+              item.artwork_id = artwork.id;
+              item.asking_asset = artwork.asking_asset;
+              return item;
+            })
+          : [],
+      }).catch(err);
 
       api.url("/asset/register").post({ asset }).json().catch(console.log);
 
@@ -333,27 +396,22 @@
 
   let clearPrice = () => (list_price = undefined);
 
-  let start_date, end_date, start_time, end_time;
-  let auction_enabled, auction_underway;
   $: enableAuction(auction_enabled);
   let enableAuction = () => {
     if (!start_date) {
       start_date = format(addMinutes(new Date(), 15), "yyyy-MM-dd");
       start_time = format(addMinutes(new Date(), 15), "HH:mm");
-      //start_time = format(addMinutes(new Date(), 1), "HH:mm");
     }
     if (!end_date) {
       end_date = format(addMinutes(addDays(new Date(), 3), 15), "yyyy-MM-dd");
       end_time = format(addMinutes(addDays(new Date(), 3), 15), "HH:mm");
-      //end_date = format(new Date(), "yyyy-MM-dd");
-      //end_time = format(addSeconds(new Date(), 90), "HH:mm");
     }
   };
 
-  $: listingCurrencies =
-    artwork && artwork.transferred_at
-      ? Object.keys(tickers)
-      : [...Object.keys(tickers), undefined];
+  $: listingCurrencies = artwork.transferred_at
+    ? Object.keys(tickers)
+    : [...Object.keys(tickers), undefined];
+
 </script>
 
 <style>
@@ -365,9 +423,7 @@
     max-width: 100%;
   }
 
-  input,
-  select,
-  textarea {
+  input {
     @apply rounded-lg mb-4 mt-2;
     &:disabled {
       @apply bg-gray-100;
@@ -416,18 +472,18 @@
       top: 30px;
     }
   }
+
 </style>
 
 <div class="container mx-auto md:p-20">
   <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
-    {#if artwork}
-      <a class="block mb-6 text-midblue" href={`/a/${artwork.slug}`}>
-        <div class="flex">
-          <Fa icon={faChevronLeft} class="my-auto mr-1" />
-          <div>Back</div>
-        </div>
-      </a>
-    {/if}
+    <a class="block mb-6 text-midblue" href={`/a/${artwork.slug}`}>
+      <div class="flex">
+        <Fa icon={faChevronLeft} class="my-auto mr-1" />
+        <div>Back</div>
+      </div>
+    </a>
+
     <h2>List artwork</h2>
 
     {#if loading}
@@ -444,8 +500,9 @@
           <p>Listing currency</p>
           <div class="flex flex-wrap">
             {#each listingCurrencies as asset}
-              <label class="ml-2 mr-6 flex items-center">
+              <label for={asset} class="ml-2 mr-6 flex items-center">
                 <input
+                  id={asset}
                   class="form-radio h-6 w-6 mt-4 mr-2"
                   type="radio"
                   name={asset}
@@ -464,7 +521,7 @@
         {#if artwork.asking_asset}
           <div class="flex w-full sm:w-3/4 mb-4">
             <div class="relative mt-1 rounded-md w-2/3 mr-6">
-              <label>Price
+              <label for="price">Price
                 <span class="tooltip">
                   <i class="text-midblue text-xl tooltip">
                     <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
@@ -482,6 +539,7 @@
                   </span>
                 </span></label>
               <input
+                id="price"
                 class="form-input block w-full pl-7 pr-12"
                 placeholder={val(artwork.asking_asset, 0)}
                 bind:value={list_price}
@@ -492,35 +550,49 @@
                 {assetLabel(artwork.asking_asset)}
               </div>
             </div>
-            {#if $user.id === artwork.artist_id}
-              <div class="relative mt-1 rounded-md">
-                <label>Royalty Rate
-                  <span class="tooltip">
-                    <i class="ml-3 text-midblue text-xl tooltip">
-                      <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
-                    </i>
-                    <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                      Setting a royalty involves transferring the artwork to a
-                      2-of-2 multisig address with Raretoshi. Our server will
-                      co-sign on transfers if they pay the specified royalty to
-                      the original artist.
+          </div>
+          {#if $user.id === artwork.artist_id}
+            <div class="flex w-full sm:w-3/4 mb-4">
+              <div class="relative mt-1 rounded-md w-2/3 mr-6">
+                <div class="auction-toggle">
+                  <label class="inline-flex items-center">
+                    <input
+                      class="form-checkbox h-6 w-6 mt-3"
+                      type="checkbox"
+                      bind:checked={multi_royalty_recipients_enabled}
+                      disabled={auction_underway} />
+                    <span class="ml-3 text-xl">Royalty Recipients</span>
+                    <span class="tooltip">
+                      <i class="ml-3 text-midblue text-xl tooltip">
+                        <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
+                      </i>
+                      <span
+                        class="tooltip-text bg-gray-100 shadow ml-4 rounded">
+                        Setting royalty recipients involves transferring the
+                        artwork to a 2-of-2 multisig address with us. Our server
+                        will co-sign on transfers if the buyer pays the
+                        specified royalty to each recipient.
+                      </span>
                     </span>
-                  </span></label>
-                <input
-                  class="form-input block w-full pl-7 pr-12"
-                  placeholder="0"
-                  bind:value={royalty}
-                  disabled={auction_underway} />
-                <div
-                  class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4">
-                  %
+                  </label>
                 </div>
               </div>
+            </div>
+            {#if multi_royalty_recipients_enabled}
+              <div class="w-full ">
+                <RoyaltyRecipientList
+                  bind:items={royalty_recipients}
+                  bind:royaltyValue={royalty_value}
+                  maxTotalRate={100}
+                  askingAsset={artwork.asking_asset}
+                  artist={artwork.artist} />
+              </div>
             {/if}
-          </div>
+          {/if}
           <div class="auction-toggle">
-            <label class="inline-flex items-center">
+            <label for="auction" class="inline-flex items-center">
               <input
+                id="auction"
                 class="form-checkbox h-6 w-6 mt-3"
                 type="checkbox"
                 bind:checked={auction_enabled}
@@ -537,6 +609,7 @@
                     <div class="flex flex-col mb-4 mr-6">
                       <label for="date">Date</label>
                       <input
+                        id="date"
                         type="date"
                         name="date"
                         bind:value={start_date}
@@ -545,6 +618,7 @@
                     <div class="flex flex-col mb-4">
                       <label for="time">Time</label>
                       <input
+                        id="time"
                         type="time"
                         name="time"
                         bind:value={start_time}
@@ -596,7 +670,7 @@
                       <input
                         class="form-input block w-full pl-7 pr-12"
                         placeholder="0"
-                        bind:value={artwork.reserve_price}
+                        bind:value={reserve_price}
                         disabled={auction_underway} />
                       <div
                         class="absolute inset-y-0 right-0 flex items-center mr-2 mt-8">

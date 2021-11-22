@@ -33,11 +33,11 @@ body {
   font-weight: normal;
   font-size: 18px;
   line-height: 32px;
-  color: #2D2E32;
+  color: #2d2e32;
 }
 
 @media (max-width: 768px) {
-  body{
+  body {
     font-size: 16px;
   }
 }
@@ -65,7 +65,6 @@ h3 {
   font-size: 26px;
   line-height: 30px;
 }
-
 
 .dark-bg {
   background-color: #445268;
@@ -142,7 +141,7 @@ button {
 .primary-btn {
   border-radius: 30px;
   height: 48px;
-  padding: 0 30px !important;
+  padding: 5px 15px !important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -161,7 +160,7 @@ button {
 .button-transparent {
   border-radius: 30px;
   border: 1px solid #2d2e32;
-  color: #2D2E32;
+  color: #2d2e32;
   height: 48px;
   padding: 0 30px;
   font-weight: 700;
@@ -170,12 +169,11 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
-.secondary-btn:hover{
-  border: 1px solid #6B6B6B;
-  color: #6B6B6B;
+.secondary-btn:hover {
+  border: 1px solid #6b6b6b;
+  color: #6b6b6b;
 }
 
 .button-trans-gray {
@@ -261,7 +259,6 @@ select {
   z-index: 300;
 }
 
-.footer ul li a{
+.footer ul li a {
   font-size: 16px;
 }
-

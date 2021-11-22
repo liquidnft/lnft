@@ -1,12 +1,11 @@
-FROM node:14-alpine
+FROM asoltys/lnft-server
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
+ENV NODE_OPTIONS --openssl-legacy-provider
 
 WORKDIR /app
-
 COPY . ./
-RUN apk add git ffmpeg
-RUN yarn install
 
-# CMD ["sleep", "3600"]
-CMD ["yarn", "start"]
+RUN pnpm install
+
+CMD ["pnpm", "start"]

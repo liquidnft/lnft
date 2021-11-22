@@ -3,19 +3,27 @@
   import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
   import { border, bg } from "./_colors";
   import { page } from "$app/stores";
-  import { electrs, hasura } from "$lib/api";
-  import { onMount, tick } from "svelte";
-  import { asset, assets, balances, pending, password, user, token } from "$lib/store";
+  import { query } from "$lib/api";
+  import { onDestroy, onMount, tick } from "svelte";
+  import {
+    asset,
+    assets,
+    balances,
+    locked,
+    pending,
+    password,
+    user,
+    token,
+  } from "$lib/store";
   import { ProgressLinear } from "$comp";
   import { getArtworksByOwner } from "$queries/artworks";
-  import { mutation, subscription, operationStore } from "@urql/svelte";
-  import { assetLabel, btc, sats, tickers, val } from "$lib/utils";
+  import { assetLabel, btc, err, sats, tickers, val } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
   import { getBalances } from "$lib/wallet";
 
-  import Fund from "./_fund";
-  import Withdraw from "./_withdraw";
-  import Transactions from "./_transactions";
+  import Fund from "./_fund.svelte";
+  import Withdraw from "./_withdraw.svelte";
+  import Transactions from "./_transactions.svelte";
 
   $: requireLogin($page);
 
@@ -47,21 +55,24 @@
     funding = false;
   };
 
+  let poll;
   let artworks = [];
   $: init($user);
-  let init = async (u) => {
-    if (!u) return;
-    let { data } = await hasura
-      .auth(`Bearer ${$token}`)
-      .post({
-        query: getArtworksByOwner($user.id),
-      })
-      .json();
+  let init = (u) =>
+    u &&
+    query(getArtworksByOwner($user.id))
+      .then((res) => {
+        artworks = res.artworks;
 
-    if (data) ({ artworks } = data);
-    getBalances();
-    loading = false;
-  };
+        getBalances();
+        clearInterval(poll);
+        poll = setInterval(getBalances, 5000);
+        loading = false;
+      })
+      .catch(err);
+
+  onDestroy(() => clearInterval(poll));
+
 </script>
 
 <style>
@@ -96,6 +107,7 @@
   button:disabled {
     @apply text-gray-400 border-gray-400;
   }
+
 </style>
 
 {#if loading}
@@ -130,17 +142,28 @@
         <div class="text-sm light-color">Balance</div>
         <div class="flex mt-3">
           <span class="text-4xl text-white mr-3">{balance}</span>
-          <span class="text-gray-400 mt-3.5">{assetLabel($asset)}</span>
+          <span class="text-gray-400 mt-auto">{assetLabel($asset)}</span>
         </div>
       </div>
-      <div class="m-6">
-        <div class="text-sm light-color">Pending</div>
-        <div class="flex mt-3">
-          <span
-            class="light-color mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
-          <span class="text-gray-400">{assetLabel($asset)}</span>
+      {#if $pending && val($asset, $pending[$asset])}
+        <div class="m-6">
+          <div class="text-sm light-color">Pending</div>
+          <div class="flex mt-3">
+            <span
+              class="light-color mr-3">{$pending && val($asset, $pending[$asset] || 0)}</span>
+            <span class="text-gray-400">{assetLabel($asset)}</span>
+          </div>
         </div>
-      </div>
+      {/if}
+      {#if $locked && $asset === btc}
+        <div class="m-6">
+          <div class="text-sm light-color">Locked in active transactions</div>
+          <div class="flex mt-3">
+            <span class="light-color mr-3">{val($asset, $locked)}</span>
+            <span class="text-gray-400">{assetLabel($asset)}</span>
+          </div>
+        </div>
+      {/if}
       <div class="flex justify-between p-6 pt-2">
         <button
           on:click={toggleFunding}

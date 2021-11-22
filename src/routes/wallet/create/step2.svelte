@@ -19,15 +19,6 @@
 </script>
 
 <style>
-  input {
-    @apply border-0 border-b-2 pb-1;
-  }
-
-  .button-transparent:focus {
-    background-color: #6aced5;
-    border: none;
-  }
-
   .pagination {
     color: lightgray;
     padding: 7px;
@@ -78,7 +69,7 @@
     </div>
 
     <p class="my-4">
-      <a class="secondary-color" href="" on:click={() => copy(mnemonic)}>Copy to
+      <a class="secondary-color" href="." on:click|preventDefault={() => copy(mnemonic)}>Copy to
         clipboard</a>
     </p>
 

@@ -5,10 +5,12 @@
 
   export let artwork;
   export let showDetails;
-  export let loaded = false;
   export let thumb = true;
   export let preview = false;
   export let popup = false;
+  export let ready = false;
+  export let loaded;
+
   let img, vid;
   $: path =
     artwork &&
@@ -20,14 +22,18 @@
   $: contain = showDetails;
   $: setLoaded(img, vid);
   let setLoaded = (img, vid) => {
+    loaded = true;
+
     img &&
       (img.onload = () => {
         loaded = true;
+        if (ready) ready(artwork.id);
       });
 
     vid &&
       (vid.onloadeddata = () => {
         loaded = true;
+        if (ready) ready(artwork.id);
       });
   };
 
@@ -85,6 +91,7 @@
     muted = !muted;
     vid.muted = muted;
   };
+
 </script>
 
 <style>
@@ -110,15 +117,20 @@
   video {
     width: auto;
   }
+
 </style>
 
 {#if artwork.filetype && artwork.filetype.includes('video')}
-  <div class="w-full"
+  <div
+    class="w-full"
     class:inline-block={!popup}
     class:cover
     class:contain
+    class:hidden={!loaded}
     on:mouseover={over}
-    on:mouseout={out}>
+    on:focus={over}
+    on:mouseout={out}
+    on:blur={out}>
     <video
       class="lazy"
       autoplay
@@ -143,7 +155,7 @@
 {:else}
   <div class="w-full" class:cover class:contain>
     <img
-      src={preview || path ? path : "/liquid_logo.svg"}
+      src={preview || path ? path : '/liquid_logo.svg'}
       alt={artwork.title}
       loading="lazy"
       bind:this={img} />

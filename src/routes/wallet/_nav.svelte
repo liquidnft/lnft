@@ -24,10 +24,6 @@
     margin-bottom: 20px;
   }
 
-  .wallet-nav span {
-    margin-left: 10px;
-  }
-
   .wallet-nav a:hover {
     color: #3ba5ac;
   }
@@ -59,10 +55,6 @@
       padding: 12px 0;
       border-left: 1px solid lightgray;
       margin-bottom: 0;
-    }
-
-    .wallet-nav span {
-      margin: 5px;
     }
   }
 </style>

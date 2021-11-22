@@ -15,6 +15,7 @@
   };
 
   $: receivedSnack($snack);
+
 </script>
 
 <style>
@@ -36,13 +37,16 @@
   .snack.error {
     @apply bg-gray-200 text-red-600;
   }
+
 </style>
 
 {#if $snack}
   <div class="snack-container flex">
-    <div class="snack"  class:info class:error>
+    <div class="snack" class:info class:error>
       <div class="flex-grow mr-2">{$snack.msg}</div>
-      <button class="ml-auto my-auto w-auto" on:click={() => $snack = undefined}>
+      <button
+        class="ml-auto my-auto w-auto"
+        on:click={() => ($snack = undefined)}>
         <Fa icon={faTimes} />
       </button>
     </div>

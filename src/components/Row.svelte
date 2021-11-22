@@ -1,15 +1,17 @@
 <script>
   import { goto } from "$lib/utils";
-  import Avatar from "$components/Avatar";
+  import { Avatar } from "$comp";
 
   export let item;
   export let link;
+
 </script>
 
 <style>
-  .watch-row{
+  .watch-row {
     padding: 24px 0;
   }
+
 </style>
 
 <div

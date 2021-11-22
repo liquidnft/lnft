@@ -15,22 +15,23 @@
     token,
   } from "$lib/store";
   import { Dropzone, ProgressLinear } from "$comp";
-  import upload from "$lib/upload";
+  import { upload, supportedTypes } from "$lib/upload";
   import { create } from "$queries/artworks";
-  import { mutation } from "@urql/svelte";
   import { btc, fade, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
     createIssuance,
-    signAndBroadcast,
+    sign,
+    broadcast,
     parseAsset,
     keypair,
   } from "$lib/wallet";
   import reverse from "buffer-reverse";
-  import ArtworkMedia from "$components/ArtworkMedia";
+  import { ArtworkMedia } from "$comp";
+  import branding from "$lib/branding";
 
-  import Form from "./_form";
-  import Issuing from "./_issuing";
+  import Form from "./_form.svelte";
+  import Issuing from "./_issuing.svelte";
 
   $: requireLogin($page);
 
@@ -78,6 +79,8 @@
     ({ type } = file);
     artwork.filetype = type;
 
+    if (supportedTypes.includes(type)) throw new Error("Supported file types are jpg, png, gif, mp4");
+
     if (file.size < 100000000) previewFile(file);
 
     try {
@@ -102,15 +105,13 @@
     tags: [],
   };
 
-  const createArtwork = mutation(create);
-
   let hash, tx;
   const issue = async (ticker) => {
     let contract;
     let domain =
-      $user.username === "raretoshi"
-        ? "raretoshi.com"
-        : `${$user.username.toLowerCase()}.raretoshi.com`;
+      $user.username === branding.superUserName
+        ? branding.urls.base
+        : `${$user.username.toLowerCase()}.${branding.urls.base}`;
 
     let error, success;
 
@@ -119,12 +120,16 @@
     try {
       contract = await createIssuance(artwork, domain, tx);
 
-      success = await signAndBroadcast();
+      await sign();
+      await broadcast(true);
+      await tick();
     } catch (e) {
+      console.log(e, "wee", e.message.includes("Insufficient"));
+      if (e.message.includes("Insufficient")) throw e;
       throw new Error("Issuance failed: " + e.message);
     }
 
-    tx = success.extractTransaction();
+    tx = $psbt.extractTransaction();
     artwork.asset = parseAsset(
       tx.outs.find((o) => parseAsset(o.asset) !== btc).asset
     );
@@ -256,17 +261,7 @@
         let artworkSansTags = { ...artwork };
         delete artworkSansTags.tags;
 
-        console.log("creating", {
-            artwork_id: artwork.id,
-            type: "creation",
-            hash,
-            contract,
-            asset: artwork.asset,
-            amount: 1,
-            psbt: $psbt.toBase64(),
-          });
-
-        let result = await createArtwork({
+        let variables = {
           artwork: artworkSansTags,
           transaction: {
             artwork_id: artwork.id,
@@ -278,9 +273,15 @@
             psbt: $psbt.toBase64(),
           },
           tags,
-        });
+        };
 
-        console.log("result", result);
+        let result = await hasura
+          .auth(`Bearer ${$token}`)
+          .post({
+            query: create,
+            variables,
+          })
+          .json();
 
         if (result.error) throw new Error(result.error.message);
       }
@@ -308,15 +309,6 @@
     height: 320px;
   }
 
-  .upload-button img,
-  .upload-button video {
-    width: 100%;
-  }
-
-  button {
-    @apply block bg-green-400 hover:bg-green-600 text-white uppercase text-lg mx-auto p-4 rounded flex-1;
-  }
-
   @media only screen and (max-width: 1023px) {
     .upload-button {
       margin-top: 25px;
@@ -337,7 +329,7 @@
     class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow">
     <a
       class="block mb-6 text-midblue"
-      href="#"
+      href="."
       on:click|preventDefault={() => window.history.back()}>
       <div class="flex">
         <Fa icon={faChevronLeft} class="my-auto mr-1" />

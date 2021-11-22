@@ -1,29 +1,19 @@
 import { fade as svelteFade } from "svelte/transition";
 import { get } from "svelte/store";
 import {
+  addresses,
   assets,
-  artworks,
   error,
   full,
   prompt,
   snack,
-  users,
+  titles,
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
-import { tick } from "svelte";
 
-let cad, btc, usd;
-
-/*
-btc = "5ac9f65c0efcc4775e0baec4ec03abdde22473cd3cf33c0419ca290e0751b225";
-cad = "1cedcd3f9122601a7e3ad4a3c5402256b4e7a5de7a057632e0dd03147372fb10";
-usd = "473788ca8362a542c73f11cfd3f92162457467e9e052b92ab8a2e794e0ccf228";
-*/
-
-btc = "6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d";
-cad = "0e99c1a6da379d1f4151fb9df90449d40d0608f6cb33a5bcbfc8c265f42bab0a";
-usd = "ce091c998b83c78bb71a632313ba3760f1763d9cfcffae02258ffa9865a37bd2";
-
+const btc = import.meta.env.VITE_BTC;
+const cad = import.meta.env.VITE_CAD;
+const usd = import.meta.env.VITE_USD;
 
 const fade = (n, o) => svelteFade(n, { ...o, duration: 50 });
 
@@ -38,35 +28,47 @@ const publicPages = [
   "activate",
 ];
 
+const royaltyRecipientSystemType = "system";
+const royaltyRecipientIndividualType = "individual";
+
+const royaltyRecipientTypes = {
+  [royaltyRecipientSystemType]: "System",
+  [royaltyRecipientIndividualType]: "Individual",
+};
+
 const addressUser = (a) =>
-  get(users) && get(users).find((u) => u.address === a || u.multisig === a);
+  get(addresses) &&
+  get(addresses).find((u) => u.address === a || u.multisig === a);
 
 const addressLabel = (address) => {
-  let $users = get(users);
+  let $addresses = get(addresses);
 
   let r;
 
-  if ($users) {
-    r = $users.find((u) => u.multisig === address);
+  if ($addresses) {
+    r = $addresses.find((u) => u.multisig === address);
     if (r) return r.username + " 2of2";
-    r = $users.find((u) => u.address === address);
+    r = $addresses.find((u) => u.address === address);
     if (r) return r.username;
   }
 
-  return address;
+  return address.length > 6 ? address.substr(0, 6) + "..." : address;
 };
 
 const assetLabel = (asset) => {
-  let $artworks = get(artworks);
+  let $titles = get(titles);
+  let r = $titles && $titles.find((u) => u.asset === asset);
 
-  let r = $artworks && $artworks.find((u) => u.asset === asset);
-
-  return r ? r.title || r.name || "Untitled" : ticker(asset);
+  return r
+    ? r.title
+      ? r.title + (r.editions > 1 ? ` ${r.edition}/${r.editions}` : "")
+      : r.name || "Untitled"
+    : ticker(asset);
 };
 
 const artworkId = (asset) => {
-  let $artworks = get(artworks);
-  let r = $artworks && $artworks.find((u) => u.asset === asset);
+  let $titles = get(titles);
+  let r = $titles && $titles.find((u) => u.asset === asset);
   return r && r.id;
 };
 
@@ -118,10 +120,7 @@ const goto = (path) => {
   if (window) window.history.pushState(null, null, path);
 };
 
-const explorer =
-  import.meta && import.meta.env && import.meta.env !== "production"
-    ? import.meta.env.SNOWPACK_PUBLIC_EXPLORER
-    : "https://blockstream.info/liquid";
+const explorer = import.meta.env.VITE_EXPLORER;
 
 const copy = (v) => {
   let textArea = document.createElement("textarea");
@@ -153,7 +152,10 @@ const err = (e) => {
     msg = JSON.parse(msg).message;
   } catch {}
   if (!msg) msg = "An error occurred";
+  if (msg.includes("EPIPE")) return;
   if (msg.includes("Insufficient")) return;
+  if (msg.includes("socket")) return;
+  if (msg.includes("JWT")) return;
   setTimeout(() => snack.set({ msg, type: "error" }), 100);
   if (e.stack) console.log(e.stack);
 };
@@ -218,14 +220,15 @@ function format(n, p, d) {
 }
 
 const validateEmail = (email) => {
-  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re =
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
 };
 
 const go = ({ id, type, s }) => {
-  let url = { user: 'u', artwork: 'artwork', tag: 'tag' }[type];
-  goto(`/${url}/${url === 'artwork' ? id : s}`);
-} 
+  let url = { user: "u", artwork: "artwork", tag: "tag" }[type];
+  goto(`/${url}/${url === "artwork" ? id : s}`);
+};
 
 const kebab = (str) =>
   str &&
@@ -246,6 +249,27 @@ const etag = async (o) => {
     .substring(0, 27);
 };
 
+const dev = import.meta.env.DEV;
+
+const linkify = (text) => {
+  var urlRegex =
+    /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  return text.replace(urlRegex, function (url) {
+    return '<a href="' + url + '">' + url + "</a>";
+  });
+};
+
+function post(endpoint, data) {
+	return fetch(endpoint, {
+		method: 'POST',
+		credentials: 'include',
+		body: JSON.stringify(data || {}),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+}
+
 export {
   addressLabel,
   addressUser,
@@ -254,6 +278,7 @@ export {
   btc,
   cad,
   copy,
+  dev,
   etag,
   err,
   explorer,
@@ -262,7 +287,9 @@ export {
   goto,
   go,
   info,
+  linkify,
   pick,
+  post,
   sats,
   kebab,
   ticker,
@@ -272,4 +299,7 @@ export {
   val,
   validateEmail,
   publicPages,
+  royaltyRecipientSystemType,
+  royaltyRecipientIndividualType,
+  royaltyRecipientTypes,
 };

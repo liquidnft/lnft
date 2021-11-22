@@ -5,6 +5,7 @@
   import Menu from "./Menu.svelte";
 
   export let sidebar = false;
+
 </script>
 
 <style>
@@ -21,7 +22,6 @@
   }
 
   @media only screen and (max-width: 1023px) {
-
     header {
       padding-top: 12px;
       padding-bottom: 12px;
@@ -39,6 +39,7 @@
       z-index: 100;
     }
   }
+
 </style>
 
 <header
@@ -47,7 +48,7 @@
     <Hamburger bind:open={sidebar} />
   </nav>
   <div>
-    <a href="/">
+    <a href="/" sveltekit:prefetch>
       <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-48" /></a>
   </div>
   <a class="mobileSearch" href="/market">

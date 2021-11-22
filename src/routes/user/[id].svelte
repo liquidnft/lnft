@@ -9,14 +9,14 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
-  import { goto } from "$lib/utils";
+  import { err, goto } from "$lib/utils";
+  import { pub } from "$lib/api";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getUserArtworks } from "$queries/artworks";
-  import { getUserById } from "$queries/users";
   import { createFollow, deleteFollow } from "$queries/follows";
-  import Menu from "./_menu";
-  import { query, mutation, operationStore } from "@urql/svelte";
+  import Menu from "./_menu.svelte";
   import { fade } from "svelte/transition";
+  import { query } from "$lib/api";
 
   export let id;
   export let subject;
@@ -28,51 +28,39 @@
     else ({ id } = subject);
   };
 
-  let collection = [];
-  let creations = [];
+  $: init(id);
+  let init = (id) =>
+    query(getUserArtworks, { id })
+      .then((res) => {
+        artworks = res.artworks;
+      })
+      .catch(err);
+
   let favorites = [];
 
   let artworks;
-  $: if (id)
-    query(operationStore(getUserArtworks(id))).subscribe(
-      ({ data }) => data && (artworks = data.artworks)
-    );
-
   $: applyFilters(artworks, subject);
 
   let sort = (a, b) => b.edition - a.edition;
   let applyFilters = (artworks, subject) => {
     if (!(artworks && subject)) return;
-    creations = artworks.filter((a) => a.artist_id === subject.id).sort(sort);
-    collection = artworks.filter(
-      (a) => a.owner_id === subject.id && a.artist_id !== a.owner_id
-    );
     favorites = artworks.filter((a) => a.favorited);
   };
 
-  let follow, toggleFollow$;
-  $: if (subject && $user) {
-    if (subject.is_artist) tab = "creations";
+  let follow = () => {
     if (subject.followed) {
-      toggleFollow$ = mutation(deleteFollow($user, subject));
-
-      follow = () => {
-        toggleFollow$();
-        subject.followed = false;
-        subject.num_followers--;
-      };
+      query(deleteFollow($user, subject)).catch(err);
+      subject.followed = false;
+      subject.num_followers--;
     } else {
-      toggleFollow$ = mutation(createFollow(subject));
-
-      follow = () => {
-        toggleFollow$();
-        subject.followed = true;
-        subject.num_followers++;
-      };
+      query(createFollow(subject));
+      subject.followed = true;
+      subject.num_followers++;
     }
-  }
+  };
 
   let tab = "collection";
+
 </script>
 
 <style>
@@ -89,7 +77,8 @@
   .tabs div {
     @apply mb-auto h-10 mx-2 md:mx-4;
     &:hover {
-      @apply hover;
+      @apply border-b-2;
+      border-bottom: 3px solid #6ed8e0;
     }
   }
 
@@ -111,6 +100,7 @@
     margin-left: 8px;
     color: #0f828a;
   }
+
 </style>
 
 <div class="container mx-auto lg:px-16 mt-5 md:mt-20">
@@ -120,7 +110,7 @@
         <div>
           <div class="flex flex-col">
             <div class="flex items-center">
-              <Avatar size="large" src={subject.avatar_url} />
+              <Avatar size="large" user={subject} />
               <div class="ml-12">
                 <h3>{subject.full_name}</h3>
                 <div class="text-gray-600">@{subject.username}</div>
@@ -173,7 +163,7 @@
               </a>
             {/if}
             {#if subject.location}
-              <a href="#">
+              <a href=".">
                 <div class="flex">
                   <div class="my-auto">
                     <Fa icon={faMapMarkerAlt} />
@@ -229,8 +219,15 @@
         </div>
         {#if tab === 'creations'}
           <div class="w-full justify-center">
+            HOHOHO
+            <div class="w-full max-w-sm mx-auto mb-4 mt-14">
+              {#if $user && $user.is_artist && $user.id === subject.id}
+                <a href="/artwork/create" class="primary-btn">Submit a new
+                  artwork</a>
+              {/if}
+            </div>
             <div class="w-full flex flex-wrap">
-              {#each creations as artwork (artwork.id)}
+              {#each subject.creations as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>
@@ -238,17 +235,11 @@
                 <div class="mx-auto">No creations yet</div>
               {/each}
             </div>
-            <div class="w-full max-w-sm mx-auto mb-4 mt-14">
-              {#if $user && $user.is_artist && $user.id === subject.id}
-                <a href="/artwork/create" class="primary-btn">Submit a new
-                  artwork</a>
-              {/if}
-            </div>
           </div>
         {:else if tab === 'collection'}
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">
-              {#each collection as artwork (artwork.id)}
+              {#each subject.holdings as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>
@@ -258,7 +249,7 @@
             </div>
           </div>
         {:else if tab === 'offers'}
-          <Offers />
+          <Offers {offers} />
         {:else}
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">

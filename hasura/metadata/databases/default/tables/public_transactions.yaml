@@ -1,0 +1,88 @@
+table:
+  name: transactions
+  schema: public
+object_relationships:
+- name: artwork
+  using:
+    foreign_key_constraint_on: artwork_id
+- name: bid
+  using:
+    foreign_key_constraint_on: bid_id
+- name: user
+  using:
+    manual_configuration:
+      column_mapping:
+        user_id: id
+      insertion_order: null
+      remote_table:
+        name: users
+        schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - amount
+    - artwork_id
+    - asset
+    - bid_id
+    - contract
+    - hash
+    - id
+    - psbt
+    - type
+    set:
+      user_id: x-hasura-User-Id
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - amount
+    - artwork_id
+    - asset
+    - bid_id
+    - confirmed
+    - created_at
+    - hash
+    - id
+    - psbt
+    - type
+    - user_id
+    filter:
+      _or:
+      - artwork_id:
+          _is_null: true
+      - artwork:
+          _or:
+          - transferred_at:
+              _is_null: false
+          - asking_asset:
+              _is_null: false
+  role: anonymous
+- permission:
+    columns:
+    - amount
+    - artwork_id
+    - asset
+    - bid_id
+    - confirmed
+    - contract
+    - created_at
+    - hash
+    - id
+    - psbt
+    - type
+    - user_id
+    filter:
+      _or:
+      - artwork_id:
+          _is_null: true
+      - artwork:
+          _or:
+          - transferred_at:
+              _is_null: false
+          - asking_asset:
+              _is_null: false
+          - artist_id:
+              _eq: X-Hasura-User-Id
+  role: user

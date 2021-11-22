@@ -1,53 +1,32 @@
 <script>
-  import Fa from "svelte-fa";
-  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-  import { onMount, tick } from "svelte";
-  import Card from "$components/Card";
-  import { snack, prompt, psbt, token } from "$lib/store";
-  import { Psbt } from "@asoltys/liquidjs-lib";
-  import { getOffers, acceptOffer } from "$queries/transactions";
-  import { mutation, query, operationStore } from "@urql/svelte";
-  import { broadcast } from "$lib/wallet";
-  import { goto, val, ticker } from "$lib/utils";
-  import { requirePassword } from "$lib/auth";
-  import AcceptOffer from "$components/AcceptOffer";
+  import { AcceptOffer, ArtworkMedia, Activity, Card } from "$comp";
+  import { val, ticker } from "$lib/utils";
 
-  let offers = [];
+  export let offers;
   let comp;
 
-  query(operationStore(getOffers)).subscribe(({ data }) => data && (offers = data.offers)
-  );
 </script>
 
 <style>
   button {
     @apply border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded;
     &:hover {
-      @apply border-green-400;
+      @apply border-secondary;
     }
   }
+
 </style>
 
 <AcceptOffer bind:this={comp} />
-<div class="flex flex-wrap px-6">
+<div class="flex flex-wrap">
   {#each offers as offer}
-    <div class="w-full md:w-1/2 p-4">
-      <Card
-        artwork={offer.transaction.artwork}
-        columns={1}
-        showDetails={false}
-        shadow={false} />
-      <div class="mt-4 mx-2 whitespace-no-wrap text-center">
-        {val(offer.transaction.artwork.asking_asset, offer.transaction.amount)}
-        {ticker(offer.transaction.artwork.asking_asset)}
-        from @{offer.transaction.artwork.bid[0].user.username}
-        <a href={`/tx/${offer.id}`} class="text-xs text-green-400">
-          <Fa class="text-xl mx-2" icon={faInfoCircle} />
-        </a>
-        <button on:click={() => comp.accept(offer.transaction)}>Accept</button>
-      </div>
+    <div class="order-last md:order-first my-auto mx-auto sm:mx-auto p-4">
+      <Activity transaction={offer.transaction} />  
+    </div>
+    <div class="mx-auto w-full md:w-32">
+      <ArtworkMedia artwork={offer.transaction.artwork} />
     </div>
   {:else}
-    <div class="mx-auto">No offers yet</div>
+    <div class="col-span-4 mx-auto">No offers yet</div>
   {/each}
 </div>

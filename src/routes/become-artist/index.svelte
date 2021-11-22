@@ -9,12 +9,11 @@
   } from "@fortawesome/free-solid-svg-icons";
   import { onMount, tick } from "svelte";
   import { user, token } from "$lib/store";
-  import { info, goto } from "$lib/utils";
-  import { Avatar } from "$components/index";
-  import { Dropzone, ProgressLinear } from "$comp";
-  import upload from "$lib/upload";
+  import { err, info, goto } from "$lib/utils";
+  import { Avatar, Dropzone, ProgressLinear } from "$comp";
+  import { upload } from "$lib/upload";
   import { updateUser } from "$queries/users";
-  import { mutation } from "@urql/svelte";
+  import { query } from "$lib/api";
 
   let form = {};
   let fileInput;
@@ -28,7 +27,7 @@
 
   onMount(() => {
     ({ ...form } = $user);
-  }); 
+  });
 
   $: width = `width: ${percent}%`;
 
@@ -77,15 +76,11 @@
     percent = Math.round((event.loaded / event.total) * 100);
   };
 
-  let updateUser$ = mutation(updateUser);
-
-  let insertSamples = mutation({
-    query: `mutation ($samples: [samples_insert_input!]!) {
-      insert_samples(objects: $samples) {
-        affected_rows
-      }
-    }`,
-  });
+  let insertSamples = `mutation ($samples: [samples_insert_input!]!) {
+    insert_samples(objects: $samples) {
+      affected_rows
+    }
+  }`;
 
   let submitted;
   let submit = async () => {
@@ -101,18 +96,20 @@
       wallet_initialized,
       ...rest
     } = form;
-    
-    await updateUser$({ user: rest, id });
+
+    await query(updateUser, { user: rest, id }).catch(err);
 
     let samples = files.map((f) => ({
       user_id: id,
       url: f.hash,
       type: f.type,
     }));
-    await insertSamples({ samples });
+
+    await query(insertSamples, { samples }).catch(err);
 
     submitted = true;
   };
+
 </script>
 
 <style>
@@ -151,6 +148,7 @@
       margin-bottom: 200px;
     }
   }
+
 </style>
 
 <div class="container mx-auto py-20">
@@ -186,39 +184,41 @@
                 placeholder="What's your name?"
                 bind:value={form.full_name} />
             </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faEnvelope} class="mt-1" />
-            </i>
-            <input placeholder="email@example.com" bind:value={form.email} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faTwitter} class="mt-1" />
-            </i>
-            <input placeholder="@twitter" bind:value={form.twitter} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faInstagram} class="mt-1" />
-            </i>
-            <input placeholder="@instagram" bind:value={form.instagram} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faMapMarkerAlt} class="mt-1" />
-            </i>
-            <input placeholder="Vancouver, Canada" bind:value={form.location} />
-          </div>
-          <div class="flex flex-col mb-4">
-            <i class="icon">
-              <Fa icon={faLink} class="mt-1" />
-            </i>
-            <input placeholder="example.com" bind:value={form.website} />
-          </div>
             <div class="flex flex-col mb-4">
-              <label>Extra information</label>
-              <textarea placeholder="" bind:value={form.info} />
+              <i class="icon">
+                <Fa icon={faEnvelope} class="mt-1" />
+              </i>
+              <input placeholder="email@example.com" bind:value={form.email} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="icon">
+                <Fa icon={faTwitter} class="mt-1" />
+              </i>
+              <input placeholder="@twitter" bind:value={form.twitter} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="icon">
+                <Fa icon={faInstagram} class="mt-1" />
+              </i>
+              <input placeholder="@instagram" bind:value={form.instagram} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="icon">
+                <Fa icon={faMapMarkerAlt} class="mt-1" />
+              </i>
+              <input
+                placeholder="Vancouver, Canada"
+                bind:value={form.location} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <i class="icon">
+                <Fa icon={faLink} class="mt-1" />
+              </i>
+              <input placeholder="example.com" bind:value={form.website} />
+            </div>
+            <div class="flex flex-col mb-4">
+              <label for="info">Extra information</label>
+              <textarea id="info" placeholder="" bind:value={form.info} />
             </div>
             <div class="flex justify-end mt-8">
               <button

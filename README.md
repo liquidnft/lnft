@@ -27,7 +27,6 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
 
  - [Svelte Kit](https://github.com/sveltejs/kit) reactive component framework
  - [Tailwind CSS](https://tailwindcss.com/) UI utility classes
- - [Urql](https://formidable.com/open-source/urql/) GraphQL client 
  - [LiquidJS](https://github.com/vulpemventures/liquidjs-lib) for liquid wallet functionality
 
 ### Back-end
@@ -49,20 +48,21 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
  - Docker: https://docs.docker.com/get-docker/
  - Hasura CLI: https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cli.html#install-hasura-cli
 
-## Install
+## Setup local development environment
 
     git clone https://github.com/liquidnft/lnft
     cd lnft
     yarn
     cd hasura
     cp .env.sample .env
+    docker run -it -v $PWD/app:/app --entrypoint yarn asoltys/lnft-server
     docker-compose up -d
     hasura migrate apply
     hasura metadata apply
     hasura seeds apply
     sudo cp ../static/user.png storage
     docker exec -it ipfs ipfs add /export/user.png
-    docker restart app
+    docker restart lapp
     cd ..
     yarn dev   # site is available at http://localhost:3000/
 

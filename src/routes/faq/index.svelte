@@ -1,3 +1,11 @@
+<script context="module">
+	export const prerender = true;
+</script>
+
+<script>
+  import branding from '$lib/branding';
+</script>
+
 <div class="container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
     <h2 class="mb-10">FAQ</h2>
@@ -15,9 +23,9 @@
         <h3>How do I use them?</h3>
 
         <p>
-          NFT’s can be issued on different blockchains and networks. On JungleLab,
+          NFT’s can be issued on different blockchains and networks. On { branding.projectName },
           they're created on the Liquid network and can be stored in any wallet that
-          supports Liquid assets. JungleLab offers a free built-in web wallet that
+          supports Liquid assets. { branding.projectName } offers a free built-in web wallet that
           gets used by default.
         </p>
 
@@ -26,7 +34,7 @@
         <p>
           When an artist first uploads an image or video file for an artwork, the
           file is added to the IPFS network and assigned a hash number that uniquely
-          identifies the contents of the file. The artist's JungleLab wallet will
+          identifies the contents of the file. The artist's { branding.projectName } wallet will
           then generate a Liquid asset issuance transaction containing the title of
           the artwork and its hash and broadcast it to be permanently recorded in
           the Liquid blockchain.
@@ -40,10 +48,10 @@
           been accepted.
         </p>
 
-        <h3>What’s different about JungleLab compared to other NFT platforms?</h3>
+        <h3>What’s different about { branding.projectName } compared to other NFT platforms?</h3>
 
         <p>
-          JungleLab is a urban lifestyle NFT platform that uses the Bitcoin Liquid Network
+          { branding.projectName } is the first NFT platform that uses the Bitcoin Liquid Network
           instead of Ethereum or Counterparty. The Liquid network is a bitcoin
           sidechain where transaction fees are denominated in L-BTC, Liquid Bitcoin,
           which is pegged 1:1 to bitcoin.
@@ -61,13 +69,13 @@
         <h3>How do I get some L-BTC?</h3>
 
         <p>
-          Watch <a href="https://www.youtube.com/watch?v=LxY3oxLQhA8">this video tutorial</a> to learn how to use the Side Swap mobile app to turn BTC into L-BTC so you can bid on art listed on JungleLab.io
+          Watch <a href="https://www.youtube.com/watch?v=LxY3oxLQhA8" target="_blank">this video tutorial</a> to learn how to use the Side Swap mobile app to turn BTC into L-BTC so you can bid on art listed on { branding.projectName }.
         </p>
       </div>
       <div class="contact boxShadow">
         <p>Need more help?</p>
         <h5>Contact us through</h5>
-        <a href="mailto:support@btcpayjungle.com" target="_blank">support@btcpayjungle.com</a>
+        <a href="mailto:{branding.emails.support}" target="_blank">{branding.emails.support}</a>
       </div>
     </div>
   </div>
@@ -101,7 +109,7 @@
     margin-bottom: 10px;
   }
 
-  .contact a{
+  .contact a, .faq a{
     color: #3ba5ac;
   }
 

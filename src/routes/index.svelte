@@ -1,58 +1,38 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const props = await fetch(`/artworks/recent.json`).then((r) => r.json());
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
-  import { onMount } from "svelte";
-  import { hasura } from "$lib/api";
+  import { onDestroy } from "svelte";
+  import { query } from "$lib/api";
   import { Summary } from "$comp";
   import { fade } from "svelte/transition";
   import { user } from "$lib/store";
-  import { operationStore, query } from "@urql/svelte";
-  import { topCollectors, topArtists } from "$queries/users";
-  import { getFeatured } from "$queries/artworks";
-  import Activity from "$components/Activity";
-  import RecentActivityCard from "$components/RecentActivityCard";
-  import LatestPiecesCard from "$components/LatestPiecesCard";
+  import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
   import { err, goto } from "$lib/utils";
-  import { getRecentActivity, getLatestPieces } from "$queries/transactions";
+  import branding from "$lib/branding";
 
-  let featured = [];
-  let recent = [];
-  let latest = [];
+  export let featured;
+  export let recent;
+  export let latest;
 
-  onMount(async () => {
-    try {
-      featured = (
-        await hasura
-          .post({
-            query: getFeatured,
-          })
-          .json()
-      ).data.featured;
-
-      recent = (
-        await hasura
-          .post({
-            query: getRecentActivity(3),
-          })
-          .json()
-      ).data.recentactivity;
-
-      latest = (
-        await hasura
-          .post({
-            query: getLatestPieces(3),
-          })
-          .json()
-      ).data.transactions;
-    } catch (e) {
-      err(e);
-    }
-  });
-
-  setInterval(() => {
+  let interval = setInterval(() => {
     current++;
     if (current >= featured.length) current = 0;
   }, 6000);
 
+  onDestroy(() => clearInterval(interval));
+
   let current = 0;
+
 </script>
 
 <style>
@@ -78,13 +58,28 @@
     height: 600px !important;
     width: 100%;
     object-fit: cover;
+  }
 
-    /*
-    background-image: url("/secondary-header.jpg");
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-     */
+  .blur-bg {
+    display: flex;
+    padding: 60px;
+    flex-direction: column;
+    background: rgba(54, 58, 74, 0.45);
+    backdrop-filter: blur(30px);
+    box-shadow: 2px 2px 4px 0 rgb(0 0 0 / 10%);
+    border-radius: 8px;
+    color: white;
+    width: 50%;
+    width: fit-content;
+  }
+
+  .blur-bg h2 {
+    color: white !important;
+  }
+
+  .blur-bg p {
+    color: white !important;
+    margin-top: 20px;
   }
 
   .container.more {
@@ -146,14 +141,21 @@
     .marg-bottom {
       margin-bottom: 96px !important;
     }
+
+    .blur-bg {
+      padding: 24px;
+      width: 75%;
+      width: fit-content;
+    }
   }
+
 </style>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">
   <div class="header text-center">
     <h1 class="text-left md:text-center md:w-full">
-      JungleLab Rare
-      <br />music art video
+      {branding.projectName}
+      <br />digital art
     </h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
       Upload, collect, NFTs and transact exclusive rare digital token assets on the Bitcoin Liquid Network.
@@ -165,26 +167,18 @@
 {#if featured[current]}
   <div class="flex secondary-header marg-bottom">
     <div
-      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
-      class:text-white={featured[current].white}>
-      <h2 class:text-white={featured[current].white}>
-        {featured[current].artwork.artist.username}
-      </h2>
-      <p>
-        {featured[current].artwork.title}
-        {#if featured[current].white}
+      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
+      <div class="blur-bg">
+        <h2>{featured[current].artwork.artist.username}</h2>
+        <p>
+          {featured[current].artwork.title}
           <button
             class="button-transparent header-button border mt-10"
             style="border-color: white; color: white"
             on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
             View Artwork</button>
-        {:else}
-          <button
-            class="button-transparent header-button border mt-10"
-            on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
-            View Artwork</button>
-        {/if}
-      </p>
+        </p>
+      </div>
     </div>
 
     {#if featured[current].artwork.filetype.includes('video')}
@@ -203,6 +197,7 @@
         in:fade
         out:fade
         class="lazy cover absolute secondary-header"
+        alt={featured[current].artwork.title}
         src={`/api/ipfs/${featured[current].artwork.filename}`} />
     {/if}
   </div>

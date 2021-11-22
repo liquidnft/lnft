@@ -15,27 +15,28 @@ app.post("/upload", async function (req, res) {
   const s2 = new Clone(data.file);
   const s3 = new Clone(data.file);
   const s4 = new Clone(data.file);
+  const s5 = new Clone(data.file);
 
   const { cid } = await ipfs.add(s1);
   const name = cid.toString();
 
   const ext = data.mimetype.split("/")[1];
-  const path = `/export/${name}.${ext}`;
+  const path = `/export/${name}`;
+  const thumb = `${path}.${ext}`;
 
   try {
+    s4.pipe(fs.createWriteStream(path));
+
     if (ext === "gif") throw new Error("Can't process gifs");
     if (ext === "mp4") {
-      await createFragmentPreview(s2, s3, path);
+      await createFragmentPreview(s2, s3, thumb);
     } else {
-      let ws = fs.createWriteStream(path);
       let t = sharp().rotate().resize(1000).webp();
-      s2.pipe(t).pipe(ws);
+      s2.pipe(t).pipe(fs.createWriteStream(thumb));
     }
   } catch (e) {
     console.log("Processing failed", e);
-    console.log("Writing full file to thumbnail", path);
-    let ws = fs.createWriteStream(path);
-    s4.pipe(ws);
+    s5.pipe(fs.createWriteStream(thumb));
   }
 
   res.send(name);
@@ -57,20 +58,18 @@ const createFragmentPreview = async (
       fragmentDurationInSeconds
     );
 
-    return (
-      ffmpeg()
-        .input(s3)
-        .inputOptions([`-ss ${startTimeInSeconds}`])
-        .inputFormat("mp4")
-        .size("1000x?")
-        .outputOptions([`-t ${fragmentDurationInSeconds}`])
-        .noAudio()
-        .output(outputPath)
-        .outputFormat("mp4")
-        .on("end", resolve)
-        .on("error", reject)
-        .run()
-    );
+    return ffmpeg()
+      .input(s3)
+      .inputOptions([`-ss ${startTimeInSeconds}`])
+      .inputFormat("mp4")
+      .size("1000x?")
+      .outputOptions([`-t ${fragmentDurationInSeconds}`])
+      .noAudio()
+      .output(outputPath)
+      .outputFormat("mp4")
+      .on("end", resolve)
+      .on("error", reject)
+      .run();
   });
 };
 

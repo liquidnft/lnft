@@ -1,29 +1,23 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const props = await fetch(`/artworks/${page.params.slug}.json`).then((r) =>
+      r.json()
+    );
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
-  import { page } from "$app/stores";
-  import { onMount } from "svelte";
-  import { getArtworkBySlug } from "$queries/artworks";
   import Artwork from "../artwork/[id].svelte";
-  import { hasura } from "$lib/api";
-  import { token } from "$lib/store";
 
-  let artwork;
-
-  $: update($page.params.slug, $token);
-  let update = async (slug) => {
-    if (!slug) return;
-    let h = $token ? hasura.auth(`Bearer ${$token}`) : hasura;
-
-    let result = await h
-      .post({
-        query: getArtworkBySlug($page.params.slug),
-      })
-      .json();
-
-    if (result.data) artwork = result.data.artworks[0];
-    else console.log(result);
-  };
+  export let artwork, others;
 </script>
 
 {#if artwork}
-  <Artwork id={artwork.id} />
+  <Artwork {artwork} {others} />
 {/if}

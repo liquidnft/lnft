@@ -1,16 +1,16 @@
+import { session } from "$app/stores";
 import { api } from "$lib/api";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import {
-  loggedIn,
   password as pw,
   poll,
   prompt,
   user,
   token,
 } from "$lib/store";
-import PasswordPrompt from "$components/PasswordPrompt";
+import { PasswordPrompt } from "$comp";
 import { goto, err } from "$lib/utils";
 
 export const expired = (t) => !t || decode(t).exp * 1000 < Date.now();
@@ -60,20 +60,11 @@ export const refreshToken = () => {
     });
 };
 
-const clearCache = () => {
-  let req = indexedDB.deleteDatabase("raretoshi");
-  req.onblocked = async (e) => {
-    setTimeout(clearCache, 500);
-  };
-};
-
 export const logout = () => {
-  loggedIn.set(false);
+  session.set(null);
+
   window.sessionStorage.removeItem("password");
   window.sessionStorage.removeItem("token");
-  window.sessionStorage.removeItem("user");
-
-  clearCache();
 
   token.set(null);
   user.set(null);
@@ -83,28 +74,6 @@ export const logout = () => {
     .url("/auth/logout")
     .post()
     .res(() => goto("/login"));
-};
-
-export const login = (email, password) => {
-  api
-    .url("/login")
-    .post({
-      email,
-      password,
-    })
-    .unauthorized(err)
-    .badRequest(err)
-    .json(({ jwt_token: t }) => {
-      loggedIn.set(false);
-      token.set(t);
-      window.sessionStorage.setItem("token", t);
-      pw.set(password);
-      prompt.set(false);
-      goto("/");
-    })
-    .catch(() => {
-      err("Login failed")
-    });
 };
 
 export const activate = (ticket) => {

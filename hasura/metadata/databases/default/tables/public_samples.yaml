@@ -1,0 +1,32 @@
+table:
+  name: samples
+  schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - id
+    - type
+    - url
+    - user_id
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - type
+    - url
+    - id
+    - user_id
+    filter: {}
+  role: approver
+- permission:
+    columns:
+    - id
+    - type
+    - url
+    - user_id
+    filter:
+      user_id:
+        _eq: X-Hasura-User-Id
+  role: user

@@ -11,7 +11,7 @@
   import { asset, user, token } from "$lib/store";
   import { btc, copy, err } from "$lib/utils";
   import { api } from "$lib/api";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear } from "$comp";
 
   export let funding = false;
 
@@ -121,6 +121,7 @@
     qr.make();
     img = qr.createSvgTag({});
   }
+
 </script>
 
 <style>
@@ -132,9 +133,11 @@
   .tabs div {
     @apply mb-auto h-8 mx-2 md:mx-4 mt-6;
     &:hover {
-      @apply hover;
+      @apply border-b-2;
+      border-bottom: 3px solid #6ed8e0;
     }
   }
+
 </style>
 
 {#if $user && funding}
@@ -153,7 +156,8 @@
         Funding through a confidential liquid address, bitcoin address, or
         lightning invoice is achieved by automatically converting to L-BTC
         through
-        <a href="https://coinos.io" style="color: #6ed8e0">coinos.io</a>. Funds will be subject to counterparty risk during the conversion process.
+        <a href="https://coinos.io" style="color: #6ed8e0">coinos.io</a>. Funds
+        will be subject to counterparty risk during the conversion process.
       </p>
 
       <p class="text-sm my-4">

@@ -1,9 +1,7 @@
 <script>
   import Fa from "svelte-fa";
   import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-  import Avatar from "$components/Avatar";
-  import Eye from "$components/Eye";
-  import Heart from "$components/Heart";
+  import { Avatar, Eye, Heart } from "$comp";
   import { explorer, goto } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
 
@@ -15,10 +13,6 @@
 <style>
   :global(.description a) {
     color: #3ba5ac;
-  }
-
-  hr {
-    margin: 50px 0;
   }
 
   .art-likes-container {
@@ -34,13 +28,6 @@
 
   .art-likes p {
     margin-left: 8px;
-  }
-
-  @media only screen and (max-width: 1023px) {
-    .sidebar {
-      width: 100%;
-      padding: 0;
-    }
   }
 </style>
 <div class="mt-6">

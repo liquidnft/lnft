@@ -17,6 +17,9 @@ const releaseQuery = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amo
     pk_columns: { id: $id }, 
     _set: { 
       owner_id: $owner_id,
+      auction_release_tx: null,
+      auction_tx: null,
+      reserve_price: null,
     }
   ) {
     id
@@ -39,16 +42,22 @@ const releaseQuery = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amo
 setInterval(async () => {
   try {
     const query = `query {
-      artworks(where: { auction_end: { _lte: "${formatISO(new Date())}"}}) {
+      artworks(where: { _and: [
+          { auction_end: { _lte: "${formatISO(new Date())}"}}, 
+          { auction_release_tx: { _is_null: false }}
+        ]}) {
         id
         title
+        slug
         filename
         filetype
+        reserve_price
         asking_asset
-        royalty
+        has_royalty
         auction_end
         transferred_at
         list_price_tx
+        auction_tx
         auction_release_tx
         artist {
           id
@@ -72,14 +81,42 @@ setInterval(async () => {
       } 
     }`;
 
-    let { artworks } = (await hasura.post({ query }).json()).data;
+    let res = await hasura.post({ query }).json()
+    let { data, errors } = res;
+    if (errors) throw new Error(errors[0].message);
+    let { artworks } = data;
+
     for (let i = 0; i < artworks.length; i++) {
       let artwork = artworks[i];
+      let { bid } = artwork;
+
+      hasura
+        .post({
+          query: close,
+          variables: {
+            id: artwork.id,
+            artwork: {
+              auction_start: null,
+              auction_end: null,
+            },
+          },
+        })
+        .json()
+        .catch(console.log);
+
+      console.log("finalizing auction for", artwork.slug);
+      console.log("reserve price", artwork.reserve_price);
 
       try {
-        if (!artwork.bid[0].psbt || compareAsc(parseISO(artwork.bid[0].created_at), parseISO(artwork.auction_end))) throw new Error("No bid");
+        if (
+          !bid.psbt ||
+          compareAsc(parseISO(bid.created_at), parseISO(artwork.auction_end)) >
+            0 ||
+          bid.amount < artwork.reserve_price
+        )
+          throw new Error("no bid");
 
-        let combined = combine(artwork.list_price_tx, artwork.bid[0].psbt);
+        let combined = combine(artwork.auction_tx, bid.psbt);
 
         await check(combined);
 
@@ -91,24 +128,29 @@ setInterval(async () => {
             query: releaseQuery,
             variables: {
               id: artwork.id,
-              owner_id: artwork.bid[0].user.id,
-              amount: artwork.bid[0].amount,
+              owner_id: bid.user.id,
+              amount: bid.amount,
               hash: psbt.extractTransaction().getId(),
               psbt: psbt.toBase64(),
               asset: artwork.asking_asset,
-              bid_id: artwork.bid[0].id,
+              bid_id: bid.id,
               type: "release",
             },
           })
           .json();
+
+        console.log("released to high bidder");
       } catch (e) {
-        if (artwork.royalty) continue;
+        console.log("couldn't release to bidder,", e.message);
+        if (artwork.has_royalty) continue;
 
         try {
           let psbt = await sign(artwork.auction_release_tx);
           await broadcast(psbt);
 
-          await hasura
+          console.log("released to current owner");
+
+          let result = await hasura
             .post({
               query: releaseQuery,
               variables: {
@@ -122,21 +164,11 @@ setInterval(async () => {
               },
             })
             .json();
-        } catch (e) {
-          console.log("Problem releasing", e);
 
-          hasura
-            .post({
-              query: close,
-              variables: {
-                id: artwork.id,
-                artwork: {
-                  auction_start: null,
-                  auction_end: null,
-                },
-              },
-            })
-            .json().catch(console.log);
+          if (result.errors && result.errors.length)
+            throw new Error(JSON.stringify(result.errors[0].message));
+        } catch (e) {
+          console.log("problem releasing", e);
         }
       }
     }

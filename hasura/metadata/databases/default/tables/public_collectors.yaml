@@ -1,0 +1,30 @@
+table:
+  name: collectors
+  schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - username
+    - avatar_url
+    - owned
+    - collected
+    - resold
+    - avg_price
+    - total_price
+    - address
+    filter: {}
+  role: anonymous
+- permission:
+    columns:
+    - collected
+    - owned
+    - resold
+    - avg_price
+    - total_price
+    - address
+    - avatar_url
+    - username
+    - id
+    filter: {}
+  role: user

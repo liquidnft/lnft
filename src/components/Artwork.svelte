@@ -1,6 +1,7 @@
 <script>
   export let artwork;
   export let showDetails;
+
 </script>
 
 {#if artwork.filename.includes('mp4')}

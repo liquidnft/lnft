@@ -2,6 +2,7 @@
   import Menu from "./Menu.svelte";
 
   export let open = false;
+
 </script>
 
 <style>
@@ -11,12 +12,11 @@
     transition: left 0.3s ease-in-out;
     z-index: 20;
     background-color: white;
-    
   }
 
-  .menu-container{
+  .menu-container {
     width: 70%;
-    background-color: white; 
+    background-color: white;
     position: absolute;
     height: 100vh;
   }
@@ -33,15 +33,19 @@
   }
 
   @keyframes changeColor {
-    0%   {background-color:white;}
-    100% {background-color:rgba(3, 3, 3, 0.8);}
+    0% {
+      background-color: white;
+    }
+    100% {
+      background-color: rgba(3, 3, 3, 0.8);
+    }
   }
-  
+
 </style>
 
 <aside
   class="fixed w-full h-full border-r-2 shadow-lg sideBar"
-  on:click={() => open = false}
+  on:click={() => (open = false)}
   class:open>
   <div class="menu-container">
     <Menu bind:open />

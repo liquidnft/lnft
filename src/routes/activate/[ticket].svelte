@@ -2,8 +2,9 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { activate } from "$lib/auth";
-  import ProgressLinear from "$components/ProgressLinear";
+  import { ProgressLinear } from "$comp";
   import { err } from "$lib/utils";
+  import branding from "$lib/branding";
 
   let loading = true;
   let success;
@@ -37,14 +38,6 @@
     border-radius: 10px;
   }
 
-  input {
-    @apply appearance-none border rounded py-4 px-3 text-gray-700 leading-tight;
-  }
-
-  span {
-    cursor: pointer;
-  }
-
   @media only screen and (max-width: 640px) {
     .form-container {
       background: none;
@@ -69,14 +62,14 @@
 
       <div class="flex">
         <div class="ml-auto mt-8">
-          <a href="/login" class="primary-btn">Continue to Raretoshi</a>
+          <a href="/login" class="primary-btn">Continue to {branding.projectName}</a>
         </div>
       </div>
     {:else}
       <h2 class="mb-8">Something went wrong</h2>
       <div class="flex">
         <div class="ml-auto mt-8">
-          <a href="/login" class="primary-btn">Continue to Raretoshi</a>
+          <a href="/login" class="primary-btn">Continue to {branding.projectName}</a>
         </div>
       </div>
     {/if}

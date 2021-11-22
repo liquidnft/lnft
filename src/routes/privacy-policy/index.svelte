@@ -1,7 +1,9 @@
 <script>
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+  import branding from '$lib/branding';
 </script>
+
 <style>
   h3 {
     @apply mt-8;
@@ -12,7 +14,7 @@
     text-align: left;
   }
 
-  h4{
+  h4 {
     font-weight: bold;
     margin: 20px 0 10px 0;
   }
@@ -22,28 +24,12 @@
     text-align: justify;
   }
 
-  .contact {
-    height: 180px;
-    width: 700px;
-    padding: 30px;
-    margin-left: 50px;
-  }
-  .contact p {
-    margin-bottom: 30px;
-    font-size: 22px;
-    border-radius: 10px;
-  }
-
-  .contact a {
-    color: #3ba5ac;
-  }
-
-  ul{
+  ul {
     list-style: disc;
     padding: 0 20px;
   }
 
-  ul li{
+  ul li {
     margin-bottom: 20px;
     text-align: left;
   }
@@ -55,25 +41,22 @@
     .faq-content {
       flex-wrap: wrap;
     }
-    .contact {
-      width: 100%;
-      margin: 30px 0;
-    }
   }
+
 </style>
 
 <div class="max-w-4xl container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
-    <h2 class="mb-10">JungleLab Privacy Policy</h2>
+    <h2 class="mb-10">{ branding.projectName } Privacy Policy</h2>
     <div class="faq-content">
       <div class="faq">
         <p>
-          At JungleLab (“Website”, “we”) We are committed to protecting the
+          At { branding.projectName } (“Website”, “we”) We are committed to protecting the
           privacy and confidentiality of any personal data we collect when you
           use this Website. This Privacy Policy describes the ways we collect
           information from and about you, and what we do with the information,
           so that you may decide whether or not to provide information to us. By
-          accessing or using JungleLab (www.JungleLab.io), you agree to be
+          accessing or using { branding.projectName } ({ branding.urls.www }), you agree to be
           bound by the terms and conditions described in this document and also
           by any terms and conditions incorporated by reference.
         </p>
@@ -85,11 +68,11 @@
 
         <p>
           “<b>Sites</b>” are all websites that are owned and operated by
-          JungleLab, including raretoshi.com and all subdomains
+          { branding.projectName }, including { branding.urls.base } and all subdomains
         </p>
 
         <p>
-          “<b>Visitor</b>” includes anyone using the JungleLab sites, whether
+          “<b>Visitor</b>” includes anyone using the { branding.projectName } sites, whether
           viewing pages or uploading/downloading information directly from those
           sites using some other means.
         </p>
@@ -164,14 +147,14 @@
           services.
         </p>
 
-        <h4>Links to non-JungleLab Websites</h4>
+        <h4>Links to non-{ branding.projectName } Websites</h4>
 
         <p>
           Some projects, tools, forums, or other publicly-available resources
-          associated with JungleLab may be hosted on third-party websites.
+          associated with { branding.projectName } may be hosted on third-party websites.
           Additionally, we may provide links to third-party websites for
           informational purposes. The privacy practices of those sites may
-          differ from our practices, are not controlled by JungleLab, and are
+          differ from our practices, are not controlled by { branding.projectName }, and are
           not covered by this Privacy Policy. We do not make any representations
           about third-party websites. We encourage you to review their privacy
           policies before submitting your personal data to such sites.
@@ -185,17 +168,17 @@
           services are not designed for or directed to children under the age of
           18, and we will not intentionally collect or maintain information
           about anyone under the age of 13. If a child under 13 submits Personal
-          Information to JungleLab and we learn that the Personal Information is
+          Information to { branding.projectName } and we learn that the Personal Information is
           the information of a child under 13, we will attempt to delete the
           information as soon as possible. If you believe that we might have any
           Personal Data from a child under 13, please contact us at
-          support@raretoshi.com.
+          { branding.emails.support }.
         </p>
 
         <h3>3. What do we use this information for?</h3>
         <p>
           We use web visit information to measure interest in and develop
-          JungleLab and marketing plans, customize the content you view on your
+          { branding.projectName } and marketing plans, customize the content you view on your
           web visits based on your activity on past visits, diagnose technical
           problems, and to generally administer the Platform. If any Token is
           associated with a physical item, we will use the shipping information
@@ -204,7 +187,7 @@
 
         <p>
           Any information actively collected, such as names and email addresses,
-          will be used to provide you with information regarding JungleLab
+          will be used to provide you with information regarding { branding.projectName }
           services when you sign up on our Platform.
         </p>
 
@@ -212,7 +195,7 @@
 
         <p>
           Personal information we gather is for internal use only. We will not
-          authorize the release of this information to anyone outside JungleLab,
+          authorize the release of this information to anyone outside { branding.projectName },
           except:
         </p>
 
@@ -223,7 +206,7 @@
             you through our Site; to conduct quality assurance testing; to
             facilitate shipping of physical items in the Platform; to provide
             technical support; and/or to provide hosting and other services to
-            JungleLab. In such events, personal information will only be shared
+            { branding.projectName }. In such events, personal information will only be shared
             to the extent reasonably necessary to perform their functions and
             they will not be authorized to use it for any other function,
           </li>
@@ -247,7 +230,7 @@
         <p>
           If you have a question or complaint about this Privacy Policy or our
           information collection practices, please contact us at
-          support@raretoshi.com.
+          { branding.emails.support }.
         </p>
 
         <h3>7. Changes</h3>

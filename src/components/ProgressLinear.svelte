@@ -14,6 +14,7 @@
       initialized = true;
     }, 200);
   });
+
 </script>
 
 <style>
@@ -45,6 +46,7 @@
       width: 10%;
     }
   }
+
 </style>
 
 <div

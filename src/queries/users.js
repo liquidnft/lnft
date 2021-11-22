@@ -1,5 +1,6 @@
 import decode from "jwt-decode";
-import { operationStore, query } from "@urql/svelte";
+import { marketFields as artworkFields } from "./artworks";
+import { fields as txFields } from "./transactions";
 
 let fields =
   "id, username, location, bio, email, full_name, website, twitter, instagram, avatar_url, address, multisig, pubkey, is_artist";
@@ -22,17 +23,24 @@ export const getUserById = (id) => `query {
   }
 }`;
 
-export const getUserByUsername = (username) => `query {
-  users(where: { username: {_eq: "${username}" }}, limit: 1) { 
+export const getUserByUsername = `query($username: String!) {
+  users(where: { username: {_eq: $username }}, limit: 1) { 
     ${fields} 
     ${computed}
-  }
-}`;
-
-export const getUsers = `subscription {
-  users {
-    ${fields} 
-    ${computed}
+    holdings {
+      ${artworkFields} 
+    } 
+    creations {
+      ${artworkFields} 
+    } 
+    offers {
+      transaction {
+        ${txFields}
+        artwork {
+          ${artworkFields}
+        } 
+      }
+    } 
   }
 }`;
 
@@ -48,15 +56,13 @@ export const getSamples = `query {
   }
 }`;
 
-export const updateUser = {
-  query: `mutation update_user($user: users_set_input!, $id: uuid!) {
+export const updateUser = `mutation update_user($user: users_set_input!, $id: uuid!) {
   update_users_by_pk(pk_columns: { id: $id }, _set: $user) {
     ${fields}
     wallet_initialized
     ${computed}
   }
-}`,
-};
+}`;
 
 export const topCollectors = (limit) => `query {
   collectors(limit: ${limit}) { 
@@ -85,17 +91,7 @@ export const topArtists = (limit) => `query {
 }`;
 
 export const getUsersAddresses = `query {
-  users {
-    id
-    address
-    multisig
-    username
-    avatar_url
-  }
-}`;
-
-export const subscribeAddresses = `subscription {
-  users {
+  users(order_by: { username: asc }) {
     id
     address
     multisig

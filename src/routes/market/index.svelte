@@ -1,44 +1,68 @@
+<script context="module">
+  export async function load({ fetch }) {
+    const r = await fetch("/artworks.json?limit=12").then((r) => r.json());
+
+    return {
+      maxage: 720,
+      props: {
+        count: r.count,
+        initialArtworks: r.artworks,
+      },
+    };
+  }
+
+</script>
+
 <script>
+  import { onMount } from "svelte";
+  import { ProgressLinear } from "$comp";
   import Fa from "svelte-fa";
   import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
-  import { artworks, show, user, results } from "$lib/store";
+  import {
+    artworks,
+    filterCriteria,
+    results,
+    show,
+    sortCriteria,
+    token,
+    user,
+  } from "$lib/store";
   import { info, err, goto } from "$lib/utils";
-  import Gallery from "$components/Gallery";
-  import Results from "$components/Results";
-  import Search from "$components/Search";
-  import Filter from "./_filter";
-  import Sort from "./_sort";
+  import { Gallery, Results, Search } from "$comp";
+  import Filter from "./_filter.svelte";
+  import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";
+  import { pub } from "$lib/api";
 
+  export let count;
   export let showFilters;
-  let filtered = [];
+  export let initialArtworks;
+
+  let filtered = initialArtworks;
+
+  let offset = 0;
+
+  $: reset($filterCriteria, $sortCriteria);
+  let reset = async () => {
+    if (initialArtworks && initialArtworks.length) {
+      $artworks = initialArtworks;
+    }
+  };
+
+  onMount(async () => {
+    const r = await fetch("/artworks.json").then((r) => r.json());
+    $artworks = r.artworks;
+  });
+
 </script>
 
 <style>
-  select {
-    background: url(down-arrow.png);
-    background-repeat: no-repeat;
-    background-position: 90%;
-    appearance: none !important;
-    background-color: whitesmoke;
-    padding-right: 3rem;
-    background-size: 20px;
-  }
-
   @media only screen and (max-width: 1023px) {
     .search :global(input) {
       width: 90%;
       appearance: none;
       border: 0;
       border-bottom: 1px solid #6ed8e0;
-    }
-
-    select {
-      border: none;
-      background-color: white;
-      margin-top: -20px;
-      text-transform: uppercase;
-      font-weight: bold;
     }
   }
 
@@ -50,6 +74,7 @@
       margin-bottom: 30px;
     }
   }
+
 </style>
 
 <Results />
@@ -57,7 +82,6 @@
 <div
   class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20">
   <h2 class="md:mb-0">Market</h2>
-
   {#if $user && $user.is_artist}
     <a href="/artwork/create" class="primary-btn">Submit a new artwork</a>
   {/if}
@@ -86,5 +110,5 @@
     </div>
     <Filter bind:filtered {showFilters} />
   </div>
-  <Gallery artworks={filtered} />
+  <Gallery artworks={filtered} bind:count />
 </div>

@@ -13,10 +13,17 @@ const query = `
       id 
       asset
       asking_asset
-      royalty
+      has_royalty
+      royalty_recipients {
+        id
+        asking_asset
+        amount
+        address
+        name
+      }
       auction_start
       auction_end
-      list_price_tx
+      list_price
       artist {
         id
         address
@@ -27,14 +34,6 @@ const query = `
         address
         multisig
       } 
-    } 
-  }`;
-
-const userQuery = `
-  query {
-    currentuser {
-      address
-      multisig
     } 
   }`;
 
@@ -50,8 +49,6 @@ app.get("/pubkey", async (req, res) => {
 });
 
 app.post("/sign", auth, async (req, res) => {
-  const userapi = wretch().url(`${HASURA_URL}/v1/graphql`).headers(req.headers);
-
   try {
     const { psbt } = req.body;
 
@@ -80,26 +77,25 @@ const check = async (psbt) => {
   artworks.map(
     ({
       asset,
-      royalty,
+      has_royalty,
+      royalty_recipients,
       artist,
       owner,
+      list_price,
       asking_asset,
       auction_start,
       auction_end,
     }) => {
-      if (auction_end) {
-        let start = parseISO(auction_start);
-        let end = parseISO(auction_end);
-
-        if (isWithinInterval(new Date(), { start, end }))
-          throw new Error("Auction underway");
-      }
-
       let outs = outputs.filter((o) => o.asset === asking_asset);
-      let toArtist = outs
-        .filter(
-          (o) => o.address === artist.address || o.address === artist.multisig
-        )
+
+      let toRoyaltyRecipients = outs
+        .filter((o) => {
+          const recipientsWithOuts = royalty_recipients.find((recipient) => {
+
+            return recipient.address === o.address;
+          });
+          return !!recipientsWithOuts;
+        })
         .reduce((a, b) => (a += b.value), 0);
 
       let toOwner = outs
@@ -108,10 +104,28 @@ const check = async (psbt) => {
         )
         .reduce((a, b) => (a += b.value), 0);
 
-      if (royalty) {
+      if (auction_end) {
+        let start = parseISO(auction_start);
+        let end = parseISO(auction_end);
+
+        if (
+          toOwner !== list_price &&
+          isWithinInterval(new Date(), { start, end })
+        )
+          throw new Error("Auction underway");
+      }
+
+      if (has_royalty) {
         if (toOwner) {
-          let amountDue = Math.round((toOwner * royalty) / 100);
-          if (toArtist < amountDue && artist.id !== owner.id)
+          let amountDue = 0;
+
+          for (let i = 0; i < royalty_recipients.length; i++) {
+            const element = royalty_recipients[i];
+
+            amountDue += Math.round((toOwner * element.amount) / 100);
+          }
+
+          if (toRoyaltyRecipients < amountDue && artist.id !== owner.id)
             throw new Error("Royalty not paid");
         }
 

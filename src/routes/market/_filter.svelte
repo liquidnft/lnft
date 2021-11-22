@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import ToggleSwitch from "$components/ToggleSwitch";
+  import { ToggleSwitch } from "$comp";
   import { artworks, filterCriteria as fc } from "$lib/store";
 
   export let showFilters;
@@ -12,9 +12,9 @@
 
   let filter = (a) =>
     (!$fc.listPrice || a.list_price) &&
-    (!$fc.openBid || a.bid[0].amount) &&
+    (!$fc.openBid || a.bid.amount) &&
     (!$fc.ownedByCreator || a.artist_id === a.owner_id) &&
-    (!$fc.hasSold || a.artist_id !== a.owner_id);
+    (!$fc.hasSold || a.transferred_at);
 </script>
 
 <style>

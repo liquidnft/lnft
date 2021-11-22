@@ -1,14 +1,16 @@
 <script>
+  import { query } from "$lib/api";
   import { page } from "$app/stores";
-  import { operationStore, subscription } from "@urql/svelte";
   import { getArtworksByTag } from "$queries/artworks";
   import { Card } from "$comp";
   import galleries from "$lib/galleries";
+  import { err } from "$lib/utils";
 
   let { tag } = $page.params;
   let artworks = [];
-  let getArtworksByTag$ = operationStore(getArtworksByTag(tag));
-  subscription(getArtworksByTag$, (a, b) => (artworks = b.artworks));
+  $: query(getArtworksByTag(tag))
+    .then((res) => (artworks = res.artworks))
+    .catch(err);
 </script>
 
 <div class="container mx-auto mt-10 md:mt-20">
