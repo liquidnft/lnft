@@ -17,6 +17,7 @@ export const filterCriteria = writable({
 });
 export const full = writable();
 export const loading = writable();
+export const loaded = writable({});
 export const locked = writable();
 export const loggedIn = writable();
 export const password = writable();
