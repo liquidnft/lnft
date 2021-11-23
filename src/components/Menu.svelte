@@ -69,7 +69,7 @@
   <!--
   <a href="/galleries"><button on:click={toggle}>Galleries</button></a>
   -->
-  <a href="{branding.urls.external.blog}"><button on:click={toggle}>Blog</button></a>
+  <a href="https://junglelab.net"><button on:click={toggle}>Blog</button></a>
   <a href="/faq"><button on:click={toggle}>FAQ</button></a>
   {#if $user}
     {#if $user.is_admin}
