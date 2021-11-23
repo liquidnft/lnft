@@ -3,6 +3,7 @@
   import countdown from "$lib/countdown";
   import { fade, goto, units } from "$lib/utils";
   import { onMount } from "svelte";
+  import { loaded } from "$lib/store";
 
   export let justScrolled = false;
   export let artwork;
@@ -10,11 +11,7 @@
   export let showDetails = true;
   export let thumb = true;
   export let popup = false;
-
-  let loaded;
-  let ready = (id) => {
-    loaded = true;
-  } 
+  export let height = 350;
 
   let sats, val, ticker;
   $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
@@ -32,45 +29,29 @@
     setTimeout(count, 1000);
   };
   count();
-
 </script>
 
-<style>
-  .card {
-    border-radius: 10px;
-    @apply shadow-md;
-  }
-
-  .card :global(img),
-  .card :global(video) {
-    border-radius: 10px 10px 0 0;
-  }
-
-  .price {
-    font-size: 15px;
-  }
-
-</style>
-
-{#if artwork}
-  <div
-    class="{showDetails ? 'card' : ''} bg-white flex flex-col justify-between h-full"
-    in:fade>
+<div
+  class="{showDetails
+    ? 'card'
+    : ''} flex {$loaded[artwork.id] ? 'bg-white' : 'bg-gray-100'} flex-col justify-between h-full"
+  in:fade
+>
+  <div style="height: {height}px">
     <a href={`/a/${artwork.slug}`} sveltekit:prefetch>
-      {#if !loaded}
-        <div style="height: 350px" class="bg-gray-100 w-full object-cover"></div>
-      {/if}
-      {#if loaded || !justScrolled}
-        <ArtworkMedia {artwork} {showDetails} {popup} bind:thumb bind:ready />
+      {#if $loaded[artwork.id] || !justScrolled}
+        <ArtworkMedia {artwork} {showDetails} {popup} bind:thumb />
       {/if}
     </a>
-    {#if showDetails}
+  </div>
+  {#if showDetails}
+    <div class="bg-white mb-auto">
       <div class="p-4">
         <div class="flex flex-row justify-between mb-2">
           <a href={`/a/${artwork.slug}`}>
             <div>
               <h1 class="text-xl">
-                {artwork.title || 'Untitled'}
+                {artwork.title || "Untitled"}
                 {#if !(artwork.transferred_at || artwork.asking_asset)}
                   (unlisted)
                 {/if}
@@ -102,8 +83,9 @@
               <div class="price">{val(artwork.bid.amount)} {ticker}</div>
               <div class="text-sm font-medium">
                 Current bid by
-                <a
-                  href={`/u/${artwork.bid.user.username}`}>@{artwork.bid.user.username}</a>
+                <a href={`/u/${artwork.bid.user.username}`}
+                  >@{artwork.bid.user.username}</a
+                >
               </div>
             </div>
           {/if}
@@ -144,6 +126,22 @@
       {:else}
         <div class="p-3 rounded-b-lg">&nbsp;</div>
       {/if}
-    {/if}
-  </div>
-{/if}
+    </div>
+  {/if}
+</div>
+
+<style>
+  .card {
+    border-radius: 10px;
+    @apply shadow-md;
+  }
+
+  .card :global(img),
+  .card :global(video) {
+    border-radius: 10px 10px 0 0;
+  }
+
+  .price {
+    font-size: 15px;
+  }
+</style>

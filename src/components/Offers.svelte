@@ -7,16 +7,6 @@
 
 </script>
 
-<style>
-  button {
-    @apply border border-black w-full uppercase text-sm font-bold py-2 px-4 rounded;
-    &:hover {
-      @apply border-secondary;
-    }
-  }
-
-</style>
-
 <AcceptOffer bind:this={comp} />
 <div class="flex flex-wrap">
   {#each offers as offer}

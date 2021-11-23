@@ -2,14 +2,13 @@
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
   import { faVolumeUp, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+  import { loaded } from "$lib/store";
 
   export let artwork;
   export let showDetails;
   export let thumb = true;
   export let preview = false;
   export let popup = false;
-  export let ready = false;
-  export let loaded;
 
   let img, vid;
   $: path =
@@ -22,18 +21,16 @@
   $: contain = showDetails;
   $: setLoaded(img, vid);
   let setLoaded = (img, vid) => {
-    loaded = true;
-
     img &&
       (img.onload = () => {
-        loaded = true;
-        if (ready) ready(artwork.id);
+        $loaded[artwork.id] = true;
+        $loaded = $loaded;
       });
 
     vid &&
       (vid.onloadeddata = () => {
-        loaded = true;
-        if (ready) ready(artwork.id);
+        $loaded[artwork.id] = true;
+        $loaded = $loaded;
       });
   };
 
@@ -157,7 +154,6 @@
     <img
       src={preview || path ? path : '/liquid_logo.svg'}
       alt={artwork.title}
-      loading="lazy"
       bind:this={img} />
   </div>
 {/if}
