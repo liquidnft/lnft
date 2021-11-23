@@ -7,8 +7,7 @@
   import { topCollectors, topArtists } from "$queries/users";
   import { getFeatured } from "$queries/artworks";
   import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
-  import { err, goto } from "$lib/utils";
-  import { getRecentActivity, getLatestPieces } from "$queries/transactions";
+  import { err } from "$lib/utils";
   import branding from "$lib/branding";
 
   let featured = [];
@@ -174,11 +173,12 @@
         <h2>{featured[current].artwork.artist.username}</h2>
         <p>
           {featured[current].artwork.title}
+          <a href="/a/{featured[current].artwork.slug}">
           <button
             class="button-transparent header-button border mt-10"
             style="border-color: white; color: white"
-            on:click={() => goto(`/a/${featured[current].artwork.slug}`)}>
-            View Artwork</button>
+            >
+              View Artwork</button></a>
         </p>
       </div>
     </div>

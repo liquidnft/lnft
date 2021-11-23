@@ -67,7 +67,7 @@
   let id = artwork ? artwork.id : $page.params.id;
   $: init(artwork);
   let init = () => {
-    if (!loaded) api.url("/viewed").post({ id });
+    if (!loaded) api.url("/viewed").post({ id }).json().catch(err);
     loaded = true;
   };
 
@@ -77,7 +77,7 @@
         artwork = res.artworks_by_pk;
 
         $art = artwork;
-        if (!loaded) api.url("/viewed").post({ id });
+        if (!loaded) api.url("/viewed").post({ id }).json().catch(err);
         loaded = true;
 
         query(getArtworksByArtist(artwork.artist_id))
