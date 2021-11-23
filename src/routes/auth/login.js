@@ -9,8 +9,6 @@ export async function post(request) {
     let cookies = [res.headers.get('set-cookie').split(',').slice(0, 2).join("")];
     headers['set-cookie'] = cookies;
 
-    console.log("LOGIN", headers);
-
     return {
       body: await res.json(),
       headers,
