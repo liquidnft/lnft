@@ -167,7 +167,7 @@ const isSpent = async ({ ins }, artwork_id) => {
     let { index, hash } = ins[i];
     let txid = reverse(hash).toString("hex");
 
-    await sleep(50);
+    await sleep(250);
     let { spent } = await electrs
       .url(`/tx/${txid}/outspend/${index}`)
       .get()
