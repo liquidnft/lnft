@@ -32,7 +32,7 @@
 </script>
 
 <div
-  class="{showDetails ? 'card' : ''} flex {$loaded[artwork.id]
+  class="{showDetails ? 'card' : ''} flex {!showDetails || $loaded[artwork.id]
     ? 'bg-white'
     : 'bg-gray-100'} flex-col justify-between h-full"
   in:fade
