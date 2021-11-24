@@ -7,7 +7,6 @@
       props,
     };
   }
-
 </script>
 
 <script>
@@ -54,11 +53,7 @@
   });
 
   let y;
-
 </script>
-
-<style global src="../main.css">
-</style>
 
 <svelte:window bind:scrollY={y} />
 
@@ -66,7 +61,7 @@
 <Snack />
 
 <Sidebar bind:open />
-<div class={y > 50 ? 'sticky' : ''} in:fade>
+<div class={y > 50 ? "sticky" : ""} in:fade>
   <Navbar bind:sidebar={open} />
 </div>
 <Dialog />
@@ -78,3 +73,6 @@
 </main>
 
 <Footer />
+
+<style global src="../main.css">
+</style>

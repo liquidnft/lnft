@@ -66,7 +66,7 @@
       let p = 2 * columns;
       a = Math.max(p, cr * columns);
       if (a >= 0) inview = artworks.slice(a - p, a + p);
-      x = cr > 1 ? parseInt(8 * rh / (y - cr * rh)) : 0;
+      x = cr > 1 ? parseInt((8 * rh) / (y - cr * rh)) : 0;
 
       translate = Math.max(0, cr * rh - rh) + x;
       justScrolled = true;

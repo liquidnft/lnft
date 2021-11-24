@@ -31,46 +31,9 @@
   let open = (e) => {
     fileInput.click();
   };
-
 </script>
 
-<style>
-  #fileElem {
-    position: fixed;
-    top: -100em;
-  }
-
-  #drop-area {
-    cursor: pointer;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 350px;
-    max-height: 350px;
-    margin: 100px auto;
-    margin-top: 30px;
-  }
-
-  form {
-    height: 320px;
-  }
-
-  #fileElem {
-    position: fixed;
-    top: -100em;
-  }
-
-  @media only screen and (max-width: 800px) {
-    #drop-area {
-      width: 100%;
-      max-width: 100%;
-      margin: 0;
-      margin-top: 50px;
-    }
-  }
-
-</style>
-
-{#if style === 'box'}
+{#if style === "box"}
   <div
     id="drop-area"
     on:click={open}
@@ -82,7 +45,8 @@
     on:blur={stop}
     on:mouseout={stop}
     on:drop={drop}
-    class:highlight>
+    class:highlight
+  >
     <form class="text-center">
       <div class="flex justify-center flex-col align-center h-full">
         <span class="uppercase">{title}</span>
@@ -96,14 +60,16 @@
         id="fileElem"
         multiple
         accept="image/*,video/*"
-        on:change={(e) => dispatch('file', e.target.files[0])} />
+        on:change={(e) => dispatch("file", e.target.files[0])}
+      />
     </form>
   </div>
 {:else}
   <a
     href="."
     on:click|preventDefault={open}
-    class="secondary-color cursor-pointer">
+    class="secondary-color cursor-pointer"
+  >
     <div class="flex">
       <div>{title}</div>
       <div class="ml-1 my-auto">
@@ -122,6 +88,47 @@
       id="fileElem"
       multiple
       accept="image/*,video/*"
-      on:change={(e) => dispatch('file', e.target.files[0])} />
+      on:change={(e) => dispatch("file", e.target.files[0])}
+    />
   </form>
 {/if}
+
+<style>
+  #fileElem {
+    position: fixed;
+    top: -100em;
+  }
+
+  #drop-area {
+    cursor: pointer;
+    border: 2px solid #6ed8e0;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 350px;
+    max-height: 350px;
+    margin: 100px auto;
+    margin-top: 30px;
+  }
+
+  form {
+    height: 320px;
+  }
+
+  #drop-area.highlight {
+    border-color: #6ed8e0;
+  }
+
+  #fileElem {
+    position: fixed;
+    top: -100em;
+  }
+
+  @media only screen and (max-width: 800px) {
+    #drop-area {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      margin-top: 50px;
+    }
+  }
+</style>

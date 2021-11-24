@@ -1,3 +1,5 @@
+<svelte:options accessors={true} />
+
 <script>
   import Fa from "svelte-fa";
   import {
@@ -158,35 +160,15 @@
 
   let address;
   $: if ($user) address = $user.address;
-
 </script>
-
-<style>
-  .hover {
-    @apply border-b-2;
-  }
-
-  .closeBtn {
-    padding: 10px 13px;
-  }
-
-  .tabs div {
-    @apply mb-auto h-8 mx-2 md:mx-4 mt-6;
-    &:hover {
-      @apply border-b-2;
-    }
-  }
-
-</style>
-
-<svelte:options accessors={true} />
 
 <div class="mb-2 rounded-lg">
   <div class="flex w-full">
     <h3 class="text-2xl flex-grow text-left">Add funds</h3>
     <button
       class="closeBtn text-xl ml-auto font-thin w-10 h-10 bg-gray-100 rounded rounded-full"
-      on:click={() => ($prompt = undefined)}>
+      on:click={() => ($prompt = undefined)}
+    >
       <Fa icon={faTimes} />
     </button>
   </div>
@@ -216,10 +198,11 @@
 
     {#if $error.asset === btc}
       <div
-        class="flex justify-center text-center cursor-pointer tabs flex-wrap">
-        <div class:hover={tab === 'liquid'} on:click={liquid}>Liquid</div>
-        <div class:hover={tab === 'bitcoin'} on:click={bitcoin}>Bitcoin</div>
-        <div class:hover={tab === 'lightning'} on:click={lightning}>
+        class="flex justify-center text-center cursor-pointer tabs flex-wrap"
+      >
+        <div class:hover={tab === "liquid"} on:click={liquid}>Liquid</div>
+        <div class:hover={tab === "bitcoin"} on:click={bitcoin}>Bitcoin</div>
+        <div class:hover={tab === "lightning"} on:click={lightning}>
           Lightning
         </div>
       </div>
@@ -229,7 +212,7 @@
         Funding through a confidential liquid address, bitcoin address, or
         lightning invoice is achieved by automatically converting to L-BTC
         through
-        <a href="https://coinos.io" class="primary-link">coinos.io</a>. Funds
+        <a href="https://coinos.io" style="color: #6ed8e0">coinos.io</a>. Funds
         will be subject to counterparty risk during the conversion process.
       </p>
 
@@ -244,7 +227,8 @@
         See
         <a
           href="https://help.blockstream.com/hc/en-us/articles/900000630846-How-do-I-get-Liquid-Bitcoin-L-BTC-"
-          class="primary-link">this article</a>
+          style="color: #6ed8e0">this article</a
+        >
         for other methods of acquiring L-BTC.
       </p>
     {/if}
@@ -258,15 +242,17 @@
         <div class="flex">
           <div
             class="break-all text-sm"
-            class:truncate={!showInvoice && tab === 'lightning'}
+            class:truncate={!showInvoice && tab === "lightning"}
             class:invisible={loading}
-            class:mx-auto={tab !== 'lightning'}>
+            class:mx-auto={tab !== "lightning"}
+          >
             {address}
           </div>
-          {#if tab === 'lightning' && !showInvoice}
+          {#if tab === "lightning" && !showInvoice}
             <div
               class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
-              on:click={toggle}>
+              on:click={toggle}
+            >
               <div class="flex">
                 <div>Show invoice</div>
                 <div class="my-auto ml-1">
@@ -276,10 +262,11 @@
             </div>
           {/if}
         </div>
-        {#if tab === 'lightning' && showInvoice}
+        {#if tab === "lightning" && showInvoice}
           <div
             class="w-1/4 ml-auto text-right whitespace-nowrap text-sm secondary-color cursor-pointer"
-            on:click={toggle}>
+            on:click={toggle}
+          >
             <div class="flex">
               <div>Hide invoice</div>
               <div class="my-auto ml-1">
@@ -289,20 +276,22 @@
           </div>
         {/if}
         <div class="flex justify-center">
-          {#if tab === 'liquid'}
+          {#if tab === "liquid"}
             <button
               class="justify-center flex center font-medium secondary-color uppercase mt-4 mr-4"
-              on:click={toggleConfidential}>
+              on:click={toggleConfidential}
+            >
               <div class="my-auto mr-1">
                 <Fa icon={faUserSecret} />
               </div>
-              <div>{confidential ? 'Unconfidential' : 'Confidential'}</div>
+              <div>{confidential ? "Unconfidential" : "Confidential"}</div>
             </button>
           {/if}
           <button
             on:click={() => copy(address)}
-            class="justify-center flex center font-medium secondary-color uppercase mt-4">
-            <div>Copy {tab === 'lightning' ? 'invoice' : 'address'}</div>
+            class="justify-center flex center font-medium secondary-color uppercase mt-4"
+          >
+            <div>Copy {tab === "lightning" ? "invoice" : "address"}</div>
             <div class="my-auto ml-2">
               <Fa icon={faClone} />
             </div>
@@ -312,3 +301,22 @@
     </div>
   {/if}
 </div>
+
+<style>
+  .hover {
+    @apply border-b-2;
+    border-bottom: 3px solid #6ed8e0;
+  }
+
+  .closeBtn {
+    padding: 10px 13px;
+  }
+
+  .tabs div {
+    @apply mb-auto h-8 mx-2 md:mx-4 mt-6;
+    &:hover {
+      @apply border-b-2;
+      border-bottom: 3px solid #6ed8e0;
+    }
+  }
+</style>

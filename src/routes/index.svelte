@@ -1,3 +1,14 @@
+<script context="module">
+  export async function load({ fetch, page }) {
+    const props = await fetch(`/artworks/recent.json`).then((r) => r.json());
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+</script>
+
 <script>
   import { onMount } from "svelte";
   import { query } from "$lib/api";
@@ -34,8 +45,183 @@
   }, 6000);
 
   let current = 0;
-
 </script>
+
+<div class="flex header-container mx-auto justify-center marg-bottom">
+  <div class="header text-center">
+    <h1 class="text-left md:text-center md:w-full">
+      {branding.projectName}
+      <br />digital art
+    </h1>
+    <h5 class="md:max-w-lg mx-auto text-left md:text-center">
+      Upload, collect, and transact rare digital art on the Liquid Network
+    </h5>
+    <a class="primary-btn" href={`/market`}>Start exploring</a>
+  </div>
+</div>
+
+{#if featured[current]}
+  <div class="flex secondary-header marg-bottom">
+    <div
+      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
+    >
+      <div class="blur-bg">
+        <h2>{featured[current].artwork.artist.username}</h2>
+        <p>
+          {featured[current].artwork.title}
+          <a href="/a/{featured[current].artwork.slug}">
+            <button
+              class="button-transparent header-button border mt-10"
+              style="border-color: white; color: white"
+            >
+              View Artwork</button
+            ></a
+          >
+        </p>
+      </div>
+    </div>
+
+    {#if featured[current].artwork.filetype.includes("video")}
+      <video
+        in:fade
+        out:fade
+        class="lazy cover absolute secondary-header"
+        autoplay
+        muted
+        playsinline
+        loop
+        src={`/api/ipfs/${featured[current].artwork.filename}`}
+        :key={featured[current].id}
+      />
+    {:else}
+      <img
+        in:fade
+        out:fade
+        class="lazy cover absolute secondary-header"
+        alt={featured[current].artwork.title}
+        src={`/api/ipfs/${featured[current].artwork.filename}`}
+      />
+    {/if}
+  </div>
+{/if}
+
+<div class="container mx-auto px-10">
+  <h3>Recent Activity</h3>
+</div>
+<div class="container mx-auto flex overflow-x-auto">
+  {#each recent as transaction}
+    <RecentActivityCard {transaction} />
+  {/each}
+</div>
+<div class="container more marg-bottom">
+  <a class="secondary-btn" href={"/activity"}>View more</a>
+</div>
+
+<div class="container mx-auto px-10">
+  <h3>Latest Pieces</h3>
+</div>
+<div class="container mx-auto flex pb-1 overflow-x-auto">
+  {#each latest as transaction}
+    <LatestPiecesCard {transaction} />
+  {/each}
+</div>
+<div class="container more marg-bottom">
+  <a class="secondary-btn" href={"/market"}>View gallery</a>
+</div>
+
+<div class="flex header-container mx-auto justify-center marg-bottom">
+  <div class="header text-center">
+    <h1 class="text-left md:text-center md:w-full">{branding.projectName}</h1>
+    <h5 class="md:max-w-lg mx-auto text-left md:text-center">
+      {branding.meta.general.homeHeroText}
+    </h5>
+    <h4 class="md:max-w-lg mx-auto text-left md:text-center text-green-500">
+      This site is currently in Beta
+    </h4>
+    <h4 class="md:max-w-lg mx-auto text-left md:text-center mb-8">
+      Join our
+      <a class="text-blue-400" href="https://t.me/mintalio">Telegram Group</a>
+      for updates and support
+    </h4>
+    <div class="grid grid-cols-2 gap-4 mx-auto max-w-lg">
+      <div>
+        <a class="primary-btn" href={`/market`}>Discover</a>
+      </div>
+      <div>
+        <a class="secondary-btn" href={`/artwork/create`}>Create</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{#if featured[current]}
+  <div class="flex secondary-header marg-bottom">
+    <div
+      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
+    >
+      <div class="blur-bg">
+        <h2>{featured[current].artwork.artist.username}</h2>
+        <p>
+          {featured[current].artwork.title}
+          <a href="/a/{featured[current].artwork.slug}">
+            <button
+              class="button-transparent header-button border mt-10"
+              style="border-color: white; color: white"
+            >
+              View Artwork</button
+            ></a
+          >
+        </p>
+      </div>
+    </div>
+
+    {#if featured[current].artwork.filetype.includes("video")}
+      <video
+        in:fade
+        out:fade
+        class="lazy cover absolute secondary-header"
+        autoplay
+        muted
+        playsinline
+        loop
+        src={`/api/ipfs/${featured[current].artwork.filename}`}
+        :key={featured[current].id}
+      />
+    {:else}
+      <img
+        in:fade
+        out:fade
+        class="lazy cover absolute secondary-header"
+        alt={featured[current].artwork.title}
+        src={`/api/ipfs/${featured[current].artwork.filename}`}
+      />
+    {/if}
+  </div>
+{/if}
+
+<div class="container mx-auto px-10">
+  <h3>Recent Activity</h3>
+</div>
+<div class="container mx-auto flex overflow-x-auto">
+  {#each recent as transaction}
+    <RecentActivityCard {transaction} />
+  {/each}
+</div>
+<div class="container more marg-bottom">
+  <a class="secondary-btn" href={"/activity"}>View more</a>
+</div>
+
+<div class="container mx-auto px-10">
+  <h3>Latest Pieces</h3>
+</div>
+<div class="container mx-auto flex pb-1 overflow-x-auto">
+  {#each latest as transaction}
+    <LatestPiecesCard {transaction} />
+  {/each}
+</div>
+<div class="container more marg-bottom">
+  <a class="secondary-btn" href={"/market"}>View gallery</a>
+</div>
 
 <style>
   .header {
@@ -137,94 +323,4 @@
       width: fit-content;
     }
   }
-
 </style>
-
-<div class="flex header-container mx-auto justify-center marg-bottom">
-  <div class="header text-center">
-    <h1 class="text-left md:text-center md:w-full">{branding.projectName}</h1>
-    <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      {branding.meta.general.homeHeroText}
-    </h5>
-    <h4 class="md:max-w-lg mx-auto text-left md:text-center text-green-500">
-      This site is currently in Beta
-    </h4>
-    <h4 class="md:max-w-lg mx-auto text-left md:text-center mb-8">
-      Join our
-      <a class="text-blue-400" href="https://t.me/mintalio">Telegram Group</a>
-      for updates and support
-    </h4>
-    <div class="grid grid-cols-2 gap-4 mx-auto max-w-lg">
-      <div>
-      <a class="primary-btn" href={`/market`}>Discover</a>
-    </div>
-    <div>
-      <a class="secondary-btn" href={`/artwork/create`}>Create</a>
-    </div>
-    </div>
-  </div>
-</div>
-
-{#if featured[current]}
-  <div class="flex secondary-header marg-bottom">
-    <div
-      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
-      <div class="blur-bg">
-        <h2>{featured[current].artwork.artist.username}</h2>
-        <p>
-          {featured[current].artwork.title}
-          <a href="/a/{featured[current].artwork.slug}">
-          <button
-            class="button-transparent header-button border mt-10"
-            style="border-color: white; color: white"
-            >
-              View Artwork</button></a>
-        </p>
-      </div>
-    </div>
-
-    {#if featured[current].artwork.filetype.includes('video')}
-      <video
-        in:fade
-        out:fade
-        class="lazy cover absolute secondary-header"
-        autoplay
-        muted
-        playsinline
-        loop
-        src={`/api/ipfs/${featured[current].artwork.filename}`}
-        :key={featured[current].id} />
-    {:else}
-      <img
-        in:fade
-        out:fade
-        class="lazy cover absolute secondary-header"
-        alt={featured[current].artwork.title}
-        src={`/api/ipfs/${featured[current].artwork.filename}`} />
-    {/if}
-  </div>
-{/if}
-
-<div class="container mx-auto px-10">
-  <h3>Recent Activity</h3>
-</div>
-<div class="container mx-auto flex overflow-x-auto">
-  {#each recent as transaction}
-    <RecentActivityCard {transaction} />
-  {/each}
-</div>
-<div class="container more marg-bottom">
-  <a class="secondary-btn" href={'/activity'}>View more</a>
-</div>
-
-<div class="container mx-auto px-10">
-  <h3>Latest Pieces</h3>
-</div>
-<div class="container mx-auto flex pb-1 overflow-x-auto">
-  {#each latest as transaction}
-    <LatestPiecesCard {transaction} />
-  {/each}
-</div>
-<div class="container more marg-bottom">
-  <a class="secondary-btn" href={'/market'}>View gallery</a>
-</div>
