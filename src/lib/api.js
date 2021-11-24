@@ -32,7 +32,6 @@ export const post = (url, body) =>
     .url("/" + url)
     .post(body);
 
-
 export const getQ = (headers) => {
   const fn = async (query, variables) => {
     let { data, errors } = await wretch()
@@ -44,14 +43,14 @@ export const getQ = (headers) => {
     return data;
   };
 
- return async (q, v) => {
-  try {
-    let r = await fn(q, v);
-    return r;
-  } catch (e) {
-    if (headers.authorization) delete headers.authorization;
-    let r = await fn(q, v);
-    return r;
-  }
- }
+  return async (q, v) => {
+    try {
+      let r = await fn(q, v);
+      return r;
+    } catch (e) {
+      if (headers.authorization) delete headers.authorization;
+      let r = await fn(q, v);
+      return r;
+    }
+  };
 };

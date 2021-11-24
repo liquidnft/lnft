@@ -7,23 +7,29 @@ import { hbp, getQ } from "$lib/api";
 export async function handle({ request, resolve }) {
   const { headers } = request;
   const cookies = cookie.parse(headers.cookie || "");
-  let { refresh_token } = cookies;
+  let { refresh_token, token: jwt } = cookies;
 
-  let jwt, user, setCookie;
+  let user, setCookie;
 
   try {
-    let res = await hbp
-      .headers({ cookie: `refresh_token=${refresh_token}` })
-      .url("/auth/token/refresh")
-      .get()
-      .res();
+    decode(jwt);
+  } catch (e) {
+    try {
+      let res = await hbp
+        .headers({ cookie: `refresh_token=${refresh_token}` })
+        .url("/auth/token/refresh")
+        .get()
+        .res();
 
-    ({ jwt_token: jwt } = await res.json());
-    setCookie = res.headers.get("set-cookie");
-    headers.authorization = `Bearer ${jwt}`;
-  } catch (e) {}
+      ({ jwt_token: jwt } = await res.json());
+      setCookie = res.headers.get("set-cookie");
+    } catch (e) {
+      // console.log(e);
+    }
+  }
 
-  if (!headers.authorization) delete headers.authorization;
+  if (jwt) headers.authorization = `Bearer ${jwt}`;
+  else delete headers.authorization;
 
   let q = getQ(headers);
   request.locals = { jwt, q };
@@ -33,7 +39,7 @@ export async function handle({ request, resolve }) {
       let { currentuser } = await q(getUser);
       user = currentuser[0];
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   }
 
