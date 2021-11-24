@@ -28,7 +28,6 @@
   import { tick, onDestroy } from "svelte";
   import {
     art,
-    addresses,
     prompt,
     password,
     user,
