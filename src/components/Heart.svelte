@@ -13,35 +13,33 @@
 
   let favorite = async () => {
     try {
-    await requireLogin();
-    let { id: artwork_id } = artwork;
-    let { id: user_id } = $user;
+      await requireLogin();
+      let { id: artwork_id } = artwork;
+      let { id: user_id } = $user;
 
-    if (favorited) {
-      await query(deleteFavorite, { artwork_id, user_id });
-      artwork.num_favorites--;
-      favorited = false;
-    } else {
-      createFavorite({ artwork_id });
-      await query(createFavorite, { artwork_id });
-      artwork.num_favorites++;
-      favorited = true;
-    }
-    } catch(e) {
+      if (favorited) {
+        await query(deleteFavorite, { artwork_id, user_id });
+        artwork.num_favorites--;
+        favorited = false;
+      } else {
+        createFavorite({ artwork_id });
+        await query(createFavorite, { artwork_id });
+        artwork.num_favorites++;
+        favorited = true;
+      }
+    } catch (e) {
       err(e);
-    } 
+    }
   };
-
 </script>
+
+<div on:click={favorite} class:favorited>
+  <Fa icon={favorited ? solidHeart : faHeart} size="1.5x" />
+</div>
 
 <style>
   div:hover,
   .favorited {
     @apply text-primary cursor-pointer;
   }
-
 </style>
-
-<div on:click={favorite} class:favorited>
-  <Fa icon={favorited ? solidHeart : faHeart} size="1.5x" />
-</div>

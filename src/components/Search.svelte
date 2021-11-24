@@ -65,7 +65,6 @@
     } else if (keys.length > 0) goto("/market");
     else err("Nothing matched that search string");
   };
-
 </script>
 
 <div class="relative w-full search">
@@ -74,7 +73,8 @@
       <input
         class="lg:w-1/3 border-0 border-b-2 rounded-none border-lightblue"
         placeholder="Search..."
-        on:input={({ target: { value } }) => debounce(value)} />
+        on:input={({ target: { value } }) => debounce(value)}
+      />
       <div class="my-auto ml-2">
         <Fa icon={faSearch} />
       </div>
@@ -88,7 +88,8 @@
               {#each r.tag || [] as o}
                 <div
                   class="secondary-color text-sm font-bold uppercase mr-5 cursor-pointer"
-                  on:click={() => go(o)}>
+                  on:click={() => go(o)}
+                >
                   #{o.s}
                 </div>
               {/each}
@@ -97,14 +98,16 @@
             {#each r.artwork || [] as o}
               <div
                 on:click={() => go(o)}
-                class="p-4 cursor-pointer hover:bg-green-100">
+                class="p-4 cursor-pointer hover:bg-green-100"
+              >
                 {o.s}
               </div>
             {/each}
             {#each r.user || [] as o}
               <div
                 on:click={() => go(o)}
-                class="p-4 cursor-pointer hover:bg-green-100">
+                class="p-4 cursor-pointer hover:bg-green-100"
+              >
                 {o.s}
               </div>
             {/each}
