@@ -24,7 +24,7 @@
 
   onMount(async () => {
     await requireLogin();
-    query(getArtwork(id, artworkFields))
+    query(getArtwork, { id })
       .then((res) => {
         artwork = res.artworks_by_pk;
       })

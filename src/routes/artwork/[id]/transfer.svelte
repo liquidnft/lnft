@@ -1,9 +1,28 @@
+<script context="module">
+  export async function load({ fetch, page, session }) {
+    const props = await fetch(`/artworks/${page.params.id}.json`).then((r) =>
+      r.json()
+    );
+
+    if (!(session && session.user)) return {
+      status: 302,
+      redirect: '/login'
+    } 
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
   import { Avatar, ProgressLinear } from "$comp";
   import AutoComplete from "simple-svelte-autocomplete";
   import { addresses, art, psbt, user, token } from "$lib/store";
   import { err, goto, info } from "$lib/utils";
-  import { getArtwork, updateArtwork } from "$queries/artworks";
+  import { updateArtwork } from "$queries/artworks";
   import { createTransaction } from "$queries/transactions";
   import { api, query } from "$lib/api";
   import { page } from "$app/stores";
@@ -16,24 +35,14 @@
   } from "$lib/wallet";
   import { requirePassword } from "$lib/auth";
 
+  export let artwork;
+
   let { id } = $page.params;
   $: disabled = !selectedValue;
 
   let selectedValue;
 
-  let artwork, loading;
-  $: setup($token);
-  let setup = async (t) => {
-    if (!t) return;
-
-    try {
-      artwork = (await query(getArtwork(id))).artworks_by_pk;
-    } catch (e) {
-      err(e);
-    }
-  };
-
-  $: loading = !$user || !$addresses || !artwork;
+  let loading;
 
   let send = async (e) => {
     await requirePassword();
