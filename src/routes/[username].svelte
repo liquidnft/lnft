@@ -30,7 +30,6 @@
   import { getUserArtworks } from "$queries/artworks";
   import { createFollow, deleteFollow } from "$queries/follows";
   import Menu from "./user/_menu.svelte";
-  import { fade } from "svelte/transition";
   import { query } from "$lib/api";
 
   export let id;
