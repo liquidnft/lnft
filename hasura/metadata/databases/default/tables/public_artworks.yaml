@@ -70,6 +70,13 @@ computed_fields:
       schema: public
     table_argument: artwork_row
   name: is_sold
+- comment: ""
+  definition:
+    function:
+      name: artwork_is_locked
+      schema: public
+    table_argument: artwork_row
+  name: is_locked
 insert_permissions:
 - permission:
     backend_only: false
@@ -140,12 +147,14 @@ select_permissions:
     - transferred_at
     - views
     - edition_id
+    - locked_by
     computed_fields:
     - artist_owned
     - favorited
     - last_active
     - num_favorites
     - is_sold
+    - is_locked
     filter:
       _or:
       - asking_asset:
@@ -186,12 +195,14 @@ select_permissions:
     - transferred_at
     - views
     - edition_id
+    - locked_by
     computed_fields:
     - artist_owned
     - favorited
     - last_active
     - num_favorites
     - is_sold
+    - is_locked
     filter:
       _or:
       - owner_id:

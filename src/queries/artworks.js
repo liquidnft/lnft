@@ -1,4 +1,5 @@
 import { fields as txfields } from "./transactions";
+const LOCK_EDITION_ID = import.meta.env.VITE_LOCK_EDITION_ID;
 
 const fields = `
   id,
@@ -67,9 +68,12 @@ export const getFeatured = `query {
   }
 }`;
 
-export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offset: Int) {
+export const getArtworks = (
+  id
+) => `query($where: artworks_bool_exp!, $limit: Int, $offset: Int) {
  artworks(where: $where, limit: $limit, offset: $offset, distinct_on: [edition_id]) {
     ${fields}
+    is_locked(args: {user_id: "${id}", edition_key:"${LOCK_EDITION_ID}"})
     tags {
       tag
     }
@@ -77,7 +81,7 @@ export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offs
 }`;
 
 export const getLatestArtwork = `query {
- artworks(where: {is_sold: {_eq: false}}, limit: 1, order_by: [{created_at: desc, edition: asc}]) {
+ artworks(where: {is_sold: {_eq: false}}, limit: 1, order_by: [{created_at: desc, edition: asc, locked_by: desc}]) {
     ${fields}
     tags {
       tag

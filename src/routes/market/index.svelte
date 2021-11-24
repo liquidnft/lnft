@@ -87,7 +87,7 @@
     // await new Promise((r) => setTimeout(r, 500));
     let result = await pub($token)
       .post({
-        query: getArtworks,
+        query: getArtworks($user.id),
         // order_by: [$order_by],
         variables: { limit: 12, offset, where },
       })
@@ -99,7 +99,7 @@
       $artworks = [
         ...$artworks,
         ...result.data.artworks.filter(
-          (a) => !$artworks.find((b) => a.id === b.id)
+          (a) => !$artworks.find((b) => a.id === b.id) && !a.is_locked
         ),
       ];
     } else {
