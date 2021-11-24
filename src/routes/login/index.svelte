@@ -1,14 +1,14 @@
 <script context="module">
-	export async function load({ session }) {
-		if (session && session.user) {
-			return {
-				status: 301,
-				redirect: '/'
-			};
-		}
+  export async function load({ session }) {
+    if (session && session.user) {
+      return {
+        status: 301,
+        redirect: "/",
+      };
+    }
 
-		return {};
-	}
+    return {};
+  }
 </script>
 
 <script>
@@ -32,9 +32,10 @@
   $: if (emailInput) pageChange($page);
 
   let login = async () => {
+    window.sessionStorage.setItem("password", password);
     let res = await post("auth/login", { email, password }).json();
     window.location.reload(true);
-  } 
+  };
 </script>
 
 <div class="form-container bg-lightblue px-4">

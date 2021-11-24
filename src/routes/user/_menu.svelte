@@ -4,7 +4,6 @@
   import { faSignOutAlt, faWallet } from "@fortawesome/free-solid-svg-icons";
   import { user } from "$lib/store";
   import { goto } from "$lib/utils";
-  import { logout } from "$lib/auth";
 </script>
 
 <div class="mt-10 mb-5">
@@ -32,7 +31,7 @@
       <div><span>View Wallet</span></div>
     </div>
   </a>
-  <a href="/login" on:click={logout} class="cursor-pointer">
+  <a href="/logout" class="cursor-pointer">
     <div class="flex">
       <div class="my-auto">
         <Fa icon={faSignOutAlt} />

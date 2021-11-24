@@ -1,15 +1,9 @@
 import { session } from "$app/stores";
-import { api } from "$lib/api";
+import { api, post } from "$lib/api";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import {
-  password as pw,
-  poll,
-  prompt,
-  user,
-  token,
-} from "$lib/store";
+import { password as pw, poll, prompt, user, token } from "$lib/store";
 import { PasswordPrompt } from "$comp";
 import { goto, err } from "$lib/utils";
 
@@ -48,32 +42,6 @@ export const requirePassword = async () => {
   );
   unsub();
   await tick();
-};
-
-export const refreshToken = () => {
-  return api
-    .url("/auth/token/refresh")
-    .get()
-    .json(({ jwt_token }) => {
-      token.set(jwt_token);
-      window.sessionStorage.setItem("token", jwt_token);
-    });
-};
-
-export const logout = () => {
-  session.set(null);
-
-  window.sessionStorage.removeItem("password");
-  window.sessionStorage.removeItem("token");
-
-  token.set(null);
-  user.set(null);
-  get(poll).map((p) => clearInterval(p.interval));
-
-  api
-    .url("/auth/logout")
-    .post()
-    .res(() => goto("/login"));
 };
 
 export const activate = (ticket) => {
