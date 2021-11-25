@@ -51,7 +51,7 @@
     <a href="/">
       <img src="/maven.png" alt="logo" class="w-24" /></a>
   </div>
-  <a class="mobileSearch" href="/market">
+  <a class="mobileSearch" href="/agriculture">
     <Fa icon={faSearch} />
   </a>
   <nav class="hidden text-bold lg:block">

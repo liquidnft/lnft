@@ -86,7 +86,7 @@
   {#if showDetails}
     <div class="p-4">
       <div class="flex flex-row justify-between mb-2">
-        <a href={`/a/${artwork.slug}`}>
+        <a href={`/a/${artwork.slug}`} on:click={makeSelection}>
           <div>
             <h1 class="text-xl">
               {title}

@@ -33,7 +33,7 @@
   let pageChange = async () => {
     await requireLogin();
     if (!$user) return;
-    if (!$user.is_admin) goto("/market");
+    if (!$user.is_admin) goto("/agriculture");
     $role = "approver";
   };
 
