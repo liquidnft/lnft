@@ -33,6 +33,15 @@
   import { requirePassword } from "$lib/auth";
   import { pub } from "$lib/api";
   import Armando from "$components/Armando.svelte";
+  import Jose from "$components/Jose.svelte";
+  import Isidro from "$components/Isidro.svelte";
+  import Catalina from "$components/Catalina.svelte";
+  import Felipe from "$components/Felipe.svelte";
+  import Carmen from "$components/Carmen.svelte";
+  import Genaro from "$components/Genaro.svelte";
+  import Juan from "$components/Juan.svelte";
+  import Justa from "$components/Justa.svelte";
+  import Felix from '$components/Felix.svelte';
 
   export let count;
   export let initialArtworks;
@@ -42,7 +51,7 @@
 
   let offset = 0;
 
-  $: filter($artworks, $painting, $variation, $edition)
+  $: filter($artworks, $painting, $variation, $edition);
   let filter = (a, p, v, e) => {
     if (!a) return;
     filtered = $artworks.filter(({ title }) => {
@@ -53,7 +62,7 @@
       if (!v) return n <= p && n > p - 100 && n % 10 === 0;
       if (!e) return n <= v && n > v - 10;
     });
-  }
+  };
 
   onMount(async () => {
     $edition = undefined;
@@ -77,8 +86,35 @@
 
 </style>
 
-{#if $painting > 300 && $painting <= 400} 
-<Armando />
+{#if $painting > 0 && $painting <= 100}
+  <Jose />
+{/if}
+{#if $painting > 100 && $painting <= 200}
+  <Isidro />
+{/if}
+{#if $painting > 200 && $painting <= 300}
+  <Catalina />
+{/if}
+{#if $painting > 300 && $painting <= 400}
+  <Armando />
+{/if}
+{#if $painting > 400 && $painting <= 500}
+  <Felipe />
+{/if}
+{#if $painting > 500 && $painting <= 600}
+  <Carmen />
+{/if}
+{#if $painting > 600 && $painting <= 700}
+  <Genaro />
+{/if}
+{#if $painting > 700 && $painting <= 800}
+  <Juan />
+{/if}
+{#if $painting > 800 && $painting <= 900}
+  <Justa />
+{/if}
+{#if $painting > 900 && $painting <= 1000}
+  <Felix />
 {/if}
 
 <Results />
