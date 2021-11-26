@@ -626,18 +626,18 @@ export const cancelSwap = async (artwork) => {
   return p;
 };
 
-export const sign = (sighash = 1) => {
+export const sign = (sighash) => {
   let p = get(psbt);
 
   let { privkey } = keypair();
 
-  p.data.inputs.map((_, i) => {
+  p.data.inputs.map(({ sighashType }, i) => {
     try {
       p = p
-        .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
+        .signInput(i, ECPair.fromPrivateKey(privkey), [sighash || sighashType || 1])
         .finalizeInput(i);
     } catch (e) {
-      // console.log("failed to sign", e.message, i, sighash);
+      // console.log("failed to sign", e.message, i);
     }
   });
 
