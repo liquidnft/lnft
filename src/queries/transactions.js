@@ -107,7 +107,7 @@ export const getActiveBids = (id) => `query {
 }`;
 
 export const getRecentActivity = (limit = 3) => `query {
-  recentactivity(limit: ${limit}) {
+  recentactivity(where: { type: { _neq: "royalty" }}, limit: ${limit}) {
     ${fields}
   }
 }`;

@@ -436,14 +436,13 @@
           </span>
         </div>
 
-        <div class="flex justify-between mb-6">
-          {#if artwork.list_price}
-            <div class="my-2">
-              <div class="text-sm mt-auto">List Price</div>
-              <div class="text-lg">
-                {list_price} {ticker}
-                <RoyaltyInfo {artwork} />
-              </div>
+      <div class="flex justify-between mb-6">
+        {#if artwork.list_price}
+          <div class="my-2">
+            <div class="text-sm mt-auto">List Price</div>
+            <div class="text-lg">
+              {list_price}
+              {ticker}
             </div>
           {/if}
           {#if artwork.reserve_price}
@@ -454,13 +453,33 @@
                 {ticker}
               </div>
             </div>
-          {/if}
-          {#if artwork.bid && artwork.bid.amount}
-            <div class="my-2">
-              <div class="text-sm mt-auto">Current bid</div>
-              <div class="text-lg">{val(artwork.bid.amount)} {ticker}</div>
-            </div>
-          {/if}
+          </div>
+        {/if}
+        {#if artwork.bid && artwork.bid.amount}
+          <div class="my-2">
+            <div class="text-sm mt-auto">Current bid</div>
+            <div class="text-lg">{val(artwork.bid.amount)} {ticker}</div>
+          </div>
+        {/if}
+      </div>
+
+      <RoyaltyInfo {artwork} />
+
+      {#if loading}
+        <ProgressLinear />
+      {:else if $user && $user.id === artwork.owner_id && artwork.held}
+        <div class="w-full mb-2">
+          <a
+            sveltekit:prefetch
+            href={disabled ? '' : `/artwork/${id}/auction`}
+            class="block text-center text-sm secondary-btn w-full"
+            class:disabled>List</a>
+        </div>
+        <div class="w-full mb-2">
+          <a
+            href={`/artwork/${artwork.id}/transfer`}
+            class="block text-center text-sm secondary-btn w-full"
+            class:disabled>Transfer</a>
         </div>
 
         {#if loading}

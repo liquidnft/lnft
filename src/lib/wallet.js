@@ -727,6 +727,7 @@ export const executeSwap = async (artwork) => {
   await construct(p2, total);
 
   addFee(p2);
+
   return p2;
 };
 
