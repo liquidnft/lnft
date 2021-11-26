@@ -54,36 +54,13 @@
     object-fit: cover;
   }
 
-  .container.more {
-    display: flex;
-    justify-content: center;
-    margin: 0 auto;
-    margin-top: 36px;
-  }
-
-  .more .secondary-btn {
-    width: 180px;
-  }
-
-  h3 {
-    margin-bottom: 36px;
-  }
-
   @media only screen and (max-width: 768px) {
     .header {
       margin-top: 64px;
     }
 
-    h3 {
-      margin-bottom: 32px;
-    }
-
     .secondary-header {
       height: 400px !important;
-    }
-
-    .container.more {
-      margin-top: 48px;
     }
   }
 
@@ -109,7 +86,7 @@
       >
         <span>Enter</span>
       </a>
-<img src="/greencrypto.png" class="w-52 lg:absolute mx-auto py-10 bottom-4 xl:-bottom-8 right-16" />
+<img src="/greencrypto.png" class="w-52 lg:absolute mx-auto py-10 bottom-4 xl:-bottom-8 right-16" alt="Green Crypto" />
     </div>
   </div>
 </div>
