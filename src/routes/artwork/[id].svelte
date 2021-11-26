@@ -35,6 +35,7 @@
     user,
     token,
     psbt,
+    painting,
   } from "$lib/store";
   import countdown from "$lib/countdown";
   import { goto, err, explorer, info, linkify, units } from "$lib/utils";
@@ -50,9 +51,23 @@
   import { api, query } from "$lib/api";
   import { SocialShare } from "$comp";
   import branding from "$lib/branding";
+  import Armando from "$components/Armando.svelte";
+  import Jose from "$components/Jose.svelte";
+  import Isidro from "$components/Isidro.svelte";
+  import Catalina from "$components/Catalina.svelte";
+  import Felipe from "$components/Felipe.svelte";
+  import Carmen from "$components/Carmen.svelte";
+  import Genaro from "$components/Genaro.svelte";
+  import Juan from "$components/Juan.svelte";
+  import Justa from "$components/Justa.svelte";
+  import Felix from "$components/Felix.svelte";
 
   export let artwork, others, transactions;
   const { title, image, url } = branding.meta.artwork(artwork);
+
+      let words = artwork.title.split(" ");
+      let n = parseInt(words[words.length - 1]);
+  $painting = n;
 
   $: disabled =
     !artwork ||
@@ -460,7 +475,8 @@
           <div class="my-2">
             <div class="text-sm mt-auto">List Price</div>
             <div class="text-lg">
-              {list_price} {ticker}
+              {list_price}
+              {ticker}
               <RoyaltyInfo {artwork} />
             </div>
           </div>
@@ -573,9 +589,8 @@
       {#if artwork.description}
         <div
           class="mob-desc description text-gray-300 whitespace-pre-wrap break-words">
-          <h4 class="mt-10 font-bold">About this artwork</h4>
           <div class="desc-text {showMore ? 'openDesc' : ''}">
-            {@html linkify(artwork.description)}
+            {@html linkify(artwork.description)} 
           </div>
           <div class="show-more" on:click={() => (showMore = !showMore)}>
             SHOW
@@ -613,12 +628,45 @@
 
       {#if artwork.description}
         <div class="desk-desc description text-gray-300 break-words">
-          <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
           <div class="whitespace-pre-wrap">
-            {@html linkify(artwork.description)}
+            {@html linkify(artwork.description)} 
           </div>
         </div>
       {/if}
+
+      {$painting}
+      <div class="break-words">
+        {#if $painting > 0 && $painting <= 100}
+          <Jose />
+        {/if}
+        {#if $painting > 100 && $painting <= 200}
+          <Isidro />
+        {/if}
+        {#if $painting > 200 && $painting <= 300}
+          <Catalina />
+        {/if}
+        {#if $painting > 300 && $painting <= 400}
+          <Armando />
+        {/if}
+        {#if $painting > 400 && $painting <= 500}
+          <Felipe />
+        {/if}
+        {#if $painting > 500 && $painting <= 600}
+          <Carmen />
+        {/if}
+        {#if $painting > 600 && $painting <= 700}
+          <Genaro />
+        {/if}
+        {#if $painting > 700 && $painting <= 800}
+          <Juan />
+        {/if}
+        {#if $painting > 800 && $painting <= 900}
+          <Justa />
+        {/if}
+        {#if $painting > 900 && $painting <= 1000}
+          <Felix />
+        {/if}
+      </div>
 
       <div
         on:click={() => (showPopup = !showPopup)}

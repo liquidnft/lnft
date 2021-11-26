@@ -11,7 +11,7 @@
 
 <div class="container mx-auto bg-gray-800 rounded p-4 shadow m-12">
   <p class="text-center text-gray-400">
-    1% of secondary sales of shares 401-500 will be distributed to
+    A percentage of secondary sales of shares 401-500 will be distributed to
   </p>
   <h3 class="text-center mb-10">FELIPE VALLECILLO MEDRANO</h3>
 

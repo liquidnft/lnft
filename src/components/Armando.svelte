@@ -10,7 +10,7 @@
 </style>
 
 <div class="container mx-auto bg-gray-800 rounded p-4 shadow m-12">
-  <p class="text-center text-gray-400">1% of secondary sales of shares 301-400 will be distributed to</p>
+  <p class="text-center text-gray-400">A percentage of secondary sales of shares 301-400 will be distributed to</p>
   <h3 class="text-center mb-10">ARMANDO CANDELARIO MARTINEZ</h3>
 
   <div class="grid grid-cols-2 gap-8 mb-8">

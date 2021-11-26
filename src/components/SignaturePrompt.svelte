@@ -61,5 +61,5 @@
 
 <Transaction summary={true} />
 {#if base64}
-  <div class="break-all font-mono text-xs mb-2">{$psbt.toBase64()}</div>
+  <div class="break-words font-mono text-xs mb-2">{$psbt.toBase64()}</div>
 {/if}
