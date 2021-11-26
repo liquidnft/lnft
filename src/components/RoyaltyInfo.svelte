@@ -11,28 +11,29 @@
 
 </script>
 
-{#if artwork.royalty_recipients.length}
-  <div class="mb-6">
-    <div class="text-xs cursor-pointer mb-2" on:click={() => (show = !show)}>
-      <div class="flex">
-        <i class="text-midblue text-xs mr-1 my-auto">
-          <Fa icon={faGem} />
-        </i>
-        <div class="my-auto">Royalties</div>
-        <div class="my-auto ml-1">
-          <Fa icon={show ? faChevronUp : faChevronDown} />
-        </div>
+<div class="mb-6">
+  <div class="text-xs cursor-pointer mb-2" on:click={() => (show = !show)}>
+    <div class="flex">
+      <i class="text-midblue text-xs mr-1 my-auto">
+        <Fa icon={faGem} />
+      </i>
+      <div class="my-auto">Royalties</div>
+      <div class="my-auto ml-1">
+        <Fa icon={show ? faChevronUp : faChevronDown} />
       </div>
     </div>
-    {#if show}
-      <ul>
+  </div>
+  {#if show}
+    <ul>
+      {#if artwork.royalty_recipients.length}
         {#each artwork.royalty_recipients as recipient}
           <RoyaltyRecipient
             editable={false}
             askingAsset={artwork.asking_asset}
-            {recipient} />
+            {recipient}
+          />
         {/each}
-      </ul>
-    {/if}
-  </div>
-{/if}
+      {/if}
+    </ul>
+  {/if}
+</div>
