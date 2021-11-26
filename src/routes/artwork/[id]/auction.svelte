@@ -212,7 +212,7 @@
       tx
     );
 
-    await sign(0x83);
+    $psbt = await sign(0x83);
     artwork.list_price_tx = $psbt.toBase64();
 
     await query(createTransaction, {
@@ -297,6 +297,8 @@
       $psbt = await sendToMultisig(artwork);
       await signAndBroadcast();
     }
+
+    artwork.has_royalty = true;
 
     await query(createTransaction, {
       transaction: {
