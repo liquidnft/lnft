@@ -44,7 +44,7 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
 
 ## Installation pre-requisites
 
- - Yarn: https://yarnpkg.com/
+ - pnpm: https://pnpm.io/
  - Docker: https://docs.docker.com/get-docker/
  - Hasura CLI: https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cli.html#install-hasura-cli
 
@@ -52,10 +52,10 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
 
     git clone https://github.com/liquidnft/lnft
     cd lnft
-    yarn
+    pnpm
     cd hasura
     cp .env.sample .env
-    docker run -it -v $PWD/app:/app --entrypoint yarn asoltys/lnft-server
+    docker run -it -v $PWD/app:/app --entrypoint pnpm asoltys/lnft-server
     docker-compose up -d
     hasura migrate apply
     hasura metadata apply
@@ -64,7 +64,7 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
     docker exec -it ipfs ipfs add /export/user.png
     docker restart lapp
     cd ..
-    yarn dev   # site is available at http://localhost:3000/
+    pnpm dev   # site is available at http://localhost:3000/
 
 ## Regtest mining
 
@@ -81,5 +81,5 @@ Get a deposit address from the wallet page or users table in the db and send an 
 
 ## Build for production
 
-    yarn build
-    yarn adapt
+    pnpm build
+    pnpm adapt

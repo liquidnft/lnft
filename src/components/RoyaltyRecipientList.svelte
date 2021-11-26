@@ -42,8 +42,8 @@
   };
 
   const addressIsInList = (address) => {
-    return !!items.find(item => item.address === address)
-  }
+    return !!items.find((item) => item.address === address);
+  };
 </script>
 
 <RoyaltyRecipientAdd

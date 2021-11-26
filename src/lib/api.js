@@ -12,7 +12,7 @@ export const api = wretch().url("/api");
 export const electrs = wretch().url("/api/el");
 
 export const hasura = wretch()
-//  .middlewares([retry({ maxAttempts: 2 })])
+  //  .middlewares([retry({ maxAttempts: 2 })])
   .url("/api/v1/graphql");
 
 export const pub = (t) => (t ? hasura.auth(`Bearer ${t}`) : hasura);
@@ -27,4 +27,30 @@ export const query = async (query, variables) => {
 export const hbp = wretch().url(import.meta.env.VITE_HBP);
 export const serverApi = wretch().url(import.meta.env.VITE_APP);
 
-export const post = (url, body) => wretch().url('/' + url).post(body);
+export const post = (url, body) =>
+  wretch()
+    .url("/" + url)
+    .post(body);
+
+export const getQ = (headers) => {
+  const fn = async (query, variables) => {
+    let { data, errors } = await wretch()
+      .url(import.meta.env.VITE_HASURA)
+      .headers(headers)
+      .post({ query, variables })
+      .json();
+    if (errors) throw new Error(errors[0].message);
+    return data;
+  };
+
+  return async (q, v) => {
+    try {
+      let r = await fn(q, v);
+      return r;
+    } catch (e) {
+      if (headers.authorization) delete headers.authorization;
+      let r = await fn(q, v);
+      return r;
+    }
+  };
+};

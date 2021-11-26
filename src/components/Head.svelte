@@ -2,14 +2,7 @@
   import branding from "$lib/branding";
 
   const {
-    meta: {
-      description,
-      keywords,
-      title,
-      image,
-      url,
-      twitter
-    } 
+    meta: { description, keywords, title, image, url, twitter },
   } = branding;
 </script>
 

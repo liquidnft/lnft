@@ -10,10 +10,13 @@
     name: "",
     amount: 1,
     address: "",
-    type: royaltyRecipientIndividualType
+    type: royaltyRecipientIndividualType,
   };
 
-  let recipient = { ...recipientModel, ...{address: defaultAddress, name: defaultName} };
+  let recipient = {
+    ...recipientModel,
+    ...{ address: defaultAddress, name: defaultName },
+  };
 
   const onSubmit = (e) => {
     if (!recipient.name.length)
@@ -101,7 +104,7 @@
 <style>
   input[type="submit"] {
     height: 54px;
-    font-size: .9rem
+    font-size: 0.9rem;
   }
 
   input {

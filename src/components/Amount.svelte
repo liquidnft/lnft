@@ -1,12 +1,12 @@
+<svelte:options accessors={true} />
+
 <script>
   export let value;
   let amount;
   export let unit;
   export const focus = () => amount.focus();
-
 </script>
 
-<svelte:options accessors={true} />
 <div class="flex flex-col mb-4">
   <div>
     <div class="mt-1 relative rounded-md shadow-sm">
@@ -15,7 +15,8 @@
         class="form-input block w-full pl-7"
         placeholder="0"
         bind:value
-        bind:this={amount} />
+        bind:this={amount}
+      />
       {#if unit}
         <div class="absolute inset-y-0 right-0 flex items-center mr-2">
           {unit}

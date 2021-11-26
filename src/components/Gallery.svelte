@@ -17,26 +17,29 @@
   let st;
   let y;
 
-  let content, rh, newrows, nh, viewportHeight
+  let content, rh, newrows, nh, viewportHeight;
 
   let resize = () => {
-    if (!window) return;
+    if (!browser) return;
     st = undefined;
     window.scrollTo(0, 0);
-    setTimeout(init, 50);
-  } 
+    init();
+  };
 
-  $: init(artworks);
+  onMount(() => setTimeout(resize, 50));
+  let retry;
+
+  $: browser && init(artworks);
   let init = async () => {
-    if (!window) return setTimeout(init, 50);
     await tick();
+    if (y !== 0) return (retry = setTimeout(init, 50));
+    clearTimeout(retry);
 
     let el = document.querySelector(".market-gallery");
     if (!el) return;
 
     let { top, bottom } = el.getBoundingClientRect();
     rh = bottom - top;
-    if (!st) st = top;
 
     newrows = Math.ceil(count / columns);
     nh = rh * (newrows + 1) - y;
@@ -45,40 +48,38 @@
   };
 
   let a, cr, translate, sf;
-  let c = 30;
   let timeout;
-  let justScrolled;
+  let justScrolled = true;
+  let animationFrame;
+  let x;
 
-  $: browser && scroll(y, c);
+  $: browser && scroll(y);
   let scroll = (y) => {
-    window.requestAnimationFrame(() => {
-      clearTimeout(timeout);
-      if (!st || !rh) return;
+    if (animationFrame) {
+      window.cancelAnimationFrame(animationFrame);
+    }
+
+    animationFrame = window.requestAnimationFrame(() => {
+      st = content.offsetTop;
+      if (!rh) return;
       cr = Math.round((y - st) / rh);
       let p = 2 * columns;
       a = Math.max(p, cr * columns);
       if (a >= 0) inview = artworks.slice(a - p, a + p);
-      let x = parseInt(((y - cr*rh)/(columns * 5)));
-      translate = Math.max(0, cr * rh - rh - x);
+      x = cr > 1 ? parseInt((8 * rh) / (y - cr * rh)) : 0;
+
+      translate = Math.max(0, cr * rh - rh) + x;
       justScrolled = true;
       setTimeout(() => (justScrolled = false), 250);
     });
   };
-
 </script>
-
-<style>
-  .market-gallery :global(.card-link img),
-  .market-gallery :global(.card-link video) {
-    height: 350px;
-  }
-
-</style>
 
 <svelte:window bind:innerWidth={w} bind:scrollY={y} on:resize={resize} />
 
 {#if debug}
   <div class="fixed bg-white z-50 left-2">
+    {inview.map((a) => a.id.substr(0, 4))}
     nh
     {nh}<br />
     w
@@ -87,8 +88,6 @@
     {inview.length}<br />
     a
     {a}<br />
-    c
-    <input bind:value={c} /><br />
     translate
     <input bind:value={translate} /><br />
     st
@@ -101,23 +100,29 @@
     {cr * rh}<br />
     sf
     {sf && sf.toFixed(2)}<br />
-    y
+    <input bind:value={y} /><br />
     {y && y.toFixed(2)}<br />
-    {y && ((y - cr*rh)/10).toFixed(2)}<br />
+    x
+    {x && x.toFixed(2)}<br />
   </div>
 {/if}
 
-<div bind:this={content}>
+<div bind:this={content} id="content">
   <div class="sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-3">
     {#each inview as artwork, i}
-      {#if artwork}
       <div
         class="market-gallery w-full mb-20"
-        style={`transform: translateY(${translate}px)`}>
-          <Card {artwork} bind:justScrolled />
+        style={`transform: translateY(${translate}px)`}
+      >
+        <Card {artwork} bind:justScrolled />
       </div>
-    {/if}
     {/each}
   </div>
 </div>
 
+<style>
+  .market-gallery :global(.card-link img),
+  .market-gallery :global(.card-link video) {
+    height: 350px;
+  }
+</style>

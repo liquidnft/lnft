@@ -2,8 +2,17 @@
   import Menu from "./Menu.svelte";
 
   export let open = false;
-
 </script>
+
+<aside
+  class="fixed w-full h-full border-r-2 shadow-lg sideBar"
+  on:click={() => (open = false)}
+  class:open
+>
+  <div class="menu-container">
+    <Menu bind:open />
+  </div>
+</aside>
 
 <style>
   aside {
@@ -40,14 +49,4 @@
       background-color: rgba(3, 3, 3, 0.8);
     }
   }
-
 </style>
-
-<aside
-  class="fixed w-full h-full border-r-2 shadow-lg sideBar"
-  on:click={() => (open = false)}
-  class:open>
-  <div class="menu-container">
-    <Menu bind:open />
-  </div>
-</aside>

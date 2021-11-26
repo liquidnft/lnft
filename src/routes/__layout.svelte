@@ -7,55 +7,37 @@
       props,
     };
   }
-
 </script>
 
 <script>
   import { session } from "$app/stores";
   import decode from "jwt-decode";
+  import { Sidebar, Navbar, Dialog, Footer, Snack, Head } from "$comp";
   import {
-    Avatar,
-    ProgressLinear,
-    Sidebar,
-    Navbar,
-    Dialog,
-    Footer,
-    Snack,
-    Head,
-  } from "$comp";
-  import {
-    addresses as addressesStore,
-    prompt,
-    show,
+    addresses as a,
+    titles as t,
     user,
     password,
-    titles as titlesStore,
     token,
   } from "$lib/store";
   import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
-  import { publicPages } from "$lib/utils";
 
   export let addresses, titles;
 
-  let open = false;
+  $a = addresses;
+  $t = titles;
 
   $user = $session.user;
   $token = $session.jwt;
 
-  $addressesStore = addresses;
-  $titlesStore = titles;
+  let open = false;
+  let y;
 
   onMount(() => {
     if (!$password) $password = window.sessionStorage.getItem("password");
   });
 
-  let y;
-
 </script>
-
-<style global src="../main.css">
-</style>
 
 <svelte:window bind:scrollY={y} />
 
@@ -63,7 +45,7 @@
 <Snack />
 
 <Sidebar bind:open />
-<div class={y > 50 ? 'sticky' : ''} in:fade>
+<div class={y > 50 ? "sticky" : ""}>
   <Navbar bind:sidebar={open} />
 </div>
 <Dialog />
@@ -75,3 +57,6 @@
 </main>
 
 <Footer />
+
+<style global src="../main.css">
+</style>

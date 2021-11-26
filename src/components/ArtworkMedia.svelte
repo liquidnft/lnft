@@ -2,14 +2,13 @@
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
   import { faVolumeUp, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+  import { loaded } from "$lib/store";
 
   export let artwork;
   export let showDetails;
   export let thumb = true;
   export let preview = false;
   export let popup = false;
-  export let ready = false;
-  export let loaded;
 
   let img, vid;
   $: path =
@@ -22,18 +21,16 @@
   $: contain = showDetails;
   $: setLoaded(img, vid);
   let setLoaded = (img, vid) => {
-    loaded = true;
-
     img &&
       (img.onload = () => {
-        loaded = true;
-        if (ready) ready(artwork.id);
+        $loaded[artwork.id] = true;
+        $loaded = $loaded;
       });
 
     vid &&
       (vid.onloadeddata = () => {
-        loaded = true;
-        if (ready) ready(artwork.id);
+        $loaded[artwork.id] = true;
+        $loaded = $loaded;
       });
   };
 
@@ -91,8 +88,52 @@
     muted = !muted;
     vid.muted = muted;
   };
-
 </script>
+
+{#if artwork.filetype && artwork.filetype.includes("video")}
+  <div
+    class="w-full"
+    class:inline-block={!popup}
+    class:cover
+    class:contain
+    class:hidden={!loaded}
+    on:mouseover={over}
+    on:focus={over}
+    on:mouseout={out}
+    on:blur={out}
+  >
+    <video
+      class="lazy"
+      autoplay
+      muted
+      playsinline
+      loop
+      bind:this={vid}
+      controls={popup}
+    >
+      <source data-src={preview || path} />
+      Your browser does not support HTML5 video.
+    </video>
+    {#if !popup}
+      <button
+        class="absolute hidden md:block bottom-2 right-2 secondary-color"
+        type="button"
+        class:invisible
+        on:click|stopPropagation|preventDefault={toggleSound}
+      >
+        <Fa icon={muted ? faVolumeMute : faVolumeUp} size="1.5x" />
+      </button>
+    {/if}
+  </div>
+{:else}
+  <div class="w-full" class:cover class:contain>
+    <img
+      src={preview || path ? path : "/liquid_logo.svg"}
+      alt={artwork.title}
+      bind:this={img}
+    />
+  </div>
+{/if}
 
 <style>
   .contain,
@@ -117,47 +158,4 @@
   video {
     width: auto;
   }
-
 </style>
-
-{#if artwork.filetype && artwork.filetype.includes('video')}
-  <div
-    class="w-full"
-    class:inline-block={!popup}
-    class:cover
-    class:contain
-    class:hidden={!loaded}
-    on:mouseover={over}
-    on:focus={over}
-    on:mouseout={out}
-    on:blur={out}>
-    <video
-      class="lazy"
-      autoplay
-      muted
-      playsinline
-      loop
-      bind:this={vid}
-      controls={popup}>
-      <source data-src={preview || path} />
-      Your browser does not support HTML5 video.
-    </video>
-    {#if !popup}
-      <button
-        class="absolute hidden md:block bottom-2 right-2 secondary-color"
-        type="button"
-        class:invisible
-        on:click|stopPropagation|preventDefault={toggleSound}>
-        <Fa icon={muted ? faVolumeMute : faVolumeUp} size="1.5x" />
-      </button>
-    {/if}
-  </div>
-{:else}
-  <div class="w-full" class:cover class:contain>
-    <img
-      src={preview || path ? path : '/liquid_logo.svg'}
-      alt={artwork.title}
-      loading="lazy"
-      bind:this={img} />
-  </div>
-{/if}

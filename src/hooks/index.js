@@ -2,16 +2,13 @@ import wretch from "wretch";
 import { getUser } from "$queries/users";
 import decode from "jwt-decode";
 import cookie from "cookie";
-import { hbp } from "$lib/api";
-
-const sessions = {};
+import { hbp, getQ } from "$lib/api";
 
 export async function handle({ request, resolve }) {
   const { headers } = request;
   const cookies = cookie.parse(headers.cookie || "");
-  let { refresh_token } = cookies;
+  let { refresh_token, token: jwt } = cookies;
 
-  let jwt = sessions[refresh_token];
   let user, setCookie;
 
   try {
@@ -26,48 +23,31 @@ export async function handle({ request, resolve }) {
 
       ({ jwt_token: jwt } = await res.json());
       setCookie = res.headers.get("set-cookie");
-      ({ refresh_token } = cookie.parse(setCookie));
-      sessions[refresh_token] = jwt;
     } catch (e) {
-      jwt = undefined;
+      // console.log(e);
     }
   }
 
-  headers.authorization = `Bearer ${jwt}`;
-  if (!jwt || !headers.authorization) delete headers.authorization;
+  if (jwt) headers.authorization = `Bearer ${jwt}`;
+  else delete headers.authorization;
 
-  let fn = async (query, variables) => {
-    let { data, errors } = await wretch()
-      .url(import.meta.env.VITE_HASURA)
-      .headers(headers)
-      .post({ query, variables })
-      .json();
-    if (errors) throw new Error(errors[0].message);
-    return data;
-  };
-
-  let q = async (q, v) => {
-    try {
-      let r = await fn(q, v);
-      return r;
-    } catch (e) {
-      if (headers.authorization) delete headers.authorization;
-      let r = await fn(q, v);
-      return r;
-    }
-  };
-
+  let q = getQ(headers);
   request.locals = { jwt, q };
 
-  try {
-    let { currentuser } = await q(getUser);
-    user = currentuser[0];
-  } catch (e) {}
+  if (headers.authorization) {
+    try {
+      let { currentuser } = await q(getUser);
+      user = currentuser[0];
+    } catch (e) {
+      // console.log(e);
+    }
+  }
 
   request.locals.user = user;
 
   const response = await resolve(request);
-  if (setCookie && request.path !== "/login")
+
+  if (setCookie && request.path !== "/auth/login")
     response.headers["set-cookie"] = setCookie;
 
   return response;
