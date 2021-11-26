@@ -31,7 +31,7 @@
   $: reset($filterCriteria, $sortCriteria);
   let reset = async () => {
     try {
-    where = { _or: [], _and: {is_sold: {_eq: false}} };
+    where = { _or: [] };
     if ($filterCriteria.listPrice)
       where._or.push({ list_price: { _is_null: false } });
     if ($filterCriteria.openBid) where._or.push({ bid: {} });
