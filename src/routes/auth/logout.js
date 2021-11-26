@@ -10,15 +10,18 @@ export async function post(request) {
       .post()
       .res();
 
+
     return {
       headers: {
-        "set-cookie":
-          res.headers.get("set-cookie").split(",").slice(0, 2).join("") +
-          ", " +
+        "set-cookie": [
           cookie.serialize("token", "", {
             path: "/",
             expires: new Date(0),
           }),
+          cookie.serialize("refresh_token", "", {
+            path: "/",
+            expires: new Date(0),
+          })]
       },
     };
   } catch (e) {
