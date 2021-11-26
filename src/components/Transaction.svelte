@@ -237,7 +237,7 @@
                         {val(asset, Math.abs(totals[username][asset]))}
                       </div>
                     {/if}
-                    <div class="truncate mr-2">{assetLabel(asset)}</div>
+                    <div class="truncate ml-auto mr-2">{assetLabel(asset)}</div>
                   </div>
                 </div>
               {/if}
@@ -286,7 +286,7 @@
                         {val(asset, Math.abs(totals[username][asset]))}
                       </div>
                     {/if}
-                    <div class="truncate mr-2">{assetLabel(asset)}</div>
+                    <div class="truncate ml-auto mr-2">{assetLabel(asset)}</div>
                   </div>
                 </div>
               {/if}
