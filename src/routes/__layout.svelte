@@ -21,7 +21,7 @@
 </script>
 
 <script>
-  import { session } from "$app/stores";
+  import { page, session } from "$app/stores";
   import decode from "jwt-decode";
   import { Sidebar, Navbar, Dialog, Footer, Snack, Head } from "$comp";
   import {
@@ -37,7 +37,8 @@
 
   export let addresses, titles;
 
-  $meta = branding.meta;
+  $: resetMeta($page);
+  let resetMeta = () => ($meta = {...branding.meta});
 
   $a = addresses;
   $t = titles;

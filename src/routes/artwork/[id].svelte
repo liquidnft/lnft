@@ -50,6 +50,7 @@
   if (artwork.description) $meta.description = artwork.description;
   if (artwork.filetype.includes("video")) $meta.video = '/api/ipfs/' + artwork.filename;
   else $meta.image = '/api/ipfs/' + artwork.filename;
+  $meta = $meta;
 
   $: disabled =
     !artwork ||
