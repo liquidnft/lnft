@@ -3,7 +3,6 @@
   import Fa from "svelte-fa";
   import { faTimes } from "@fortawesome/free-solid-svg-icons";
   const dispatch = createEventDispatcher();
-  export let askingAsset;
   export let recipient;
   export let editable = true;
   import { tickers, royaltyRecipientIndividualType } from "$lib/utils";

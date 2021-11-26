@@ -26,14 +26,18 @@
   import { Sidebar, Navbar, Dialog, Footer, Snack, Head } from "$comp";
   import {
     addresses as a,
+    meta,
     titles as t,
     user,
     password,
     token,
   } from "$lib/store";
   import { onMount } from "svelte";
+  import branding from "$lib/branding";
 
   export let addresses, titles;
+
+  $meta = branding.meta;
 
   $a = addresses;
   $t = titles;
