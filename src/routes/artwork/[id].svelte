@@ -43,11 +43,14 @@
 
   export let artwork, others;
 
-  if (!$meta.title.includes(artwork.title)) $meta.title += " - " + artwork.title;
-  if (artwork.tags.length) $meta.keywords += " " + artwork.tags.map((t) => t.tag).join(" ");
+  if (!$meta.title.includes(artwork.title))
+    $meta.title += " - " + artwork.title;
+  if (artwork.tags.length)
+    $meta.keywords += " " + artwork.tags.map((t) => t.tag).join(" ");
   if (artwork.description) $meta.description = artwork.description;
-  if (artwork.filetype.includes("video")) $meta.video = '/api/ipfs/' + artwork.filename;
-  else $meta.image = '/api/ipfs/' + artwork.filename;
+  if (artwork.filetype.includes("video"))
+    $meta.video = "/api/ipfs/" + artwork.filename;
+  else $meta.image = "/api/ipfs/" + artwork.filename;
   $meta = $meta;
 
   $: disabled =
@@ -453,23 +456,21 @@
       </div>
 
       {#if others.length}
-        <div class="w-full mt-64">
+        <div class="w-full mt-64 mb-4">
           <h2 class="text-2xl font-bold primary-color py-10 px-0">
             More by this artist
           </h2>
-          <div class="w-full flex flex-wrap">
+          <div class="w-full grid md:grid-cols-3 gap-4 others">
             {#each others as artwork (artwork.id)}
-              <div class="w-full px-0 mb-20">
-                <Card {artwork} showDetails={false} />
-              </div>
+              <Card {artwork} showDetails={false} />
             {/each}
-            <div class="flex w-full">
-              <a
-                class="primary-btn mx-auto mb-12"
-                href={`/artist/${artwork.artist.username}`}>View all</a
-              >
-            </div>
           </div>
+        </div>
+        <div class="flex w-full">
+          <a
+            class="primary-btn mx-auto mb-12"
+            href={`/artist/${artwork.artist.username}`}>View all</a
+          >
         </div>
       {/if}
     </div>
@@ -611,9 +612,21 @@
     }
   }
 
-  @media only screen and (max-width: 500px) {
+  .others :global(img),
+  .others :global(video) {
+    height: 160px;
+    width: 100%;
+  }
+
+  @media only screen and (max-width: 768px) {
     .popup :global(img),
     .popup :global(video) {
+      height: auto;
+      width: 100%;
+    }
+
+    .others :global(img),
+    .others :global(video) {
       height: auto;
       width: 100%;
     }

@@ -10,6 +10,8 @@
   let show;
 </script>
 
+    {#if artwork.royalty_recipients.length}
+
 <div class="mb-6">
   <div class="text-xs cursor-pointer mb-2" on:click={() => (show = !show)}>
     <div class="flex">
@@ -24,7 +26,6 @@
   </div>
   {#if show}
     <ul>
-      {#if artwork.royalty_recipients.length}
         {#each artwork.royalty_recipients as recipient}
           <RoyaltyRecipient
             editable={false}
@@ -32,7 +33,7 @@
             {recipient}
           />
         {/each}
-      {/if}
     </ul>
   {/if}
 </div>
+      {/if}

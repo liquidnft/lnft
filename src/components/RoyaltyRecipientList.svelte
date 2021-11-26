@@ -59,7 +59,6 @@
   {:else}
     {#each items as recipient}
       <RoyaltyRecipient
-        {askingAsset}
         {recipient}
         on:removerecipient={removeRecipient}
       />
