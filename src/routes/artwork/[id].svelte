@@ -424,7 +424,6 @@
             <div class="text-lg">
               {list_price}
               {ticker}
-              <RoyaltyInfo {artwork} />
             </div>
           </div>
         {/if}
@@ -444,6 +443,8 @@
           </div>
         {/if}
       </div>
+
+      <RoyaltyInfo {artwork} />
 
       {#if loading}
         <ProgressLinear />

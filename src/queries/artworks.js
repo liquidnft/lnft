@@ -181,7 +181,7 @@ export const getArtworkByAsset = (asset) => `query {
 export const getArtworkBySlug = `query($slug: String!) {
   artworks(where: {slug : {_eq: $slug}}, limit: 1) {
     ${fields}
-    transactions(order_by: { created_at: desc }) {
+    transactions(where: { type: { _neq: "royalty" }}, order_by: { created_at: desc }) {
       ${txFields}
     } 
     tags {

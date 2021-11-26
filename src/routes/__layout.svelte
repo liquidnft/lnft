@@ -1,6 +1,17 @@
 <script context="module">
-  export async function load({ fetch, page }) {
+  export async function load({ fetch, page, session }) {
     const props = await fetch(`/addresses.json`).then((r) => r.json());
+
+    if (
+      session &&
+      session.user &&
+      !session.user.wallet_initialized &&
+      !["/wallet", "/logout"].find((p) => page.path.includes(p))
+    )
+      return {
+        status: 302,
+        redirect: "/wallet/setup",
+      };
 
     return {
       maxage: 90,
@@ -36,7 +47,6 @@
   onMount(() => {
     if (!$password) $password = window.sessionStorage.getItem("password");
   });
-
 </script>
 
 <svelte:window bind:scrollY={y} />

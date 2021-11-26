@@ -1,0 +1,5 @@
+{
+  "watch": ["src"],
+  "inspect": true,
+  "exec": "cross-env NODE_OPTIONS='--openssl-legacy-provider' node"
+}
