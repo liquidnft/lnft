@@ -1,7 +1,6 @@
 <script context="module">
   export async function load({ fetch }) {
     const r = await fetch("/artworks.json?limit=12").then((r) => r.json());
-
     return {
       maxage: 720,
       props: {
@@ -10,7 +9,6 @@
       },
     };
   }
-
 </script>
 
 <script>
@@ -33,27 +31,21 @@
   import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";
   import { pub } from "$lib/api";
-
   export let count;
   export let showFilters;
   export let initialArtworks;
-
   let filtered = initialArtworks;
-
   let offset = 0;
-
   $: reset($filterCriteria, $sortCriteria);
   let reset = async () => {
     if (initialArtworks && initialArtworks.length) {
       $artworks = initialArtworks;
     }
   };
-
   onMount(async () => {
     const r = await fetch("/artworks.json").then((r) => r.json());
     $artworks = r.artworks;
   });
-
 </script>
 
 <style>
@@ -62,10 +54,9 @@
       width: 90%;
       appearance: none;
       border: 0;
-      border-bottom: 1px solid #6ed8e0;
+      border-bottom: 1px solid #CEDC21;
     }
   }
-
   @media only screen and (max-width: 767px) {
     .primary-btn {
       width: 300px;
@@ -74,7 +65,6 @@
       margin-bottom: 30px;
     }
   }
-
 </style>
 
 <Results />
