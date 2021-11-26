@@ -36,7 +36,7 @@ import { getActiveBids } from "$queries/transactions";
 import { compareAsc, parseISO } from "date-fns";
 
 const DUST = 800;
-const satsPerByte = 0.1;
+const satsPerByte = 0.2;
 
 const SERVER_PUBKEY = Buffer.from(
   "037f2e57d2017e3bf89ac391c95dfe46b3f6ff606cc2a3a04b4d9f043418c3b4bc",
