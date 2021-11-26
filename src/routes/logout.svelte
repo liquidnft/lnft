@@ -5,9 +5,7 @@
     } catch (e) {
       console.log(e);
     }
-
     console.log(session);
-
     return {};
   }
 </script>
@@ -17,7 +15,6 @@
   import { onMount } from "svelte";
   import { goto } from "$lib/utils";
   import { user, token } from "$lib/store";
-
   onMount(() => {
     session.set(null);
     token.set(null);

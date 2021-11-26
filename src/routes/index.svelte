@@ -31,11 +31,11 @@
 <div class="flex header-container mx-auto justify-center marg-bottom">
   <div class="header text-center">
     <h1 class="text-left md:text-center md:w-full">
-      JungleLab
-      <br />music video art
+      {branding.projectName}
+      <br />digital art
     </h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      Upload, collect, and transact rare digital assets on the Bitcoin Liquid Network
+      Upload, collect, and transact rare digital art on the Liquid Network
     </h5>
     <a class="primary-btn" href={`/market`}>Start exploring</a>
   </div>
@@ -44,22 +44,25 @@
 {#if featured[current]}
   <div class="flex secondary-header marg-bottom">
     <div
-      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
+      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
+    >
       <div class="blur-bg">
         <h2>{featured[current].artwork.artist.username}</h2>
         <p>
           {featured[current].artwork.title}
           <a href="/a/{featured[current].artwork.slug}">
-          <button
-            class="button-transparent header-button border mt-10"
-            style="border-color: white; color: white"
+            <button
+              class="button-transparent header-button border mt-10"
+              style="border-color: white; color: white"
             >
-              View Artwork</button></a>
+              View Artwork</button
+            ></a
+          >
         </p>
       </div>
     </div>
 
-    {#if featured[current].artwork.filetype.includes('video')}
+    {#if featured[current].artwork.filetype.includes("video")}
       <video
         in:fade
         out:fade
@@ -69,14 +72,16 @@
         playsinline
         loop
         src={`/api/ipfs/${featured[current].artwork.filename}`}
-        :key={featured[current].id} />
+        :key={featured[current].id}
+      />
     {:else}
       <img
         in:fade
         out:fade
         class="lazy cover absolute secondary-header"
         alt={featured[current].artwork.title}
-        src={`/api/ipfs/${featured[current].artwork.filename}`} />
+        src={`/api/ipfs/${featured[current].artwork.filename}`}
+      />
     {/if}
   </div>
 {/if}
@@ -90,11 +95,11 @@
   {/each}
 </div>
 <div class="container more marg-bottom">
-  <a class="secondary-btn" href={'/activity'}>View more</a>
+  <a class="secondary-btn" href={"/activity"}>View more</a>
 </div>
 
 <div class="container mx-auto px-10">
-  <h3>Latest Drops</h3>
+  <h3>Latest Pieces</h3>
 </div>
 <div class="container mx-auto flex pb-1 overflow-x-auto">
   {#each latest as transaction}
@@ -102,7 +107,7 @@
   {/each}
 </div>
 <div class="container more marg-bottom">
-  <a class="secondary-btn" href={'/market'}>View gallery</a>
+  <a class="secondary-btn" href={"/market"}>View gallery</a>
 </div>
 
 <style>

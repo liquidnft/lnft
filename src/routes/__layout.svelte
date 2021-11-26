@@ -1,7 +1,6 @@
 <script context="module">
   export async function load({ fetch, page }) {
     const props = await fetch(`/addresses.json`).then((r) => r.json());
-
     return {
       maxage: 90,
       props,
@@ -21,22 +20,16 @@
     token,
   } from "$lib/store";
   import { onMount } from "svelte";
-
   export let addresses, titles;
-
   $a = addresses;
   $t = titles;
-
   $user = $session.user;
   $token = $session.jwt;
-
   let open = false;
   let y;
-
   onMount(() => {
     if (!$password) $password = window.sessionStorage.getItem("password");
   });
-
 </script>
 
 <svelte:window bind:scrollY={y} />

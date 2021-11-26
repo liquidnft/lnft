@@ -3,7 +3,6 @@
   import { faSearch } from "@fortawesome/free-solid-svg-icons";
   import Hamburger from "./Hamburger.svelte";
   import Menu from "./Menu.svelte";
-
   export let sidebar = false;
 </script>
 
@@ -30,15 +29,12 @@
   header {
     padding-top: 20px;
   }
-
   .hambuger {
     display: none;
   }
-
   .mobileSearch {
     display: none;
   }
-
   @media only screen and (max-width: 1023px) {
     header {
       padding-top: 12px;
@@ -47,12 +43,10 @@
     .hambuger {
       display: block;
     }
-
     .mobileSearch {
       display: block;
       font-size: 20px;
     }
-
     nav {
       z-index: 100;
     }
