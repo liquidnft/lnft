@@ -1,6 +1,7 @@
 const { api, electrs, hasura } = require("./api");
 const { broadcast } = require("./wallet");
 const { Psbt } = require("liquidjs-lib");
+const { isBefore, addMinutes, parseISO } = require("date-fns");
 
 const crypto = require("crypto");
 const wretch = require("wretch");
@@ -86,6 +87,7 @@ app.post("/viewed", async (req, res) => {
         multisig
       } 
       asset
+      created_at
     }
   }`;
 
@@ -98,8 +100,10 @@ app.post("/viewed", async (req, res) => {
     .catch(console.log);
 
   if (result.data) {
-    let { asset, owner } = result.data.update_artworks_by_pk;
+    let { asset, owner, created_at } = result.data.update_artworks_by_pk;
     let { address, multisig } = owner;
+
+    if (isBefore(new Date()), addMinutes(parseISO(created_at), 5)) return res.send({});
 
     let utxos = [
       ...(await electrs.url(`/address/${address}/utxo`).get().json()),
