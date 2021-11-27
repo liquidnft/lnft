@@ -241,11 +241,11 @@ app.post("/transaction", auth, async (req, res) => {
     }
 
     query = `mutation create_transaction($transaction: transactions_insert_input!) {
-    insert_transactions_one(object: $transaction) {
-      id,
-      artwork_id
-    } 
-  }`;
+      insert_transactions_one(object: $transaction) {
+        id,
+        artwork_id
+      } 
+    }`;
 
     ({ data, errors } = await api(req.headers)
       .post({ query, variables: { transaction } })
