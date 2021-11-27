@@ -11,6 +11,9 @@
   export let showDetails = true;
   export let thumb = true;
   export let popup = false;
+  export let height;
+
+  $: style = height ? `height: ${height}px` : undefined;
 
   let sats, val, ticker;
   $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
@@ -36,7 +39,7 @@
     : 'bg-gray-100'} flex-col justify-between h-full"
   in:fade
 >
-  <div>
+  <div {style}>
     <a href={`/a/${artwork.slug}`} sveltekit:prefetch>
       {#if $loaded[artwork.id] || !justScrolled}
         <ArtworkMedia {artwork} {showDetails} {popup} bind:thumb />

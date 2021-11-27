@@ -114,8 +114,9 @@
         class="market-gallery w-full mb-20"
         style={`transform: translateY(${translate}px)`}
       >
-        <Card {artwork} bind:justScrolled />
+        <Card {artwork} bind:justScrolled height={350} />
       </div>
     {/each}
   </div>
 </div>
+
