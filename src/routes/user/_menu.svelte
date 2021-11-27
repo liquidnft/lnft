@@ -46,6 +46,7 @@
     font-size: 15px;
   }
   .menu a {
+    color: inherit;
     margin: 10px 0;
   }
   .menu span {

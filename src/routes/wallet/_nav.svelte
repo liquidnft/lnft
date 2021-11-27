@@ -67,6 +67,10 @@
   .wallet-nav {
     font-size: 15px;
   }
+  
+  a {
+    color: inherit;
+  } 
 
   .wallet-nav a {
     margin-bottom: 20px;

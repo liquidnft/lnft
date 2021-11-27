@@ -7,12 +7,18 @@
     <div
       class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first"
     >
-      <a href="/"><img src="/branding/logo-footer.svg" alt="logo" class="w-24" /></a>
+      <a href="/"
+        ><img src="/branding/logo-footer.svg" alt="logo" class="w-24" /></a
+      >
       <p class="mt-4">&copy;2021 {branding.projectName}</p>
-      <div class="flex items-center mt-12">
-        <p class="pr-3">Powered by:</p>
-        <img src="/liquid_logo.svg" alt="liquid network logo" />
-      </div>
+        <div class="flex items-center mt-12">
+          <p class="pr-3">Powered by:</p>
+          <div class="bg-black p-4 rounded">
+      <a href="https://blockstream.com/liquid">
+            <img src="/liquid_logo.svg" alt="liquid network logo" />
+      </a>
+          </div>
+        </div>
     </div>
     <div class="w-full lg:w-1/4 mb-10">
       <h4 class="font-bold mb-4">Follow US</h4>

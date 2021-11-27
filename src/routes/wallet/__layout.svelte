@@ -1,6 +1,5 @@
 <script>
   import Nav from "./_nav.svelte";
-  import "../vars.css";
 </script>
 
 <style>
