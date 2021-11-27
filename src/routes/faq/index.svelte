@@ -122,11 +122,6 @@
     margin-bottom: 10px;
   }
 
-<<<<<<< HEAD
-  @media only screen and (max-width: 1023px){
-    h3{font-weight: bold;}
-    .faq-content{
-=======
   .contact a,
   .faq a {
     color: #3ba5ac;
@@ -137,7 +132,6 @@
       font-weight: bold;
     }
     .faq-content {
->>>>>>> 7393d37a... prettier
       flex-wrap: wrap;
     }
     .contact {
