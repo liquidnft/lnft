@@ -85,7 +85,7 @@
               <div class="price">{val(artwork.bid.amount)} {ticker}</div>
               <div class="text-sm font-medium">
                 Current bid by
-                <a href={`/u/${artwork.bid.user.username}`}
+                <a href={`/${artwork.bid.user.username}`}
                   >@{artwork.bid.user.username}</a
                 >
               </div>
@@ -94,7 +94,7 @@
         </div>
         <div class="flex">
           <div>
-            <a href={`/u/${artwork.artist.username}`}>
+            <a href={`/${artwork.artist.username}`}>
               <div class="flex">
                 <Avatar user={artwork.artist} />
                 <div class="ml-2">
@@ -107,7 +107,7 @@
 
           {#if artwork.owner.id !== artwork.artist.id}
             <div class="ml-auto">
-              <a href={`/u/${artwork.artist.username}`}>
+              <a href={`/${artwork.artist.username}`}>
                 <div class="flex">
                   <Avatar user={artwork.owner} />
                   <div class="ml-2">

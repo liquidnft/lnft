@@ -211,7 +211,7 @@
                           <Avatar
                             user={users[username]}
                             overlay={username.includes("2of2") &&
-                              "/logo-graphic.png"}
+                            "/branding/logo-graphic.png"}
                           />
                         {:else}
                           <Avatar
@@ -221,7 +221,7 @@
                       </div>
                       <div class="my-auto ml-2 truncate">
                         <a
-                          href={`/u/${username.replace(" 2of2", "")}`}
+                          href={`/${username.replace(" 2of2", "")}`}
                           class="secondary-color"
                         >
                           {username}
@@ -260,7 +260,7 @@
                           <Avatar
                             user={users[username]}
                             overlay={username.includes("2of2") &&
-                              "/logo-graphic.png"}
+                            "/branding/logo-graphic.png"}
                           />
                         {:else}
                           <Avatar
@@ -270,7 +270,7 @@
                       </div>
                       <div class="my-auto ml-2 truncate">
                         <a
-                          href={`/u/${username.replace(" 2of2", "")}`}
+                          href={`/${username.replace(" 2of2", "")}`}
                           class="secondary-color"
                         >
                           {username}

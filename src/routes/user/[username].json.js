@@ -3,7 +3,10 @@ export async function get({ headers, locals: { q }, params: { username } }) {
   try {
     let { users } = await q(getUserByUsername, { username });
 
-    console.log(users, username);
+    if (!users.length) return {
+      status: 302,
+      redirect: '/'
+    } 
 
     return {
       body: {

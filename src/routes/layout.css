@@ -139,11 +139,9 @@ a {
     border-radius: 30px;
     border: 1px solid #2d2e32;
     color: #2d2e32;
-    height: 48px;
-    padding: 0 30px;
+    padding: 10px;
     font-weight: 700;
     background: none;
-    font-size: 18px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -277,11 +275,9 @@ a {
       appearance: none;
   }
   input, textarea, select {
-      overflow-y: auto;
-      padding-top: 10px !important;
-      padding-right: 10px;
-      padding-bottom: 10px !important;
-      padding-left: 10px;
+    overflow-y: auto;
+    padding: 10px !important;
+    border-width: 1px;
   }
   input[type="checkbox"], input[type="radio"] {
     padding: 0 !important;
@@ -294,9 +290,6 @@ a {
   }
   textarea:focus, input:focus{
     outline: none;
-  }
-  input, textarea, select {
-    border-width: 1px;
   }
   
   @media only screen and (max-width: 1023px) {

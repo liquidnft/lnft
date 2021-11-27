@@ -83,7 +83,7 @@
     if (!t) return;
 
     try {
-      artwork = (await query(getArtwork(id))).artworks_by_pk;
+      artwork = (await query(getArtwork, { id })).artworks_by_pk;
 
       if (!artwork.asking_asset) artwork.asking_asset = btc;
       auction_enabled =

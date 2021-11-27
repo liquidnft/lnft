@@ -1,16 +1,23 @@
 <script context="module">
   export async function load({ fetch, page }) {
-    console.log("OH");
-    const { subject } = await fetch(`/user/${page.params.username}.json`).then(
-      (r) => r.json()
-    );
+    try {
+      const { subject } = await fetch(
+        `/user/${page.params.username}.json`
+      ).then((r) => r.json());
 
-    return {
-      maxage: 90,
-      props: {
-        subject,
-      },
-    };
+      return {
+        maxage: 90,
+        props: {
+          subject,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        status: 302,
+        redirect: "/",
+      };
+    }
   }
 </script>
 
@@ -80,7 +87,7 @@
     }
   };
 
-  let tab = "collection";
+  let tab = subject.is_artist ? "creations" : "collection";
 </script>
 
 <div class="container mx-auto lg:px-16 mt-5 md:mt-20">

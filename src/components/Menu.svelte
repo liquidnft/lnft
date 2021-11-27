@@ -26,7 +26,7 @@
     {#if $user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
     {/if}
-    <a href={`/u/${$user.username}`}>
+    <a href={`/${$user.username}`}>
       <button on:click={toggle} class="flex">
         <Avatar user={$user} />
       </button></a

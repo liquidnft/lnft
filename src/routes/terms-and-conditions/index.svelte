@@ -1,81 +1,29 @@
 <script>
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-  import branding from '$lib/branding';
+  import branding from "$lib/branding";
 </script>
-
-<style>
-  h3 {
-    @apply mt-8;
-  }
-  p,
-  h3 {
-    @apply mb-4;
-    text-align: left;
-  }
-
-  h4 {
-    font-weight: bold;
-    margin: 20px 0 10px 0;
-  }
-
-  ul {
-    list-style: disc;
-    padding: 0 20px;
-  }
-
-  ul li {
-    margin-bottom: 20px;
-    text-align: left;
-  }
-
-  .faq-content {
-    display: flex;
-    text-align: justify;
-  }
-
-  @media only screen and (max-width: 1023px) {
-    h3 {
-      font-weight: bold;
-    }
-    .faq-content {
-      flex-wrap: wrap;
-    }
-  }
-
-</style>
 
 <div class="max-w-4xl container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
-    <h2 class="mb-10">{ branding.projectName } Terms and Conditions</h2>
+    <h2 class="mb-10">{branding.projectName} Terms and Conditions</h2>
     <div class="faq-content">
       <div class="faq">
         <p>
-          { branding.projectName } is a bitcoin-focused digital art website based on the LNFT
-          platform which provides a new way for artists and their fans to
-          interact in a more direct way. { branding.projectName } provides artists with an easy
-          and intuitive way to mint and trade non-fungible tokens (NFTs) on the
-          Liquid Network (a Bitcoin sidechain). { branding.projectName } allows fans to support
-          their favourite artist through digital patronage. As an artist or fan
-          you should understand exactly how { branding.projectName } works before you decide to
-          participate. These Terms &amp; Conditions give a quick summary, but
-          you should review the { branding.projectName } FAQs and ask questions on the
-          { branding.projectName } support forums to get more information.
+          {branding.projectName} is a bitcoin-focused digital art website based on
+          the LNFT platform which provides a new way for artists and their fans to
+          interact in a more direct way. {branding.projectName} provides artists
+          with an easy and intuitive way to mint and trade non-fungible tokens (NFTs)
+          on the Liquid Network (a Bitcoin sidechain). {branding.projectName} allows
+          fans to support their favourite artist through digital patronage. As an
+          artist or fan you should understand exactly how {branding.projectName}
+          works before you decide to participate. These Terms &amp; Conditions give
+          a quick summary, but you should review the {branding.projectName} FAQs
+          and ask questions on the
+          {branding.projectName} support forums to get more information.
         </p>
 
         <p>These Terms Set Forth a Legally Binding Agreement</p>
-
-        <p>
-          Please read these Terms &amp; Conditions (“Terms'', “Agreement”) very
-          carefully. This Agreement is between you (the “User(s),” “Artist(s),”
-          “Fan(s)”, and collectively any entity using the Site - “Users”) and
-          GreenAddressIT Limited (“Operator”, “we”or “us”), a company registered
-          and incorporated under the laws of Malta with company number C62738
-          and whose registered office is Vincenti Buildings 28/19 (Suite 1405),
-          Strait Street, VLT1432 Valletta, Malta and a wholly-owned, indirect
-          subsidiary of Blockstream Corporation Inc, and operating the { branding.projectName }
-          website (“Website”) located at { branding.projectName }.com (“Site”).
-        </p>
 
         <p>
           THESE TERMS SET FORTH THE LEGALLY BINDING TERMS AND CONDITIONS THAT
@@ -94,16 +42,16 @@
 
         Our
         <a href="/privacy-policy">Privacy Policy can be found here</a>
-        and it describes the ways we collect, use, store and disclose your
-        personal information. You agree to the collection, use, storage, and
-        disclosure of your data in accordance with our Privacy Policy.
+        and it describes the ways we collect, use, store and disclose your personal
+        information. You agree to the collection, use, storage, and disclosure of
+        your data in accordance with our Privacy Policy.
 
         <h3>The Website</h3>
 
         <p>
-          { branding.projectName } is an open source curated instance of the LNFT platform for
-          Bitcoin artists and fans. LNFT is a web-based platform for issuing and
-          transacting with non-fungible tokens on the Bitcoin Liquid Network.
+          {branding.projectName} is an open source curated instance of the LNFT platform
+          for Bitcoin artists and fans. LNFT is a web-based platform for issuing
+          and transacting with non-fungible tokens on the Bitcoin Liquid Network.
         </p>
 
         <h3>Accessing and Interacting with the Website</h3>
@@ -122,7 +70,9 @@
           registered are personal and will not be used by any other person. You
           must inform us immediately of any breach of security, loss, theft or
           unauthorized use of your username, password or security information at
-          <a href="mailto:support@{ branding.projectName }.com">support@{ branding.projectName }.com</a>
+          <a href="mailto:support@{branding.projectName}.com"
+            >support@{branding.projectName}.com</a
+          >
         </p>
 
         <p>
@@ -197,30 +147,31 @@
         </p>
 
         <p>
-          { branding.projectName } is a non-custodial service meaning that neither the Website
-          nor Operator are ever in control of assets in Users wallets. Users are
-          solely responsible for the security of their account and wallets. As
-          with all crypto assets, control of the password, mnemonic seed phrase
+          {branding.projectName} is a non-custodial service meaning that neither
+          the Website nor Operator are ever in control of assets in Users wallets.
+          Users are solely responsible for the security of their account and wallets.
+          As with all crypto assets, control of the password, mnemonic seed phrase
           or private key is control of the asset. This is true for both NFTs and
-          of the assets used to purchase them (e.g. L-BTC). Users also should
-          realize that if the password, mnemonic seed phrase or private key is
-          lost the assets will be permanently unrecoverable. In addition, since
-          the wallet used to interact with the Website runs on the User’s device
-          and in-browser, it is vulnerable to hacks and software bugs, in the
-          operating system, and in other software (including malware) on that
-          device and in the browser. You agree to maintain at all times adequate
-          security and control of all of your account details, passwords, or any
-          other codes that you use to access or interact with the Website. Users
-          acknowledge and agree that the technologies used in { branding.projectName }
-          (including but not limited to cryptocurrencies, web wallets, atomic
-          swaps, NFTs, integrations with 3rd parties) are experimental,
-          speculative, and inherently risky. Users acknowledge and agree that
-          the { branding.projectName } services may be subject to bugs, malfunctions, timing
-          errors, hacking and theft, that can adversely affect your account and
-          may expose you to a risk of total loss, forfeiture of your funds or
-          { branding.projectName } Items, or lost opportunities to buy or sell { branding.projectName } Items.
-          { branding.projectName } and Operator assume no liability or responsibility for any
-          such failures, risks, or uncertainties.
+          of the assets used to purchase them (e.g. L-BTC). Users also should realize
+          that if the password, mnemonic seed phrase or private key is lost the assets
+          will be permanently unrecoverable. In addition, since the wallet used to
+          interact with the Website runs on the User’s device and in-browser, it
+          is vulnerable to hacks and software bugs, in the operating system, and
+          in other software (including malware) on that device and in the browser.
+          You agree to maintain at all times adequate security and control of all
+          of your account details, passwords, or any other codes that you use to
+          access or interact with the Website. Users acknowledge and agree that the
+          technologies used in {branding.projectName}
+          (including but not limited to cryptocurrencies, web wallets, atomic swaps,
+          NFTs, integrations with 3rd parties) are experimental, speculative, and
+          inherently risky. Users acknowledge and agree that the {branding.projectName}
+          services may be subject to bugs, malfunctions, timing errors, hacking and
+          theft, that can adversely affect your account and may expose you to a risk
+          of total loss, forfeiture of your funds or
+          {branding.projectName} Items, or lost opportunities to buy or sell {branding.projectName}
+          Items.
+          {branding.projectName} and Operator assume no liability or responsibility
+          for any such failures, risks, or uncertainties.
         </p>
 
         <h3>Transactions in the Website</h3>
@@ -242,30 +193,29 @@
         </p>
 
         <p>
-          Transactions in { branding.projectName } are peer-to-peer and use atomic swaps. This
-          means that neither the Website or Operator need to hold funds in
-          escrow in Token sales. Partially Signed Elements Transactions (PSET)
-          used in these atomic swaps ensure that the parties involved in a
-          transaction follow the Sale terms. In addition, royalties and auction
-          holding periods are enforced through a 2-of-2 signing server provided
-          by the Website that only signs off on transactions that meet certain
-          conditions including making sure that Artists receive their
-          corresponding royalties. Initially { branding.projectName } will not charge any fee
-          for any transaction performed in the Website (other than Liquid
-          transaction fees), but this may change in the future.
+          Transactions in {branding.projectName} are peer-to-peer and use atomic
+          swaps. This means that neither the Website or Operator need to hold funds
+          in escrow in Token sales. Partially Signed Elements Transactions (PSET)
+          used in these atomic swaps ensure that the parties involved in a transaction
+          follow the Sale terms. In addition, royalties and auction holding periods
+          are enforced through a 2-of-2 signing server provided by the Website that
+          only signs off on transactions that meet certain conditions including making
+          sure that Artists receive their corresponding royalties. Initially {branding.projectName}
+          will not charge any fee for any transaction performed in the Website (other
+          than Liquid transaction fees), but this may change in the future.
         </p>
 
-        <h3>Creation of { branding.projectName } Items</h3>
+        <h3>Creation of {branding.projectName} Items</h3>
 
         <p>
           All Artwork (“Artwork(s)”, “Creation(s)”, “Work”) posted on the
-          { branding.projectName } website is associated with a unique Liquid asset exclusively
-          issued by an approved { branding.projectName } Artist. Each { branding.projectName } Item
-          (“Item(s)”, “Non-fungible token(s)”, “NFT(s)” or “Token”) is minted by
-          an Artist using the asset issuance functionality of the Liquid
-          Network. The type of media files that are currently supported and can
-          be used by Artists in { branding.projectName } to post their Work are jpg, png, gif
-          and mp4. When an Artist first uploads his or her Work to { branding.projectName },
+          {branding.projectName} website is associated with a unique Liquid asset
+          exclusively issued by an approved {branding.projectName} Artist. Each {branding.projectName}
+          Item (“Item(s)”, “Non-fungible token(s)”, “NFT(s)” or “Token”) is minted
+          by an Artist using the asset issuance functionality of the Liquid Network.
+          The type of media files that are currently supported and can be used by
+          Artists in {branding.projectName} to post their Work are jpg, png, gif
+          and mp4. When an Artist first uploads his or her Work to {branding.projectName},
           the media file is added to the IPFS network and assigned a unique
           content identifier (CID) derived from the SHA256 hash of the file. The
           Website hosts an IPFS node that is capable of maintaining a copy and
@@ -278,31 +228,31 @@
           broadcasted to be permanently recorded in the Liquid blockchain, added
           to the Blockstream Asset Registry and the minted Token is sent to the
           Artist’s wallet that can then be traded in the Website. This action
-          provides { branding.projectName } Artists and Fans with a permanent record of
-          authenticity and ownership of the Token. Since the asset registry is
-          an open source project publicly available on GitHub anyone interested
-          could clone this project and provide redundancy to the system. After a
-          Token is minted by an Artist, he or she can then propose the terms
-          (“Sale”) under which the Token will be sold to Fans (including the
-          option to add royalties to be assigned to the original Artist) in a
-          primary sale. After a { branding.projectName } Item is sold by the original Artist,
-          it can then be traded in a secondary market provided by the Website to
-          any { branding.projectName } User.
+          provides {branding.projectName} Artists and Fans with a permanent record
+          of authenticity and ownership of the Token. Since the asset registry is
+          an open source project publicly available on GitHub anyone interested could
+          clone this project and provide redundancy to the system. After a Token
+          is minted by an Artist, he or she can then propose the terms (“Sale”) under
+          which the Token will be sold to Fans (including the option to add royalties
+          to be assigned to the original Artist) in a primary sale. After a {branding.projectName}
+          Item is sold by the original Artist, it can then be traded in a secondary
+          market provided by the Website to any {branding.projectName} User.
         </p>
 
-        <h3>{ branding.projectName } Artists</h3>
+        <h3>{branding.projectName} Artists</h3>
 
         <p>
           Initially, only invited Artists will be able to post Artwork in the
-          Website, mint Tokens and make a primary Sale of { branding.projectName } Items. This
-          responsibility will then be passed on to the active { branding.projectName } Artists.
-          Artists seeking an invitation to create and list works for sale on
-          { branding.projectName } must submit a request that can be found here. Please keep in
-          mind that due to current limited resources this process could
-          initially extend for months. { branding.projectName } has unilateral discretion in
-          curating in the Website and makes no guarantees or promises that any
-          Artists will be approved, even if the Artist was invited by a member
-          of { branding.projectName } to submit a request
+          Website, mint Tokens and make a primary Sale of {branding.projectName}
+          Items. This responsibility will then be passed on to the active {branding.projectName}
+          Artists. Artists seeking an invitation to create and list works for sale
+          on
+          {branding.projectName} must submit a request that can be found here. Please
+          keep in mind that due to current limited resources this process could initially
+          extend for months. {branding.projectName} has unilateral discretion in
+          curating in the Website and makes no guarantees or promises that any Artists
+          will be approved, even if the Artist was invited by a member of {branding.projectName}
+          to submit a request
         </p>
 
         <p>
@@ -347,11 +297,12 @@
             affect these agreements, representations and warranties
           </li>
           <li>
-            Artist agrees to indemnify { branding.projectName } and Operator and be held liable
-            for any claim against { branding.projectName } or Operator arising out of the
-            Artist’s breach of these Terms. Artist releases and forever
-            discharges { branding.projectName } and Operator from any damages or causes of
-            action resulting from a sale of any of the Artist’s listed { branding.projectName }
+            Artist agrees to indemnify {branding.projectName} and Operator and be
+            held liable for any claim against {branding.projectName} or Operator
+            arising out of the Artist’s breach of these Terms. Artist releases and
+            forever discharges {branding.projectName} and Operator from any damages
+            or causes of action resulting from a sale of any of the Artist’s listed
+            {branding.projectName}
             Items occurring after the Artist’s breach of these Terms.
           </li>
         </ul>
@@ -382,12 +333,12 @@
           </li>
         </ul>
 
-        <h3>{ branding.projectName } Fans</h3>
+        <h3>{branding.projectName} Fans</h3>
 
         <p>
           By bidding on an Token, a Fan agrees with Operator, and represents and
-          warranties to Operator and the Artist or any other { branding.projectName } User
-          that:
+          warranties to Operator and the Artist or any other {branding.projectName}
+          User that:
         </p>
 
         <ul>
@@ -439,14 +390,13 @@
             the intent to sell the associated Token or to share the purchase or
             discuss the Artwork. Any other features associated with the Token
             including but not limited to a physical representation of the
-            Artwork will be explicitly described in the { branding.projectName } Item Sale.
-            Unless authorized by the Artist or Sale terms, the owner of a Token
+            Artwork will be explicitly described in the {branding.projectName} Item
+            Sale. Unless authorized by the Artist or Sale terms, the owner of a Token
             can not use the associated Artwork for commercial purposes including
-            but not limited to selling copies of the Work. If any additional
-            permissions or rights are granted, these would be automatically
-            cancelled once the Token holder is no longer in possession of the
-            associated Token for any reason including but not limited to selling
-            of the Token.
+            but not limited to selling copies of the Work. If any additional permissions
+            or rights are granted, these would be automatically cancelled once the
+            Token holder is no longer in possession of the associated Token for any
+            reason including but not limited to selling of the Token.
           </li>
           <li>
             The Operator may act as it sees fit in order to protect its
@@ -468,7 +418,7 @@
         <h3>Fans and Artists</h3>
         <p>
           By registering to use the Website, each Fan and Artist agrees with
-          Blockstream that:
+          {branding.projectName} that:
         </p>
         <ul>
           <li>
@@ -497,24 +447,24 @@
           </li>
         </ul>
 
-        <h3>{ branding.projectName } Marketplace</h3>
+        <h3>{branding.projectName} Marketplace</h3>
 
         <p>
-          { branding.projectName } provides an easy and intuitive way for Artists and Fans to
-          buy and sell { branding.projectName } Items. Artworks are listed in a
-          searchable/sortable/filterable marketplace gallery. Bids and sales are
-          conducted peer-to-peer using atomic swaps so the Website or Operator
-          do not hold funds on escrow and are never in custody of User’s funds
-          or { branding.projectName } Items. Listings, bids, transfers and new Artwork activity
-          are logged and presented in a site-wide feed. Royalties and auction
+          {branding.projectName} provides an easy and intuitive way for Artists and
+          Fans to buy and sell {branding.projectName} Items. Artworks are listed
+          in a searchable/sortable/filterable marketplace gallery. Bids and sales
+          are conducted peer-to-peer using atomic swaps so the Website or Operator
+          do not hold funds on escrow and are never in custody of User’s funds or
+          {branding.projectName} Items. Listings, bids, transfers and new Artwork
+          activity are logged and presented in a site-wide feed. Royalties and auction
           holding periods are enforced through a 2-of-2 signing method where one
-          of the keys is controlled by the Website and only transactions that
-          meet certain conditions (such as original artist receiving the
-          corresponding royalties) are signed off. Once NFTs are in a 2-2 wallet
-          they are locked in the Website to ensure Sale terms such as auction
-          times and royalties conditions are fulfilled. The terms of a Sale,
-          like purchase currency, bidding intervals, settlement and number of
-          Tokens auctioned are specified on the Site for the Sale
+          of the keys is controlled by the Website and only transactions that meet
+          certain conditions (such as original artist receiving the corresponding
+          royalties) are signed off. Once NFTs are in a 2-2 wallet they are locked
+          in the Website to ensure Sale terms such as auction times and royalties
+          conditions are fulfilled. The terms of a Sale, like purchase currency,
+          bidding intervals, settlement and number of Tokens auctioned are specified
+          on the Site for the Sale
         </p>
 
         <h4>
@@ -526,14 +476,14 @@
         <ul>
           <li>
             Simple listing: Artists or Token owners can set a predefined price
-            for the { branding.projectName } Item or not, and decide on the listing asset
-            denomination (e.g. L-BTC, L-USDt, etc.). The option to define a
+            for the {branding.projectName} Item or not, and decide on the listing
+            asset denomination (e.g. L-BTC, L-USDt, etc.). The option to define a
             royalty rate (in percentage) is also available only for Artists when
-            originally listing a { branding.projectName } Item in a primary sale. This rate can
-            not be modified afterwards by any Token owner. This listing option
-            keeps the { branding.projectName } Item available for purchase/bid as long as the
-            Sale terms are not fulfilled, delisted or deleted by the Artist or
-            Token owner.
+            originally listing a {branding.projectName} Item in a primary sale. This
+            rate can not be modified afterwards by any Token owner. This listing
+            option keeps the {branding.projectName} Item available for purchase/bid
+            as long as the Sale terms are not fulfilled, delisted or deleted by the
+            Artist or Token owner.
           </li>
           <li>
             Auctions: This type of listing provides the same options as simple
@@ -549,18 +499,19 @@
         <ul>
           <li>
             Make an offer: In this case a listing price is not predefined for
-            the { branding.projectName } Item. This allows Users to make offers on a { branding.projectName }
-            Item that the Artist or current owner of the { branding.projectName } Item can then
-            accept, reject or wait until more offers are available.
+            the {branding.projectName} Item. This allows Users to make offers on
+            a {branding.projectName}
+            Item that the Artist or current owner of the {branding.projectName} Item
+            can then accept, reject or wait until more offers are available.
           </li>
           <li>
-            Buy Now: Artist or Token owners can decide to list a { branding.projectName } Item
-            for a predefined price. This allows other Users to automatically buy
-            the { branding.projectName } Item for the listed price. The completion of the trade
-            is enforced by an atomic swap transaction created by the Artist or
-            Token owner wallet when listing a { branding.projectName } Item. In this scenario
-            however, it is also possible for Users to make an offer instead of
-            buying the { branding.projectName } Item.
+            Buy Now: Artist or Token owners can decide to list a {branding.projectName}
+            Item for a predefined price. This allows other Users to automatically
+            buy the {branding.projectName} Item for the listed price. The completion
+            of the trade is enforced by an atomic swap transaction created by the
+            Artist or Token owner wallet when listing a {branding.projectName} Item.
+            In this scenario however, it is also possible for Users to make an offer
+            instead of buying the {branding.projectName} Item.
           </li>
         </ul>
 
@@ -638,3 +589,43 @@
     </div>
   </div>
 </div>
+
+<style>
+  h3 {
+    @apply mt-8;
+  }
+  p,
+  h3 {
+    @apply mb-4;
+    text-align: left;
+  }
+
+  h4 {
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+  }
+
+  ul {
+    list-style: disc;
+    padding: 0 20px;
+  }
+
+  ul li {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .faq-content {
+    display: flex;
+    text-align: justify;
+  }
+
+  @media only screen and (max-width: 1023px) {
+    h3 {
+      font-weight: bold;
+    }
+    .faq-content {
+      flex-wrap: wrap;
+    }
+  }
+</style>

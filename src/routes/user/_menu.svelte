@@ -20,8 +20,6 @@
         <div><span>Become an Artist</span></div>
       </div>
     </a>
-  {:else}
-    <a href="/artwork/create" class="primary-btn">Submit a new artwork</a>
   {/if}
   <a href="/wallet">
     <div class="flex">
