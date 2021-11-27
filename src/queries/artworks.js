@@ -1,6 +1,4 @@
-import { fields as txfields } from "./transactions";
-
-const marketFields = `
+export const marketFields = `
   id
   edition
   editions
@@ -35,7 +33,7 @@ const marketFields = `
   }
 `
 
-const fields = `
+export const fields = `
   id,
   asset
   edition
@@ -75,7 +73,6 @@ const fields = `
   ticker
   views
   transferred_at
-  locked_content
   owner {
     id
     username
@@ -98,6 +95,34 @@ const fields = `
     amount 
   }
 `;
+
+export const txFields = `
+  id
+  psbt
+  amount 
+  hash
+  type
+  created_at
+  asset
+  confirmed
+  bid {
+    id
+    user {
+      id 
+      username
+    } 
+  } 
+  user {
+    id
+    username
+    avatar_url
+  } 
+  artwork_id
+  artwork {
+    ${fields}
+  } 
+`;
+
 
 export const getFeatured = `query {
  featured {
@@ -129,8 +154,8 @@ export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offs
   }
 }`;
 
-export const getUserArtworks = (id) => `query {
- artworks(where: { _or: [{ artist_id: { _eq: "${id}" }}, { owner_id: { _eq: "${id}" }}]}) {
+export const getUserArtworks = `query($id: uuid!) {
+ artworks(where: { _or: [{ artist_id: { _eq: $id }}, { owner_id: { _eq: $id }}]}) {
     ${fields}
     tags {
       tag
@@ -153,8 +178,8 @@ export const getArtworkByAsset = (asset) => `query {
   }
 }`;
 
-export const getArtworkBySlug = (slug) => `query {
-  artworks(where: {slug : {_eq: "${slug}"}}, limit: 1) {
+export const getArtworkBySlug = `query($slug: String!) {
+  artworks(where: {slug : {_eq: $slug}}, limit: 1) {
     ${fields}
     transactions(where: { type: { _neq: "royalty" }}, order_by: { created_at: desc }) {
       ${txFields}
@@ -195,7 +220,7 @@ export const create = `mutation ($artwork: artworks_insert_input!, $tags: [tags_
     affected_rows
   }
   insert_transactions_one(object: $transaction) {
-    ${txfields}
+    ${txFields}
   } 
 }`;
 
@@ -226,8 +251,8 @@ export const updateTags = `mutation insert_tags($tags: [tags_insert_input!]!, $a
   }
 }`;
 
-export const getArtwork = (id) => `query {
-  artworks_by_pk(id: "${id}") {
+export const getArtwork = `query($id: uuid!) {
+  artworks_by_pk(id: $id) {
     ${fields}
     tags {
       tag

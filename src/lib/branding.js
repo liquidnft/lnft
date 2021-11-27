@@ -15,8 +15,7 @@ const BRANDING = {
   },
   
   meta: {
-    general: {
-      title: 'Mintalio',
+          title: 'Mintalio',
       image: 'https://mintalio.com/branding/splash.png',
       url: 'https://mintalio.com/',
       twitter: {
@@ -41,12 +40,6 @@ const BRANDING = {
       description: 'Upload, collect, and transact rare digital art on the Liquid Network',
       keywords: 'Bitcoin Liquid NFT Art',
       homeHeroText: 'Create, Collect and Trade Exclusive NFT Art on the Liquid Network'
-    },
-    artwork: (art) => ({
-        title: `Mintalio - ${art.title}`,
-        image: `/api/ipfs/${art.filename}`,
-        url: `https://mintalio.com/a/${art.slug}`,
-    })
     
   },
   

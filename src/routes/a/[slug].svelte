@@ -6,7 +6,13 @@
       r.json()
     );
 
-    serverApi.url("/viewed").post({ id: props.artwork.id }).json().catch(console.log);
+    /*
+    serverApi
+      .url("/viewed")
+      .post({ id: props.artwork.id })
+      .json()
+      .catch(console.log);
+     */
 
     return {
       maxage: 90,
@@ -21,6 +27,4 @@
   export let artwork, transactions, others;
 </script>
 
-{#if artwork}
   <Artwork {artwork} {others} {transactions} />
-{/if}

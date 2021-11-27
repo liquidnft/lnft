@@ -30,6 +30,15 @@ array_relationships:
       table:
         name: artworks
         schema: public
+- name: creations
+  using:
+    manual_configuration:
+      column_mapping:
+        id: artist_id
+      insertion_order: null
+      remote_table:
+        name: artworks
+        schema: public
 - name: favorites
   using:
     foreign_key_constraint_on:
@@ -50,6 +59,24 @@ array_relationships:
       column: user_id
       table:
         name: follows
+        schema: public
+- name: holdings
+  using:
+    manual_configuration:
+      column_mapping:
+        id: owner_id
+      insertion_order: null
+      remote_table:
+        name: artworks
+        schema: public
+- name: offers
+  using:
+    manual_configuration:
+      column_mapping:
+        id: owner_id
+      insertion_order: null
+      remote_table:
+        name: offers
         schema: public
 - name: samples
   using:

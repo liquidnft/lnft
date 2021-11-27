@@ -19,6 +19,15 @@ array_relationships:
       table:
         name: favorites
         schema: public
+- name: offers
+  using:
+    manual_configuration:
+      column_mapping:
+        id: artwork_id
+      insertion_order: null
+      remote_table:
+        name: offers
+        schema: public
 - name: royalty_recipients
   using:
     foreign_key_constraint_on:
@@ -65,13 +74,6 @@ computed_fields:
       name: artwork_last_tx
       schema: public
   name: last_active
-- definition:
-    function:
-      name: artwork_locked_content
-      schema: public
-    session_argument: hasura_session
-    table_argument: artwork_row
-  name: locked_content
 - comment: ""
   definition:
     function:
@@ -152,7 +154,6 @@ select_permissions:
     - favorited
     - has_royalty
     - last_active
-    - locked_content
     - num_favorites
     filter:
       _or:
@@ -198,7 +199,6 @@ select_permissions:
     - favorited
     - has_royalty
     - last_active
-    - locked_content
     - num_favorites
     filter:
       _or:

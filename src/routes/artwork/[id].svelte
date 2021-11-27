@@ -22,9 +22,8 @@
     faChevronUp,
     faTimes,
   } from "@fortawesome/free-solid-svg-icons";
+  import { getArtwork } from "$queries/artworks";
   import { faHeart, faImage } from "@fortawesome/free-regular-svg-icons";
-  import { getArtwork, getArtworksByArtist } from "$queries/artworks";
-  import { getArtworkTransactions } from "$queries/transactions";
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
   import { Activity, Avatar, Card, ProgressLinear, RoyaltyInfo } from "$comp";
@@ -43,7 +42,6 @@
   } from "$lib/wallet";
   import { Psbt } from "liquidjs-lib";
   import { api, query } from "$lib/api";
-  import { LockedContent } from "$comp";
   import { SocialShare } from "$comp";
   import branding from "$lib/branding";
 
@@ -61,8 +59,7 @@
 
   $: disabled =
     !artwork ||
-    !transactions ||
-    transactions.some(
+    artwork.transactions.some(
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
     );
 
@@ -71,7 +68,7 @@
   let id = artwork ? artwork.id : $page.params.id;
 
   let fetch = async () => {
-    query(getArtwork(id))
+    query(getArtwork, { id })
       .then((res) => {
         artwork = res.artworks_by_pk;
 
@@ -187,7 +184,6 @@
       transaction.hash = tx.getId();
       transaction.psbt = $psbt.toBase64();
 
-      transaction.amount = -artwork.list_price;
       await save();
 
       transaction.amount = 1;
@@ -203,7 +199,6 @@
   };
 
   let showPopup = false;
-  let showLockedContent = false;
   let showMore = false;
   let showActivity = false;
 </script>
@@ -232,27 +227,16 @@
               <span class="text-sm">Physical artwork</span>
             </div>
           </div>
-          {#if artwork.is_physical}
-            <div
-              class="flex ml-auto py-1 px-4 bg-gray-100 rounded rounded-full my-auto">
-              <div class="my-auto">
-                <Fa icon={faImage} class="mr-1" />
-              </div>
-              <div class="my-auto mb-1">
-                <span class="text-sm">Physical artwork</span>
-              </div>
-            </div>
-          {/if}
-        </div>
+        {/if}
+      </div>
 
-        <div class="flex flex-wrap justify-between text-left">
-          <a href={`/u/${artwork.artist.username}`}>
-            <div class="flex mb-6">
-              <Avatar user={artwork.artist} />
-              <div class="ml-2 secondary-color">
-                <div>@{artwork.artist.username}</div>
-                <div class="text-xs text-gray-600">Artist</div>
-              </div>
+      <div class="flex flex-wrap justify-between text-left">
+        <a href={`/u/${artwork.artist.username}`}>
+          <div class="flex mb-6">
+            <Avatar user={artwork.artist} />
+            <div class="ml-2 secondary-color">
+              <div>@{artwork.artist.username}</div>
+              <div class="text-xs text-gray-600">Artist</div>
             </div>
           </div>
         </a>
@@ -265,14 +249,15 @@
                 {artwork.held ? "" : "Presumed "}Owner
               </div>
             </div>
-          </a>
-        </div>
+          </div>
+        </a>
+      </div>
 
-        <div class="mobileImage">
-          <span on:click={() => (showPopup = !showPopup)}>
-            <Card {artwork} columns={1} showDetails={false} thumb={false} />
-          </span>
-        </div>
+      <div class="mobileImage">
+        <span on:click={() => (showPopup = !showPopup)}>
+          <Card {artwork} columns={1} showDetails={false} thumb={false} />
+        </span>
+      </div>
 
       <div class="flex justify-between mb-6">
         {#if artwork.list_price}
@@ -282,14 +267,14 @@
               {list_price}
               {ticker}
             </div>
-          {/if}
-          {#if artwork.reserve_price}
-            <div class="my-2">
-              <div class="text-sm mt-auto">Reserve Price</div>
-              <div class="flex-1 text-lg">
-                {val(artwork.reserve_price)}
-                {ticker}
-              </div>
+          </div>
+        {/if}
+        {#if artwork.reserve_price}
+          <div class="my-2">
+            <div class="text-sm mt-auto">Reserve Price</div>
+            <div class="flex-1 text-lg">
+              {val(artwork.reserve_price)}
+              {ticker}
             </div>
           </div>
         {/if}
@@ -322,9 +307,7 @@
           >
         </div>
 
-        {#if loading}
-          <ProgressLinear />
-        {:else if $user && $user.id === artwork.owner_id && artwork.held}
+        {#if $user.id === artwork.artist_id}
           <div class="w-full mb-2">
             <a
               href={`/artwork/${id}/edit`}
@@ -364,15 +347,9 @@
                     </div>
                   </div>
                 </div>
-                <button type="submit" class="secondary-btn">Submit</button>
-              </form>
-            {/if}
-          {:else if !artwork.auction_start || compareAsc(now, parseISO(artwork.auction_start)) === 1}
-            <button
-              on:click={startBidding}
-              class="secondary-btn"
-              {disabled}
-              class:disabled>Make an offer</button>
+              </div>
+              <button type="submit" class="secondary-btn">Submit</button>
+            </form>
           {/if}
         {:else if !artwork.auction_start || compareAsc(now, parseISO(artwork.auction_start)) === 1}
           <button
@@ -382,13 +359,14 @@
             class:disabled>Make an offer</button
           >
         {/if}
+      {/if}
 
-        {#if compareAsc(parseISO(artwork.auction_start), now) === 1 && start_counter}
-          <div class="bg-gray-100 px-4 p-1 mt-6 rounded">
-            <div class="mt-auto text-sm">Auction starts in</div>
-            <div class="mt-1">{start_counter}</div>
-          </div>
-        {/if}
+      {#if compareAsc(parseISO(artwork.auction_start), now) === 1 && start_counter}
+        <div class="bg-gray-100 px-4 p-1 mt-6 rounded">
+          <div class="mt-auto text-sm">Auction starts in</div>
+          <div class="mt-1">{start_counter}</div>
+        </div>
+      {/if}
 
       {#if compareAsc(parseISO(artwork.auction_end), now) === 1 && end_counter}
         <div class="bg-gray-100 px-4 p-1 mt-6 rounded">
@@ -401,16 +379,10 @@
           <div class="mt-1">
             {format(parseISO(artwork.auction_end), "yyyy-MM-dd HH:mm")}
           </div>
-        {:else if artwork.auction_end}
-          <div class="bg-gray-100 px-4 p-1 mt-6 rounded">
-            <div class="mt-auto text-sm">Auction ended at</div>
-            <div class="mt-1">
-              {format(parseISO(artwork.auction_end), 'yyyy-MM-dd HH:mm')}
-            </div>
-          </div>
-        {/if}
+        </div>
+      {/if}
 
-        <Sidebar bind:artwork />
+      <Sidebar bind:artwork />
 
       {#if artwork.description}
         <div
@@ -442,38 +414,25 @@
               <div class="my-auto ml-1">
                 <Fa icon={showActivity ? faChevronUp : faChevronDown} />
               </div>
-            {/if}
-          </div>
+            </div>
+          {/if}
         </div>
       </div>
+    </div>
 
-      <div class="w-full lg:w-2/3 lg:pl-40">
-        <div class="desktopImage">
-          <span on:click={() => (showPopup = !showPopup)}>
-            <Card {artwork} columns={1} showDetails={false} thumb={false} />
-          </span>
-        </div>
+    <div class="w-full lg:w-2/3 lg:pl-40">
+      <div class="desktopImage">
+        <span on:click={() => (showPopup = !showPopup)}>
+          <Card {artwork} columns={1} showDetails={false} thumb={false} />
+        </span>
+      </div>
 
-        {#if artwork.description}
-          <div class="desk-desc description text-gray-600 break-words">
-            <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
-            <div class="whitespace-pre-wrap">
-              {@html linkify(artwork.description)}
-            </div>
+      {#if artwork.description}
+        <div class="desk-desc description text-gray-600 break-words">
+          <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
+          <div class="whitespace-pre-wrap">
+            {@html linkify(artwork.description)}
           </div>
-        {/if}
-
-        <div
-          on:click={() => (showPopup = !showPopup)}
-          class:showPopup
-          class="popup">
-          <span class="closeButton"><Fa icon={faTimes} /></span>
-          <Card
-            {artwork}
-            columns={1}
-            showDetails={false}
-            thumb={false}
-            popup={true} />
         </div>
       {/if}
 
@@ -511,14 +470,7 @@
         </div>
       {/if}
     </div>
-  {:else}
-    <ProgressLinear />
-  {/if}
-  {#if artwork && artwork.locked_content}
-    <LockedContent
-      content={artwork.locked_content}
-      bind:visible={showLockedContent} />
-  {/if}
+  </div>
 </div>
 
 <style>

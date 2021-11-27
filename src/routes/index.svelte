@@ -133,7 +133,7 @@
   <div class="header text-center">
     <h1 class="text-left md:text-center md:w-full">{branding.projectName}</h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      {branding.meta.general.homeHeroText}
+      {branding.meta.homeHeroText}
     </h5>
     <h4 class="md:max-w-lg mx-auto text-left md:text-center text-green-500">
       This site is currently in Beta
