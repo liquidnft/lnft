@@ -50,7 +50,7 @@
         <div class="flex flex-row justify-between mb-2">
           <a href={`/a/${artwork.slug}`}>
             <div>
-              <h1 class="text-xl">
+              <h3 class="text-xl">
                 {artwork.title || "Untitled"}
                 {#if !(artwork.transferred_at || artwork.asking_asset)}
                   (unlisted)
