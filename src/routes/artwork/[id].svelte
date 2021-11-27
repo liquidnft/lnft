@@ -1,8 +1,12 @@
 <script context="module">
+  import { serverApi } from "$lib/api";
+
   export async function load({ fetch, page }) {
     const props = await fetch(`/artworks/${page.params.id}.json`).then((r) =>
       r.json()
     );
+
+    serverApi.url("/viewed").post({ id: props.artwork.id }).json().catch(console.log);
 
     return {
       maxage: 90,
@@ -62,14 +66,9 @@
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
     );
 
-  let start_counter, end_counter, now, timeout, loaded;
+  let start_counter, end_counter, now, timeout;
 
   let id = artwork ? artwork.id : $page.params.id;
-  $: init(artwork);
-  let init = () => {
-    if (!loaded) api.url("/viewed").post({ id }).json().catch(err);
-    loaded = true;
-  };
 
   let fetch = async () => {
     query(getArtwork(id))
@@ -77,23 +76,7 @@
         artwork = res.artworks_by_pk;
 
         $art = artwork;
-        if (!loaded) api.url("/viewed").post({ id }).json().catch(err);
-        loaded = true;
-
-        query(getArtworksByArtist(artwork.artist_id))
-          .then(
-            (res) =>
-              (others = res.artworks
-                .filter((a) => a.id !== artwork.id)
-                .slice(0, 4))
-          )
-          .catch(err);
       })
-      .catch(err);
-
-    query(getArtworkTransactions(id))
-      .then((res) => (transactions = res.transactions))
-      .catch(err);
   };
 
   let poll = setInterval(fetch, 2500);

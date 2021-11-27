@@ -6,7 +6,6 @@
   export let items;
   export let royaltyValue;
   export let maxTotalRate;
-  export let askingAsset;
   export let artist;
 
   const validate = (newRecipient) => {

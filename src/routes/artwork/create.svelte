@@ -17,7 +17,7 @@
   import { Dropzone, ProgressLinear } from "$comp";
   import { upload, supportedTypes } from "$lib/upload";
   import { create } from "$queries/artworks";
-  import { btc, fade, kebab, goto, err } from "$lib/utils";
+  import { btc, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
     createIssuance,

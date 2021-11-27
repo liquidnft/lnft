@@ -21,6 +21,7 @@
 </script>
 
 <script>
+  import { browser } from "$app/env";
   import { page, session } from "$app/stores";
   import decode from "jwt-decode";
   import { Sidebar, Navbar, Dialog, Footer, Snack, Head } from "$comp";
@@ -37,8 +38,15 @@
 
   export let addresses, titles;
 
+  if (browser) history.pushState = new Proxy(history.pushState, {
+    apply(target, thisArg, argumentsList) {
+      Reflect.apply(target, thisArg, argumentsList);
+      scrollTo(0, 0);
+    },
+  });
+
   $: resetMeta($page);
-  let resetMeta = () => ($meta = {...branding.meta});
+  let resetMeta = () => ($meta = { ...branding.meta });
 
   $a = addresses;
   $t = titles;
