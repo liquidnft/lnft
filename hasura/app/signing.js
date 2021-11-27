@@ -1,6 +1,7 @@
 const { keypair, parse, sign } = require("./wallet");
 const { hasura } = require("./api");
 const { parseISO, isWithinInterval } = require("date-fns");
+const { address: Address } = require("liquidjs-lib");
 
 const wretch = require("wretch");
 const fetch = require("node-fetch");
@@ -91,7 +92,10 @@ const check = async (psbt, skipRoyalty = false) => {
       let toRoyaltyRecipients = outs
         .filter((o) => {
           const recipientsWithOuts = royalty_recipients.find((recipient) => {
-            return recipient.address === o.address;
+            return (
+              recipient.address === o.address ||
+              Address.fromConfidential(recipient.address).unconfidentialAddress
+            );
           });
           return !!recipientsWithOuts;
         })
