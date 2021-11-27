@@ -35,8 +35,6 @@
   } from "$lib/store";
   import { onMount } from "svelte";
   import branding from "$lib/branding";
-  import "./vars.css";
-  import "./layout.css";
 
   export let addresses, titles;
 

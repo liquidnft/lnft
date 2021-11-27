@@ -35,6 +35,10 @@
 </div>
 
 <style>
+  a {
+    color: inherit;
+  } 
+
   .menu button {
     width: auto;
     text-align: left;
