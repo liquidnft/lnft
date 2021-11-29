@@ -3,6 +3,8 @@ export async function get({ headers, locals: { q }, params: { username } }) {
   try {
     let { users } = await q(getUserByUsername, { username });
 
+    if (!users.length) throw new Error("user not found"); 
+
     return {
       body: {
         subject: users[0],
