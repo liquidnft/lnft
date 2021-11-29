@@ -66,7 +66,7 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
     cd ..
     pnpm dev   # site is available at http://localhost:3000/
     
- ## Setup cloud development VS CodeSpaces environment
+ ## Setup local development with cloud tools - VS CodeSpaces http://vscode.dev
 
      cd lnft
      npm i -g pnpm
