@@ -1,6 +1,17 @@
 <script>
     import {getUserStats, getArtworksStats, getArtistsStats} from "$queries/stats";
     import StatCard from './card.svelte';
+    import { page } from "$app/stores";
+    import { user } from "$lib/store";
+    import { goto } from "$lib/utils";
+    import { requireLogin } from "$lib/auth";
+
+    $: pageChange($page, $user);
+    let pageChange = async () => {
+        await requireLogin();
+        if (!$user) return;
+        if (!$user.is_admin) goto("/");
+    };
 </script>
 
 <style>
