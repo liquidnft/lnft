@@ -3,7 +3,10 @@
     try {
       const { subject } = await fetch(
         `/user/${page.params.username}.json`
-      ).then((r) => r.json());
+      ).then((r) => {
+        if (r.ok) return r.json();
+        throw new Error("not ok");
+      });
 
       return {
         maxage: 90,

@@ -24,6 +24,7 @@
   export let latest;
 
   let interval = setInterval(() => {
+    if (!featured) return;
     current++;
     if (current >= featured.length) current = 0;
   }, 6000);
