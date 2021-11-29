@@ -1,19 +1,19 @@
-export const getUserStats = (date) => `query {
-  userstats(where: {user_created: {_gt: "${date}"}}) {
+export const getUserStats = (from, to) => `query {
+  userstats(where: {user_created: {_gte: "${from}", _lte: "${to}"}}) {
     users
     user_created
   }
 }`;
 
-export const getArtworksStats = (date) => `query {
-  userstats(where: {artwork_created: {_gt: "${date}"}}) {
+export const getArtworksStats = (from, to) => `query {
+  userstats(where: {artwork_created: {_gte: "${from}", _lte: "${to}"}}) {
     artworks
     artwork_created
   }
 }`;
 
-export const getArtistsStats = (date) => `query {
-  userstats(where: {user_created: {_gt: "${date}"}, is_artist: {_eq: true}}) {
+export const getArtistsStats = (from, to) => `query {
+  userstats(where: {user_created: {_gte: "${from}", _lte: "${to}"}, is_artist: {_eq: true}}) {
     users
     user_created
   }
