@@ -1,20 +1,20 @@
+<script context="module">
+  export async function load({ fetch }) {
+    const props = await fetch(`/activity.json`).then((r) =>
+      r.json()
+    );
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
-  import { user } from "$lib/store";
-  import { page } from "$app/stores";
-  import { query } from "$lib/api";
-  import { Activity, Avatar } from "$comp";
-  import { getRecentActivity } from "$queries/transactions";
-  import { topCollectors } from "$queries/users";
-  import { err } from "$lib/utils";
-
-  let transactions = [];
-  $: init($page);
-  let init = () =>
-    query(getRecentActivity(20))
-      .then((res) => (transactions = res.recentactivity))
-      .catch(err);
-
-  let show = false;
+  import { Activity } from "$comp";
+  export let transactions;
 
 </script>
 
