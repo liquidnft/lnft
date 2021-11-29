@@ -55,7 +55,7 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
     pnpm
     cd hasura
     cp .env.sample .env
-    docker run -it -v $PWD/app:/app --entrypoint pnpm asoltys/lnft-server
+    docker run -it -v $PWD/app:/app --entrypoint pnpm asoltys/tokenocean
     docker-compose up -d
     hasura migrate apply
     hasura metadata apply
