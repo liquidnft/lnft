@@ -69,6 +69,7 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
  ## Setup cloud development VS CodeSpaces environment
 
      cd lnft
+     npm i -g pnpm
      pnpm install
      curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
      cd hasura
