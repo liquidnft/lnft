@@ -5,6 +5,7 @@
     import Fa from "svelte-fa";
     import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 
+    export let statcard;
     export let title;
     export let query;
 
