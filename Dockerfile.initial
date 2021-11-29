@@ -1,6 +1,12 @@
-FROM asoltys/mintalio
+FROM node:alpine
+
+RUN apk add git
+RUN npm i -g pnpm
 
 WORKDIR /app
+
+COPY package.json .
+RUN pnpm i
 
 COPY . .
 RUN pnpm i
