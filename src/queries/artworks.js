@@ -167,9 +167,10 @@ export const updateTags = `mutation insert_tags($tags: [tags_insert_input!]!, $a
   }
 }`;
 
-export const getArtwork = (id) => `query {
+export const getArtwork = (id, userId) => `query {
   artworks_by_pk(id: "${id}") {
     ${fields}
+    is_locked(args: {user_id: "${userId}", edition_key:"${LOCK_EDITION_ID}"})
     tags {
       tag
     },
