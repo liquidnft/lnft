@@ -1,9 +1,10 @@
-<h1>Real Estate</h1>
+<style>
+  * {
+    text-align: center;
+  }
 
-<p>
-  blahblah
-</p>
+</style>
 
-  <style>
-    h1 { color: red; }
-  </style>
+<h2 class="mt-10 mb-4">Real Estate</h2>
+
+<p>Coming soon!</p>
