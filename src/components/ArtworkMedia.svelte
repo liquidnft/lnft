@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
   import { faVolumeUp, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+  import { painting, variation, edition } from "$lib/store";
 
   export let artwork;
   export let showDetails;
@@ -10,9 +11,16 @@
   export let preview = false;
   export let popup = false;
   let img, vid;
-  $: path =
-    thumb ?
-    `/api/public/${artwork.filename}.jpg` : `/api/ipfs/${artwork.filename}`;
+  let path;
+  $: if (thumb) {
+    if ($painting || $variation || $edition) {
+      path = `/api/public/${artwork.filename}.mp4`;
+    } else {
+      path = `/api/public/${artwork.filename}.jpg`;
+    }
+  } else {
+    path = `/api/ipfs/${artwork.filename}`;
+  }
 
   $: cover = !showDetails;
   $: contain = showDetails;
@@ -112,7 +120,7 @@
 
 </style>
 
-{#if !thumb && artwork.filetype && artwork.filetype.includes('video')}
+{#if $painting || $variation || $edition}
   <div
     class="w-full"
     class:inline-block={!popup}
@@ -130,7 +138,7 @@
       loop
       bind:this={vid}
       controls={popup}>
-      <source data-src={preview || path} />
+      <source data-src={preview || path} src={preview || path}/>
       Your browser does not support HTML5 video.
     </video>
     {#if !popup}
