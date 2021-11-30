@@ -28,6 +28,7 @@ export async function post(request) {
       },
     };
   } catch (e) {
+    console.log("LOGIN ERROR", e);
     return {
       body: { message: "Login failed" },
       status: 500,
