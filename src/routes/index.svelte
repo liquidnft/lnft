@@ -145,7 +145,7 @@
 </div>
 
 <div class="flex w-full">
-  <div class="mx-auto flex flex-wrap text-center justify-center space-x-20">
+  <div class="mx-auto flex flex-wrap text-center justify-center lg:space-x-20">
     <HomePageLink url="/agriculture" title="Agriculture" img="/agriculture.png" />
     <HomePageLink url="/real-estate" title="Real Estate" img="/realestate.png" />
     <HomePageLink url="/music" title="Music" img="/music.png" />
