@@ -102,6 +102,6 @@
     <div class="flex my-5 justify-end">
       <button class="primary-btn w-full" type="submit">Sign In</button>
     </div>
-    <a href="/register" class="text-midblue">Don't have an account? Sign up</a>
+    <a href="/register" class="text-midblue">Don't have an account? Sign up!</a>
   </form>
 </div>
