@@ -24,6 +24,11 @@
 
   $: cover = !showDetails;
   $: contain = showDetails;
+  $: videoChanged(path);
+  let videoChanged = (path) => {
+    if (!vid) return;
+    vid.load();
+  };
   $: setLoaded(img, vid);
   let setLoaded = (img, vid) => {
     img &&
@@ -138,7 +143,7 @@
       loop
       bind:this={vid}
       controls={popup}>
-      <source data-src={preview || path} src={preview || path}/>
+      <source data-src={preview || path} src={preview || path} />
       Your browser does not support HTML5 video.
     </video>
     {#if !popup}
