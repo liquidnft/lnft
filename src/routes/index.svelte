@@ -140,20 +140,18 @@
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
       Invest in decentralized Asset based NFTs.
     </h5>
-    <a class="primary-btn" href={`/agriculture`}>Get started</a>
+    <a class="primary-btn hover:border-white hover:border-2" href={`/agriculture`}>Get started</a>
   </div>
 </div>
 
-<!--
 <div class="flex w-full">
-  <div class="mx-auto flex flex-wrap text-center justify-center">
+  <div class="mx-auto flex flex-wrap text-center justify-center lg:space-x-20">
     <HomePageLink url="/agriculture" title="Agriculture" img="/agriculture.png" />
     <HomePageLink url="/real-estate" title="Real Estate" img="/realestate.png" />
     <HomePageLink url="/music" title="Music" img="/music.png" />
     <HomePageLink url="/vehicles" title="Vehicles" img="/vehicles.png" />
   </div>
 </div>
--->
 
 {#if featured[current]}
   <div class="flex secondary-header marg-bottom">
@@ -193,4 +191,3 @@
     {/if}
   </div>
 {/if}
-
