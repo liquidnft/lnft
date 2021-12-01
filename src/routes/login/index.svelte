@@ -33,8 +33,12 @@
 
   let login = async () => {
     window.sessionStorage.setItem("password", password);
+    try {
     let res = await post("auth/login", { email, password }).json();
     window.location.reload(true);
+    } catch(e) {
+      err(e);
+    } 
   };
 </script>
 
