@@ -18,6 +18,7 @@
       props,
     };
   }
+
 </script>
 
 <script>
@@ -38,12 +39,13 @@
 
   export let addresses, titles;
 
-  if (browser) history.pushState = new Proxy(history.pushState, {
-    apply(target, thisArg, argumentsList) {
-      Reflect.apply(target, thisArg, argumentsList);
-      scrollTo(0, 0);
-    },
-  });
+  if (browser)
+    history.pushState = new Proxy(history.pushState, {
+      apply(target, thisArg, argumentsList) {
+        Reflect.apply(target, thisArg, argumentsList);
+        scrollTo(0, 0);
+      },
+    });
 
   $: resetMeta($page);
   let resetMeta = () => ($meta = { ...branding.meta });
@@ -60,7 +62,11 @@
   onMount(() => {
     if (!$password) $password = window.sessionStorage.getItem("password");
   });
+
 </script>
+
+<style global src="../main.css">
+</style>
 
 <svelte:window bind:scrollY={y} />
 
@@ -68,7 +74,7 @@
 <Snack />
 
 <Sidebar bind:open />
-<div class={y > 50 ? "sticky" : ""}>
+<div class={y > 50 ? 'sticky' : ''}>
   <Navbar bind:sidebar={open} />
 </div>
 <Dialog />
@@ -80,6 +86,3 @@
 </main>
 
 <Footer />
-
-<style global src="../main.css">
-</style>

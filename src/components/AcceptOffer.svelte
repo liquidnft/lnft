@@ -1,5 +1,3 @@
-<svelte:options accessors={true} />
-
 <script>
   import { tick } from "svelte";
   import { prompt, snack, psbt, user, token } from "$lib/store";
@@ -37,4 +35,7 @@
       err(e);
     }
   };
+
 </script>
+
+<svelte:options accessors={true} />

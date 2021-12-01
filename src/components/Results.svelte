@@ -1,6 +1,7 @@
 <script>
   import { results } from "$lib/store";
   import { go } from "$lib/utils";
+
 </script>
 
 {#if $results.tag || $results.artwork || $results.user}

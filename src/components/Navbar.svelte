@@ -5,26 +5,8 @@
   import Menu from "./Menu.svelte";
 
   export let sidebar = false;
-</script>
 
-<header
-  class="flex container mx-auto justify-between px-4 py-4 items-center text-gray-600"
->
-  <nav class="flex hambuger">
-    <Hamburger bind:open={sidebar} />
-  </nav>
-  <div>
-    <a href="/" sveltekit:prefetch>
-      <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-48" /></a
-    >
-  </div>
-  <a class="mobileSearch" href="/market">
-    <Fa icon={faSearch} />
-  </a>
-  <nav class="hidden text-bold lg:block">
-    <Menu />
-  </nav>
-</header>
+</script>
 
 <style>
   header {
@@ -57,4 +39,22 @@
       z-index: 100;
     }
   }
+
 </style>
+
+<header
+  class="flex container mx-auto justify-between px-4 py-4 items-center text-gray-600">
+  <nav class="flex hambuger">
+    <Hamburger bind:open={sidebar} />
+  </nav>
+  <div>
+    <a href="/" sveltekit:prefetch>
+      <img src="/logo-default.svg" alt="logo" class="w-36 lg:w-48" /></a>
+  </div>
+  <a class="mobileSearch" href="/market">
+    <Fa icon={faSearch} />
+  </a>
+  <nav class="hidden text-bold lg:block">
+    <Menu />
+  </nav>
+</header>

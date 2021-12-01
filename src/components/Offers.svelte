@@ -4,6 +4,7 @@
 
   export let offers;
   let comp;
+
 </script>
 
 <AcceptOffer bind:this={comp} />

@@ -4,6 +4,7 @@
   import { faHeart, faImage } from "@fortawesome/free-regular-svg-icons";
 
   export let artwork;
+
 </script>
 
 <div class="flex pt-4 w-full social-share">

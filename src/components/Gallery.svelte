@@ -73,6 +73,7 @@
       setTimeout(() => (justScrolled = false), 250);
     });
   };
+
 </script>
 
 <svelte:window bind:innerWidth={w} bind:scrollY={y} on:resize={resize} />
@@ -112,11 +113,9 @@
     {#each inview as artwork, i}
       <div
         class="market-gallery w-full mb-20"
-        style={`transform: translateY(${translate}px)`}
-      >
+        style={`transform: translateY(${translate}px)`}>
         <Card {artwork} bind:justScrolled height={350} />
       </div>
     {/each}
   </div>
 </div>
-
