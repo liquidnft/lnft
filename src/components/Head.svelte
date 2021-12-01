@@ -1,28 +1,27 @@
 <script>
-  import { meta as m } from "$lib/store";
-
+  export let metadata;
 </script>
 
 <svelte:head>
-  <title>{$m.title}</title>
-  <meta name="description" content={$m.description} />
-  <meta name="keywords" content={$m.keywords} />
+    <title>{metadata.title}</title>
+    <meta name="description" content={metadata.description} />
+    <meta name="keywords" content={metadata.keywords} />
 
-  <meta property="og:title" content={$m.title} />
-  <meta name="twitter:title" content={$m.title} />
+    <meta property="og:title" content={metadata.title} />
+    <meta name="twitter:title" content={metadata.title} />
 
-  {#if $m.image}
-    <meta property="og:image" content={$m.image} />
-    <meta name="twitter:image" content={$m.image} />
-  {/if}
+    {#if metadata.image}
+      <meta property="og:image" content={metadata.image} />
+      <meta name="twitter:image" content={metadata.image} />
+    {/if}
 
-  {#if $m.video}
-    <meta property="og:video" content={$m.video} />
-    <meta name="twitter:video" content={$m.video} />
-  {/if}
+    {#if metadata.video}
+      <meta property="og:video" content={metadata.video} />
+      <meta name="twitter:video" content={metadata.video} />
+    {/if}
 
-  <meta property="og:url" content={$m.url} />
-  <meta name="twitter:card" content={$m.twitter.card} />
-  <meta name="twitter:site" content={$m.twitter.site} />
-  <meta name="twitter:creator" content={$m.twitter.creator} />
+    <meta property="og:url" content={metadata.url} />
+    <meta name="twitter:card" content={metadata.twitter.card} />
+    <meta name="twitter:site" content={metadata.twitter.site} />
+    <meta name="twitter:creator" content={metadata.twitter.creator} />
 </svelte:head>

@@ -47,9 +47,6 @@
       },
     });
 
-  $: resetMeta($page);
-  let resetMeta = () => ($meta = { ...branding.meta });
-
   $a = addresses;
   $t = titles;
 
@@ -70,7 +67,8 @@
 
 <svelte:window bind:scrollY={y} />
 
-<Head />
+<Head metadata={branding.meta} />
+
 <Snack />
 
 <Sidebar bind:open />

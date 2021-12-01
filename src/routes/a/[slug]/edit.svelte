@@ -1,3 +1,22 @@
+<script context="module">
+  export async function load({ fetch, page, session }) {
+    const props = await fetch(`/artworks/${page.params.slug}.json`).then((r) =>
+      r.json()
+    );
+
+    if (!(session && session.user)) return {
+      status: 302,
+      redirect: '/login'
+    } 
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
@@ -11,26 +30,16 @@
   import { requireLogin, requirePassword } from "$lib/auth";
   import { query } from "$lib/api";
 
-  let { id } = $page.params;
-  let artwork;
-
-  onMount(async () => {
-    await requireLogin();
-    query(getArtwork, { id })
-      .then((res) => {
-        artwork = res.artworks_by_pk;
-      })
-      .catch(err);
-  });
+  export let artwork;
 
   let update = async (e) => {
     e.preventDefault();
 
-    let { id: artwork_id, description, filename, title, tags } = artwork;
+    let { id, description, filename, title, tags } = artwork;
 
     query(updateTags, {
-      tags: tags.map(({ tag }) => ({ tag, artwork_id })),
-      artwork_id,
+      tags: tags.map(({ tag }) => ({ tag, artwork_id: id })),
+      id,
     })
       .then(() => {
         query(updateArtwork, {
@@ -49,17 +58,13 @@
 
 <div class="container mx-auto md:p-20">
   <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
-    {#if artwork}
       <a class="block mb-6 text-midblue" href={`/a/${artwork.slug}`}>
         <div class="flex">
           <Fa icon={faChevronLeft} class="my-auto mr-1" />
           <div>Back</div>
         </div>
       </a>
-    {/if}
     <h2>Edit artwork</h2>
-    {#if artwork}
       <Form bind:artwork title={artwork.title} on:submit={update} />
-    {/if}
   </div>
 </div>
