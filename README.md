@@ -68,13 +68,12 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
     
  ## Setup local development with cloud tools - VS CodeSpaces https://vscode.dev
 
-     cd lnft
      npm i -g pnpm
      pnpm install
      curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
      cd hasura
      cp .env.sample .env
-     docker run -it -v $PWD/app:/app --entrypoint pnpm asoltys/lnft-server
+     docker run -it -v $PWD/app:/app --entrypoint pnpm asoltys/lnft-server install
      docker-compose up -d
      hasura migrate apply
      hasura metadata apply
@@ -97,8 +96,4 @@ Mine some blocks to get the electrs API server warmed up
 Get a deposit address from the wallet page or users table in the db and send an amount with this command
 
     docker exec -it liquid elements-cli -datadir=/config sendtoaddress <address> <amount>
-
-## Build for production
-
-    pnpm build
-    pnpm adapt
+    
