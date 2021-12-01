@@ -32,6 +32,14 @@ services:
       - ${STORAGE_DIR}:/export
     ports:
       - '8091:8091'
+  ui:
+    image: jungle
+    depends_on:
+      - lapp
+    container_name: ui
+    restart: on-failure
+    ports:
+      - '3000:3000'
   postgres:
     container_name: postgres
     image: postgres:12
