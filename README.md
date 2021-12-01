@@ -65,6 +65,24 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
     docker restart lapp
     cd ..
     pnpm dev   # site is available at http://localhost:3000/
+    
+ ## Setup local development with cloud tools - VS CodeSpaces https://vscode.dev
+
+     npm i -g pnpm
+     pnpm install
+     curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+     cd hasura
+     cp .env.sample .env
+     docker run -it -v $PWD/app:/app --entrypoint pnpm asoltys/lnft-server install
+     docker-compose up -d
+     hasura migrate apply
+     hasura metadata apply
+     hasura seeds apply
+     sudo cp ../static/user.png storage
+     docker exec -it ipfs ipfs add /export/user.png
+     docker restart lapp
+     cd ..
+     pnpm dev   # site is available at http://localhost:3000/
 
 ## Regtest mining
 
