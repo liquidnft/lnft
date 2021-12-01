@@ -11,13 +11,13 @@
     top: 0;
     transition: left 0.3s ease-in-out;
     z-index: 20;
-    background-color: white;
+    background-color: black;
   }
 
   .menu-container {
     width: 70%;
-    background-color: white;
     position: absolute;
+    background: black;
     height: 100vh;
   }
 
@@ -34,7 +34,7 @@
 
   @keyframes changeColor {
     0% {
-      background-color: white;
+      background-color: black;
     }
     100% {
       background-color: rgba(3, 3, 3, 0.8);
@@ -44,7 +44,7 @@
 </style>
 
 <aside
-  class="fixed w-full h-full border-r-2 shadow-lg sideBar"
+  class="fixed w-full h-full shadow-lg sideBar"
   on:click={() => (open = false)}
   class:open>
   <div class="menu-container">

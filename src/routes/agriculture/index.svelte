@@ -89,6 +89,4 @@
 <div class="container mx-auto">
   <h3 class="mb-4">Harvest Shares</h3>
   <Gallery bind:filtered bind:count />
-  <h3 class="mb-4">Coffee</h3>
-  <p>Coming soon!</p>
 </div>

@@ -5,6 +5,11 @@
 
   export let open = false;
   let toggle = () => (open = !open);
+
+  let dropdown;
+  let showDropdown = () => (dropdown = true);
+  let hideDropdown = () => (dropdown = false);
+
 </script>
 
 <style>
@@ -48,8 +53,7 @@
     .menu {
       flex-direction: column;
       align-items: flex-start;
-      margin-top: 50px;
-      border-top: 1px solid gray;
+      margin-top: 80px;
       width: 100%;
     }
 
@@ -61,9 +65,32 @@
 
 </style>
 
-<div class="flex justify-between items-center menu relative">
-  <a href="/agriculture" style="color: #83e68d"><button on:click={toggle}>Marketplace</button></a>
-  <a href="/about" style="color: #83e68d"><button on:click={toggle}>About</button></a>
+<div class="flex justify-between items-center menu relative" on:mouseout={hideDropdown}>
+  <a
+    href="/agriculture"
+    style="color: #83e68d"
+    on:mouseover={showDropdown}><button
+      on:click={toggle}>Marketplace</button></a>
+    <div class="lg:absolute lg:mt-40 " class:lg:hidden={!dropdown} on:mouseover={showDropdown}>
+      <div>
+        <a href="/agriculture" style="color: #83e68d"><button
+            on:click={toggle}>Agriculture</button></a>
+      </div>
+      <div>
+        <a href="/real-estate" style="color: #83e68d"><button
+            on:click={toggle}>Real Estate</button></a>
+      </div>
+      <div>
+        <a href="/music" style="color: #83e68d"><button
+            on:click={toggle}>Music</button></a>
+      </div>
+      <div>
+        <a href="/vehicles" style="color: #83e68d"><button
+            on:click={toggle}>Vehicles</button></a>
+      </div>
+    </div>
+  <a href="/about" style="color: #83e68d" on:mouseover={hideDropdown}><button
+      on:click={toggle}>About</button></a>
   <a href="/faq" style="color: #83e68d"><button on:click={toggle}>What's an NFT?</button></a>
   {#if $user}
     {#if $user.is_admin}
@@ -73,5 +100,7 @@
       <button on:click={toggle} class="flex">
         <Avatar user={$user} />
       </button></a>
-  {:else}<a href="/login" style="color: #83e68d"><button on:click={toggle}>Sign In</button></a>{/if}
+  {:else}
+    <a href="/login" style="color: #83e68d"><button on:click={toggle}>Sign In</button></a>
+  {/if}
 </div>

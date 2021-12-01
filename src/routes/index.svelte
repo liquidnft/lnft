@@ -92,15 +92,7 @@
     padding: 0.7rem 1.5rem !important;
   }
 
-  .marg-bottom {
-    margin-bottom: 128px !important;
-  }
-
   @media only screen and (max-width: 768px) {
-    .header-container.marg-bottom {
-      margin-bottom: 96px !important;
-    }
-
     .header {
       margin-top: 64px;
     }
@@ -118,10 +110,6 @@
       height: 400px !important;
     }
 
-    .marg-bottom {
-      margin-bottom: 96px !important;
-    }
-
     .blur-bg {
       padding: 24px;
       width: 75%;
@@ -131,7 +119,7 @@
 
 </style>
 
-<div class="flex header-container mx-auto justify-center marg-bottom">
+<div class="flex header-container mx-auto justify-center">
   <div class="header text-center">
     <h2 class="text-left md:text-center md:w-full">
       The Future of NFTs is here!
@@ -140,21 +128,29 @@
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
       Invest in decentralized Asset based NFTs.
     </h5>
-    <a class="primary-btn hover:border-white hover:border-2" href={`/agriculture`}>Get started</a>
-  </div>
-</div>
-
-<div class="flex w-full">
-  <div class="mx-auto flex flex-wrap text-center justify-center lg:space-x-20">
-    <HomePageLink url="/agriculture" title="Agriculture" img="/agriculture.png" />
-    <HomePageLink url="/real-estate" title="Real Estate" img="/realestate.png" />
-    <HomePageLink url="/music" title="Music" img="/music.png" />
-    <HomePageLink url="/vehicles" title="Vehicles" img="/vehicles.png" />
+    <div class="flex w-full mb-10">
+      <div
+        class="mx-auto flex flex-wrap text-center justify-center lg:space-x-20">
+        <HomePageLink
+          url="/agriculture"
+          title="Agriculture"
+          img="/agriculture.png" />
+        <HomePageLink
+          url="/real-estate"
+          title="Real Estate"
+          img="/realestate.png" />
+        <HomePageLink url="/music" title="Music" img="/music.png" />
+        <HomePageLink url="/vehicles" title="Vehicles" img="/vehicles.png" />
+      </div>
+    </div>
+    <a
+      class="primary-btn hover:border-white hover:border-2"
+      href={`/agriculture`}>Get started</a>
   </div>
 </div>
 
 {#if featured[current]}
-  <div class="flex secondary-header marg-bottom">
+  <div class="flex secondary-header">
     <div
       class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10">
       <div class="blur-bg">
