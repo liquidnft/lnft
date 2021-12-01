@@ -36,7 +36,10 @@
     "wretch": "^1.7.4"
   },
   "scripts": {
+<<<<<<< HEAD
     "dev": "nodemon index.js",
+=======
+>>>>>>> Ref: RARE-64
     "start": "node index.js"
   }
 }

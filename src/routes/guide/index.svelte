@@ -3,11 +3,17 @@
 </script>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> Ref: RARE-64
 <script>
   import branding from "$lib/branding";
 </script>
 
+<<<<<<< HEAD
+>>>>>>> Ref: RARE-64
+=======
 >>>>>>> Ref: RARE-64
 <div class="container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
@@ -65,7 +71,11 @@
                 class="guide-image"
                 src="/guide/image19.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -77,7 +87,11 @@
                 class="guide-image"
                 src="/guide/image35.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -92,7 +106,11 @@
                 class="guide-image"
                 src="/guide/image23.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -107,7 +125,11 @@
                 class="guide-image"
                 src="/guide/image2.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -116,7 +138,11 @@
                 class="guide-image"
                 src="/guide/image22.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -154,7 +180,11 @@
                 class="guide-image"
                 src="/guide/image16.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -163,7 +193,11 @@
                 class="guide-image"
                 src="/guide/image33.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -172,7 +206,11 @@
                 class="guide-image"
                 src="/guide/image7.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -188,7 +226,11 @@
                 class="guide-image"
                 src="/guide/image25.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -200,7 +242,11 @@
                 class="guide-image"
                 src="/guide/image34.png"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 alt="Screenshot"
+=======
+                alt="guide-image"
+>>>>>>> Ref: RARE-64
 =======
                 alt="guide-image"
 >>>>>>> Ref: RARE-64
@@ -270,7 +316,11 @@
             a confidential address and corresponding QR code.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image17.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image17.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image17.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -305,7 +355,11 @@
             not in a rush.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image6.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image6.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image6.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -323,7 +377,11 @@
             maximum of 0.01 BTC with this funding option.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image30.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image30.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image30.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -344,8 +402,13 @@
             formats are jpg, png, gif and mp4 up to a size limit of 400MB.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image11.png" alt="Screenshot" />
           <img class="guide-image" src="/guide/image4.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image11.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image4.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image11.png" alt="guide-image" />
           <img class="guide-image" src="/guide/image4.png" alt="guide-image" />
@@ -357,8 +420,13 @@
             once your artwork is ready
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image3.png" alt="Screenshot" />
           <img class="guide-image" src="/guide/image1.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image3.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image1.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image3.png" alt="guide-image" />
           <img class="guide-image" src="/guide/image1.png" alt="guide-image" />
@@ -395,7 +463,11 @@
             </li>
           </ul>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image21.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image21.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image21.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -414,7 +486,11 @@
             history of the artwork on the bottom left corner).
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image37.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image37.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image37.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -426,7 +502,11 @@
             until listed.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image5.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image5.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image5.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -437,8 +517,13 @@
             your wallet including L-BTC and NFTs.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image10.png" alt="Screenshot" />
           <img class="guide-image" src="/guide/image28.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image10.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image28.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image10.png" alt="guide-image" />
           <img class="guide-image" src="/guide/image28.png" alt="guide-image" />
@@ -455,8 +540,13 @@
             uploaded artwork under the “Creations” tab.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image8.png" alt="Screenshot" />
           <img class="guide-image" src="/guide/image24.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image8.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image24.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image8.png" alt="guide-image" />
           <img class="guide-image" src="/guide/image24.png" alt="guide-image" />
@@ -467,8 +557,13 @@
             be able to list it by clicking on “List.”
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image14.png" alt="Screenshot" />
           <img class="guide-image" src="/guide/image26.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image14.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image26.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image14.png" alt="guide-image" />
           <img class="guide-image" src="/guide/image26.png" alt="guide-image" />
@@ -511,9 +606,15 @@
             history of the artwork if you scroll down.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image9.png" alt="Screenshot" />
           <img class="guide-image" src="/guide/image13.png" alt="Screenshot" />
           <img class="guide-image" src="/guide/image12.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image9.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image13.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image12.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image9.png" alt="guide-image" />
           <img class="guide-image" src="/guide/image13.png" alt="guide-image" />
@@ -524,7 +625,11 @@
             your artwork if a price was set.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image38.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image38.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image38.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -539,7 +644,11 @@
             you’ll accept for the artwork. Setting one is optional.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image27.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image27.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image27.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -557,7 +666,11 @@
             and how much time is left until the auction ends.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image36.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image36.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image36.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -584,9 +697,15 @@
             NFT and it will reflect the new owner.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image31.png" alt="Screenshot" />
           <img class="guide-image" src="/guide/image20.png" alt="Screenshot" />
           <img class="guide-image" src="/guide/image32.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image31.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image20.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image32.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image31.png" alt="guide-image" />
           <img class="guide-image" src="/guide/image20.png" alt="guide-image" />
@@ -612,15 +731,21 @@
           <h4>7.1 Edit your Raretoshi profile</h4>
           <p>1. Go to your profile page</p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image11.png" alt="Screenshot" />
 
           <p>2. Select "Edit Profile"</p>
           <img class="guide-image" src="/guide/image15.png" alt="Screenshot" />
 =======
+=======
+>>>>>>> Ref: RARE-64
           <img class="guide-image" src="/guide/image11.png" alt="guide-image" />
 
           <p>2. Select "Edit Profile"</p>
           <img class="guide-image" src="/guide/image15.png" alt="guide-image" />
+<<<<<<< HEAD
+>>>>>>> Ref: RARE-64
+=======
 >>>>>>> Ref: RARE-64
 
           <p>
@@ -628,7 +753,11 @@
             and save the changes. Done.
           </p>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <img class="guide-image" src="/guide/image18.png" alt="Screenshot" />
+=======
+          <img class="guide-image" src="/guide/image18.png" alt="guide-image" />
+>>>>>>> Ref: RARE-64
 =======
           <img class="guide-image" src="/guide/image18.png" alt="guide-image" />
 >>>>>>> Ref: RARE-64
@@ -670,7 +799,11 @@
     color: #3ba5ac;
   }
   .guide-image {
+<<<<<<< HEAD
     max-width: 100%;
+=======
+    max-width: 800px;
+>>>>>>> Ref: RARE-64
     margin: 10px auto;
   }
 </style>
