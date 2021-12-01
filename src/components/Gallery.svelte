@@ -3,10 +3,10 @@
   import { Card, Pagination } from "$comp";
   import { onMount, tick } from "svelte";
 
-  export let artworks;
+  export let filtered;
   export let count;
 
-  let inview = artworks.slice(0, 24);
+  let inview = filtered.slice(0, 24);
   let debug;
 
   let w, h;
@@ -29,14 +29,14 @@
   onMount(() => setTimeout(resize, 50));
   let retry;
 
-  $: browser && init(artworks);
+  $: browser && init(filtered);
   let init = async () => {
     await tick();
     if (y !== 0) return (retry = setTimeout(init, 50));
     clearTimeout(retry);
 
     let el = document.querySelector(".market-gallery");
-    if (!el) return;
+    if (!el) return scroll(y);
 
     let { top, bottom } = el.getBoundingClientRect();
     rh = bottom - top;
@@ -65,7 +65,7 @@
       cr = Math.round((y - st) / rh);
       let p = 2 * columns;
       a = Math.max(p, cr * columns);
-      if (a >= 0) inview = artworks.slice(a - p, a + p);
+      if (a >= 0) inview = filtered.slice(a - p, a + p);
       x = cr > 1 ? parseInt((8 * rh) / (y - cr * rh)) : 0;
 
       translate = Math.max(0, cr * rh - rh) + x;

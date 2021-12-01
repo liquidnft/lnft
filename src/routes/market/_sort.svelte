@@ -4,8 +4,8 @@
   import { artworks, sortCriteria } from "$lib/store";
   export let filtered = undefined;
 
-  $: update($sortCriteria, $artworks);
-  let update = () => (filtered = $artworks.sort(sort));
+  $: update($sortCriteria);
+  let update = () => (filtered = filtered.sort(sort));
   onMount(update);
 
   let sort = (a, b) =>
