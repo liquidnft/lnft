@@ -54,5 +54,8 @@
 				"wretch": "^1.7.6",
 				"wretch-middlewares": "^0.1.13"
 		},
-		"type": "module"
+		"type": "module",
+		"dependencies": {
+				"jshint": "^2.13.1"
+		}
 }
