@@ -1,17 +1,27 @@
 <script context="module">
   export async function load({ fetch, page }) {
-    const { subject } = await fetch(`/user/${page.params.username}.json`).then(
-      (r) => r.json()
-    );
+    try {
+      const { subject } = await fetch(
+        `/user/${page.params.username}.json`
+      ).then((r) => {
+        if (r.ok) return r.json();
+        throw new Error("not ok");
+      });
 
-    return {
-      maxage: 90,
-      props: {
-        subject,
-      },
-    };
+      return {
+        maxage: 90,
+        props: {
+          subject,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        status: 302,
+        redirect: "/",
+      };
+    }
   }
-
 </script>
 
 <script>
