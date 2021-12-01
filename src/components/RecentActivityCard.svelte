@@ -10,7 +10,31 @@
   export let transaction;
 
   let { artwork } = transaction;
+
 </script>
+
+<style>
+  .thumb {
+    overflow: hidden;
+    cursor: pointer;
+    height: 300px;
+    margin-top: 20px;
+  }
+
+  .recent-container :global(video),
+  .recent-container :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover !important;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .recentCard {
+      width: 300px;
+    }
+  }
+
+</style>
 
 {#if artwork}
   <div class="recent-container flex flex-col pr-10 lg:w-1/3">
@@ -34,25 +58,3 @@
     </a>
   </div>
 {/if}
-
-<style>
-  .thumb {
-    overflow: hidden;
-    cursor: pointer;
-    height: 300px;
-    margin-top: 20px;
-  }
-
-  .recent-container :global(video),
-  .recent-container :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover !important;
-  }
-
-  @media only screen and (max-width: 1024px) {
-    .recentCard {
-      width: 300px;
-    }
-  }
-</style>

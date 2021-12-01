@@ -177,6 +177,7 @@
       err(e);
     }
   };
+
 </script>
 
 {#if debug}
@@ -200,7 +201,7 @@
       <div>
         <h4 class="mb-2">Sending</h4>
         {#each Object.keys(totals) as username}
-          {#if senders[username] && username !== "Fee"}
+          {#if senders[username] && username !== 'Fee'}
             {#each Object.keys(totals[username]) as asset}
               {#if totals[username][asset] > 0}
                 <div class="flex mb-2">
@@ -210,20 +211,16 @@
                         {#if users[username]}
                           <Avatar
                             user={users[username]}
-                            overlay={username.includes("2of2") &&
-                              "/logo-graphic.png"}
-                          />
+                            overlay={username.includes('2of2') && '/logo-graphic.png'} />
                         {:else}
                           <Avatar
-                            src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z"
-                          />
+                            src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z" />
                         {/if}
                       </div>
                       <div class="my-auto ml-2 truncate">
                         <a
-                          href={`/u/${username.replace(" 2of2", "")}`}
-                          class="secondary-color"
-                        >
+                          href={`/u/${username.replace(' 2of2', '')}`}
+                          class="secondary-color">
                           {username}
                         </a>
                       </div>
@@ -232,12 +229,12 @@
                     <div>{username}</div>
                   {/if}
                   <div class="flex my-auto ml-auto w-48">
-                    {#if val(asset, Math.abs(totals[username][asset])) !== "1"}
+                    {#if val(asset, Math.abs(totals[username][asset])) !== '1'}
                       <div class="mr-1 ml-auto">
                         {val(asset, Math.abs(totals[username][asset]))}
                       </div>
                     {/if}
-                    <div class="truncate mr-2">{assetLabel(asset)}</div>
+                    <div class="truncate ml-auto mr-2">{assetLabel(asset)}</div>
                   </div>
                 </div>
               {/if}
@@ -249,7 +246,7 @@
       <div>
         <h4 class="mb-2">Receiving</h4>
         {#each Object.keys(totals) as username}
-          {#if recipients[username] && username !== "Fee"}
+          {#if recipients[username] && username !== 'Fee'}
             {#each Object.keys(totals[username]) as asset}
               {#if totals[username][asset] < 0}
                 <div class="flex mb-2">
@@ -259,20 +256,16 @@
                         {#if users[username]}
                           <Avatar
                             user={users[username]}
-                            overlay={username.includes("2of2") &&
-                              "/logo-graphic.png"}
-                          />
+                            overlay={username.includes('2of2') && '/logo-graphic.png'} />
                         {:else}
                           <Avatar
-                            src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z"
-                          />
+                            src="QmcbyjMMT5fFtoiWRJiwV8xoiRWJpSRwC6qCFMqp7EXD4Z" />
                         {/if}
                       </div>
                       <div class="my-auto ml-2 truncate">
                         <a
-                          href={`/u/${username.replace(" 2of2", "")}`}
-                          class="secondary-color"
-                        >
+                          href={`/u/${username.replace(' 2of2', '')}`}
+                          class="secondary-color">
                           {username}
                         </a>
                       </div>
@@ -281,12 +274,12 @@
                     <div>{username}</div>
                   {/if}
                   <div class="flex my-auto ml-auto w-48">
-                    {#if val(asset, Math.abs(totals[username][asset])) !== "1"}
+                    {#if val(asset, Math.abs(totals[username][asset])) !== '1'}
                       <div class="mr-1 ml-auto">
                         {val(asset, Math.abs(totals[username][asset]))}
                       </div>
                     {/if}
-                    <div class="truncate mr-2">{assetLabel(asset)}</div>
+                    <div class="truncate ml-auto mr-2">{assetLabel(asset)}</div>
                   </div>
                 </div>
               {/if}
@@ -294,10 +287,10 @@
           {/if}
         {/each}
 
-        {#if totals["Fee"]}
+        {#if totals['Fee']}
           <h4 class="mt-6 mb-2 text-right">Fee</h4>
           <div class="text-right">
-            {val(btc, Math.abs(totals["Fee"][btc]))}
+            {val(btc, Math.abs(totals['Fee'][btc]))}
             L-BTC
           </div>
         {/if}
@@ -307,8 +300,7 @@
     {#if showDetails}
       <div
         class="text-xs my-6 cursor-pointer"
-        on:click={() => (showDetails = !showDetails)}
-      >
+        on:click={() => (showDetails = !showDetails)}>
         <div class="flex">
           <div>Hide details</div>
           <div class="my-auto ml-1">
@@ -319,8 +311,7 @@
     {:else}
       <div
         class="text-xs my-6 cursor-pointer"
-        on:click={() => (showDetails = !showDetails)}
-      >
+        on:click={() => (showDetails = !showDetails)}>
         <div class="flex">
           <div>Show details</div>
           <div class="my-auto ml-1">
@@ -340,8 +331,7 @@
             <a
               href={`${explorer}/tx/${tx.getId()}`}
               class="secondary-color"
-              target="_blank"
-            >
+              target="_blank">
               {tx.getId()}
             </a>
           {/if}
@@ -368,22 +358,16 @@
 
                 <div class="mb-2">
                   Status:
-                  {input.signed
-                    ? input.pSig
-                      ? "Partially signed"
-                      : "Fully signed"
-                    : "Unsigned"}
+                  {input.signed ? (input.pSig ? 'Partially signed' : 'Fully signed') : 'Unsigned'}
                   -
-                  {input.spent ? "Spent" : "Unspent"}
+                  {input.spent ? 'Spent' : 'Unspent'}
                 </div>
 
                 <div class="mb-2">
                   Prevout:
                   <a
                     class="secondary-color"
-                    href={`${explorer}/tx/${input.txid}?output:${input.index}`}
-                    >{input.txid}:{input.index}</a
-                  >
+                    href={`${explorer}/tx/${input.txid}?output:${input.index}`}>{input.txid}:{input.index}</a>
                 </div>
 
                 {#if input.value && input.asset}
@@ -391,8 +375,7 @@
                     {input.value}
                     <a
                       href={`${explorer}/asset/${input.asset}`}
-                      class="secondary-color">{input.asset}</a
-                    >
+                      class="secondary-color">{input.asset}</a>
                   </div>
                 {/if}
 
@@ -400,8 +383,7 @@
                   Address:
                   <a
                     href={`${explorer}/address/${input.scriptpubkey_address}`}
-                    class="secondary-color">{input.scriptpubkey_address}</a
-                  >
+                    class="secondary-color">{input.scriptpubkey_address}</a>
                 </div>
               </div>
             {/each}
@@ -418,19 +400,17 @@
                       {out.value}
                       <a
                         href={`${explorer}/asset/${out.asset}`}
-                        class="secondary-color">{out.asset}</a
-                      >
+                        class="secondary-color">{out.asset}</a>
                     </div>
                   {/if}
                   <div>
-                    {#if out.address === "Fee"}
+                    {#if out.address === 'Fee'}
                       Fee
                     {:else}
                       Address:
                       <a
                         href={`${explorer}/address/${out.address}`}
-                        class="secondary-color">{out.address}</a
-                      >
+                        class="secondary-color">{out.address}</a>
                     {/if}
                   </div>
                 </div>
@@ -440,11 +420,9 @@
         </div>
         <button
           class="secondary-btn mb-2"
-          on:click={() => copy($psbt.toBase64())}>Copy PSBT Base64</button
-        >
-        <button class="primary-btn mb-2a" on:click={() => copy(tx.toHex())}
-          >Copy Tx Hex</button
-        >
+          on:click={() => copy($psbt.toBase64())}>Copy PSBT Base64</button>
+        <button class="primary-btn mb-2a" on:click={() => copy(tx.toHex())}>Copy
+          Tx Hex</button>
       </div>
     {/if}
   </div>

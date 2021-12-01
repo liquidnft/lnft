@@ -1,6 +1,6 @@
 <script>
   import Fa from "svelte-fa";
-  import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+  import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
   import { Avatar, Eye, Heart } from "$comp";
   import { explorer, goto } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
@@ -39,18 +39,16 @@
     {/each}
   </div>
 
-  {#if !showDetails}
     <div
       class="text-xs my-6 cursor-pointer"
-      on:click={() => (showDetails = true)}>
+      on:click={() => (showDetails = !showDetails)}>
       <div class="flex">
-        <div>View asset details</div>
+        <div>Asset details</div>
         <div class="my-auto ml-1">
-          <Fa icon={faChevronDown} />
+          <Fa icon={showDetails ? faChevronUp : faChevronDown} />
         </div>
       </div>
     </div>
-  {/if}
 
   {#if showDetails}
     <div class="text-sm text-gray-600 break-all mt-6 mb-2">

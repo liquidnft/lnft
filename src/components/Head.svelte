@@ -1,23 +1,28 @@
 <script>
-  import branding from "$lib/branding";
+  import { meta as m } from "$lib/store";
 
-  const {
-    meta: { description, keywords, title, image, url, twitter },
-  } = branding;
 </script>
 
 <svelte:head>
-  <title>{title}</title>
-  <meta name="description" content={description} />
-  <meta name="keywords" content={keywords} />
+  <title>{$m.title}</title>
+  <meta name="description" content={$m.description} />
+  <meta name="keywords" content={$m.keywords} />
 
-  <meta property="og:title" content={title} />
-  <meta property="og:image" content={image} />
-  <meta property="og:url" content={url} />
+  <meta property="og:title" content={$m.title} />
+  <meta name="twitter:title" content={$m.title} />
 
-  <meta name="twitter:title" content={title} />
-  <meta name="twitter:image" content={image} />
-  <meta name="twitter:card" content={twitter.card} />
-  <meta name="twitter:site" content={twitter.site} />
-  <meta name="twitter:creator" content={twitter.creator} />
+  {#if $m.image}
+    <meta property="og:image" content={$m.image} />
+    <meta name="twitter:image" content={$m.image} />
+  {/if}
+
+  {#if $m.video}
+    <meta property="og:video" content={$m.video} />
+    <meta name="twitter:video" content={$m.video} />
+  {/if}
+
+  <meta property="og:url" content={$m.url} />
+  <meta name="twitter:card" content={$m.twitter.card} />
+  <meta name="twitter:site" content={$m.twitter.site} />
+  <meta name="twitter:creator" content={$m.twitter.creator} />
 </svelte:head>

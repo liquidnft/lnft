@@ -181,7 +181,7 @@ export const getArtworkByAsset = (asset) => `query {
 export const getArtworkBySlug = `query($slug: String!) {
   artworks(where: {slug : {_eq: $slug}}, limit: 1) {
     ${fields}
-    transactions(order_by: { created_at: desc }) {
+    transactions(where: { type: { _neq: "royalty" }}, order_by: { created_at: desc }) {
       ${txFields}
     } 
     tags {
@@ -191,8 +191,8 @@ export const getArtworkBySlug = `query($slug: String!) {
   }
 }`;
 
-export const getArtworksByArtist = `query($id: uuid!) {
-  artworks(where: {artist_id: {_eq: $id}}) {
+export const getArtworksByArtist = `query($id: uuid!, $limit: Int) {
+  artworks(where: {artist_id: {_eq: $id}}, limit: $limit) {
     ${fields}
   }
 }`;
@@ -258,7 +258,7 @@ export const getArtwork = `query($id: uuid!) {
       tag
     },
     num_favorites,
-    transactions(order_by: { created_at: desc }) {
+    transactions(where: { type: { _neq: "royalty" }}, order_by: { created_at: desc }) {
       ${txFields}
     } 
     favorites_aggregate(where: {artwork_id: {_eq: $id}}) {

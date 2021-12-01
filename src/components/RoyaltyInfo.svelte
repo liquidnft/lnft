@@ -1,51 +1,38 @@
 <script>
+  import RoyaltyRecipient from "$components/RoyaltyRecipient.svelte";
   import Fa from "svelte-fa";
   import { faGem } from "@fortawesome/free-regular-svg-icons";
+  import {
+    faChevronUp,
+    faChevronDown,
+  } from "@fortawesome/free-solid-svg-icons";
   export let artwork;
+  let show;
+
 </script>
 
 {#if artwork.royalty_recipients.length}
-  <span class="tooltip">
-    <i class="text-midblue text-xl">
-      <Fa icon={faGem} />
-    </i>
-    <div class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-      <h3>List price without royalties:</h3>
-      <ul>
-        {#if artwork.royalty_recipients.length}
-          {#each artwork.royalty_recipients as recipient}
-            <li>{recipient.name}: {recipient.amount}%</li>
-          {/each}
-        {/if}
-      </ul>
+  <div class="mb-6">
+    <div class="text-xs cursor-pointer mb-2" on:click={() => (show = !show)}>
+      <div class="flex">
+        <i class="text-midblue text-xs mr-1 my-auto">
+          <Fa icon={faGem} />
+        </i>
+        <div class="my-auto">Royalties</div>
+        <div class="my-auto ml-1">
+          <Fa icon={show ? faChevronUp : faChevronDown} />
+        </div>
+      </div>
     </div>
-  </span>
+    {#if show}
+      <ul>
+        {#each artwork.royalty_recipients as recipient}
+          <RoyaltyRecipient
+            editable={false}
+            askingAsset={artwork.asking_asset}
+            {recipient} />
+        {/each}
+      </ul>
+    {/if}
+  </div>
 {/if}
-
-<style>
-  .tooltip {
-    cursor: pointer;
-    display: inline-block;
-    vertical-align: middle;
-    padding-left: 5px;
-  }
-  .tooltip .tooltip-text {
-    display: none;
-    padding: 15px;
-    position: absolute;
-    z-index: 100;
-    width: 350px;
-    font-style: normal;
-  }
-  .tooltip:hover .tooltip-text {
-    display: block;
-  }
-  h3 {
-    font-size: 1rem;
-    line-height: 1.3rem;
-  }
-  ul {
-    list-style-type: disc;
-    padding-left: 2rem;
-  }
-</style>

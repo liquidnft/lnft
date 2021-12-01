@@ -3,6 +3,7 @@ import { getUser } from "$queries/users";
 import decode from "jwt-decode";
 import cookie from "cookie";
 import { hbp, getQ } from "$lib/api";
+import { addSeconds } from "date-fns";
 
 export async function handle({ request, resolve }) {
   const { headers } = request;
@@ -21,8 +22,22 @@ export async function handle({ request, resolve }) {
         .get()
         .res();
 
-      ({ jwt_token: jwt } = await res.json());
-      setCookie = res.headers.get("set-cookie");
+      let body = await res.json();
+      let { jwt_token, jwt_expires_in } = body;
+      jwt = jwt_token;
+
+      let tokenExpiry = parseInt(jwt_expires_in / 1000);
+
+      setCookie = [
+        res.headers.get("set-cookie").split(",").slice(0, 2).join(""),
+        cookie.serialize("token", jwt_token, {
+          httpOnly: true,
+          maxAge: tokenExpiry,
+          sameSite: "lax",
+          path: "/",
+          expires: addSeconds(new Date(), tokenExpiry),
+        }),
+      ];
     } catch (e) {
       // console.log(e);
     }

@@ -7,12 +7,14 @@
   export let filtered;
 
   $: update($fc.listPrice, $fc.openBid, $fc.ownedByCreator, $fc.hasSold, $artworks);
-  let update = () => (filtered = $artworks.filter(filter));
+  let update = () => {
+    filtered = filtered.filter(filter);
+  } 
   onMount(update);
 
   let filter = (a) =>
     (!$fc.listPrice || a.list_price) &&
-    (!$fc.openBid || a.bid.amount) &&
+    (!$fc.openBid || (a.bid && a.bid.amount)) &&
     (!$fc.ownedByCreator || a.artist_id === a.owner_id) &&
     (!$fc.hasSold || a.transferred_at);
 </script>

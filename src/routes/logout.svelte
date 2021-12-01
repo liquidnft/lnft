@@ -8,6 +8,7 @@
     console.log(session);
     return {};
   }
+
 </script>
 
 <script>
@@ -21,4 +22,5 @@
     user.set(null);
     goto("/login");
   });
+
 </script>

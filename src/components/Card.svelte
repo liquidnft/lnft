@@ -11,7 +11,9 @@
   export let showDetails = true;
   export let thumb = true;
   export let popup = false;
-  export let height = 350;
+  export let height;
+
+  $: style = height ? `height: ${height}px` : undefined;
 
   let sats, val, ticker;
   $: if (artwork) [sats, val, ticker] = units(artwork.asking_asset);
@@ -29,15 +31,30 @@
     setTimeout(count, 1000);
   };
   count();
+
 </script>
 
+<style>
+  .card {
+    border-radius: 10px;
+    @apply shadow-md;
+  }
+
+  .card :global(img),
+  .card :global(video) {
+    border-radius: 10px 10px 0 0;
+  }
+
+  .price {
+    font-size: 15px;
+  }
+
+</style>
+
 <div
-  class="{showDetails ? 'card' : ''} flex {!showDetails || $loaded[artwork.id]
-    ? 'bg-white'
-    : 'bg-gray-100'} flex-col justify-between h-full"
-  in:fade
->
-  <div style="height: {height}px">
+  class="{showDetails ? 'card' : ''} flex {!showDetails || $loaded[artwork.id] ? 'bg-white' : 'bg-gray-100'} flex-col justify-between h-full"
+  in:fade>
+  <div {style}>
     <a href={`/a/${artwork.slug}`} sveltekit:prefetch>
       {#if $loaded[artwork.id] || !justScrolled}
         <ArtworkMedia {artwork} {showDetails} {popup} bind:thumb />
@@ -51,7 +68,7 @@
           <a href={`/a/${artwork.slug}`}>
             <div>
               <h1 class="text-xl">
-                {artwork.title || "Untitled"}
+                {artwork.title || 'Untitled'}
                 {#if !(artwork.transferred_at || artwork.asking_asset)}
                   (unlisted)
                 {/if}
@@ -83,9 +100,8 @@
               <div class="price">{val(artwork.bid.amount)} {ticker}</div>
               <div class="text-sm font-medium">
                 Current bid by
-                <a href={`/u/${artwork.bid.user.username}`}
-                  >@{artwork.bid.user.username}</a
-                >
+                <a
+                  href={`/u/${artwork.bid.user.username}`}>@{artwork.bid.user.username}</a>
               </div>
             </div>
           {/if}
@@ -129,19 +145,3 @@
     </div>
   {/if}
 </div>
-
-<style>
-  .card {
-    border-radius: 10px;
-    @apply shadow-md;
-  }
-
-  .card :global(img),
-  .card :global(video) {
-    border-radius: 10px 10px 0 0;
-  }
-
-  .price {
-    font-size: 15px;
-  }
-</style>

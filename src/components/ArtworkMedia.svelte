@@ -88,52 +88,8 @@
     muted = !muted;
     vid.muted = muted;
   };
-</script>
 
-{#if artwork.filetype && artwork.filetype.includes("video")}
-  <div
-    class="w-full"
-    class:inline-block={!popup}
-    class:cover
-    class:contain
-    class:hidden={!loaded}
-    on:mouseover={over}
-    on:focus={over}
-    on:mouseout={out}
-    on:blur={out}
-  >
-    <video
-      class="lazy"
-      autoplay
-      muted
-      playsinline
-      loop
-      bind:this={vid}
-      controls={popup}
-    >
-      <source data-src={preview || path} />
-      Your browser does not support HTML5 video.
-    </video>
-    {#if !popup}
-      <button
-        class="absolute hidden md:block bottom-2 right-2 secondary-color"
-        type="button"
-        class:invisible
-        on:click|stopPropagation|preventDefault={toggleSound}
-      >
-        <Fa icon={muted ? faVolumeMute : faVolumeUp} size="1.5x" />
-      </button>
-    {/if}
-  </div>
-{:else}
-  <div class="w-full" class:cover class:contain>
-    <img
-      src={preview || path ? path : "/liquid_logo.svg"}
-      alt={artwork.title}
-      bind:this={img}
-    />
-  </div>
-{/if}
+</script>
 
 <style>
   .contain,
@@ -158,4 +114,46 @@
   video {
     width: auto;
   }
+
 </style>
+
+{#if artwork.filetype && artwork.filetype.includes('video')}
+  <div
+    class="w-full"
+    class:inline-block={!popup}
+    class:cover
+    class:contain
+    class:hidden={!loaded}
+    on:mouseover={over}
+    on:focus={over}
+    on:mouseout={out}
+    on:blur={out}>
+    <video
+      class="lazy"
+      autoplay
+      muted
+      playsinline
+      loop
+      bind:this={vid}
+      controls={popup}>
+      <source data-src={preview || path} />
+      Your browser does not support HTML5 video.
+    </video>
+    {#if !popup}
+      <button
+        class="absolute hidden md:block bottom-2 right-2 secondary-color"
+        type="button"
+        class:invisible
+        on:click|stopPropagation|preventDefault={toggleSound}>
+        <Fa icon={muted ? faVolumeMute : faVolumeUp} size="1.5x" />
+      </button>
+    {/if}
+  </div>
+{:else}
+  <div class="w-full" class:cover class:contain>
+    <img
+      src={preview || path ? path : '/liquid_logo.svg'}
+      alt={artwork.title}
+      bind:this={img} />
+  </div>
+{/if}
