@@ -7,17 +7,19 @@
       r.json()
     );
 
-    if (!props.artwork) return {
-      status: 404,
-    } 
-
     let { artwork } = props;
+
+    if (!artwork)
+      return {
+        status: 404,
+      };
+
     serverApi.url("/viewed").post({ id: artwork.id }).json().catch(console.log);
 
     let metadata = { ...branding.meta };
-    metadata.title = branding.meta.title + " - " + artwork.title;
+    metadata.title = metadata.title + " - " + artwork.title;
     metadata.keywords =
-      branding.meta.keywords + " " + artwork.tags.map((t) => t.tag).join(" ");
+      metadata.keywords + " " + artwork.tags.map((t) => t.tag).join(" ");
     metadata.description = artwork.description;
 
     if (artwork.filetype.includes("video"))
