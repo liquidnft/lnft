@@ -4,13 +4,10 @@
   import branding from "$lib/branding";
   import { host } from "$lib/utils";
 
-  export async function load({
-    fetch,
-    page: {
-      params: { slug },
-    },
-  }) {
-    const props = await fetch(`/artworks/${slug}.json`).then((r) => r.json());
+  export async function load({ fetch, page }) {
+    const props = await fetch(`/artworks/${page.params.slug}.json`).then((r) =>
+      r.json()
+    );
 
     let { artwork } = props;
 
@@ -19,16 +16,7 @@
         status: 404,
       };
 
-    if (!browser) {
-      try {
-        await post("/artworks/viewed", { id: artwork.id }, fetch).res();
-        artwork.views++;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
-    props.views = artwork.views;
+    serverApi.url("/viewed").post({ id: artwork.id }).json().catch(console.log);
 
     let metadata = { ...branding.meta };
     metadata.title = metadata.title + " - " + artwork.title;
