@@ -37,9 +37,10 @@
 
   export let artwork;
 
-  $: disabled = !recipient;
+  let { id } = $page.params;
+  $: disabled = !value;
 
-  let recipient;
+  let value;
 
   let loading;
 
@@ -49,8 +50,8 @@
     loading = true;
     try {
       let address = artwork.has_royalty
-        ? recipient.multisig
-        : recipient.address;
+        ? value.multisig
+        : value.address;
       $psbt = await pay(artwork, address, 1);
       await sign();
 
@@ -74,17 +75,17 @@
       await api
         .auth(`Bearer ${$token}`)
         .url("/transfer")
-        .post({ address, id: recipient.id, transaction })
+        .post({ address, id: value.id, transaction })
         .json();
 
       query(updateArtwork, {
         artwork: {
-          owner_id: recipient.id,
+          owner_id: value.id,
         },
         id: artwork.id,
       }).catch(err);
 
-      info(`Artwork sent to ${recipient.username}!`);
+      info(`Artwork sent to ${value.username}!`);
       goto(`/a/${artwork.slug}`);
     } catch (e) {
       err(e);
@@ -120,7 +121,7 @@
         className="w-full"
         inputClassName="huh"
         labelFieldName="username"
-        bind:selectedItem={recipient}>
+        bind:selectedItem={value}>
         <div class="flex" slot="item" let:item let:label>
           <Avatar class="my-auto" user={item} />
           <div class="ml-1 my-auto">{item.username}</div>
