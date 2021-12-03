@@ -76,22 +76,6 @@
         placeholder="Amount Percent"
         id="recipientAmount" />
     </div>
-    <!-- <div class="mt-1 rounded-md md:w-1/5 w-1/2">
-      <label for="recipientAmount">Currency</label>
-      <Select
-        items={Object.keys(tickers).map((tickerIndex, mapIndex) => {
-          const ticker = tickers[tickerIndex];
-          return { value: tickerIndex, label: ticker.ticker };
-        })}
-        showChevron={true}
-        isClearable={false}
-        placeholder="Currency"
-        selectedValue={tickers[defaultAskingAsset].ticker}
-        on:select={(e) => {
-          recipient.asking_asset = e.detail.value;
-        }}
-      />
-    </div> -->
   </div>
   <div class="flex w-full mb-4">
     <div class="mt-1 rounded-md w-4/5 pr-6">
