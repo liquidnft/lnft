@@ -8,6 +8,7 @@
       r.json()
     );
 
+    console.log(props);
     let { artwork } = props;
 
     if (!artwork)
