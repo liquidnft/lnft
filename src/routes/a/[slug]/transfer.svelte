@@ -1,13 +1,13 @@
 <script context="module">
   export async function load({ fetch, page, session }) {
-    const props = await fetch(`/artworks/${page.params.slug}.json`).then((r) =>
-      r.json()
-    );
-
     if (!(session && session.user)) return {
       status: 302,
       redirect: '/login'
     } 
+
+    const props = await fetch(`/artworks/${page.params.slug}.json`).then((r) =>
+      r.json()
+    );
 
     return {
       maxage: 90,
@@ -38,9 +38,9 @@
   export let artwork;
 
   let { id } = $page.params;
-  $: disabled = !selectedValue;
+  $: disabled = !value;
 
-  let selectedValue;
+  let value;
 
   let loading;
 
@@ -50,8 +50,8 @@
     loading = true;
     try {
       let address = artwork.has_royalty
-        ? selectedValue.multisig
-        : selectedValue.address;
+        ? value.multisig
+        : value.address;
       $psbt = await pay(artwork, address, 1);
       await sign();
 
@@ -74,17 +74,17 @@
       await api
         .auth(`Bearer ${$token}`)
         .url("/transfer")
-        .post({ address, id: selectedValue.id, transaction })
+        .post({ address, id: value.id, transaction })
         .json();
 
       query(updateArtwork, {
         artwork: {
-          owner_id: selectedValue.id,
+          owner_id: value.id,
         },
         id,
       }).catch(err);
 
-      info(`Artwork sent to ${selectedValue.username}!`);
+      info(`Artwork sent to ${value.username}!`);
       goto(`/a/${artwork.slug}`);
     } catch (e) {
       err(e);
@@ -119,7 +119,7 @@
         className="w-full"
         inputClassName="huh"
         labelFieldName="username"
-        bind:selectedItem={selectedValue}>
+        bind:selectedItem={value}>
         <div class="flex" slot="item" let:item let:label>
           <Avatar class="my-auto" user={item} />
           <div class="ml-1 my-auto">{item.username}</div>
