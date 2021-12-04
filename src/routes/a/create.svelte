@@ -1,3 +1,14 @@
+<script context="module">
+  export async function load({ session }) {
+    if (!(session && session.user)) return {
+      status: 302,
+      redirect: '/login'
+    } 
+
+    return {};
+  }
+</script>
+
 <script>
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
@@ -32,8 +43,6 @@
 
   import Form from "./_form.svelte";
   import Issuing from "./_issuing.svelte";
-
-  $: requireLogin($page);
 
   let preview;
   let filename;

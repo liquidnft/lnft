@@ -40,7 +40,7 @@
   $: focus($page);
   export let focus = (p) => p && tick().then(() => input && input.select());
 
-  $: selectedValue = artwork.tags.map(({ tag }) => ({
+  $: value = artwork.tags.map(({ tag }) => ({
     value: tag,
     label: tag,
   }));
@@ -151,7 +151,7 @@
       isMulti={true}
       placeholder="Tags"
       on:select={handle}
-      {selectedValue}
+      {value}
       isCreatable={true} />
   </div>
   <div class="flex">

@@ -1,8 +1,17 @@
 <script context="module">
   export async function load({ fetch, page }) {
-    const { artwork } = await fetch(`/artworks/${page.params.id}.json`).then(
+    const props = await fetch(`/artworks/${page.params.slug}.json`).then(
       (r) => r.json()
     );
+
+
+    console.log(props);
+    if (!props.artwork) return {
+      status: 404,
+    } 
+
+    let { artwork } = props;
+
 
     const { default_royalty_recipients } = await fetch(`/royalties.json`).then(
       (r) => r.json()

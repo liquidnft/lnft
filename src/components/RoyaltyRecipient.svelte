@@ -24,7 +24,9 @@
     class="flex flex-wrap w-full bg-gray-600 text-gray-100 rounded-r-lg p-4 border-white">
     <div class="flex flex-wrap flex-grow">
       <div>{recipient.name}</div>
-      <div class="ml-auto my-auto">{recipient.amount}%</div>
+      <div class="ml-auto my-auto">
+        {recipient.amount}%
+      </div>
       <div class="w-full break-all text-wrap text-xs text-secondary">
         {recipient.address}
       </div>
@@ -32,7 +34,8 @@
     {#if editable && recipient.type === royaltyRecipientIndividualType}
       <div
         class="btn cursor-pointer text-center rounded-sm text-sm p-2 my-auto ml-2"
-        on:click|stopPropagation={onDelete}>
+        on:click|stopPropagation={onDelete}
+      >
         <Fa icon={faTimes} />
       </div>
     {/if}
