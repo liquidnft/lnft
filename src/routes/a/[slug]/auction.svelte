@@ -4,8 +4,6 @@
       (r) => r.json()
     );
 
-
-    console.log(props);
     if (!props.artwork) return {
       status: 404,
     } 
@@ -370,7 +368,7 @@
       if (!auction_start) auction_start = null;
       if (!auction_end) auction_end = null;
 
-      query(updateArtworkWithRoyaltyRecipients, {
+      await query(updateArtworkWithRoyaltyRecipients, {
         artwork: {
           asking_asset,
           auction_end,
@@ -384,7 +382,7 @@
           max_extensions,
           reserve_price: sats(artwork.asking_asset, reserve_price),
         },
-        id,
+        id: artwork.id,
         royaltyRecipients: royalty_value
           ? royalty_recipients.map((item) => {
               delete item.id;
@@ -393,7 +391,7 @@
               return item;
             })
           : [],
-      }).catch(err);
+      });
 
       api.url("/asset/register").post({ asset }).json().catch(console.log);
 
