@@ -166,7 +166,7 @@ button {
 }
 
 .secondary-btn:hover{
-  border: 1px solid #CEDC21;
+  border: 1px solid #43470B;
   color: #6B6B6B;
 }
 
@@ -216,7 +216,7 @@ select:focus {
 }
 
 button:hover {
-  color: #CEDC21;
+  color: #43470bbd;
 }
 
 :global(input),

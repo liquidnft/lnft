@@ -90,7 +90,7 @@
 
 <style>
   .container {
-    background-color: #ecf6f7;
+    background-color: #43470B;
     height: auto;
     min-height: 100vh;
     margin: 0;
@@ -115,7 +115,7 @@
     right: 15px;
     top: 15px;
     font-size: 20px;
-    color: #6ed8e0;
+    color: #CEDC21;
   }
 
   @media only screen and (max-width: 1024px) {
