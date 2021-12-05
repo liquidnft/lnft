@@ -127,7 +127,7 @@
 <style>
   .hover {
     @apply border-b-2;
-    border-bottom: 3px solid #6ed8e0;
+    border-bottom: 3px solid #CEDC21;
   }
 
   .tabs div {

@@ -93,7 +93,7 @@
     background: rgba(52, 190, 171, 0.25);
   }
   .border-btc {
-    border-color: #30bfad;
+    border-color: #CEDC21;
   }
 
   .light-color {

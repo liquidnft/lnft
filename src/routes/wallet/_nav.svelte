@@ -73,7 +73,7 @@
   }
 
   .wallet-nav a:hover {
-    color: #3ba5ac;
+    color: #CEDC21;
   }
 
   @media (max-width: 1023px) {

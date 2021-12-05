@@ -216,7 +216,7 @@ select:focus {
 }
 
 button:hover {
-  color: #6B6B6B;
+  color: #CEDC21;
 }
 
 :global(input),
