@@ -33,7 +33,7 @@ services:
     ports:
       - '8091:8091'
   ui:
-    image: jungle
+    image: junglelab/jungle
     depends_on:
       - lapp
     container_name: ui
