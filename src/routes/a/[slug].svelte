@@ -12,7 +12,6 @@
   }) {
     const props = await fetch(`/artworks/${slug}.json`).then((r) => r.json());
 
-    console.log(props);
     let { artwork } = props;
 
     if (!artwork)
