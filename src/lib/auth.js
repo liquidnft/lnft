@@ -1,5 +1,5 @@
 import { session } from "$app/stores";
-import { api, post } from "$lib/api";
+import { api } from "$lib/api";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
