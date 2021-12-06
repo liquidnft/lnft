@@ -2,7 +2,7 @@
   export async function load({ fetch, page }) {
     try {
       const { subject } = await fetch(
-        `/user/${page.params.username}.json`
+        `/${page.params.username}.json`
       ).then((r) => {
         if (r.ok) return r.json();
         throw new Error("not ok");
@@ -16,10 +16,6 @@
       };
     } catch (e) {
       console.log(e);
-      return {
-        status: 302,
-        redirect: "/",
-      };
     }
   }
 </script>
@@ -40,7 +36,7 @@
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getUserArtworks } from "$queries/artworks";
   import { createFollow, deleteFollow } from "$queries/follows";
-  import Menu from "./user/_menu.svelte";
+  import Menu from "./_menu.svelte";
   import { query } from "$lib/api";
 
   export let id;

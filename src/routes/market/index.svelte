@@ -1,11 +1,11 @@
 <script context="module">
   export async function load({ fetch }) {
-    const r = await fetch("/artworks.json?limit=12").then((r) => r.json());
+    const r = await fetch("/artworks.json?limit=5000").then((r) => r.json());
 
     return {
       maxage: 720,
       props: {
-        count: r.count,
+        count: Math.min(r.count, 5000),
         initialArtworks: r.artworks,
       },
     };

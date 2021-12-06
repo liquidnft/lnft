@@ -39,7 +39,7 @@
 
   export let addresses, titles;
 
-  if (browser)
+  if (browser) {
     history.pushState = new Proxy(history.pushState, {
       apply(target, thisArg, argumentsList) {
         Reflect.apply(target, thisArg, argumentsList);
@@ -47,11 +47,13 @@
       },
     });
 
-  $a = addresses;
-  $t = titles;
+    $a = addresses;
+    $t = titles;
 
-  $user = $session.user;
-  $token = $session.jwt;
+    $user = $session.user;
+    $token = $session.jwt;
+  }
+
 
   let open = false;
   let y;
