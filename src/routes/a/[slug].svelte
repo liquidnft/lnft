@@ -1,5 +1,6 @@
 <script context="module">
-  import { serverApi } from "$lib/api";
+  import { post } from "$lib/api";
+  import { browser } from "$app/env";
   import branding from "$lib/branding";
 
   export async function load({ fetch, page }) {
@@ -7,7 +8,6 @@
       r.json()
     );
 
-    console.log(props);
     let { artwork } = props;
 
     if (!artwork)
@@ -15,7 +15,9 @@
         status: 404,
       };
 
-    serverApi.url("/viewed").post({ id: artwork.id }).json().catch(console.log);
+    if (!browser) post("artworks/viewed", { id: artwork.id }, fetch);
+    artwork.views++;
+    props.views = artwork.views;
 
     let metadata = { ...branding.meta };
     metadata.title = metadata.title + " - " + artwork.title;
@@ -72,7 +74,7 @@
   import { api, query } from "$lib/api";
   import { SocialShare } from "$comp";
 
-  export let artwork, others, metadata;
+  export let artwork, others, metadata, views;
 
   $: disabled =
     !artwork ||
@@ -87,6 +89,7 @@
   let fetch = async () => {
     query(getArtwork, { id }).then((res) => {
       artwork = res.artworks_by_pk;
+      artwork.views = views;
 
       $art = artwork;
     });
