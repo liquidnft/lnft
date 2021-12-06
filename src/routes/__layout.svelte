@@ -17,11 +17,23 @@
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
 
-  let open = false;
-  let ready;
+  export let addresses, titles;
 
-  $user = $session.user;
-  $token = $session.jwt;
+  if (browser) {
+    history.pushState = new Proxy(history.pushState, {
+      apply(target, thisArg, argumentsList) {
+        Reflect.apply(target, thisArg, argumentsList);
+        scrollTo(0, 0);
+      },
+    });
+
+    $a = addresses;
+    $t = titles;
+
+    $user = $session.user;
+    $token = $session.jwt;
+  }
+
 
   onMount(async () => {
     ready = true;
