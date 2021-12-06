@@ -55,9 +55,7 @@ app.post("/transfer", auth, async (req, res) => {
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
 
-  let held = !!utxos.find((tx) => tx.asset === transaction.asset);
-
-  if (held) {
+  if (utxos.find((tx) => tx.asset === transaction.asset)) {
     let query = `mutation create_transaction($transaction: transactions_insert_input!) {
       insert_transactions_one(object: $transaction) {
         id,
