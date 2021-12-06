@@ -86,7 +86,6 @@ export const getBalances = async () => {
   let p = {};
 
   utxos.map((u) => {
-    if (u.asset === btc && u.value < DUST) return;
     if (u.status.confirmed) {
       if (b[u.asset]) b[u.asset] += parseInt(u.value);
       else b[u.asset] = u.value;
