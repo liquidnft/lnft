@@ -48,17 +48,6 @@
 
   export let addresses, titles;
 
-  let interval;
-  let refresh = async () => {
-    try {
-      let { jwt_token } = await get("/auth/refresh.json", fetch).json();
-      $token = jwt_token;
-      if (!$token && $session) delete $session.user;
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   if (browser) {
     history.pushState = new Proxy(history.pushState, {
       apply(target, thisArg, argumentsList) {
@@ -70,13 +59,10 @@
     $a = addresses;
     $t = titles;
 
-    if ($session) {
-      $user = $session.user;
-      $token = $session.jwt;
-    }
-
-    interval = setInterval(refresh, 60000);
+    $user = $session.user;
+    $token = $session.jwt;
   }
+
 
   let open = false;
   let y;
