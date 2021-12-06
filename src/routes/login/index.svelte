@@ -36,11 +36,8 @@
   let login = async () => {
     window.sessionStorage.setItem("password", password);
     try {
-      let res = await post("/auth/login", { email, password }, fetch).json();
-      $user = res.user;
-      $token = res.jwt_token;
-      $session = { user: $user };
-      goto("/");
+      let res = await post("auth/login", { email, password }, fetch).json();
+      window.location.reload(true);
     } catch (e) {
       err(e);
     }

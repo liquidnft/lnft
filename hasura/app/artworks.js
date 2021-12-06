@@ -100,16 +100,14 @@ app.post("/viewed", async (req, res) => {
       let { asset, owner } = result.data.update_artworks_by_pk;
       let { address, multisig } = owner;
 
-      let find = async (a) =>
-        (await electrs.url(`/address/${a}/utxo`).get().json()).find(
-          (tx) => tx.asset === asset
-        );
+      let utxos = [
+        ...(await electrs.url(`/address/${address}/utxo`).get().json()),
+        ...(await electrs.url(`/address/${multisig}/utxo`).get().json()),
+      ];
 
-      let held = null;
-      if (await find(address)) held = "single";
-      if (await find(multisig)) held = "multisig";
+      let held = !!utxos.find((tx) => tx.asset === asset);
 
-      query = `mutation ($id: uuid!, $held: String!) {
+      query = `mutation ($id: uuid!, $held: Boolean!) {
       update_artworks_by_pk(pk_columns: { id: $id }, _set: { held: $held }) {
         id
         owner {

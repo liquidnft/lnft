@@ -9,7 +9,6 @@
       r.json()
     );
 
-    console.log(props);
     let { artwork } = props;
 
     if (!artwork)
@@ -17,7 +16,9 @@
         status: 404,
       };
 
-    serverApi.url("/viewed").post({ id: artwork.id }).json().catch(console.log);
+    if (!browser) post("artworks/viewed", { id: artwork.id }, fetch);
+    artwork.views++;
+    props.views = artwork.views;
 
     let metadata = { ...branding.meta };
     metadata.title = metadata.title + " - " + artwork.title;
@@ -77,13 +78,6 @@
   import { SocialShare } from "$comp";
 
   export let artwork, others, metadata, views;
-
-  let release = async () => {
-    await requirePassword();
-    $psbt = await releaseToSelf(artwork);
-    $psbt = await sign();
-    await broadcast($psbt);
-  };
 
   $: disabled =
     loading ||
