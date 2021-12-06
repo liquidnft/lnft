@@ -39,7 +39,7 @@ services:
     container_name: ui
     restart: on-failure
     ports:
-      - '3000:3000'
+      - '3001:3001'
   postgres:
     container_name: postgres
     image: postgres:12
