@@ -191,20 +191,20 @@ app.post("/transaction", auth, async (req, res) => {
 
     let query = `query {
     artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
-      owner {
-        display_name
-      } 
-      title
-      slug
-      bid {
-        amount
-        user {
-          id
+        owner {
           display_name
         } 
-      } 
-    }
-  }`;
+        title
+        slug
+        bid {
+          amount
+          user {
+            id
+            display_name
+          } 
+        } 
+      }
+    }`;
 
     let { data, errors } = await hasura.post({ query }).json();
     if (errors) throw new Error(errors[0].message);
