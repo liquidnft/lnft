@@ -92,10 +92,14 @@ const check = async (psbt) => {
       let toRoyaltyRecipients = outs
         .filter((o) => {
           const recipientsWithOuts = royalty_recipients.find((recipient) => {
+            let unconfidential;
+            try {
+              unconfidential = Address.fromConfidential(recipient.address)
+                .unconfidentialAddress;
+            } catch (e) {}
 
             return (
-              recipient.address === o.address ||
-              Address.fromConfidential(recipient.address).unconfidentialAddress
+              recipient.address === o.address || unconfidential === o.address
             );
           });
           return !!recipientsWithOuts;

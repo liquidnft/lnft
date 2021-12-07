@@ -191,10 +191,7 @@ app.post("/transaction", auth, async (req, res) => {
     const { transaction } = req.body;
 
     let query = `query {
-      artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
-        auction_start
-        auction_end
-        bid_increment
+    artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
         owner {
           display_name
         } 
