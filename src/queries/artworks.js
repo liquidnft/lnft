@@ -1,5 +1,4 @@
 import { fields as txfields } from "./transactions";
-const LOCK_EDITION_ID = import.meta.env.VITE_LOCK_EDITION_ID;
 
 const fields = `
   id,
@@ -73,7 +72,7 @@ export const getArtworks = (
 ) => `query($where: artworks_bool_exp!, $limit: Int, $offset: Int) {
  artworks(where: $where, limit: $limit, offset: $offset, distinct_on: [edition_id]) {
     ${fields}
-    is_locked(args: {user_id: "${id}", edition_key:"${LOCK_EDITION_ID}"})
+    is_locked(args: {user_id: "${id}"})
     tags {
       tag
     }
@@ -170,7 +169,7 @@ export const updateTags = `mutation insert_tags($tags: [tags_insert_input!]!, $a
 export const getArtwork = (id, userId) => `query {
   artworks_by_pk(id: "${id}") {
     ${fields}
-    is_locked(args: {user_id: "${userId}", edition_key:"${LOCK_EDITION_ID}"})
+    is_locked(args: {user_id: "${userId}"})
     tags {
       tag
     },
