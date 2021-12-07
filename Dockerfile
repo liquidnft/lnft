@@ -1,5 +1,8 @@
 FROM node:17-alpine
 
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
+
 RUN apk add git
 RUN npm i -g pnpm
 
