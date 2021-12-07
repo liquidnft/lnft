@@ -81,11 +81,14 @@ setInterval(async () => {
       } 
     }`;
 
-    let { artworks } = (await hasura.post({ query }).json()).data;
+    let res = await hasura.post({ query }).json()
+    let { data, errors } = res;
+    if (errors) throw new Error(errors[0].message);
+    let { artworks } = data;
 
     for (let i = 0; i < artworks.length; i++) {
       let artwork = artworks[i];
-      let bid = artwork.bid[0];
+      let { bid } = artwork;
 
       hasura
         .post({

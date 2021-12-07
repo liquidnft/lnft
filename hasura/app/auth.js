@@ -48,7 +48,6 @@ app.post("/login", async (req, res) => {
     );
     res.send(await response.json());
   } catch (e) {
-    console.log(e);
     let msg = "Login failed";
     if (e.message.includes("activated")) msg = "Account not activated, check email for a confirmation link";
     res.code(401).send(msg);

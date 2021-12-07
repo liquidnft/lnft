@@ -1,22 +1,12 @@
 version: '3.6'
 services:
-  svelte:
-    depends_on:
-      - lapp
-    container_name: svelte
-    image: asoltys/vida
-    restart: on-failure
-    ports:
-      - '3001:3000'
-    environment:
-      VITE_HBP: '${HBP_URL}'
-      VITE_APP: '${APP_URL}'
   lapp:
     depends_on:
       - hbp
     container_name: lapp
-    image: asoltys/lnft-server:maven
+    image: asoltys/lnft-server
     restart: on-failure
+    command: ["pnpm", "dev"]
     environment:
       SERVER_URL: '${SERVER_URL}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'

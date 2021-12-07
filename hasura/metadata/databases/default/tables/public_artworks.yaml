@@ -19,6 +19,15 @@ array_relationships:
       table:
         name: favorites
         schema: public
+- name: offers
+  using:
+    manual_configuration:
+      column_mapping:
+        id: artwork_id
+      insertion_order: null
+      remote_table:
+        name: offers
+        schema: public
 - name: royalty_recipients
   using:
     foreign_key_constraint_on:
@@ -73,11 +82,6 @@ computed_fields:
     session_argument: hasura_session
     table_argument: artwork_row
   name: num_favorites
-- definition:
-    function:
-      name: artwork_sequence
-      schema: public
-  name: sequence
 insert_permissions:
 - permission:
     backend_only: false

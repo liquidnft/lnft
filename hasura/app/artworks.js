@@ -55,9 +55,7 @@ app.post("/transfer", auth, async (req, res) => {
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
 
-  let held = !!utxos.find((tx) => tx.asset === transaction.asset);
-
-  if (held) {
+  if (utxos.find((tx) => tx.asset === transaction.asset)) {
     let query = `mutation create_transaction($transaction: transactions_insert_input!) {
       insert_transactions_one(object: $transaction) {
         id,
@@ -80,23 +78,22 @@ app.post("/transfer", auth, async (req, res) => {
 app.post("/viewed", async (req, res) => {
   try {
     let query = `mutation ($id: uuid!) {
-      update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
-        id
-        owner {
-          address
-          multisig
-        } 
-        asset
-      }
-    }`;
+    update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
+      id
+      owner {
+        address
+        multisig
+      } 
+      asset
+    }
+  }`;
 
     let result = await hasura
       .post({
         query,
         variables: { id: req.body.id },
       })
-      .json()
-
+      .json();
 
     if (result.data) {
       let { asset, owner } = result.data.update_artworks_by_pk;
@@ -120,20 +117,21 @@ app.post("/viewed", async (req, res) => {
       }
     }`;
 
-      let { data, errors } = await hasura
+      result = await hasura
         .post({
           query,
           variables: { id: req.body.id, held },
         })
-        .json()
+        .json();
 
-      if (errors) throw new Error("problem updating held status");
+      if (result.errors) console.log("problem updating held status", result);
     }
+
+    res.send({});
   } catch (e) {
     console.log(e);
+    res.code(500).send(e.message);
   }
-
-  res.send({});
 });
 
 app.post("/claim", auth, async (req, res) => {
@@ -188,74 +186,79 @@ app.post("/claim", auth, async (req, res) => {
 });
 
 app.post("/transaction", auth, async (req, res) => {
-  const { transaction } = req.body;
+  try {
+    const { transaction } = req.body;
 
-  let query = `query {
+    let query = `query {
     artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
-      owner {
-        display_name
-      } 
-      title
-      slug
-      bid {
-        amount
-        user {
-          id
+        owner {
           display_name
         } 
-      } 
-    }
-  }`;
+        title
+        slug
+        bid {
+          amount
+          user {
+            id
+            display_name
+          } 
+        } 
+      }
+    }`;
 
-  let r = await hasura.post({ query }).json().catch(console.error);
-  let { owner, title, bid, slug } = r.data.artworks[0];
+    let { data, errors } = await hasura.post({ query }).json();
+    if (errors) throw new Error(errors[0].message);
+    let { owner, title, bid, slug } = data.artworks[0];
 
-  let locals = {
-    outbid: false,
-    title,
-    url: `${SERVER_URL}/a/${slug}`,
-  };
+    let locals = {
+      outbid: false,
+      title,
+      url: `${SERVER_URL}/a/${slug}`,
+    };
 
-  try {
-    await mail.send({
-      template: "notify-bid",
-      locals,
-      message: {
-        to: owner.display_name,
-      },
-    });
-
-    if (bid && bid.user) {
-      locals.outbid = true;
-
+    try {
       await mail.send({
         template: "notify-bid",
         locals,
         message: {
-          to: bid.user.display_name,
+          to: owner.display_name,
         },
       });
+
+      if (bid && bid.user) {
+        locals.outbid = true;
+
+        await mail.send({
+          template: "notify-bid",
+          locals,
+          message: {
+            to: bid.user.display_name,
+          },
+        });
+      }
+    } catch (err) {
+      console.error("Unable to send email");
+      console.error(err);
     }
-  } catch (err) {
-    console.error("Unable to send email");
-    console.error(err);
+
+    query = `mutation create_transaction($transaction: transactions_insert_input!) {
+      insert_transactions_one(object: $transaction) {
+        id,
+        artwork_id
+      } 
+    }`;
+
+    ({ data, errors } = await api(req.headers)
+      .post({ query, variables: { transaction } })
+      .json());
+
+    if (errors) throw new Error(errors[0].message);
+
+    res.send(data.insert_transactions_one);
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
   }
-
-  query = `mutation create_transaction($transaction: transactions_insert_input!) {
-    insert_transactions_one(object: $transaction) {
-      id,
-      artwork_id
-    } 
-  }`;
-
-  r = await api(req.headers)
-    .post({ query, variables: { transaction } })
-    .json()
-    .catch(console.error);
-
-  console.log("bid placed", title, bid[0].amount);
-
-  res.send(r);
 });
 
 app.post("/release/update", auth, async (req, res) => {
