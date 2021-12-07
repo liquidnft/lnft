@@ -1,4 +1,28 @@
+<script context="module">
+  export async function load({ fetch, page, session }) {
+    const props = await fetch(`/addresses.json`).then((r) => r.json());
+
+    if (
+      session &&
+      session.user &&
+      !session.user.wallet_initialized &&
+      !["/wallet", "/logout"].find((p) => page.path.includes(p))
+    )
+      return {
+        status: 302,
+        redirect: "/wallet/setup",
+      };
+
+    return {
+      maxage: 90,
+      props,
+    };
+  }
+
+</script>
+
 <script>
+  import { browser } from "$app/env";
   import { session } from "$app/stores";
   import decode from "jwt-decode";
   import {
@@ -12,12 +36,20 @@
     Snack,
     Head,
   } from "$comp";
-  import { show, user, password, token } from "$lib/store";
+  import {
+    addresses as a,
+    meta,
+    titles as t,
+    user,
+    password,
+    token,
+  } from "$lib/store";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { publicPages } from "$lib/utils";
 
   export let addresses, titles;
+  let open;
 
   if (browser) {
     history.pushState = new Proxy(history.pushState, {
@@ -36,8 +68,6 @@
 
 
   onMount(async () => {
-    ready = true;
-
     if (!$password) $password = window.sessionStorage.getItem("password");
   });
 
@@ -53,7 +83,6 @@
 <Head />
 <Snack />
 
-{#if ready}
   <Sidebar bind:open />
   <div class={y > 50 ? 'sticky' : ''} in:fade>
     <Navbar bind:sidebar={open} />
@@ -69,4 +98,3 @@
   </main>
 
   <Footer />
-{/if}

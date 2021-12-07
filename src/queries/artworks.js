@@ -1,16 +1,16 @@
-import { fields as txfields } from "./transactions";
-
-const marketFields = `
+export const marketFields = `
   id
   edition
   editions
   title
   filename
   filetype
+  favorited
   list_price
   auction_start
   auction_end
   asking_asset
+  has_royalty
   slug
   created_at
   owner {
@@ -23,9 +23,17 @@ const marketFields = `
     username
     avatar_url
   },
+  bid {
+    id
+    user {
+      id
+      username
+    } 
+    amount 
+  }
 `
 
-const fields = `
+export const fields = `
   id,
   asset
   edition
@@ -88,6 +96,34 @@ const fields = `
   }
 `;
 
+export const txFields = `
+  id
+  psbt
+  amount 
+  hash
+  type
+  created_at
+  asset
+  confirmed
+  bid {
+    id
+    user {
+      id 
+      username
+    } 
+  } 
+  user {
+    id
+    username
+    avatar_url
+  } 
+  artwork_id
+  artwork {
+    ${fields}
+  } 
+`;
+
+
 export const getFeatured = `query {
  featured {
     id
@@ -100,9 +136,12 @@ export const getFeatured = `query {
   }
 }`;
 
-export const getLimited = `query ($where: sequenced_bool_exp!, $limit: Int, $offset: Int, $order_by: sequenced_order_by!)  {
- sequenced(where: $where, limit: $limit, offset: $offset, order_by: [$order_by]) {
+export const getLimited = `query($where: artworks_bool_exp!, $limit: Int, $offset: Int, $order_by: artworks_order_by!) {
+ artworks(where: $where, limit: $limit, offset: $offset, order_by: [$order_by]) {
     ${marketFields}
+    tags {
+      tag
+    } 
   }
 }`;
 
@@ -115,8 +154,8 @@ export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offs
   }
 }`;
 
-export const getUserArtworks = (id) => `query {
- artworks(where: { _or: [{ artist_id: { _eq: "${id}" }}, { owner_id: { _eq: "${id}" }}]}) {
+export const getUserArtworks = `query($id: uuid!) {
+ artworks(where: { _or: [{ artist_id: { _eq: $id }}, { owner_id: { _eq: $id }}]}) {
     ${fields}
     tags {
       tag
@@ -139,9 +178,12 @@ export const getArtworkByAsset = (asset) => `query {
   }
 }`;
 
-export const getArtworkBySlug = (slug) => `query {
-  artworks(where: {slug : {_eq: "${slug}"}}, limit: 1) {
+export const getArtworkBySlug = `query($slug: String!) {
+  artworks(where: {slug : {_eq: $slug}}, limit: 1) {
     ${fields}
+    transactions(where: { type: { _neq: "royalty" }}, order_by: { created_at: desc }) {
+      ${txFields}
+    } 
     tags {
       tag
     },
@@ -149,8 +191,8 @@ export const getArtworkBySlug = (slug) => `query {
   }
 }`;
 
-export const getArtworksByArtist = (id) => `query {
-  artworks(where: {artist_id: {_eq: "${id}"}}) {
+export const getArtworksByArtist = `query($id: uuid!, $limit: Int) {
+  artworks(where: {artist_id: {_eq: $id}}, limit: $limit) {
     ${fields}
   }
 }`;
@@ -178,7 +220,7 @@ export const create = `mutation ($artwork: artworks_insert_input!, $tags: [tags_
     affected_rows
   }
   insert_transactions_one(object: $transaction) {
-    ${txfields}
+    ${txFields}
   } 
 }`;
 
@@ -209,14 +251,17 @@ export const updateTags = `mutation insert_tags($tags: [tags_insert_input!]!, $a
   }
 }`;
 
-export const getArtwork = (id) => `query {
-  artworks_by_pk(id: "${id}") {
+export const getArtwork = `query($id: uuid!) {
+  artworks_by_pk(id: $id) {
     ${fields}
     tags {
       tag
     },
     num_favorites,
-    favorites_aggregate(where: {artwork_id: {_eq: "${id}"}}) {
+    transactions(where: { type: { _neq: "royalty" }}, order_by: { created_at: desc }) {
+      ${txFields}
+    } 
+    favorites_aggregate(where: {artwork_id: {_eq: $id}}) {
       aggregate {
         count
       }

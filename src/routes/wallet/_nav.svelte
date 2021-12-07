@@ -64,7 +64,7 @@
     <h2 class="mb-5 px-5 md:px-0"><a href="/wallet">Wallet</a></h2>
 
     <div class="wallet-nav flex flex-col uppercase">
-      <a href={`/u/${$user.username}`}>
+      <a href={`/${$user.username}`}>
         <div
           class="flex flex-wrap justify-center sm:justify-start items-center sm:items-start h-full">
           <Fa icon={faChevronLeft} class="my-auto mr-2" />

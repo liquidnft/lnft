@@ -19,7 +19,7 @@
   class="flex flex-wrap border-b cursor-pointer watch-row">
   <Avatar user={item.user} />
   <div class="ml-2 my-auto">
-    <a href={`/u/${item.user.username}`}>@{item.user.username}</a>
+    <a href={`/${item.user.username}`}>@{item.user.username}</a>
   </div>
   <div class="my-auto ml-auto text-right">{item.value}</div>
 </div>

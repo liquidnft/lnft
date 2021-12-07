@@ -52,13 +52,13 @@
         <div class="flex">
           <div
             class="my-auto cursor-pointer"
-            on:click|stopPropagation={() => goto(`/u/${artwork.artist.username}`)}>
+            on:click|stopPropagation={() => goto(`/${artwork.artist.username}`)}>
             <Avatar user={transaction.artwork.artist} size="large" />
           </div>
           <div class="ml-5 my-auto">
             <p
               class="cursor-pointer hover:underline"
-              on:click|stopPropagation={() => goto(`/u/${artwork.artist.username}`)}>
+              on:click|stopPropagation={() => goto(`/${artwork.artist.username}`)}>
               {artwork.artist.username}
             </p>
             <p class="text-sm text-gray-500">Artist</p>

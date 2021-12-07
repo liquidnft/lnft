@@ -7,7 +7,7 @@
 {#if transaction}
   <div class:line-through={transaction.type.includes('cancelled')}>
     <a
-      href={`/u/${transaction.user.username}`}
+      href={`/${transaction.user.username}`}
       class="secondary-color">@{transaction.user.username}</a>
     {#if transaction.type.includes('bid')}
       offered
@@ -47,7 +47,7 @@
       {ticker(transaction.asset)}
       from
       <a
-        href={`/u/${transaction.bid.user.username}`}
+        href={`/${transaction.bid.user.username}`}
         class="secondary-color">@{transaction.bid.user.username}</a>
       for
     {/if}

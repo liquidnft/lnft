@@ -82,7 +82,7 @@
         else err(r.error);
       } else {
         info("Profile updated");
-        goto(`/u/${rest.username}`);
+        goto(`/${rest.username}`);
       }
     });
   };
@@ -130,7 +130,7 @@
   {#if form}
     <div
       class="mb-4 w-full sm:max-w-3xl md:shadow rounded-xl md:p-10 m-auto lg:flex-row bg-black">
-      <a class="block mb-6 text-midblue" href={`/u/${$user.username}`}>
+      <a class="block mb-6 text-midblue" href={`/${$user.username}`}>
         <div class="flex">
           <Fa icon={faChevronLeft} class="my-auto mr-1" />
           <div>Back</div>
