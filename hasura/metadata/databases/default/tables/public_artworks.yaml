@@ -82,6 +82,11 @@ computed_fields:
     session_argument: hasura_session
     table_argument: artwork_row
   name: num_favorites
+- definition:
+    function:
+      name: artwork_sequence
+      schema: public
+  name: sequence
 insert_permissions:
 - permission:
     backend_only: false
@@ -155,6 +160,7 @@ select_permissions:
     - has_royalty
     - last_active
     - num_favorites
+    - sequence
     filter:
       _or:
       - asking_asset:
@@ -200,6 +206,7 @@ select_permissions:
     - has_royalty
     - last_active
     - num_favorites
+    - sequence
     filter:
       _or:
       - owner_id:

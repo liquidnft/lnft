@@ -1,5 +1,6 @@
 <script context="module">
   export async function load({ fetch, page }) {
+    console.log("YEP");
     try {
       const { subject } = await fetch(
         `/${page.params.username}.json`
