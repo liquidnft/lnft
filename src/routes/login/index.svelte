@@ -1,9 +1,23 @@
+<script context="module">
+  export async function load({ session }) {
+    if (session && session.user) {
+      return {
+        status: 301,
+        redirect: "/",
+      };
+    }
+
+    return {};
+  }
+
+</script>
+
 <script>
   import Fa from "svelte-fa";
   import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
-  import { dev, err, goto, post } from "$lib/utils";
-  import { api } from "$lib/api";
+  import { dev, err, goto } from "$lib/utils";
+  import { post } from "$lib/api";
   import cryptojs from "crypto-js";
   import { tick } from "svelte";
   import { keypair, singlesig, multisig } from "$lib/wallet";
@@ -18,12 +32,16 @@
     setTimeout(() => emailInput && emailInput.select(), 50);
   $: if (emailInput) pageChange($page);
 
-  $: if ($user) {
-    if ($user.wallet_initialized) goto("/");
-    else goto("/wallet/setup");
-  }
+  let login = async () => {
+    window.sessionStorage.setItem("password", password);
+    try {
+      let res = await post("auth/login", { email, password }, fetch).json();
+      window.location.reload(true);
+    } catch (e) {
+      err(e);
+    }
+  };
 
-  let login = () => post('auth/login', { email, password }).then(() => window.location = '/')
 </script>
 
 <style>
@@ -39,7 +57,7 @@
   .form-container form {
     width: 100%;
     max-width: 450px;
-    background-color: black;
+    background-color: white;
     padding: 40px;
     box-shadow: 0 1px 5px rgb(0 0 0 / 18%);
     border-radius: 10px;
@@ -63,31 +81,27 @@
       margin-top: 50px;
     }
   }
+
 </style>
 
 <div class="form-container bg-lightblue px-4">
-  <form
-    class="mb-6"
-    on:submit|preventDefault={login}
-    autocomplete="off">
+  <form class="mb-6" on:submit|preventDefault={login} autocomplete="off">
     <h2 class="mb-8">Sign In</h2>
     <div class="flex flex-col mb-4">
-      <label class="mb-2 font-medium" for="first_name">Email or
-        email</label>
-      <input
-        bind:value={email}
-        bind:this={emailInput}
-        autocapitalize="off" />
+      <label class="mb-2 font-medium" for="first_name">Email or username</label>
+      <input bind:value={email} bind:this={emailInput} autocapitalize="off" />
     </div>
     <div class="flex flex-col mb-4">
-      <label
-        class="mb-2 font-medium"
-        for="last_name">Password</label>
+      <label class="mb-2 font-medium" for="last_name">Password</label>
       <div class="relative">
         {#if show}
           <input class="w-full" bind:value={password} autocapitalize="off" />
         {:else}
-          <input class="w-full" type="password" bind:value={password} autocapitalize="off" />
+          <input
+            class="w-full"
+            type="password"
+            bind:value={password}
+            autocapitalize="off" />
         {/if}
         <button
           class="absolute h-full px-3 right-0 top-0 w-auto"
@@ -102,6 +116,6 @@
     <div class="flex my-5 justify-end">
       <button class="primary-btn w-full" type="submit">Sign In</button>
     </div>
-    <a href="/register" class="text-midblue">Don't have an account? Sign up!</a>
+    <a href="/register" class="text-midblue">Don't have an account? Sign up</a>
   </form>
 </div>
