@@ -3,7 +3,7 @@
   import { api } from "$lib/api";
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-  import { err, info } from "$lib/utils";
+  import { goto, err, info } from "$lib/utils";
 
   let password;
   let reset = async () => {
@@ -15,6 +15,7 @@
         .post({ ticket: $page.params.code, new_password: password })
         .res();
       info("Password changed!");
+      goto('/login');
     } catch (e) {
       err(e.message);
     }
