@@ -65,13 +65,13 @@
 
 </style>
 
-<div class="flex justify-between items-center menu relative" on:mouseout={hideDropdown}>
+<div class="flex justify-between items-center menu relative" on:mouseout={hideDropdown} on:blur={hideDropdown}>
   <a
     href="/agriculture"
     style="color: #83e68d"
-    on:mouseover={showDropdown}><button
+    on:mouseover={showDropdown} on:focus={showDropdown}><button
       on:click={toggle}>Marketplace</button></a>
-    <div class="lg:absolute lg:mt-40 " class:lg:hidden={!dropdown} on:mouseover={showDropdown}>
+    <div class="lg:absolute lg:mt-40 " class:lg:hidden={!dropdown} on:mouseover={showDropdown} on:focus={showDropdown}>
       <div>
         <a href="/agriculture" style="color: #83e68d"><button
             on:click={toggle}>Agriculture</button></a>
@@ -89,7 +89,7 @@
             on:click={toggle}>Vehicles</button></a>
       </div>
     </div>
-  <a href="/about" style="color: #83e68d" on:mouseover={hideDropdown}><button
+  <a href="/about" style="color: #83e68d" on:mouseover={hideDropdown} on:focus={hideDropdown}><button
       on:click={toggle}>About</button></a>
   <a href="/faq" style="color: #83e68d"><button on:click={toggle}>What's an NFT?</button></a>
   {#if $user}

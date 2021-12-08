@@ -11,5 +11,5 @@
 </style>
 
 <a href={url}>
-  <div class="rounded m-8"><img src={img} class="w-24 mx-auto" /> {title}</div>
+  <div class="rounded m-8"><img src={img} class="w-24 mx-auto" alt={title} /> {title}</div>
 </a>

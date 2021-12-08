@@ -37,11 +37,6 @@
 
   let offset = 0;
 
-  onMount(async () => {
-    const r = await fetch("/artworks.json").then((r) => r.json());
-    $artworks = r.artworks;
-  });
-
 </script>
 
 <style>

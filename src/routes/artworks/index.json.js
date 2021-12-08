@@ -7,7 +7,7 @@ export async function get({ headers, locals, query }) {
   let offset = 0;
   let where = {};
   let order_by = {
-    sequence: "asc",
+    created_at: "desc",
   };
 
   try {

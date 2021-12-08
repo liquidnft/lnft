@@ -26,7 +26,6 @@
   import { session } from "$app/stores";
   import decode from "jwt-decode";
   import {
-    App,
     Avatar,
     ProgressLinear,
     Sidebar,
@@ -91,9 +90,7 @@
 
   <main>
     <div class="mx-auto min-h-screen">
-      <App>
-        <slot />
-      </App>
+      <slot />
     </div>
   </main>
 
