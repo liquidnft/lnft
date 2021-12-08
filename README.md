@@ -44,7 +44,7 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
 
 ## Installation pre-requisites
 
- - Yarn: https://yarnpkg.com/
+ - pnpm: https://pnpm.io/
  - Docker: https://docs.docker.com/get-docker/
  - Hasura CLI: https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cli.html#install-hasura-cli
 
@@ -52,19 +52,39 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
 
     git clone https://github.com/liquidnft/lnft
     cd lnft
-    yarn
+    pnpm install
     cd hasura
     cp .env.sample .env
-    docker run -it -v $PWD/app:/app --entrypoint yarn asoltys/lnft-server
+    docker run -it -v $PWD/app:/app --entrypoint pnpm asoltys/lnft-server install
     docker-compose up -d
     hasura migrate apply
     hasura metadata apply
     hasura seeds apply
+    hasura metadata reload
     sudo cp ../static/user.png storage
     docker exec -it ipfs ipfs add /export/user.png
     docker restart lapp
     cd ..
-    yarn dev   # site is available at http://localhost:3000/
+    pnpm dev   # site is available at http://localhost:3000/
+    
+ ## Setup local development with cloud tools - VS CodeSpaces https://vscode.dev
+
+     npm i -g pnpm
+     pnpm install
+     curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+     cd hasura
+     cp .env.sample .env
+     docker run -it -v $PWD/app:/app --entrypoint pnpm asoltys/lnft-server install
+     docker-compose up -d
+     hasura migrate apply
+     hasura metadata apply
+     hasura seeds apply
+     hasura metadata reload
+     sudo cp ../static/user.png storage
+     docker exec -it ipfs ipfs add /export/user.png
+     docker restart lapp
+     cd ..
+     pnpm dev   # site is available at http://localhost:3000/
 
 ## Regtest mining
 
@@ -78,8 +98,3 @@ Mine some blocks to get the electrs API server warmed up
 Get a deposit address from the wallet page or users table in the db and send an amount with this command
 
     docker exec -it liquid elements-cli -datadir=/config sendtoaddress <address> <amount>
-
-## Build for production
-
-    yarn build
-    yarn adapt
