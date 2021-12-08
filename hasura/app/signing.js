@@ -133,7 +133,7 @@ const check = async (psbt) => {
             amountDue += Math.round((toOwner * element.amount) / 100);
           }
 
-          if (toRoyaltyRecipients < amountDue && artist.id !== owner.id)
+          if (toRoyaltyRecipients < amountDue)
             throw new Error("Royalty not paid");
         }
 

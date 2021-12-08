@@ -26,7 +26,7 @@
     token,
   } from "$lib/store";
   import { Dropzone, ProgressLinear } from "$comp";
-  import  upload  from "$lib/upload";
+  import  { upload  } from "$lib/upload";
   import { create } from "$queries/artworks";
   import { btc, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
@@ -216,6 +216,8 @@
 
   let submit = async (e) => {
     e.preventDefault();
+
+    console.log("SUBMIT");
     if (!artwork.title) return err("Please enter a title");
     if (!artwork.ticker) return err("Please enter a ticker symbol");
 
@@ -239,15 +241,19 @@
       }
 
       if (artwork.editions > 1) $prompt = Issuing;
+      console.log("HERE");
 
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
+      console.log("HERE");
         if ($edition > 1) {
           artwork.ticker = tickers[$edition - 1];
           await new Promise((r) => setTimeout(r, 5000));
         }
         artwork.ticker = artwork.ticker.toUpperCase();
 
+      console.log("HBERE");
         let contract = await issue();
+      console.log("ISSUED");
         tries = 0;
         artwork.id = v4();
         artwork.edition = $edition;
@@ -277,6 +283,7 @@
           },
           tags,
         };
+      console.log("HERE");
 
         let result = await hasura
           .auth(`Bearer ${$token}`)
@@ -286,12 +293,15 @@
           })
           .json();
 
+      console.log("HERE");
+
         if (result.error) throw new Error(result.error.message);
       }
 
       $prompt = undefined;
       goto(`/a/${artwork.slug}`);
     } catch (e) {
+      console.log(e);
       err(e);
       loading = false;
     }
@@ -329,7 +339,7 @@
 
 <div class="container mx-auto py-20">
   <div
-    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow">
+    class="w-full mx-auto max-w-5xl bg-black md:p-14 rounded-xl submitArtwork boxShadow">
     <a
       class="block mb-6 text-midblue"
       href="."

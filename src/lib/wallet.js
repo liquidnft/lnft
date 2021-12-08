@@ -1,7 +1,7 @@
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { api, electrs, hasura } from "$lib/api";
-import { retry } from "wretch-middlewares";
+// import * as middlewares from "wretch-middlewares";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
@@ -34,6 +34,8 @@ import { btc } from "$lib/utils";
 import { requirePassword } from "$lib/auth";
 import { getActiveBids } from "$queries/transactions";
 import { compareAsc, parseISO } from "date-fns";
+
+// const { retry } = middlewares.default || middlewares;
 
 const DUST = 800;
 const satsPerByte = 0.1;
@@ -84,7 +86,6 @@ export const getBalances = async () => {
   let p = {};
 
   utxos.map((u) => {
-    if (u.asset === btc && u.value < DUST) return;
     if (u.status.confirmed) {
       if (b[u.asset]) b[u.asset] += parseInt(u.value);
       else b[u.asset] = u.value;
@@ -583,8 +584,16 @@ export const pay = async (artwork, to, amount) => {
 
   await construct(p);
   addFee(p);
-  estimateFee(p);
 
+
+  let confidential;
+  try {
+    confidential = Address.isConfidential(to);
+  } catch(e) {
+    confidential = false;
+  } 
+
+  estimateFee(p, confidential);
   await construct(p2);
 
   addFee(p2);
@@ -592,8 +601,8 @@ export const pay = async (artwork, to, amount) => {
   return p2;
 };
 
-const estimateFee = (p) => {
-  let size = estimateTxSize(p.data.inputs.length, p.data.outputs.length);
+const estimateFee = (p, isConfidential = false) => {
+  let size = estimateTxSize(p.data.inputs.length, p.data.outputs.length, isConfidential);
   fee.set(Math.ceil(size * satsPerByte));
 };
 
@@ -616,18 +625,18 @@ export const cancelSwap = async (artwork) => {
   return p;
 };
 
-export const sign = (sighash = 1) => {
+export const sign = (sighash) => {
   let p = get(psbt);
 
   let { privkey } = keypair();
 
-  p.data.inputs.map((_, i) => {
+  p.data.inputs.map(({ sighashType }, i) => {
     try {
       p = p
-        .signInput(i, ECPair.fromPrivateKey(privkey), [sighash])
+        .signInput(i, ECPair.fromPrivateKey(privkey), [sighash || sighashType || 1])
         .finalizeInput(i);
     } catch (e) {
-      // console.log("failed to sign", e.message, i, sighash);
+      console.log("failed to sign", e.message, i);
     }
   });
 
@@ -636,14 +645,16 @@ export const sign = (sighash = 1) => {
 };
 
 export const broadcast = (disableRetries = false) => {
+  console.log(get(psbt).toBase64());
   let tx = get(psbt).extractTransaction();
   let hex = tx.toHex();
   let middlewares = [
-    retry({
-      delayTimer: 6000,
-      maxAttempts: 3,
-    }),
+    // retry({
+    //   delayTimer: 6000,
+    //   maxAttempts: 3,
+    // }),
   ];
+
 
   if (disableRetries) middlewares = [];
 
@@ -684,7 +695,7 @@ export const executeSwap = async (artwork) => {
     value: 1,
   });
 
-  if (artist_id !== owner_id && has_royalty) {
+  if (has_royalty) {
     for (let i = 0; i < royalty_recipients.length; i++) {
       const element = royalty_recipients[i];
 
@@ -715,6 +726,7 @@ export const executeSwap = async (artwork) => {
   await construct(p2, total);
 
   addFee(p2);
+
   return p2;
 };
 
@@ -1061,9 +1073,9 @@ export const requestSignature = async (psbt) => {
 export const getAddress = (out) =>
   Address.fromOutputScript(out.script, network);
 
-export function estimateTxSize(numInputs, numOutputs) {
+export function estimateTxSize(numInputs, numOutputs, isConfidential = false) {
   const base = calcTxSize(false, numInputs, numOutputs, false) + 200;
-  const total = calcTxSize(true, numInputs, numOutputs, false);
+  const total = calcTxSize(true, numInputs, numOutputs, isConfidential);
   const weight = base * 3 + total;
   const vsize = (weight + 3) / 4;
 

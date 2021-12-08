@@ -1,6 +1,7 @@
 import { api } from "$lib/api";
-import { wordlist, validateEmail } from "$lib/utils";
+import { validateEmail } from "$lib/utils";
 import { createWallet } from "$lib/wallet";
+import wordlist from "$lib/wordlist";
 import { generateMnemonic } from "bip39";
 
 export const register = async (email, username, password) => {

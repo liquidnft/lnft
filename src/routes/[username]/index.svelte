@@ -1,6 +1,5 @@
 <script context="module">
   export async function load({ fetch, page }) {
-    console.log("YEP");
     try {
       const { subject } = await fetch(
         `/${page.params.username}.json`
@@ -36,7 +35,6 @@
   import { pub } from "$lib/api";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getUserArtworks } from "$queries/artworks";
-  import { createFollow, deleteFollow } from "$queries/follows";
   import Menu from "./_menu.svelte";
   import { query } from "$lib/api";
 
@@ -73,18 +71,6 @@
       (a) => a.owner_id === subject.id && a.artist_id !== a.owner_id
     );
     favorites = artworks.filter((a) => a.favorited);
-  };
-
-  let follow = () => {
-    if (subject.followed) {
-      query(deleteFollow($user, subject)).catch(err);
-      subject.followed = false;
-      subject.num_followers--;
-    } else {
-      query(createFollow(subject));
-      subject.followed = true;
-      subject.num_followers++;
-    }
   };
 
   let tab = "collection";
@@ -143,10 +129,6 @@
                 <h3>{subject.full_name}</h3>
                 <div class="text-gray-600">@{subject.username}</div>
               </div>
-            </div>
-            <div class="flex mt-5">
-              <div class="mr-8">Followers: {subject.num_followers}</div>
-              <div>Following: {subject.num_follows}</div>
             </div>
           </div>
           <div class="social-details">

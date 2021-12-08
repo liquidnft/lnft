@@ -10,7 +10,6 @@ export async function post(request) {
       .post()
       .res();
 
-
     return {
       headers: {
         "set-cookie": [

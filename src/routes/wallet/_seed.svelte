@@ -1,7 +1,7 @@
 <script>
   import { page } from "$app/stores";
   import { onMount, tick } from "svelte";
-  import { wordlist } from "$lib/utils";
+  import wordlist from "$lib/wordlist";
   import { ToggleSwitch } from "$comp";
   import { password, token, user } from "$lib/store";
   import { err, goto, info } from "$lib/utils";

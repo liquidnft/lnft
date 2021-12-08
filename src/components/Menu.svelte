@@ -1,7 +1,6 @@
 <script>
   import { Avatar, Search } from "$comp";
   import { show, user, token } from "$lib/store";
-  import { logout } from "$lib/auth";
 
   export let open = false;
   let toggle = () => (open = !open);
