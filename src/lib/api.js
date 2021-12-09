@@ -2,11 +2,11 @@ import cookie from "cookie";
 import wretch from "wretch";
 // import * as middlewares from "wretch-middlewares";
 import { token } from "$lib/store";
-import { get } from "svelte/store";
+import { get as g } from "svelte/store";
 import { err } from "$lib/utils";
 
 // const { retry } = middlewares.default || middlewares;
-wretch().polyfills({ fetch });
+// wretch().polyfills({ fetch });
 
 export const api = wretch().url("/api");
 export const electrs = wretch().url("/api/el");
@@ -17,9 +17,7 @@ export const hasura = wretch()
 
 export const pub = (t) => (t ? hasura.auth(`Bearer ${t}`) : hasura);
 export const query = async (query, variables) => {
-  let { data, errors } = await pub(get(token))
-    .post({ query, variables })
-    .json();
+  let { data, errors } = await pub(g(token)).post({ query, variables }).json();
   if (errors) throw new Error(errors[0].message);
   return data;
 };
@@ -27,8 +25,15 @@ export const query = async (query, variables) => {
 export const hbp = wretch().url(import.meta.env.VITE_HBP);
 export const serverApi = wretch().url(import.meta.env.VITE_APP);
 
-export const post = (url, body, fetch = fetch) =>
-  wretch().polyfills({ fetch })
+export const get = (url, f = fetch) =>
+  wretch()
+    .polyfills({ fetch: f })
+    .url(url)
+    .get();
+
+export const post = (url, body, f = fetch) =>
+  wretch()
+    .polyfills({ fetch: f })
     .url("/" + url)
     .post(body);
 
