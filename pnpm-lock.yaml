@@ -3163,6 +3163,10 @@ packages:
     resolution: {integrity: sha512-sDl4qMFpijcGw22U5w63KmD3cZJfBuFlVNbVMKje2keoKML7X2UzWbc4XrmEbDwg0NXJc3yv4/ox7b+JWb57kQ==}
     dev: true
 
+  /signal-exit/3.0.6:
+    resolution: {integrity: sha512-sDl4qMFpijcGw22U5w63KmD3cZJfBuFlVNbVMKje2keoKML7X2UzWbc4XrmEbDwg0NXJc3yv4/ox7b+JWb57kQ==}
+    dev: true
+
   /simple-svelte-autocomplete/2.2.4:
     resolution: {integrity: sha512-a/1ceBoLl5UOrdyOhFL1mXA1o8P7tXO1wmHs4IBR1UeI4cCHEojOKnpMldfSrKNP3gxmqm/F+hohReoPnbFgeA==}
     dev: true
