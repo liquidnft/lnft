@@ -1,7 +1,7 @@
 <script context="module">
   export async function load({ fetch, session }) {
     try {
-      await fetch("/auth/logout", { method: "POST" });
+      await fetch("/auth/logout");
     } catch (e) {
       console.log(e);
     }

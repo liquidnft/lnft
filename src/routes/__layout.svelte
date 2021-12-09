@@ -18,7 +18,6 @@
       props,
     };
   }
-
 </script>
 
 <script>
@@ -34,8 +33,9 @@
     password,
     token,
   } from "$lib/store";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import branding from "$lib/branding";
+  import { get } from "$lib/api";
 
   export let addresses, titles;
 
@@ -54,28 +54,28 @@
     $token = $session.jwt;
   }
 
+  let refresh = () => get("/auth/refresh").res().catch(console.log);
+  let interval = setInterval(refresh, 60000);
 
   let open = false;
   let y;
 
+  onDestroy(() => clearInterval(interval));
   onMount(() => {
     if (!$password) $password = window.sessionStorage.getItem("password");
   });
 </script>
 
-<style global src="../main.css">
-</style>
-
 <svelte:window bind:scrollY={y} />
 
-{#if !($page.path.includes('/a/') && $page.path.split('/').length === 3)}
-<Head metadata={branding.meta} />
+{#if !($page.path.includes("/a/") && $page.path.split("/").length === 3)}
+  <Head metadata={branding.meta} />
 {/if}
 
 <Snack />
 
 <Sidebar bind:open />
-<div class={y > 50 ? 'sticky' : ''}>
+<div class={y > 50 ? "sticky" : ""}>
   <Navbar bind:sidebar={open} />
 </div>
 <Dialog />
@@ -87,3 +87,6 @@
 </main>
 
 <Footer />
+
+<style global src="../main.css">
+</style>
