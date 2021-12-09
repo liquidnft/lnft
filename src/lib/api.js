@@ -5,8 +5,8 @@ import { token } from "$lib/store";
 import { get as g } from "svelte/store";
 import { err } from "$lib/utils";
 
-const { retry } = middlewares.default || middlewares;
-wretch().polyfills({ fetch });
+// const { retry } = middlewares.default || middlewares;
+// wretch().polyfills({ fetch });
 
 export const api = wretch().url("/api");
 export const electrs = wretch().url("/api/el");
@@ -25,8 +25,15 @@ export const query = async (query, variables) => {
 export const hbp = wretch().url(import.meta.env.VITE_HBP);
 export const serverApi = wretch().url(import.meta.env.VITE_APP);
 
-export const post = (url, body, fetch = fetch) =>
-  wretch().polyfills({ fetch })
+export const get = (url, f = fetch) =>
+  wretch()
+    .polyfills({ fetch: f })
+    .url(url)
+    .get();
+
+export const post = (url, body, f = fetch) =>
+  wretch()
+    .polyfills({ fetch: f })
     .url("/" + url)
     .post(body);
 
