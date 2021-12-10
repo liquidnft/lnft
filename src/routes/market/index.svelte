@@ -96,12 +96,21 @@
     offset += 12;
 
     if (result.data) {
-      $artworks = [
+      $artworks = [];
+
+      const bufferArtworks = [
         ...$artworks,
         ...result.data.artworks.filter(
           (a) => !$artworks.find((b) => a.id === b.id) && !a.is_locked
         ),
       ];
+      bufferArtworks.forEach(a => {
+        if(!$artworks.find(a2 => a2.edition_id === a.edition_id) || !a.hideable) {
+          $artworks.push(a);
+        }
+      })
+      console.log($artworks)
+
     } else {
       err(result.errors[0]);
     }

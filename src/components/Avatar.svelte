@@ -1,4 +1,5 @@
 <script>
+  const baseUrl = import.meta.env.VITE_BASE_URL
   export let user = undefined;
   export let src = undefined;
   export let overlay = undefined;
@@ -27,7 +28,7 @@
     {#if user || src}
       <img
         key={user && user.username}
-        src={user ? `/api/ipfs/${user.avatar_url}` : src.startsWith('data') ? src : `/api/ipfs/${src}`}
+        src={user ? `${baseUrl}/ipfs/${user.avatar_url}` : src.startsWith('data') ? src : `${baseUrl}/ipfs/${src}`}
         alt={user ? user.username : 'lovely avatar'}
         class="absolute w-full h-full object-cover object-center visible overflow-hidden" />
     {/if}

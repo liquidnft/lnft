@@ -1,4 +1,5 @@
 <script>
+  const baseUrl = import.meta.env.VITE_BASE_URL
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
@@ -88,7 +89,7 @@
       return;
     }
 
-    url = `/api/ipfs/${artwork.filename}`;
+    url = `${baseUrl}/ipfs/${artwork.filename}`;
     await tick();
   };
 

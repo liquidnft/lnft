@@ -14,6 +14,7 @@
   import upload from "$lib/upload";
   import { updateUser } from "$queries/users";
   import { query } from "$lib/api";
+  const baseUrl = import.meta.env.VITE_BASE_URL
 
   let form = {};
   let fileInput;
@@ -38,7 +39,7 @@
     if (file.size < 100000000) previewFile(file);
 
     let hash = await upload(file, progress);
-    let url = preview || `/api/ipfs/${hash}`;
+    let url = preview || `${baseUrl}/ipfs/${hash}`;
     url += "#t=0.5";
 
     files = [

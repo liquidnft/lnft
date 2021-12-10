@@ -1,5 +1,6 @@
 <script>
   import { art } from "$lib/store";
+  const baseUrl = import.meta.env.VITE_BASE_URL
 
 </script>
 
@@ -10,10 +11,10 @@
 
   {#if $art}
     <meta property="og:title" content={`NFT Glee - ${$art.title}`} />
-    <meta property="og:image" content={`/api/ipfs/${$art.filename}`} />
+    <meta property="og:image" content={`${baseUrl}/ipfs/${$art.filename}`} />
     <meta property="og:url" content={`https://bid.nftglee.com/a/${$art.slug}`} />
     <meta name="twitter:title" content={`NFT Glee - ${$art.title}`} />
-    <meta name="twitter:image" content={`/api/ipfs/${$art.filename}`} />
+    <meta name="twitter:image" content={`${baseUrl}/ipfs/${$art.filename}`} />
   {:else}
     <meta property="og:title" content="NFT Glee" />
     <meta property="og:image" content="https://bid.nftglee.com/nftglee.png" />

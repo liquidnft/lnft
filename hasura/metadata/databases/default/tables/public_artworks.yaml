@@ -148,6 +148,7 @@ select_permissions:
     - views
     - edition_id
     - locked_by
+    - hideable
     computed_fields:
     - artist_owned
     - favorited

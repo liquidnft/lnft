@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
   import { faVolumeUp, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+  const baseUrl = import.meta.env.VITE_BASE_URL
 
   export let artwork;
   export let showDetails;
@@ -13,8 +14,8 @@
   $: path =
     artwork &&
     (thumb
-      ? `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`
-      : `/api/ipfs/${artwork.filename}`);
+      ? `${baseUrl}/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`
+      : `${baseUrl}/ipfs/${artwork.filename}`);
 
   $: cover = !showDetails;
   $: contain = showDetails;
