@@ -1,5 +1,5 @@
 import { session } from "$app/stores";
-import { api, post } from "$lib/api";
+import { api } from "$lib/api";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
@@ -10,23 +10,13 @@ import { goto, err } from "$lib/utils";
 export const expired = (t) => !t || decode(t).exp * 1000 < Date.now();
 
 export const requireLogin = async (page) => {
-  await tick();
-
   if (page && page.path === "/login") return;
   let $token = get(token);
-
-  if (expired($token)) {
-    try {
-      await refreshToken();
-      await tick();
-    } catch (e) {}
-  }
-
-  $token = get(token);
-
-  if (expired($token)) {
+  try {
+    if (expired($token)) throw new Error("Login required");
+  } catch (e) {
     goto("/login");
-    throw new Error("Login required");
+    throw e;
   }
 };
 

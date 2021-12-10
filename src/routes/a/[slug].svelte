@@ -1,5 +1,6 @@
 <script context="module">
-  import { serverApi } from "$lib/api";
+  import { post } from "$lib/api";
+  import { browser } from "$app/env";
   import branding from "$lib/branding";
 
   export async function load({ fetch, page }) {
@@ -7,17 +8,21 @@
       r.json()
     );
 
-    if (!props.artwork) return {
-      status: 404,
-    } 
-
     let { artwork } = props;
-    serverApi.url("/viewed").post({ id: artwork.id }).json().catch(console.log);
+
+    if (!artwork)
+      return {
+        status: 404,
+      };
+
+    if (!browser) post("artworks/viewed", { id: artwork.id }, fetch);
+    artwork.views++;
+    props.views = artwork.views;
 
     let metadata = { ...branding.meta };
-    metadata.title = branding.meta.title + " - " + artwork.title;
+    metadata.title = metadata.title + " - " + artwork.title;
     metadata.keywords =
-      branding.meta.keywords + " " + artwork.tags.map((t) => t.tag).join(" ");
+      metadata.keywords + " " + artwork.tags.map((t) => t.tag).join(" ");
     metadata.description = artwork.description;
 
     if (artwork.filetype.includes("video"))
@@ -69,7 +74,7 @@
   import { api, query } from "$lib/api";
   import { SocialShare } from "$comp";
 
-  export let artwork, others, metadata;
+  export let artwork, others, metadata, views;
 
   $: disabled =
     !artwork ||
@@ -84,6 +89,7 @@
   let fetch = async () => {
     query(getArtwork, { id }).then((res) => {
       artwork = res.artworks_by_pk;
+      artwork.views = views;
 
       $art = artwork;
     });

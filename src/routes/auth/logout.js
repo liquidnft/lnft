@@ -2,14 +2,13 @@ import { hbp } from "$lib/api";
 import cookie from "cookie";
 import { addSeconds } from "date-fns";
 
-export async function post(request) {
+export async function get(request) {
   try {
     const res = await hbp
       .headers(request.headers)
       .url("/auth/logout")
       .post()
       .res();
-
 
     return {
       headers: {
@@ -25,7 +24,6 @@ export async function post(request) {
       },
     };
   } catch (e) {
-    console.log(e);
     return {
       body: { message: "Logout failed" },
       status: 500,
