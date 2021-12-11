@@ -8,24 +8,23 @@
   } from "@fortawesome/free-solid-svg-icons";
   export let artwork;
   let show;
-
 </script>
 
-<div class="mb-6">
-  <div class="text-xs cursor-pointer mb-2" on:click={() => (show = !show)}>
-    <div class="flex">
-      <i class="text-midblue text-xs mr-1 my-auto">
-        <Fa icon={faGem} />
-      </i>
-      <div class="my-auto">Royalties</div>
-      <div class="my-auto ml-1">
-        <Fa icon={show ? faChevronUp : faChevronDown} />
+{#if artwork.royalty_recipients.length}
+  <div class="mb-6">
+    <div class="text-xs cursor-pointer mb-2" on:click={() => (show = !show)}>
+      <div class="flex">
+        <i class="text-midblue text-xs mr-1 my-auto">
+          <Fa icon={faGem} />
+        </i>
+        <div class="my-auto">Royalties</div>
+        <div class="my-auto ml-1">
+          <Fa icon={show ? faChevronUp : faChevronDown} />
+        </div>
       </div>
     </div>
-  </div>
-  {#if show}
-    <ul>
-      {#if artwork.royalty_recipients.length}
+    {#if show}
+      <ul>
         {#each artwork.royalty_recipients as recipient}
           <RoyaltyRecipient
             editable={false}
@@ -33,7 +32,7 @@
             {recipient}
           />
         {/each}
-      {/if}
-    </ul>
-  {/if}
-</div>
+      </ul>
+    {/if}
+  </div>
+{/if}

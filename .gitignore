@@ -24,4 +24,4 @@ hasura/app/.pnpm-store
 cypress
 **/.pnpm-debug.log
 .svelte-kit
-
+.env.local

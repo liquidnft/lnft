@@ -15,13 +15,14 @@
 <script>
   import Fa from "svelte-fa";
   import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-  import { page } from "$app/stores";
+  import { page, session } from "$app/stores";
   import { dev, err, goto } from "$lib/utils";
   import { post } from "$lib/api";
   import cryptojs from "crypto-js";
   import { tick } from "svelte";
   import { keypair, singlesig, multisig } from "$lib/wallet";
-  import { user } from "$lib/store";
+  import { token, user } from "$lib/store";
+  import { onMount } from "svelte";
 
   let show;
   let email = "";
@@ -36,11 +37,18 @@
     window.sessionStorage.setItem("password", password);
     try {
       let res = await post("auth/login", { email, password }, fetch).json();
-      window.location.reload(true);
+      $user = res.user;
+      goto("/");
     } catch (e) {
       err(e);
     }
   };
+
+  onMount(() => {
+    session.set(null);
+    token.set(null);
+    user.set(null);
+  });
 
 </script>
 
