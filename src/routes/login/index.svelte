@@ -37,7 +37,8 @@
     window.sessionStorage.setItem("password", password);
     try {
       let res = await post("auth/login", { email, password }, fetch).json();
-      window.location.reload(true);
+      $user = res.user;
+      goto("/");
     } catch (e) {
       err(e);
     }

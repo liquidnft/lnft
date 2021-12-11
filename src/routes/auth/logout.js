@@ -9,6 +9,7 @@ export async function get(request) {
       .res();
 
     return {
+      body: {},
       headers: {
         "set-cookie": [
           cookie.serialize("token", "", {
@@ -18,10 +19,12 @@ export async function get(request) {
           cookie.serialize("refresh_token", "", {
             path: "/",
             expires: new Date(0),
-          })]
+          }),
+        ],
       },
     };
   } catch (e) {
+    console.log(e);
     return {
       body: { message: "Logout failed" },
       status: 500,
