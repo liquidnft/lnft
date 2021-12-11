@@ -20,10 +20,8 @@
         </div>
       </div>
     </div>
-  </div>
-  {#if show}
-    <ul>
-      {#if artwork.royalty_recipients.length}
+    {#if show}
+      <ul>
         {#each artwork.royalty_recipients as recipient}
           <RoyaltyRecipient
             editable={false}
@@ -31,7 +29,7 @@
             {recipient}
           />
         {/each}
-      {/if}
-    </ul>
-  {/if}
-</div>
+      </ul>
+    {/if}
+  </div>
+{/if}
