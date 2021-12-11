@@ -11,7 +11,7 @@
 </script>
 
 <script>
-  import { onDestroy } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { query } from "$lib/api";
   import { Summary } from "$comp";
   import { fade } from "svelte/transition";
@@ -19,6 +19,12 @@
   import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
   import { err } from "$lib/utils";
   import branding from "$lib/branding";
+  import { prefetch } from '$app/navigation';
+  import { browser } from "$app/env";
+
+  onMount(() => {
+  if (browser) prefetch("/market");
+  });
 
   export let featured;
   export let recent;

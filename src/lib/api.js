@@ -37,8 +37,8 @@ export const post = (url, body, f = fetch) =>
     .url("/" + url)
     .post(body);
 
-export const getQ = (headers) => {
-  const fn = async (query, variables) => {
+export const getQ = (defaultHeaders) => {
+  const fn = async (query, variables, headers) => {
     let { data, errors } = await wretch()
       .url(import.meta.env.VITE_HASURA)
       .headers(headers)
@@ -48,13 +48,13 @@ export const getQ = (headers) => {
     return data;
   };
 
-  return async (q, v) => {
+  return async (q, v, h = defaultHeaders) => {
     try {
-      let r = await fn(q, v);
+      let r = await fn(q, v, h);
       return r;
     } catch (e) {
-      if (headers.authorization) delete headers.authorization;
-      let r = await fn(q, v);
+      if (h.authorization) delete h.authorization;
+      let r = await fn(q, v, h);
       return r;
     }
   };

@@ -50,12 +50,21 @@
     $a = addresses;
     $t = titles;
 
-    $user = $session.user;
-    $token = $session.jwt;
+    if ($session) {
+      $user = $session.user;
+      $token = $session.jwt;
+    }
   }
 
-  let refresh = () => get("/auth/refresh").res().catch(console.log);
-  let interval = setInterval(refresh, 60000);
+  let refresh = async () => {
+    try {
+      $token = (await get("/auth/refresh.json").json()).jwt_token;
+      if (!$token && $session) delete $session.user;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  let interval = setInterval(refresh, 5000);
 
   let open = false;
   let y;
