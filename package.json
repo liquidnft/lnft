@@ -27,6 +27,7 @@
 				"cookie": "^0.4.1",
 				"crypto-js": "^4.1.1",
 				"cypress": "^9.1.1",
+				"cypress-file-upload": "^5.0.8",
 				"date-fns": "^2.27.0",
 				"graphql": "^15.7.2",
 				"hash-base": "github:asoltys/hash-base",

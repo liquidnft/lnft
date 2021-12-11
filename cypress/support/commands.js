@@ -23,3 +23,12 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+import 'cypress-file-upload';
+
+Cypress.Commands.add("login", () => {
+  cy.visit("/login");
+  cy.get("[data-cy=user]").type("alice", { force: true });
+  cy.get(".primary-btn").click();
+  cy.get("img[key=alice]");
+});
