@@ -2,7 +2,7 @@ import { hbp } from "$lib/api";
 import cookie from "cookie";
 import { addSeconds } from "date-fns";
 
-export async function post(request) {
+export async function get(request) {
   try {
     const res = await hbp
       .headers(request.headers)
@@ -10,8 +10,8 @@ export async function post(request) {
       .post()
       .res();
 
-
     return {
+      body: {},
       headers: {
         "set-cookie": [
           cookie.serialize("token", "", {
@@ -21,7 +21,8 @@ export async function post(request) {
           cookie.serialize("refresh_token", "", {
             path: "/",
             expires: new Date(0),
-          })]
+          }),
+        ],
       },
     };
   } catch (e) {

@@ -18,7 +18,6 @@
       props,
     };
   }
-
 </script>
 
 <script>
@@ -34,12 +33,13 @@
     password,
     token,
   } from "$lib/store";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import branding from "$lib/branding";
+  import { get } from "$lib/api";
 
   export let addresses, titles;
 
-  if (browser)
+  if (browser) {
     history.pushState = new Proxy(history.pushState, {
       apply(target, thisArg, argumentsList) {
         Reflect.apply(target, thisArg, argumentsList);
@@ -47,30 +47,44 @@
       },
     });
 
-  $a = addresses;
-  $t = titles;
-  $user = $session.user;
-  $token = $session.jwt;
+    $a = addresses;
+    $t = titles;
+
+    if ($session) {
+      $user = $session.user;
+      $token = $session.jwt;
+    }
+  }
+
+  let refresh = async () => {
+    try {
+      $token = (await get("/auth/refresh.json").json()).jwt_token;
+      if (!$token && $session) delete $session.user;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  let interval = setInterval(refresh, 5000);
+
   let open = false;
   let y;
+
+  onDestroy(() => clearInterval(interval));
   onMount(() => {
     if (!$password) $password = window.sessionStorage.getItem("password");
   });
 </script>
 
-<style global src="../main.css">
-</style>
-
 <svelte:window bind:scrollY={y} />
 
-{#if !($page.path.includes('/a/') && $page.path.split('/').length === 3)}
-<Head metadata={branding.meta} />
+{#if !($page.path.includes("/a/") && $page.path.split("/").length === 3)}
+  <Head metadata={branding.meta} />
 {/if}
 
 <Snack />
 
 <Sidebar bind:open />
-<div class={y > 50 ? 'sticky' : ''}>
+<div class={y > 50 ? "sticky" : ""}>
   <Navbar bind:sidebar={open} />
 </div>
 <Dialog />
@@ -82,3 +96,6 @@
 </main>
 
 <Footer />
+
+<style global src="../main.css">
+</style>

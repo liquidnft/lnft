@@ -55,9 +55,7 @@ app.post("/transfer", auth, async (req, res) => {
 
   let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
 
-  let held = !!utxos.find((tx) => tx.asset === transaction.asset);
-
-  if (held) {
+  if (utxos.find((tx) => tx.asset === transaction.asset)) {
     let query = `mutation create_transaction($transaction: transactions_insert_input!) {
       insert_transactions_one(object: $transaction) {
         id,
@@ -78,7 +76,8 @@ app.post("/transfer", auth, async (req, res) => {
 });
 
 app.post("/viewed", async (req, res) => {
-  let query = `mutation ($id: uuid!) {
+  try {
+    let query = `mutation ($id: uuid!) {
     update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
       id
       owner {
@@ -89,26 +88,25 @@ app.post("/viewed", async (req, res) => {
     }
   }`;
 
-  let result = await hasura
-    .post({
-      query,
-      variables: { id: req.body.id },
-    })
-    .json()
-    .catch(console.log);
+    let result = await hasura
+      .post({
+        query,
+        variables: { id: req.body.id },
+      })
+      .json();
 
-  if (result.data) {
-    let { asset, owner } = result.data.update_artworks_by_pk;
-    let { address, multisig } = owner;
+    if (result.data) {
+      let { asset, owner } = result.data.update_artworks_by_pk;
+      let { address, multisig } = owner;
 
-    let utxos = [
-      ...(await electrs.url(`/address/${address}/utxo`).get().json()),
-      ...(await electrs.url(`/address/${multisig}/utxo`).get().json()),
-    ];
+      let utxos = [
+        ...(await electrs.url(`/address/${address}/utxo`).get().json()),
+        ...(await electrs.url(`/address/${multisig}/utxo`).get().json()),
+      ];
 
-    let held = !!utxos.find((tx) => tx.asset === asset);
+      let held = !!utxos.find((tx) => tx.asset === asset);
 
-    query = `mutation ($id: uuid!, $held: Boolean!) {
+      query = `mutation ($id: uuid!, $held: Boolean!) {
       update_artworks_by_pk(pk_columns: { id: $id }, _set: { held: $held }) {
         id
         owner {
@@ -119,18 +117,21 @@ app.post("/viewed", async (req, res) => {
       }
     }`;
 
-    result = await hasura
-      .post({
-        query,
-        variables: { id: req.body.id, held },
-      })
-      .json()
-      .catch(console.log);
+      result = await hasura
+        .post({
+          query,
+          variables: { id: req.body.id, held },
+        })
+        .json();
 
-    if (result.errors) console.log("problem updating held status", result);
+      if (result.errors) console.log("problem updating held status", result);
+    }
+
+    res.send({});
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
   }
-
-  res.send({});
 });
 
 app.post("/claim", auth, async (req, res) => {
@@ -190,20 +191,20 @@ app.post("/transaction", auth, async (req, res) => {
 
     let query = `query {
     artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
-      owner {
-        display_name
-      } 
-      title
-      slug
-      bid {
-        amount
-        user {
-          id
+        owner {
           display_name
         } 
-      } 
-    }
-  }`;
+        title
+        slug
+        bid {
+          amount
+          user {
+            id
+            display_name
+          } 
+        } 
+      }
+    }`;
 
     let { data, errors } = await hasura.post({ query }).json();
     if (errors) throw new Error(errors[0].message);

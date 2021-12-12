@@ -1,0 +1,7 @@
+db
+storage
+liquidregtest
+.env*
+data
+ipfs
+app
