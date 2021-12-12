@@ -73,7 +73,7 @@
       console.log(e);
     }
   };
-  let interval = setInterval(refresh, 5000);
+  let interval = setInterval(refresh, 60000);
 
   let open = false;
   let y;
