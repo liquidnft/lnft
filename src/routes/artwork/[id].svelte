@@ -63,7 +63,7 @@
 
   $: setup(id);
   let setup = async () => {
-    query(getArtwork(id, $user.id))
+    query(getArtwork(id))
       .then((res) => {
         artwork = res.artworks_by_pk;
         $art = artwork;
@@ -179,6 +179,7 @@
   let loading;
   let buyNow = async () => {
     try {
+      // TODO: needs a db trigger to handle this use-case
       if(artwork.is_locked) throw new Error('Artwork is locked');
       await requirePassword();
       loading = true;

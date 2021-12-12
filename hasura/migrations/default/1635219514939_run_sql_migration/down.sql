@@ -1,2 +1,7 @@
 ALTER TABLE artworks
-    DROP COLUMN hideable;
+DROP
+COLUMN hideable;
+
+ALTER TABLE artworks
+DROP
+COLUMN hideable_hash;

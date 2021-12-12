@@ -31,7 +31,7 @@
   $: reset($filterCriteria, $sortCriteria);
   let reset = async () => {
     try {
-    where = { _or: [], _and: {is_sold: {_eq: false}} };
+    where = { _or: [], _and: {is_sold: {_eq: false}, is_locked: {_eq: false}} };
     if ($filterCriteria.listPrice)
       where._or.push({ list_price: { _is_null: false } });
     if ($filterCriteria.openBid) where._or.push({ bid: {} });
@@ -87,7 +87,7 @@
     // await new Promise((r) => setTimeout(r, 500));
     let result = await pub($token)
       .post({
-        query: getArtworks($user.id),
+        query: getArtworks(),
         // order_by: [$order_by],
         variables: { limit: 12, offset, where },
       })
@@ -98,19 +98,12 @@
     if (result.data) {
       $artworks = [];
 
-      const bufferArtworks = [
+      $artworks = [
         ...$artworks,
         ...result.data.artworks.filter(
-          (a) => !$artworks.find((b) => a.id === b.id) && !a.is_locked
+          (a) => !$artworks.find((b) => a.id === b.id)
         ),
       ];
-      bufferArtworks.forEach(a => {
-        if(!$artworks.find(a2 => a2.edition_id === a.edition_id) || !a.hideable) {
-          $artworks.push(a);
-        }
-      })
-      console.log($artworks)
-
     } else {
       err(result.errors[0]);
     }

@@ -67,14 +67,11 @@ export const getFeatured = `query {
   }
 }`;
 
-// TODO: there needs to be a computed function that computes an unique hash for the edition in order to use distinct_on for same edition_id
-export const getArtworks = (
-  id
-) => `query($where: artworks_bool_exp!, $limit: Int, $offset: Int) {
- artworks(where: $where, limit: $limit, offset: $offset) {
+export const getArtworks =
+  () => `query($where: artworks_bool_exp!, $limit: Int, $offset: Int) {
+ artworks(where: $where, limit: $limit, offset: $offset, distinct_on: [edition_id, hideable_hash]) {
     ${fields}
-    is_locked(args: {user_id: "${id}"})
-    hideable
+    is_locked
     tags {
       tag
     }
@@ -168,10 +165,10 @@ export const updateTags = `mutation insert_tags($tags: [tags_insert_input!]!, $a
   }
 }`;
 
-export const getArtwork = (id, userId) => `query {
+export const getArtwork = (id) => `query {
   artworks_by_pk(id: "${id}") {
     ${fields}
-    is_locked(args: {user_id: "${userId}"})
+    is_locked
     tags {
       tag
     },

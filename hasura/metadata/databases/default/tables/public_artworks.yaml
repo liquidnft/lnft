@@ -76,6 +76,7 @@ computed_fields:
       name: artwork_is_locked
       schema: public
     table_argument: artwork_row
+    session_argument: session_data
   name: is_locked
 insert_permissions:
 - permission:
@@ -149,6 +150,7 @@ select_permissions:
     - edition_id
     - locked_by
     - hideable
+    - hideable_hash
     computed_fields:
     - artist_owned
     - favorited
@@ -197,6 +199,8 @@ select_permissions:
     - views
     - edition_id
     - locked_by
+    - hideable
+    - hideable_hash
     computed_fields:
     - artist_owned
     - favorited
@@ -248,6 +252,7 @@ update_permissions:
     - royalty
     - title
     - edition_id
+    - hideable
     filter:
       owner_id:
         _eq: X-Hasura-User-Id
