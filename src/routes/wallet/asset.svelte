@@ -1,3 +1,14 @@
+<script context="module">
+  export async function load({ session }) {
+    if (!(session && session.user)) return {
+      status: 302,
+      redirect: '/login'
+    } 
+
+    return {};
+  }
+</script>
+
 <script>
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
@@ -11,7 +22,6 @@
   import { border, bg, outer } from "./_colors";
 
   $: if ($user) getBalances();
-  $: requireLogin($page);
 </script>
 
 <style>

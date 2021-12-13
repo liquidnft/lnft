@@ -31,6 +31,7 @@
     titles as t,
     user,
     password,
+    poll,
     token,
   } from "$lib/store";
   import { onDestroy, onMount } from "svelte";
@@ -68,6 +69,9 @@
 
   let open = false;
   let y;
+
+  let stopPolling = () => $poll.map(clearInterval);
+  $: stopPolling($page);
 
   onDestroy(() => clearInterval(interval));
   onMount(() => {
