@@ -78,6 +78,9 @@
   let open = false;
   let y;
 
+  let stopPolling = () => $poll.map(clearInterval);
+  $: stopPolling($page);
+
   onDestroy(() => clearInterval(interval));
   onMount(() => {
     if (!$password) $password = window.sessionStorage.getItem("password");

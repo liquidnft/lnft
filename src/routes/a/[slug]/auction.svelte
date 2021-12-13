@@ -91,8 +91,6 @@
 
   export let artwork, default_royalty_recipients;
 
-  $: requireLogin($page);
-
   let input;
   let initialized;
   let focus = (i) => i && tick().then(() => input && input.focus());
