@@ -1,18 +1,11 @@
 <script context="module">
-  import { get } from "$lib/api";
+  import { post } from "$lib/api";
   export async function load({ fetch, session }) {
-    try {
-      await get("/auth/logout").res();
-    } catch (e) {
-      console.log(e);
-    }
-
+    await post("/auth/logout", {}, fetch).res();
+    if (session) delete session.user;
     return {
       status: 302,
       redirect: "/login",
     };
   }
-</script>
-
-<script>
 </script>

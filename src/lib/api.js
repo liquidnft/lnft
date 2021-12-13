@@ -34,7 +34,7 @@ export const get = (url, f = fetch) =>
 export const post = (url, body, f = fetch) =>
   wretch()
     .polyfills({ fetch: f })
-    .url("/" + url)
+    .url(url)
     .post(body);
 
 export const getQ = (defaultHeaders) => {
