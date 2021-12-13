@@ -205,7 +205,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
               </svg>
             </div>
-            <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Global</p>
+            <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Global Market</p>
           </dt>
           <dd class="mt-2 ml-16 text-base text-gray-500">
             Jungle Lab is a revolutionary urban lifestyle NFT platform for artists, creatives and collectors to upload and transact rare digital assets including music, videos and art.
@@ -236,7 +236,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Liquid</p>
+            <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Liquid Network</p>
           </dt>
           <dd class="mt-2 ml-16 text-base text-gray-500">
             We exist to support millions of artists and creatives with an eco-system that provides rights, ownership, and the opportunity to create multiple independent revenue streams.
