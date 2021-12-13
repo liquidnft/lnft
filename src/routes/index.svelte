@@ -141,10 +141,10 @@
       <div class="mt-6 space-y-12 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-x-6">
         <div class="group relative">
           <div class="relative w-full h-80 bg-white rounded-lg overflow-hidden group-hover:opacity-75 sm:aspect-w-2 sm:aspect-h-1 sm:h-64 lg:aspect-w-1 lg:aspect-h-1">
-            <img src="https://tailwindui.com/img/ecommerce-images/home-page-02-edition-01.jpg" alt="Desk with leather desk pad, walnut desk organizer, wireless keyboard and mouse, and porcelain mug." class="w-full h-full object-center object-cover">
+            <img src="https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDF8fFN0dWRpb3xlbnwwfHx8fDE2MzcxMTAyNDQ&ixlib=rb-1.2.1&q=80&w=2000" alt="Desk with leather desk pad, walnut desk organizer, wireless keyboard and mouse, and porcelain mug." class="w-full h-full object-center object-cover">
           </div>
           <h3 class="mt-6 text-sm text-gray-500">
-            <a href="#">
+            <a href="https://junglelab.net/music/">
               <span class="absolute inset-0"></span>
               Music
             </a>
@@ -154,10 +154,10 @@
 
         <div class="group relative">
           <div class="relative w-full h-80 bg-white rounded-lg overflow-hidden group-hover:opacity-75 sm:aspect-w-2 sm:aspect-h-1 sm:h-64 lg:aspect-w-1 lg:aspect-h-1">
-            <img src="https://tailwindui.com/img/ecommerce-images/home-page-02-edition-02.jpg" alt="Wood table with porcelain mug, leather journal, brass pen, leather key ring, and a houseplant." class="w-full h-full object-center object-cover">
+            <img src="https://junglelab.net/content/images/size/w960/2021/11/19A8303F-62D7-403E-A846-43894D70EEFD.jpeg" alt="Wood table with porcelain mug, leather journal, brass pen, leather key ring, and a houseplant." class="w-full h-full object-center object-cover">
           </div>
           <h3 class="mt-6 text-sm text-gray-500">
-            <a href="#">
+            <a href="https://junglelab.net/video/">
               <span class="absolute inset-0"></span>
               Video
             </a>
@@ -167,10 +167,10 @@
 
         <div class="group relative">
           <div class="relative w-full h-80 bg-white rounded-lg overflow-hidden group-hover:opacity-75 sm:aspect-w-2 sm:aspect-h-1 sm:h-64 lg:aspect-w-1 lg:aspect-h-1">
-            <img src="https://tailwindui.com/img/ecommerce-images/home-page-02-edition-03.jpg" alt="Collection of four insulated travel bottles on wooden shelf." class="w-full h-full object-center object-cover">
+            <img src="https://junglelab.net/content/images/size/w960/2021/11/QmXJhqJX5sGgRwLua4PmUBpTtXnFpRFhTad37iSPrnoCDC-1.png" alt="Collection of four insulated travel bottles on wooden shelf." class="w-full h-full object-center object-cover">
           </div>
           <h3 class="mt-6 text-sm text-gray-500">
-            <a href="#">
+            <a href="https://junglelab.net/art/">
               <span class="absolute inset-0"></span>
               Art
             </a>
@@ -186,7 +186,7 @@
 <div class="py-12 bg-white">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="lg:text-center">
-      <h2 class="text-base text-black font-semibold tracking-wide uppercase">Digital Assets</h2>
+      <h2 class="text-base text-black font-semibold tracking-wide uppercase">Liquid Digital Assets</h2>
       <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
         JungleLab.io
       </p>
