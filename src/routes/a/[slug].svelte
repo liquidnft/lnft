@@ -15,7 +15,11 @@
         status: 404,
       };
 
-    if (!browser) post("artworks/viewed", { id: artwork.id }, fetch);
+    if (!browser)
+      post("/artworks/viewed", { id: artwork.id }, fetch)
+        .res()
+        .catch(console.log);
+
     artwork.views++;
     props.views = artwork.views;
 
@@ -76,7 +80,7 @@
 
   export let artwork, others, metadata, views;
 
-  $: disabled =
+  $: disabled = loading ||
     !artwork ||
     artwork.transactions.some(
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
@@ -126,22 +130,27 @@
   let val, sats, ticker;
   let amount;
 
-  $: transaction.amount = sats && sats(amount);
-
+  let transaction = {};
   let makeOffer = async (e) => {
     try {
       if (e) e.preventDefault();
       offering = true;
+
+      transaction.amount = sats(amount);
+      transaction.asset = artwork.asset;
       transaction.type = "bid";
 
       await requirePassword();
 
       $psbt = await createOffer(artwork, transaction.amount);
       $psbt = await sign();
+
       transaction.psbt = $psbt.toBase64();
-      transaction.hash = $psbt.__CACHE.__TX.getId();
+      transaction.hash = $psbt.data.globalMap.unsignedTx.tx.getId();
+
       await save();
       await fetch();
+
       offering = false;
     } catch (e) {
       console.log(e);
@@ -174,13 +183,6 @@
     amountInput.focus();
   };
 
-  let transaction = {
-    artwork_id: null,
-    amount: null,
-    type: "bid",
-    hash: "",
-  };
-
   let loading;
   let buyNow = async () => {
     try {
@@ -188,6 +190,7 @@
       loading = true;
 
       transaction.amount = -artwork.list_price;
+      transaction.asset = artwork.asset;
       transaction.type = "purchase";
 
       $psbt = await executeSwap(artwork);
@@ -204,11 +207,6 @@
       transaction.psbt = $psbt.toBase64();
 
       await save();
-
-      transaction.amount = 1;
-      transaction.asset = artwork.asset;
-      transaction.user;
-
       await fetch();
     } catch (e) {
       err(e);
@@ -350,7 +348,7 @@
           {#if offering}
             <ProgressLinear />
           {:else}
-            <form on:submit={makeOffer}>
+            <form on:submit|preventDefault={makeOffer}>
               <div class="flex flex-col mb-4">
                 <div>
                   <div class="mt-1 relative rounded-md shadow-sm">
