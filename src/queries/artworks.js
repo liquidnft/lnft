@@ -155,7 +155,7 @@ export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offs
 }`;
 
 export const getUserArtworks = `query($id: uuid!) {
- artworks(where: { _or: [{ artist_id: { _eq: $id }}, { owner_id: { _eq: $id }}]}) {
+ artworks(where: { _or: [{ artist_id: { _eq: $id }}, { owner_id: { _eq: $id }}, { favorited: { _eq: true }}]}) {
     ${fields}
     tags {
       tag
