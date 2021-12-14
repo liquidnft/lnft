@@ -38,7 +38,7 @@ import { compareAsc, parseISO } from "date-fns";
 // const { retry } = middlewares.default || middlewares;
 
 const DUST = 800;
-const satsPerByte = 0.1;
+const satsPerByte = 0.15;
 
 const serverKey = Buffer.from(import.meta.env.VITE_PUBKEY, "hex");
 const network = networks[import.meta.env.VITE_NETWORK];
