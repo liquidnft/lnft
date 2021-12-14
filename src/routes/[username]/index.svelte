@@ -281,7 +281,7 @@
             <div class="w-full flex flex-wrap">
               {#each favorites as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-0 md:px-5 mb-10">
-                  <Card {artwork} showDetails={false} />
+                  <Card {artwork} />
                 </div>
               {:else}
                 <div class="mx-auto">No favorites yet</div>
