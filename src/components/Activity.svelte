@@ -12,7 +12,7 @@
   <Avatar user={transaction.user} />
   <div class="ml-3">
     <TransactionText {transaction} />
-    <TransactionTime {transaction} />
+    <TransactionTime {transaction} on:accepted />
   </div>
 </div>
 
