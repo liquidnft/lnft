@@ -69,7 +69,4 @@ export async function handle({ request, resolve }) {
   return response;
 }
 
-export const getSession = ({ locals: { jwt, user } }) => {
-  console.log("GET SESH");
-return ({ jwt, user });
-} 
+export const getSession = ({ locals: { jwt, user } }) => ({ jwt, user });
