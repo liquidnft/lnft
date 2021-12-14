@@ -8,9 +8,9 @@
   import { requirePassword } from "$lib/auth";
   import { Psbt } from "liquidjs-lib";
   import { api } from "$lib/api";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte';
 
-  const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 
   export const accept = async (transaction) => {
     if (transaction.accepted) return;
@@ -38,7 +38,7 @@
         })
         .json();
 
-      dispatch("accepted", { id });
+      dispatch('accepted', { id });
       transaction.accepted = true;
 
       info("Offer accepted! Sold!");
