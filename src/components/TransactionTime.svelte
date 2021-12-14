@@ -26,7 +26,9 @@
   let isCurrent = ({ transferred_at: t }, created_at, type) =>
     type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);
 
-  let canAccept = ({ type, artwork, created_at }, debug) => {
+  let canAccept = ({ type, artwork, created_at, accepted }, debug) => {
+    if (accepted) return false;
+
     let isOwner = ({ owner }) => $user && $user.id === owner.id;
 
     let underway = ({ auction_start: s, auction_end: e }) =>
@@ -64,7 +66,7 @@
 
 </style>
 
-<AcceptOffer bind:this={comp} />
+<AcceptOffer bind:this={comp} on:accepted />
 
 {#if loading}
   <ProgressLinear />
