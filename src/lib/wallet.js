@@ -605,6 +605,8 @@ export const pay = async (artwork, to, amount) => {
     value: amount,
   });
 
+  let total = amount;
+
   let p2 = Psbt.fromBase64(p.toBase64());
 
   let construct = async (p) => {
