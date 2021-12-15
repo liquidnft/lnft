@@ -18,11 +18,11 @@
   import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
   import { err } from "$lib/utils";
   import branding from "$lib/branding";
-  import { prefetch } from '$app/navigation';
+  import { prefetch } from "$app/navigation";
   import { browser } from "$app/env";
 
   onMount(() => {
-  if (browser) prefetch("/market");
+    if (browser) prefetch("/market");
   });
 
   export let featured;
@@ -39,6 +39,7 @@
 
   onDestroy(() => clearInterval(interval));
 
+  let current = 0;
 </script>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">

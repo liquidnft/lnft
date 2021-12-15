@@ -52,19 +52,6 @@
   };
 </script>
 
-<style>
-  div,
-  a,
-  span {
-    @apply break-all;
-  }
-
-  .pending {
-    @apply rounded bg-yellow-200 text-center rounded-full text-xs p-1 px-2;
-  }
-
-</style>
-
 <AcceptOffer bind:this={comp} on:accepted />
 
 {#if loading}

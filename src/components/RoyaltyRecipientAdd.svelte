@@ -60,7 +60,8 @@
         min="1"
         bind:value={recipient.amount}
         placeholder="Amount Percent"
-        id="recipientAmount" />
+        id="recipientAmount"
+      />
     </div>
   </div>
   <div class="flex w-full mb-4">
