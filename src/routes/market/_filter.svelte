@@ -1,32 +1,9 @@
 <script>
   import { onMount } from "svelte";
   import { ToggleSwitch } from "$comp";
-  import { artworks, filterCriteria as fc } from "$lib/store";
+  import { filterCriteria as fc } from "$lib/store";
 
   export let showFilters;
-  export let filtered;
-
-  let temp = filtered.map((x) => {
-    return x;
-  });
-
-  $: update(
-    $fc.listPrice,
-    $fc.openBid,
-    $fc.ownedByCreator,
-    $fc.hasSold,
-    $artworks
-  );
-  let update = () => {
-    filtered = temp.filter(filter);
-  };
-  onMount(update);
-
-  let filter = (a) =>
-    (!$fc.listPrice || a.list_price) &&
-    (!$fc.openBid || (a.bid && a.bid.amount)) &&
-    (!$fc.ownedByCreator || a.artist_id === a.owner_id) &&
-    (!$fc.hasSold || a.transferred_at);
 </script>
 
 <div class:showFilters class="switch-container w-full md:w-auto">
