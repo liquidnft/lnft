@@ -676,7 +676,7 @@ export const sign = (sighash) => {
         ])
         .finalizeInput(i);
     } catch (e) {
-      console.log("failed to sign", e.message, i);
+      // console.log("failed to sign", e.message, i);
     }
   });
 
