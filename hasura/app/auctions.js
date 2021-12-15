@@ -109,7 +109,7 @@ setInterval(async () => {
 
       try {
         if (
-          !bid.psbt ||
+          !(bid && bid.psbt) ||
           compareAsc(parseISO(bid.created_at), parseISO(artwork.auction_end)) >
             0 ||
           bid.amount < artwork.reserve_price
