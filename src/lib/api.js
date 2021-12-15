@@ -25,15 +25,15 @@ export const query = async (query, variables) => {
 export const hbp = wretch().url(import.meta.env.VITE_HBP);
 export const serverApi = wretch().url(import.meta.env.VITE_APP);
 
-export const get = (url, f = fetch) =>
+export const get = (url, fetch) =>
   wretch()
-    .polyfills({ fetch: f })
+    .polyfills({ fetch })
     .url(url)
     .get();
 
-export const post = (url, body, f = fetch) =>
+export const post = (url, body, fetch) =>
   wretch()
-    .polyfills({ fetch: f })
+    .polyfills({ fetch })
     .url(url)
     .post(body);
 
