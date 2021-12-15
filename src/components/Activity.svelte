@@ -5,7 +5,6 @@
 
   export let transaction;
   export let showImage = false;
-
 </script>
 
 <div class="flex mb-6 text-left">
