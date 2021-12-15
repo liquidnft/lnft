@@ -62,16 +62,30 @@
   $: focus(initialized);
 
   let loading = true;
-  let artwork, list_price, royalty;
+  let artwork, list_price, royalty, artworks = [], lockedBy;
   $: setup($token);
 
   let reserve_price;
+
+  const loadLockedBy = async () =>
+          lockedBy = artwork.locked_by
+                  && {
+                    value: artwork.locked_by,
+                    label: (await query(getArtwork(artwork.locked_by))).artworks_by_pk?.title
+                    };
 
   let setup = async (t) => {
     if (!t) return;
 
     try {
       artwork = (await query(getArtwork(id))).artworks_by_pk;
+      artworks = (await query(`query {
+        artworks(distinct_on: [title]) {
+          id
+          title
+        }
+      }`)).artworks;
+      !lockedBy && loadLockedBy();
 
       if (!artwork.asking_asset) artwork.asking_asset = btc;
       auction_enabled =
@@ -316,6 +330,7 @@
           max_extensions,
           reserve_price: sats(artwork.asking_asset, reserve_price),
           royalty,
+          locked_by: lockedBy?.value || null
         },
         id,
       }).catch(err);
@@ -517,6 +532,22 @@
               </div>
             {/if}
           </div>
+          <div class="mb-6">
+            <label for="lockedby">
+              <span class="tooltip">
+                Locked by artwork
+              </span>
+            </label>
+            <Select
+              id="lockedby"
+              containerClasses="w-3/4"
+              containerStyles="padding: 2rem; border-radius: 0.5rem; border-color: light-dark; margin-top: 0.5rem;"
+              placeholder="-"
+              isSearchable="true"
+              items={artworks.map(a => ({label: a.title, value: a.id}))}
+              bind:value={lockedBy}
+            />
+          </div>
           <div class="auction-toggle">
             <label for="auction" class="inline-flex items-center">
               <input
@@ -596,7 +627,7 @@
                         </span>
                       </span>
                       <input
-                        class="form-input block w-full pl-7 pr-12"
+                        class="select--lock block w-full pl-7 pr-12"
                         placeholder="0"
                         bind:value={reserve_price}
                         disabled={auction_underway} />

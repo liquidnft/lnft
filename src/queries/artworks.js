@@ -32,6 +32,7 @@ const fields = `
   views
   transferred_at
   is_sold
+  locked_by
   owner {
     id
     username
