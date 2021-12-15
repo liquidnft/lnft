@@ -101,11 +101,9 @@ app.post("/viewed", async (req, res) => {
       let { address, multisig } = owner;
 
       let find = async (a) =>
-        (await electrs
-          .url(`/address/${a}/utxo`)
-          .get()
-          .json())
-          .find((tx) => tx.asset === asset);
+        (await electrs.url(`/address/${a}/utxo`).get().json()).find(
+          (tx) => tx.asset === asset
+        );
 
       let held = null;
       if (await find(address)) held = "single";
@@ -195,7 +193,9 @@ app.post("/transaction", auth, async (req, res) => {
     const { transaction } = req.body;
 
     let query = `query {
-    artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
+      artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
+        auction_start
+        auction_end
         owner {
           display_name
         } 
@@ -214,7 +214,6 @@ app.post("/transaction", auth, async (req, res) => {
     let { data, errors } = await hasura.post({ query }).json();
     if (errors) throw new Error(errors[0].message);
     let {
-      bid_increment,
       auction_end,
       auction_start,
       owner,
@@ -224,13 +223,12 @@ app.post("/transaction", auth, async (req, res) => {
     } = data.artworks[0];
 
     if (
-      bid &&
       transaction.type === "bid" &&
-      transaction.amount < (bid.amount + bid_increment) &&
+      transaction.amount < bid.amount &&
       auction_end &&
       compareAsc(parseISO(auction_end), new Date()) > 0
     ) {
-      throw new Error(`Minimum bid is ${((bid.amount + bid_increment) / 100000000).toFixed(8)}`);
+      throw new Error(`Minimum bid is ${(bid.amount + 1000) / 100000000}`);
     }
 
     let locals = {
