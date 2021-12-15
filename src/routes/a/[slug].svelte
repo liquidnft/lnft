@@ -73,6 +73,7 @@
     requestSignature,
     sign,
     broadcast,
+    releaseToSelf,
   } from "$lib/wallet";
   import { Psbt } from "liquidjs-lib";
   import { api, query } from "$lib/api";
@@ -80,7 +81,15 @@
 
   export let artwork, others, metadata, views;
 
-  $: disabled = loading ||
+  let release = async () => {
+    await requirePassword();
+    $psbt = await releaseToSelf(artwork);
+    $psbt = await sign();
+    await broadcast($psbt);
+  } 
+
+  $: disabled =
+    loading ||
     !artwork ||
     artwork.transactions.some(
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
@@ -318,6 +327,16 @@
             class:disabled>List</a
           >
         </div>
+        {#if artwork.held === "multisig" && !artwork.has_royalty}
+          <div class="w-full mb-2">
+            <a
+              href="/"
+              on:click|preventDefault={release}
+              class="block text-center text-sm secondary-btn w-full"
+              class:disabled>Release</a
+            >
+          </div>
+        {/if}
         <div class="w-full mb-2">
           <a
             href={`/a/${artwork.slug}/transfer`}

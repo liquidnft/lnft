@@ -44,7 +44,7 @@ setInterval(async () => {
     const query = `query {
       artworks(where: { _and: [
           { auction_end: { _lte: "${formatISO(new Date())}"}}, 
-          { auction_release_tx: { _is_null: false }}
+          { auction_tx: { _is_null: false }}
         ]}) {
         id
         title
