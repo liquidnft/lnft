@@ -38,7 +38,7 @@
   export let showFilters;
   export let initialArtworks;
 
-  $artworks = [...initialArtworks];
+  $artworks = initialArtworks;
   let filtered = $artworks;
 
   let offset = 0;
@@ -83,7 +83,9 @@
 >
   <h2 class="md:mb-0">Market</h2>
   {#if $user && $user.is_artist}
-    <a href="/a/create" class="primary-btn" data-cy="new-artwork">Submit a new artwork</a>
+    <a href="/a/create" class="primary-btn" data-cy="new-artwork"
+      >Submit a new artwork</a
+    >
   {/if}
 </div>
 <div class="container mx-auto mt-10">
