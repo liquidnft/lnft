@@ -504,7 +504,7 @@
             class="block text-center text-sm secondary-btn w-full"
             class:disabled>List</a>
         </div>
-        {#if artwork.held === "multisig" && !artwork.has_royalty}
+        {#if artwork.held === "multisig" && !artwork.has_royalty && !artwork.auction_end}
           <div class="w-full mb-2">
             <a
               href="/"
