@@ -2,10 +2,6 @@
   export const prerender = true;
 </script>
 
-<script>
-  import branding from "$lib/branding";
-</script>
-
 <div class="container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
     <h2 class="mb-10">Raretoshi User Guide</h2>
@@ -61,7 +57,7 @@
               <img
                 class="guide-image"
                 src="/guide/image19.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
             </li>
             <li>
@@ -69,7 +65,7 @@
               <img
                 class="guide-image"
                 src="/guide/image35.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
             </li>
             <li>
@@ -80,7 +76,7 @@
               <img
                 class="guide-image"
                 src="/guide/image23.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
             </li>
             <li>
@@ -91,12 +87,12 @@
               <img
                 class="guide-image"
                 src="/guide/image2.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
               <img
                 class="guide-image"
                 src="/guide/image22.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
             </li>
             <li>
@@ -130,17 +126,17 @@
               <img
                 class="guide-image"
                 src="/guide/image16.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
               <img
                 class="guide-image"
                 src="/guide/image33.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
               <img
                 class="guide-image"
                 src="/guide/image7.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
             </li>
             <li>
@@ -152,7 +148,7 @@
               <img
                 class="guide-image"
                 src="/guide/image25.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
             </li>
             <li>
@@ -160,7 +156,7 @@
               <img
                 class="guide-image"
                 src="/guide/image34.png"
-                alt="guide-image"
+                alt="Screenshot"
               />
             </li>
           </ol>
@@ -226,7 +222,7 @@
             click on “Confidential” under the Liquid address and you will be shown
             a confidential address and corresponding QR code.
           </p>
-          <img class="guide-image" src="/guide/image17.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image17.png" alt="Screenshot" />
           <p>
             It can take 3-6 min for the funds to show up in your wallet. If you
             don’t see the amount updated in your wallet try refreshing the page.
@@ -257,7 +253,7 @@
             volume on the Bitcoin network). You can use this option if you are
             not in a rush.
           </p>
-          <img class="guide-image" src="/guide/image6.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image6.png" alt="Screenshot" />
         </div>
         <div class="item" id="btc-lightning">
           <h4>3.3 BTC (Lightning)</h4>
@@ -271,7 +267,7 @@
             there is currently a minimum of 0.00001 btc (~1,000 sats) and a
             maximum of 0.01 BTC with this funding option.
           </p>
-          <img class="guide-image" src="/guide/image30.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image30.png" alt="Screenshot" />
         </div>
         <div class="item" id="upload-artwork-and-mint-nft">
           <h3>4. UPLOAD ARTWORK & MINT NFT</h3>
@@ -288,16 +284,16 @@
             “Market” page (https://raretoshi.com/market). Current supported file
             formats are jpg, png, gif and mp4 up to a size limit of 400MB.
           </p>
-          <img class="guide-image" src="/guide/image11.png" alt="guide-image" />
-          <img class="guide-image" src="/guide/image4.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image11.png" alt="Screenshot" />
+          <img class="guide-image" src="/guide/image4.png" alt="Screenshot" />
           <p>
             You will be presented with a “Submit artwork” form. You can either
             drag and drop your file or click on “Upload your artwork” to select
             a file from your device. You will see a “Upload complete!” message
             once your artwork is ready
           </p>
-          <img class="guide-image" src="/guide/image3.png" alt="guide-image" />
-          <img class="guide-image" src="/guide/image1.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image3.png" alt="Screenshot" />
+          <img class="guide-image" src="/guide/image1.png" alt="Screenshot" />
           <p>You can now fill out details of your artwork including:</p>
           <ul style="list-style: disc; padding-left: 30px">
             <li>Title</li>
@@ -329,7 +325,7 @@
               gallery organizer to make sure you include the appropriate tag
             </li>
           </ul>
-          <img class="guide-image" src="/guide/image21.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image21.png" alt="Screenshot" />
           <p>
             After clicking “Submit” your artwork will be uploaded into our IPFS
             node and a Liquid issuance transaction will be generated to mint the
@@ -344,7 +340,7 @@
             confirmed in the Liquid blockchain (indicated as “pending'' by the
             history of the artwork on the bottom left corner).
           </p>
-          <img class="guide-image" src="/guide/image37.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image37.png" alt="Screenshot" />
           <p>
             Once the minting transaction is confirmed, your artwork/NFT will be
             ready to be listed. At this point your artwork is labelled as
@@ -352,15 +348,15 @@
             You can see it in your profile page but it won’t be publicly visible
             until listed.
           </p>
-          <img class="guide-image" src="/guide/image5.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image5.png" alt="Screenshot" />
           <p>
             The NFT will also be in your wallet now. You can confirm this by
             going to your profile page and then to your wallet. If you go to “X
             assets available in this wallet>” you will see all Liquid assets in
             your wallet including L-BTC and NFTs.
           </p>
-          <img class="guide-image" src="/guide/image10.png" alt="guide-image" />
-          <img class="guide-image" src="/guide/image28.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image10.png" alt="Screenshot" />
+          <img class="guide-image" src="/guide/image28.png" alt="Screenshot" />
         </div>
         <div class="item" id="list-artwork">
           <h3>5. LIST ARTWORK</h3>
@@ -372,15 +368,15 @@
             1. Go to your Raretoshi profile page. There, you will find all your
             uploaded artwork under the “Creations” tab.
           </p>
-          <img class="guide-image" src="/guide/image8.png" alt="guide-image" />
-          <img class="guide-image" src="/guide/image24.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image8.png" alt="Screenshot" />
+          <img class="guide-image" src="/guide/image24.png" alt="Screenshot" />
           <p>
             2. Select the unlisted piece that you want to publicly list by
             clicking on it. You will be taken to the artwork page where you will
             be able to list it by clicking on “List.”
           </p>
-          <img class="guide-image" src="/guide/image14.png" alt="guide-image" />
-          <img class="guide-image" src="/guide/image26.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image14.png" alt="Screenshot" />
+          <img class="guide-image" src="/guide/image26.png" alt="Screenshot" />
           <p>
             3. You will now be presented with several options for your listing
             and you’ll be able to select between simple listing and auction.
@@ -418,14 +414,14 @@
             the artwork page and will be able to see the listing details and the
             history of the artwork if you scroll down.
           </p>
-          <img class="guide-image" src="/guide/image9.png" alt="guide-image" />
-          <img class="guide-image" src="/guide/image13.png" alt="guide-image" />
-          <img class="guide-image" src="/guide/image12.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image9.png" alt="Screenshot" />
+          <img class="guide-image" src="/guide/image13.png" alt="Screenshot" />
+          <img class="guide-image" src="/guide/image12.png" alt="Screenshot" />
           <p>
             Other users will now be able to make you an offer or directly buy
             your artwork if a price was set.
           </p>
-          <img class="guide-image" src="/guide/image38.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image38.png" alt="Screenshot" />
         </div>
         <div class="item" id="auction">
           <h4>5.2 Auction</h4>
@@ -436,7 +432,7 @@
             auction and a reserve price. The reserve price is the minimum price
             you’ll accept for the artwork. Setting one is optional.
           </p>
-          <img class="guide-image" src="/guide/image27.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image27.png" alt="Screenshot" />
 
           <p>
             To ensure auction start and end dates and time, once an artwork is
@@ -450,7 +446,7 @@
             will bid on it and see information such as reserve price, if any,
             and how much time is left until the auction ends.
           </p>
-          <img class="guide-image" src="/guide/image36.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image36.png" alt="Screenshot" />
         </div>
         <div class="item" id="what-to-expect-after-listing">
           <h3>6. WHAT TO EXPECT AFTER LISTING</h3>
@@ -473,9 +469,9 @@
             “Collection” tab. The artwork page will also show the history of the
             NFT and it will reflect the new owner.
           </p>
-          <img class="guide-image" src="/guide/image31.png" alt="guide-image" />
-          <img class="guide-image" src="/guide/image20.png" alt="guide-image" />
-          <img class="guide-image" src="/guide/image32.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image31.png" alt="Screenshot" />
+          <img class="guide-image" src="/guide/image20.png" alt="Screenshot" />
+          <img class="guide-image" src="/guide/image32.png" alt="Screenshot" />
           <p>
             If you decide to list your artwork as an auction, Raretoshi users
             will see the time left until the auction goes live, and they will be
@@ -495,16 +491,16 @@
         <div class="item" id="edit-profile">
           <h4>7.1 Edit your Raretoshi profile</h4>
           <p>1. Go to your profile page</p>
-          <img class="guide-image" src="/guide/image11.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image11.png" alt="Screenshot" />
 
           <p>2. Select "Edit Profile"</p>
-          <img class="guide-image" src="/guide/image15.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image15.png" alt="Screenshot" />
 
           <p>
             3. Fill out the fields and change your profile picture if you want
             and save the changes. Done.
           </p>
-          <img class="guide-image" src="/guide/image18.png" alt="guide-image" />
+          <img class="guide-image" src="/guide/image18.png" alt="Screenshot" />
         </div>
       </div>
     </div>
