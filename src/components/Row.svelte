@@ -4,22 +4,21 @@
 
   export let item;
   export let link;
-
 </script>
-
-<style>
-  .watch-row {
-    padding: 24px 0;
-  }
-
-</style>
 
 <div
   on:click={() => goto(link)}
-  class="flex flex-wrap border-b cursor-pointer watch-row">
+  class="flex flex-wrap border-b cursor-pointer watch-row"
+>
   <Avatar user={item.user} />
   <div class="ml-2 my-auto">
     <a href={`/u/${item.user.username}`}>@{item.user.username}</a>
   </div>
   <div class="my-auto ml-auto text-right">{item.value}</div>
 </div>
+
+<style>
+  .watch-row {
+    padding: 24px 0;
+  }
+</style>

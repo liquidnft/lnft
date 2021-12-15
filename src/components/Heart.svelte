@@ -32,17 +32,15 @@
       err(e);
     }
   };
-
 </script>
+
+<div on:click={favorite} class:favorited>
+  <Fa icon={favorited ? solidHeart : faHeart} size="1.5x" />
+</div>
 
 <style>
   div:hover,
   .favorited {
     @apply text-primary cursor-pointer;
   }
-
 </style>
-
-<div on:click={favorite} class:favorited>
-  <Fa icon={favorited ? solidHeart : faHeart} size="1.5x" />
-</div>

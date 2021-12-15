@@ -23,16 +23,7 @@
   });
    */
   $: current = 0;
-
 </script>
-
-<style>
-  .full-width {
-    width: 100%;
-    left: calc(100vw - 100%);
-  }
-
-</style>
 
 <svelte:window bind:scrollY={y} />
 
@@ -43,8 +34,16 @@
         <button
           class="rounded-full w-12 h-12"
           class:font-bold={i === current}
-          on:click={() => jump(i)}>{i + 1}</button>
+          on:click={() => jump(i)}>{i + 1}</button
+        >
       {/each}
     </div>
   </div>
 {/if}
+
+<style>
+  .full-width {
+    width: 100%;
+    left: calc(100vw - 100%);
+  }
+</style>

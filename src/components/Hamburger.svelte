@@ -1,7 +1,18 @@
 <script>
   export let open = false;
-
 </script>
+
+<span
+  class="text-gray-500 hover:text-gray-700 cursor-pointer border-none focus:outline-none p-0"
+  class:open
+  on:click={() => (open = !open)}
+>
+  <svg width="20" height="20">
+    <line id="top" x1="0" y1="2" x2="32" y2="2" />
+    <line id="middle" x1="0" y1="8" x2="32" y2="8" />
+    <line id="bottom" x1="0" y1="14" x2="32" y2="14" />
+  </svg>
+</span>
 
 <style>
   svg {
@@ -31,16 +42,4 @@
   .open #bottom {
     transform: translate(-9px, 9px) rotate(-45deg);
   }
-
 </style>
-
-<span
-  class="text-gray-500 hover:text-gray-700 cursor-pointer border-none focus:outline-none p-0"
-  class:open
-  on:click={() => (open = !open)}>
-  <svg width="20" height="20">
-    <line id="top" x1="0" y1="2" x2="32" y2="2" />
-    <line id="middle" x1="0" y1="8" x2="32" y2="8" />
-    <line id="bottom" x1="0" y1="14" x2="32" y2="14" />
-  </svg>
-</span>

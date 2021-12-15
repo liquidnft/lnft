@@ -40,7 +40,7 @@ app.post("/login", async (req, res) => {
       email = data.users[0].display_name;
     } else {
       throw new Error();
-    } 
+    }
 
     let response = await hbp.url("/auth/login").post({ email, password }).res();
     Array.from(response.headers.entries()).forEach(([k, v]) =>
@@ -49,7 +49,8 @@ app.post("/login", async (req, res) => {
     res.send(await response.json());
   } catch (e) {
     let msg = "Login failed";
-    if (e.message.includes("activated")) msg = "Account not activated, check email for a confirmation link";
+    if (e.message.includes("activated"))
+      msg = "Account not activated, check email for a confirmation link";
     res.code(401).send(msg);
   }
 });

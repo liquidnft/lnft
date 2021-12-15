@@ -30,4 +30,13 @@ const cf = wretch()
 
 const hbp = wretch().url(HBP_URL);
 
-module.exports = { hasura: adminApi, api, electrs, registry, cf, hbp, coinos, ipfs };
+module.exports = {
+  hasura: adminApi,
+  api,
+  electrs,
+  registry,
+  cf,
+  hbp,
+  coinos,
+  ipfs,
+};

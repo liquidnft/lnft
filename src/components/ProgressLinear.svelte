@@ -14,8 +14,26 @@
       initialized = true;
     }, 200);
   });
-
 </script>
+
+<div
+  class:fixed={app}
+  class:relative={!app}
+  class:z-50={app}
+  class:top-0={app}
+  class:left-0={app}
+  class="w-full h-1 brand-color overflow-hidden"
+  class:hidden={app && !initialized}
+  transition:slide={{ duration: 300 }}
+>
+  <div
+    class="bg-gray-500 h-1 absolute"
+    class:inc={!progress}
+    class:transition={progress}
+    style={progress ? `width: ${progress}%` : ""}
+  />
+  <div class="bg-gray-500 h-1 absolute dec" class:hidden={progress} />
+</div>
 
 <style>
   /* kudos https://codepen.io/shalimano/pen/wBmNGJ */
@@ -46,22 +64,4 @@
       width: 10%;
     }
   }
-
 </style>
-
-<div
-  class:fixed={app}
-  class:relative={!app}
-  class:z-50={app}
-  class:top-0={app}
-  class:left-0={app}
-  class="w-full h-1 brand-color overflow-hidden"
-  class:hidden={app && !initialized}
-  transition:slide={{ duration: 300 }}>
-  <div
-    class="bg-gray-500 h-1 absolute"
-    class:inc={!progress}
-    class:transition={progress}
-    style={progress ? `width: ${progress}%` : ''} />
-  <div class="bg-gray-500 h-1 absolute dec" class:hidden={progress} />
-</div>
