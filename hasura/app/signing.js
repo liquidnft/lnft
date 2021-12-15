@@ -116,7 +116,9 @@ const check = async (psbt) => {
           .reduce((a, b) => a + parseInt(b.value), 0) -
         inputs
           .filter(
-            (o) => o.asset === asking_asset && (o.address === owner.address || o.address === owner.multisig)
+            (o) =>
+              o.asset === asking_asset &&
+              (o.address === owner.address || o.address === owner.multisig)
           )
           .reduce((a, b) => a + parseInt(b.value), 0);
 

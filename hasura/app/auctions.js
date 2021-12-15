@@ -81,7 +81,7 @@ setInterval(async () => {
       } 
     }`;
 
-    let res = await hasura.post({ query }).json()
+    let res = await hasura.post({ query }).json();
     let { data, errors } = res;
     if (errors) throw new Error(errors[0].message);
     let { artworks } = data;

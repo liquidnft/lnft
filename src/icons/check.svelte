@@ -1,15 +1,16 @@
 <script>
   export let color = "#da4453";
-
 </script>
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="3 3 16 16"><defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="3 3 16 16"
+  ><defs>
     <linearGradient
       gradientUnits="userSpaceOnUse"
       y2="-2.623"
       x2="0"
       y1="986.67"
-      id="0">
+      id="0"
+    >
       <stop stop-color="#ffce3b" />
       <stop offset="1" stop-color="#ffd762" />
     </linearGradient>
@@ -17,7 +18,8 @@
       y2="-2.623"
       x2="0"
       y1="986.67"
-      gradientUnits="userSpaceOnUse">
+      gradientUnits="userSpaceOnUse"
+    >
       <stop stop-color="#ffce3b" />
       <stop offset="1" stop-color="#fef4ab" />
     </linearGradient>
@@ -29,5 +31,7 @@
       fill="#fff"
       transform="matrix(.0436 0 0 .0436 8.177 1039.72)"
       stroke="none"
-      stroke-width="9.512" />
-  </g></svg>
+      stroke-width="9.512"
+    />
+  </g></svg
+>

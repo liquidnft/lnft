@@ -1,8 +1,13 @@
 <script>
   export let item = undefined;
   export const getOptionLabel = undefined;
-
 </script>
+
+<div class="customItem">
+  <div class="customItem_title">
+    <div class="customItem_name">{item.title}</div>
+  </div>
+</div>
 
 <style>
   .customItem {
@@ -31,11 +36,4 @@
   .customItem_tagline {
     display: inline-block;
   }
-
 </style>
-
-<div class="customItem">
-  <div class="customItem_title">
-    <div class="customItem_name">{item.title}</div>
-  </div>
-</div>
