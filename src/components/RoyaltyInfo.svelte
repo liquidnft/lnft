@@ -13,7 +13,7 @@
   <div class="mb-6">
     <div class="text-xs cursor-pointer mb-2" on:click={() => (show = !show)}>
       <div class="flex">
-        <img src="/royalties.svg" class="w-8" />
+        <img src="/royalties.svg" class="w-8" alt="Royalties" />
         <div class="my-auto">Royalties</div>
         <div class="my-auto ml-1">
           <Fa icon={show ? faChevronUp : faChevronDown} />
