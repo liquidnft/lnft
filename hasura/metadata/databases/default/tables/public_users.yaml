@@ -119,6 +119,7 @@ select_permissions:
     - id
     - instagram
     - is_artist
+    - is_denied
     - location
     - multisig
     - pubkey
@@ -145,6 +146,7 @@ select_permissions:
     - instagram
     - is_admin
     - is_artist
+    - is_denied
     - location
     - mnemonic
     - multisig
@@ -172,6 +174,7 @@ select_permissions:
     - id
     - instagram
     - is_artist
+    - is_denied
     - location
     - multisig
     - pubkey
@@ -187,9 +190,10 @@ select_permissions:
   role: user
 update_permissions:
 - permission:
-    check: null
+    check: {}
     columns:
     - is_artist
+    - is_denied
     filter: {}
   role: approver
 - permission:

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        color: #2d2e32;
+      }
+
+      p {
+        line-height: 1.7;
+      }
+
+      .container {
+        width: 600px;
+        margin: 0 auto;
+        background: white;
+        padding-top: 60px;
+      }
+
+      .logo {
+        width: 100%;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .logo img {
+        height: 40px;
+        margin: 0 auto;
+      }
+
+      .link {
+        display: block;
+        margin-top: 30px;
+        color: #0f828a;
+        text-decoration: none;
+      }
+
+      hr {
+        border-color: whitesmoke;
+        margin-bottom: 30px;
+      }
+
+      .confirm-container {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .confirm {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 120px;
+        margin: 40px 0;
+        text-decoration: none;
+        border-radius: 30px;
+        padding: 0.8rem 1.5rem !important;
+        color: #444444;
+        font-weight: bold;
+        background: rgb(143, 238, 245);
+        background: linear-gradient(
+          90deg,
+          rgba(143, 238, 245, 1) 0%,
+          rgba(127, 228, 235, 1) 50%,
+          rgba(110, 216, 224, 1) 100%
+        );
+        border: 0px solid white;
+      }
+
+      .footer p {
+        font-size: 13px;
+      }
+
+      .footer .social {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 20px;
+      }
+
+      .footer .social a {
+        margin-right: 20px;
+      }
+
+      .footer .visit {
+        color: #2d2e32;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="logo">
+        <img src="https://raretoshi.com/raretoshi.png" />
+      </div>
+      <p>Congrats <%= userName %></p>
+      <p>
+        You have won
+        <a href="<%= artworkUrl %>"><%= artworkTitle %></a> with your bid of <%=
+        bidAmount %>!
+      </p>
+      <p>
+        If an NFT, the token will be delivered to your Raretoshi wallet and
+        displayed under your Collection tab on your profile page.
+      </p>
+      <p>
+        If the artwork also has a physical piece, the artist will reach out to
+        you shortly through email or the socials you have provided on your
+        profile page. You can also join the
+        <a href="https://t.me/raretoshi">Raretoshi Telegram</a>, where most of
+        our artist community congregates, and odds are, you can get in touch
+        with them there!
+      </p>
+      <p>Good luck with your future auctions!</p>
+      <p>Best, <br />Raretoshi Team</p>
+      <hr />
+      <div class="footer">
+        <p>Follow Us</p>
+        <div class="social">
+          <a href="https://www.twitter.com/raretoshi">
+            <img style="width: 20px" src="https://raretoshi.com/twitter.png" />
+          </a>
+          <a href="https://t.me/raretoshi">
+            <img style="width: 20px" src="https://raretoshi.com/telegram.png" />
+          </a>
+        </div>
+        <a class="visit" href="https://raretoshi.com">Visit website</a>
+        <p>© Raretoshi 2021</p>
+      </div>
+    </div>
+  </body>
+</html>
