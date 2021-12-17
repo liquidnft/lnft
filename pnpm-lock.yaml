@@ -280,8 +280,8 @@ packages:
     resolution: {integrity: sha512-s3nugnZumCC//n4moGGe6tkNMyYEdaDBitVjwPxXmR5lnMG5dHePinH2EdxkG3Rh1ghFHHixAG4NJhpJW1rthQ==}
     dev: true
 
-  /@types/node/14.18.0:
-    resolution: {integrity: sha512-0GeIl2kmVMXEnx8tg1SlG6Gg8vkqirrW752KqolYo1PHevhhZN3bhJ67qHj+bQaINhX0Ra3TlWwRvMCd9iEfNQ==}
+  /@types/node/14.18.1:
+    resolution: {integrity: sha512-fTFWOFrgAkj737w1o0HLTIgisgYHnsZfeiqhG1Ltrf/iJjudEbUwetQAsfrtVE49JGwvpEzQR+EbMkIqG4227g==}
     dev: true
 
   /@types/node/16.11.11:
@@ -964,7 +964,7 @@ packages:
     dependencies:
       '@cypress/request': 2.88.10
       '@cypress/xvfb': 1.2.4
-      '@types/node': 14.18.0
+      '@types/node': 14.18.1
       '@types/sinonjs__fake-timers': 6.0.4
       '@types/sizzle': 2.3.3
       arch: 2.2.0
