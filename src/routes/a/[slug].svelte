@@ -160,6 +160,53 @@
       await save();
       await fetch();
 
+      const sortedBidTransactions = artwork.transactions
+        .filter((t) => t.type === "bid")
+        .sort((a, b) => b.amount - a.amount);
+
+      const highestBidTransaction = sortedBidTransactions.length
+        ? sortedBidTransactions[0]
+        : null;
+
+      highestBidTransaction &&
+        highestBidTransaction.user.email &&
+        (await api
+          .url("/mail-outbid")
+          .auth(`Bearer ${$token}`)
+          .post({
+            to: highestBidTransaction.user.email,
+            userName: highestBidTransaction.user.full_name
+              ? highestBidTransaction.user.full_name
+              : "",
+            bidAmount: `${val(transaction.amount)} L-BTC`,
+            artworkTitle: artwork.title,
+            artworkUrl: `${branding.urls.protocol}/a/${artwork.slug}`,
+          }));
+
+      $user.email &&
+        (await api
+          .url("/mail-bid-processed")
+          .auth(`Bearer ${$token}`)
+          .post({
+            to: $user.email,
+            userName: $user.full_name ? $user.full_name : "",
+            bidAmount: `${val(transaction.amount)} L-BTC`,
+            artworkTitle: artwork.title,
+            artworkUrl: `${branding.urls.protocol}/a/${artwork.slug}`,
+          }));
+
+      artwork.owner.email &&
+        (await api
+          .url("/mail-someone-bid")
+          .auth(`Bearer ${$token}`)
+          .post({
+            to: artwork.owner.email,
+            userName: artwork.owner.full_name ? artwork.owner.full_name : "",
+            bidAmount: `${val(transaction.amount)} L-BTC`,
+            artworkTitle: artwork.title,
+            artworkUrl: `${branding.urls.protocol}/a/${artwork.slug}`,
+          }));
+
       offering = false;
     } catch (e) {
       console.log(e);
