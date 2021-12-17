@@ -76,6 +76,8 @@ export const fields = `
   owner {
     id
     username
+    full_name
+    email
     avatar_url
     address
     pubkey
@@ -116,6 +118,8 @@ export const txFields = `
     id
     username
     avatar_url
+    full_name
+    email
   } 
   artwork_id
   artwork {
