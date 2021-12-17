@@ -32,7 +32,6 @@
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { err, goto } from "$lib/utils";
-  import { pub } from "$lib/api";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { getUserArtworks } from "$queries/artworks";
   import { createFollow, deleteFollow } from "$queries/follows";

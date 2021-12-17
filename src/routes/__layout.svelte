@@ -1,5 +1,13 @@
 <script context="module">
+  import { prerendering } from '$app/env';
   export async function load({ fetch, page, session }) {
+    if (prerendering) return {
+      props: {
+        addresses: [],
+        titles: []
+      } 
+    } 
+    
     const props = await fetch(`/addresses.json`).then((r) => r.json());
 
     if (
