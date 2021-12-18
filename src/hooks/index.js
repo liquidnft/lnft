@@ -4,6 +4,7 @@ import decode from "jwt-decode";
 import cookie from "cookie";
 import { hbp, getQ } from "$lib/api";
 import { addSeconds } from "date-fns";
+import { prerendering } from '$app/env';
 
 export async function handle({ request, resolve }) {
   const { headers } = request;

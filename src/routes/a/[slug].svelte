@@ -15,7 +15,11 @@
         status: 404,
       };
 
-    if (!browser) post("artworks/viewed", { id: artwork.id }, fetch);
+    if (!browser)
+      post("/artworks/viewed", { id: artwork.id }, fetch)
+        .res()
+        .catch(console.log);
+
     artwork.views++;
     props.views = artwork.views;
 
@@ -69,6 +73,7 @@
     requestSignature,
     sign,
     broadcast,
+    releaseToSelf,
   } from "$lib/wallet";
   import { Psbt } from "liquidjs-lib";
   import { api, query } from "$lib/api";
@@ -76,7 +81,15 @@
 
   export let artwork, others, metadata, views;
 
+  let release = async () => {
+    await requirePassword();
+    $psbt = await releaseToSelf(artwork);
+    $psbt = await sign();
+    await broadcast($psbt);
+  } 
+
   $: disabled =
+    loading ||
     !artwork ||
     artwork.transactions.some(
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
@@ -126,20 +139,24 @@
   let val, sats, ticker;
   let amount;
 
-  $: transaction.amount = sats && sats(amount);
-
+  let transaction = {};
   let makeOffer = async (e) => {
     try {
       if (e) e.preventDefault();
       offering = true;
+
+      transaction.amount = sats(amount);
+      transaction.asset = artwork.asset;
       transaction.type = "bid";
 
       await requirePassword();
 
       $psbt = await createOffer(artwork, transaction.amount);
       $psbt = await sign();
+
       transaction.psbt = $psbt.toBase64();
-      transaction.hash = $psbt.__CACHE.__TX.getId();
+      transaction.hash = $psbt.data.globalMap.unsignedTx.tx.getId();
+
       await save();
       await fetch();
 
@@ -222,13 +239,6 @@
     amountInput.focus();
   };
 
-  let transaction = {
-    artwork_id: null,
-    amount: null,
-    type: "bid",
-    hash: "",
-  };
-
   let loading;
   let buyNow = async () => {
     try {
@@ -236,6 +246,7 @@
       loading = true;
 
       transaction.amount = -artwork.list_price;
+      transaction.asset = artwork.asset;
       transaction.type = "purchase";
 
       $psbt = await executeSwap(artwork);
@@ -252,11 +263,6 @@
       transaction.psbt = $psbt.toBase64();
 
       await save();
-
-      transaction.amount = 1;
-      transaction.asset = artwork.asset;
-      transaction.user;
-
       await fetch();
 
       $user.email &&
@@ -392,6 +398,16 @@
             class:disabled>List</a
           >
         </div>
+        {#if artwork.held === "multisig" && !artwork.has_royalty && !artwork.auction_end}
+          <div class="w-full mb-2">
+            <a
+              href="/"
+              on:click|preventDefault={release}
+              class="block text-center text-sm secondary-btn w-full"
+              class:disabled>Release</a
+            >
+          </div>
+        {/if}
         <div class="w-full mb-2">
           <a
             href={`/a/${artwork.slug}/transfer`}
@@ -422,7 +438,7 @@
           {#if offering}
             <ProgressLinear />
           {:else}
-            <form on:submit={makeOffer}>
+            <form on:submit|preventDefault={makeOffer}>
               <div class="flex flex-col mb-4">
                 <div>
                   <div class="mt-1 relative rounded-md shadow-sm">

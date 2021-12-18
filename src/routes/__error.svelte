@@ -1,12 +1,12 @@
 <script context="module">
-	export function load({ error, status }) {
+  export function load({ error, status }) {
     console.log(error, status);
-		return {
-			props: {
-				title: `${status}: ${error.message}`
-			}
-		};
-	}
+    return {
+      props: {
+        title: `${status}: ${error.message}`,
+      },
+    };
+  }
 </script>
 
 <div class="container mx-auto sm:justify-between mt-10 md:mt-20">

@@ -15,6 +15,7 @@ export const requireLogin = async (page) => {
   try {
     if (expired($token)) throw new Error("Login required");
   } catch (e) {
+    console.log(e);
     goto("/login");
     throw e;
   }

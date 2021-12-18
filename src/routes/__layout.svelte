@@ -1,5 +1,13 @@
 <script context="module">
+  import { prerendering } from '$app/env';
   export async function load({ fetch, page, session }) {
+    if (prerendering) return {
+      props: {
+        addresses: [],
+        titles: []
+      } 
+    } 
+    
     const props = await fetch(`/addresses.json`).then((r) => r.json());
 
     if (
@@ -31,6 +39,7 @@
     titles as t,
     user,
     password,
+    poll,
     token,
   } from "$lib/store";
   import { onDestroy, onMount } from "svelte";
@@ -38,6 +47,17 @@
   import { get } from "$lib/api";
 
   export let addresses, titles;
+
+  let interval;
+  let refresh = async () => {
+    try {
+      let { jwt_token } = await get("/auth/refresh.json", fetch).json();
+      $token = jwt_token;
+      if (!$token && $session) delete $session.user;
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   if (browser) {
     history.pushState = new Proxy(history.pushState, {
@@ -54,20 +74,15 @@
       $user = $session.user;
       $token = $session.jwt;
     }
-  }
 
-  let refresh = async () => {
-    try {
-      $token = (await get("/auth/refresh.json").json()).jwt_token;
-      if (!$token && $session) delete $session.user;
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  let interval = setInterval(refresh, 60000);
+    interval = setInterval(refresh, 60000);
+  }
 
   let open = false;
   let y;
+
+  let stopPolling = () => $poll.map(clearInterval);
+  $: stopPolling($page);
 
   onDestroy(() => clearInterval(interval));
   onMount(() => {
