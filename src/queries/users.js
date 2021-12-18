@@ -16,13 +16,6 @@ export const getUser = `query {
   }
 }`;
 
-export const getUserById = (id) => `query {
-  users_by_pk (id: "${id}") {
-    ${fields} 
-    ${computed}
-  }
-}`;
-
 export const getUserByUsername = `query($username: String!) {
   users(where: { username: {_eq: $username }}, limit: 1) { 
     ${fields} 
@@ -39,6 +32,11 @@ export const getUserByUsername = `query($username: String!) {
         artwork {
           ${artworkFields}
         } 
+      }
+    } 
+    favorites {
+      artwork {
+        ${artworkFields}
       }
     } 
   }

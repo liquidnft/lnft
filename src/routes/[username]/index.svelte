@@ -32,9 +32,7 @@
   import { onMount } from "svelte";
   import { user, token } from "$lib/store";
   import { err, goto } from "$lib/utils";
-  import { pub } from "$lib/api";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
-  import { getUserArtworks } from "$queries/artworks";
   import { createFollow, deleteFollow } from "$queries/follows";
   import Menu from "./_menu.svelte";
   import { query } from "$lib/api";
@@ -47,31 +45,6 @@
   const pageChange = ({ params }) => {
     if (params.id) ({ id } = params);
     else ({ id } = subject);
-  };
-
-  $: init(id);
-  let init = (id) =>
-    query(getUserArtworks, { id })
-      .then((res) => {
-        artworks = res.artworks;
-      })
-      .catch(err);
-
-  let collection = [];
-  let creations = [];
-  let favorites = [];
-
-  let artworks;
-  $: applyFilters(artworks, subject);
-
-  let sort = (a, b) => b.edition - a.edition;
-  let applyFilters = (artworks, subject) => {
-    if (!(artworks && subject)) return;
-    creations = artworks.filter((a) => a.artist_id === subject.id).sort(sort);
-    collection = artworks.filter(
-      (a) => a.owner_id === subject.id && a.artist_id !== a.owner_id
-    );
-    favorites = artworks.filter((a) => a.favorited);
   };
 
   let follow = () => {
@@ -253,7 +226,7 @@
               {/if}
             </div>
             <div class="w-full flex flex-wrap">
-              {#each creations as artwork (artwork.id)}
+              {#each subject.creations as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>
@@ -265,7 +238,7 @@
         {:else if tab === 'collection'}
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">
-              {#each collection as artwork (artwork.id)}
+              {#each subject.holdings as artwork (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-5 mb-10">
                   <Card {artwork} />
                 </div>
@@ -279,7 +252,7 @@
         {:else}
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">
-              {#each favorites as artwork (artwork.id)}
+              {#each subject.favorites as { artwork } (artwork.id)}
                 <div class="gallery-tab w-full lg:w-1/2 px-0 md:px-5 mb-10">
                   <Card {artwork} showDetails={false} />
                 </div>
