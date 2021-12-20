@@ -223,8 +223,8 @@ app.post("/transaction", auth, async (req, res) => {
     } = data.artworks[0];
 
     if (
+      bid &&
       transaction.type === "bid" &&
-      transaction.amount < bid.amount &&
       auction_end &&
       compareAsc(parseISO(auction_end), new Date()) > 0
     ) {
