@@ -12,6 +12,7 @@ export const marketFields = `
   asking_asset
   has_royalty
   slug
+  views
   created_at
   owner {
     id

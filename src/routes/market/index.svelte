@@ -32,12 +32,13 @@
   import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";
   import { pub } from "$lib/api";
+  import { differenceInMilliseconds } from "date-fns";
 
   export let count;
   export let showFilters;
   export let initialArtworks;
 
-  $artworks = initialArtworks;
+  $artworks = [...initialArtworks];
   let filtered = $artworks;
 
   let offset = 0;
