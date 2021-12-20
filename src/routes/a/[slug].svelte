@@ -3,8 +3,9 @@
   import { browser } from "$app/env";
   import branding from "$lib/branding";
 
-  export async function load({ fetch, page }) {
-    const props = await fetch(`/artworks/${page.params.slug}.json`).then((r) =>
+  export async function load({ fetch, page: { params: { slug }} }) {
+    console.log("LOADING", slug)
+    const props = await fetch(`/artworks/${slug}.json`).then((r) =>
       r.json()
     );
 
@@ -81,6 +82,8 @@
 
   export let artwork, others, metadata, views;
 
+  console.log("ARTWORK", artwork.id);
+
   let release = async () => {
     await requirePassword();
     $psbt = await releaseToSelf(artwork);
@@ -97,10 +100,8 @@
 
   let start_counter, end_counter, now, timeout;
 
-  let id = artwork ? artwork.id : $page.params.id;
-
   let fetch = async () => {
-    query(getArtwork, { id }).then((res) => {
+    query(getArtwork, { id: artwork.id }).then((res) => {
       artwork = res.artworks_by_pk;
       artwork.views = views;
 
