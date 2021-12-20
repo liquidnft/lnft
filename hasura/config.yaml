@@ -1,5 +1,5 @@
 version: 3
-endpoint: http://localhost:8080/
+endpoint: http://localhost:3000/
 admin_secret: liquidart
 api_paths:
   v1_query: v1/query

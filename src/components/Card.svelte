@@ -11,7 +11,7 @@
   export let showDetails = true;
   export let thumb = true;
   export let popup = false;
-  export let height;
+  export let height = 350;
 
   $: style = height ? `height: ${height}px` : undefined;
 
