@@ -38,7 +38,7 @@
   export let showFilters;
   export let initialArtworks;
 
-  $artworks = initialArtworks;
+  $artworks = [...initialArtworks];
   let filtered = $artworks;
 
   let offset = 0;
