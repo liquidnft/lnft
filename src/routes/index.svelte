@@ -29,6 +29,8 @@
   export let recent;
   export let latest;
 
+  let current = 0;
+
   let interval = setInterval(() => {
     if (!featured) return;
     current++;
@@ -37,7 +39,6 @@
 
   onDestroy(() => clearInterval(interval));
 
-  let current = 0;
 </script>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">
