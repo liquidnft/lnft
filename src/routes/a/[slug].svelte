@@ -30,8 +30,8 @@
     metadata.description = artwork.description;
 
     if (artwork.filetype.includes("video"))
-      metadata.video = "/api/ipfs/" + artwork.filename;
-    else metadata.image = "/api/ipfs/" + artwork.filename;
+      metadata.video = `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
+    else metadata.image = `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
 
     props.metadata = metadata;
 
