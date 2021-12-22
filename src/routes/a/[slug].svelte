@@ -2,11 +2,11 @@
   import { post } from "$lib/api";
   import { browser } from "$app/env";
   import branding from "$lib/branding";
+  import { host } from "$lib/utils";
 
   export async function load({
     fetch,
     page: {
-      host,
       params: { slug },
     },
   }) {
@@ -38,7 +38,7 @@
 
     if (artwork.filetype.includes("video"))
       metadata.video = `https://${host}/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
-    else metadata.image = `https://${host}/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
+    else metadata.image = `${import.meta.env.VITE_HOST}/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
 
     props.metadata = metadata;
 
