@@ -7,6 +7,7 @@
   export async function load({
     fetch,
     page: {
+      host,
       params: { slug },
     },
   }) {
