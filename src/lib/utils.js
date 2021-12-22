@@ -14,6 +14,7 @@ import { goto as svelteGoto } from "$app/navigation";
 const btc = import.meta.env.VITE_BTC;
 const cad = import.meta.env.VITE_CAD;
 const usd = import.meta.env.VITE_USD;
+const host = import.meta.env.VITE_HOST;
 
 const fade = (n, o) => svelteFade(n, { ...o, duration: 50 });
 
@@ -286,6 +287,7 @@ export {
   fullscreen,
   goto,
   go,
+  host,
   info,
   linkify,
   pick,
