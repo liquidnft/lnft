@@ -6,6 +6,7 @@
   export async function load({
     fetch,
     page: {
+      host,
       params: { slug },
     },
   }) {
@@ -36,8 +37,8 @@
     metadata.description = artwork.description;
 
     if (artwork.filetype.includes("video"))
-      metadata.video = `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
-    else metadata.image = `/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
+      metadata.video = `https://${host}/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
+    else metadata.image = `https://${host}/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
 
     props.metadata = metadata;
 
