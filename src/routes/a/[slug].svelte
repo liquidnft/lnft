@@ -89,8 +89,6 @@
 
   export let artwork, others, metadata, views;
 
-  console.log("ARTWORK", artwork.id);
-
   let release = async () => {
     await requirePassword();
     $psbt = await releaseToSelf(artwork);
