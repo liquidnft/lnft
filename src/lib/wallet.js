@@ -38,7 +38,7 @@ import { compareAsc, parseISO } from "date-fns";
 // const { retry } = middlewares.default || middlewares;
 
 const DUST = 800;
-const satsPerByte = 0.1;
+const satsPerByte = 0.15;
 
 const serverKey = Buffer.from(import.meta.env.VITE_PUBKEY, "hex");
 const network = networks[import.meta.env.VITE_NETWORK];
@@ -436,7 +436,6 @@ const fund = async (
       return t;
     });
 
-
   utxos = shuffle(
     utxos.filter(
       (o) =>
@@ -549,6 +548,42 @@ export const isMultisig = ({ has_royalty, auction_end }) => {
   );
 };
 
+export const releaseToSelf = async (artwork) => {
+  fee.set(100);
+  let { asset, owner } = artwork;
+
+  let script;
+  try {
+    script = Address.toOutputScript(owner.address, network);
+  } catch (e) {
+    throw new Error("Unrecognized address");
+  }
+
+  let p = new Psbt().addOutput({
+    asset,
+    nonce,
+    script,
+    value: 1,
+  });
+
+  let p2 = Psbt.fromBase64(p.toBase64());
+
+  let construct = async (p) => {
+    await fund(p, multisig(), asset, 1, 1, true);
+    await fund(p, singlesig(), btc, get(fee));
+  };
+
+  await construct(p);
+  addFee(p);
+
+  estimateFee(p);
+  await construct(p2);
+
+  addFee(p2);
+
+  return p2;
+};
+
 export const pay = async (artwork, to, amount) => {
   fee.set(100);
   if (!amount || amount <= 0) throw new Error("invalid amount");
@@ -570,6 +605,8 @@ export const pay = async (artwork, to, amount) => {
     value: amount,
   });
 
+  let total = amount;
+
   let p2 = Psbt.fromBase64(p.toBase64());
 
   let construct = async (p) => {
@@ -585,13 +622,12 @@ export const pay = async (artwork, to, amount) => {
   await construct(p);
   addFee(p);
 
-
   let confidential;
   try {
     confidential = Address.isConfidential(to);
-  } catch(e) {
+  } catch (e) {
     confidential = false;
-  } 
+  }
 
   estimateFee(p, confidential);
   await construct(p2);
@@ -602,7 +638,11 @@ export const pay = async (artwork, to, amount) => {
 };
 
 const estimateFee = (p, isConfidential = false) => {
-  let size = estimateTxSize(p.data.inputs.length, p.data.outputs.length, isConfidential);
+  let size = estimateTxSize(
+    p.data.inputs.length,
+    p.data.outputs.length,
+    isConfidential
+  );
   fee.set(Math.ceil(size * satsPerByte));
 };
 
@@ -633,7 +673,9 @@ export const sign = (sighash) => {
   p.data.inputs.map(({ sighashType }, i) => {
     try {
       p = p
-        .signInput(i, ECPair.fromPrivateKey(privkey), [sighash || sighashType || 1])
+        .signInput(i, ECPair.fromPrivateKey(privkey), [
+          sighash || sighashType || 1,
+        ])
         .finalizeInput(i);
     } catch (e) {
       // console.log("failed to sign", e.message, i);

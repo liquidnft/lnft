@@ -1,8 +1,21 @@
+<script context="module">
+  export async function load({ session }) {
+    console.log("WALLET", session);
+    if (!(session && session.user)) return {
+      status: 302,
+      redirect: '/login'
+    } 
+
+    return {};
+  }
+</script>
+
 <script>
   import Fa from "svelte-fa";
   import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
   import { border, bg } from "./_colors";
   import { page } from "$app/stores";
+  import { browser } from "$app/env";
   import { query } from "$lib/api";
   import { onDestroy, onMount, tick } from "svelte";
   import {
@@ -12,6 +25,7 @@
     locked,
     pending,
     password,
+    poll,
     user,
     token,
   } from "$lib/store";
@@ -25,21 +39,12 @@
   import Withdraw from "./_withdraw.svelte";
   import Transactions from "./_transactions.svelte";
 
-  $: requireLogin($page);
-
   let balance;
   balances.subscribe((b) => b && (balance = val($asset, b[$asset] || 0)));
 
-  let loading = true;
   if (!$asset) $asset = btc;
   let name = (a) => {
     return tickers[a] ? tickers[a].name : assetLabel(a);
-  };
-
-  let ticker = (a) => {
-    let artwork = artworks.find((aw) => aw.a === a);
-    if (artwork) return artwork.title;
-    return tickers[a] ? tickers[a].ticker : a.substr(0, 5);
   };
 
   let funding;
@@ -55,23 +60,12 @@
     funding = false;
   };
 
-  let poll;
-  let artworks = [];
-  $: init($user);
-  let init = (u) =>
-    u &&
-    query(getArtworksByOwner($user.id))
-      .then((res) => {
-        artworks = res.artworks;
-
-        getBalances();
-        clearInterval(poll);
-        poll = setInterval(getBalances, 5000);
-        loading = false;
-      })
-      .catch(err);
-
-  onDestroy(() => clearInterval(poll));
+  onMount(() => {
+    if (browser) {
+      getBalances();
+      $poll.push(setInterval(getBalances, 5000));
+    } 
+  }); 
 
 </script>
 
@@ -110,11 +104,7 @@
 
 </style>
 
-{#if loading}
-  <div class="absolute top-0 w-full left-0">
-    <ProgressLinear app={true} />
-  </div>
-{:else if $balances && $pending}
+{#if $balances && $pending}
   <div class="w-full">
     {#if $assets.length > 1}
       <div class="mb-5">

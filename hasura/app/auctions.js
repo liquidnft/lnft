@@ -44,7 +44,7 @@ setInterval(async () => {
     const query = `query {
       artworks(where: { _and: [
           { auction_end: { _lte: "${formatISO(new Date())}"}}, 
-          { auction_release_tx: { _is_null: false }}
+          { auction_tx: { _is_null: false }}
         ]}) {
         id
         title
@@ -81,7 +81,7 @@ setInterval(async () => {
       } 
     }`;
 
-    let res = await hasura.post({ query }).json()
+    let res = await hasura.post({ query }).json();
     let { data, errors } = res;
     if (errors) throw new Error(errors[0].message);
     let { artworks } = data;
@@ -109,7 +109,7 @@ setInterval(async () => {
 
       try {
         if (
-          !bid.psbt ||
+          !(bid && bid.psbt) ||
           compareAsc(parseISO(bid.created_at), parseISO(artwork.auction_end)) >
             0 ||
           bid.amount < artwork.reserve_price

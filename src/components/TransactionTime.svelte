@@ -26,7 +26,9 @@
   let isCurrent = ({ transferred_at: t }, created_at, type) =>
     type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);
 
-  let canAccept = ({ type, artwork, created_at }, debug) => {
+  let canAccept = ({ type, artwork, created_at, accepted }, debug) => {
+    if (accepted) return false;
+
     let isOwner = ({ owner }) => $user && $user.id === owner.id;
 
     let underway = ({ auction_start: s, auction_end: e }) =>
@@ -48,23 +50,9 @@
     loading = true;
     api.auth(`Bearer ${$token}`).url("/cancel").post({ id }).json().catch(err);
   };
-
 </script>
 
-<style>
-  div,
-  a,
-  span {
-    @apply break-all;
-  }
-
-  .pending {
-    @apply rounded bg-yellow-200 text-center rounded-full text-xs p-1 px-2;
-  }
-
-</style>
-
-<AcceptOffer bind:this={comp} />
+<AcceptOffer bind:this={comp} on:accepted />
 
 {#if loading}
   <ProgressLinear />
@@ -81,7 +69,8 @@
       <a
         href="/"
         on:click|preventDefault={() => comp.accept(transaction)}
-        class="text-sm secondary-color">
+        class="text-sm secondary-color"
+      >
         [accept]
       </a>
     {/if}
@@ -89,7 +78,8 @@
       <a
         href="/"
         on:click|preventDefault={() => cancel(transaction)}
-        class="text-sm secondary-color">
+        class="text-sm secondary-color"
+      >
         [cancel]
       </a>
     {/if}
@@ -98,3 +88,15 @@
     {/if}
   </div>
 {/if}
+
+<style>
+  div,
+  a,
+  span {
+    @apply break-all;
+  }
+
+  .pending {
+    @apply rounded bg-yellow-200 text-center rounded-full text-xs p-1 px-2;
+  }
+</style>

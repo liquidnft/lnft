@@ -81,25 +81,37 @@ module.exports = {
   combine,
   keypair,
 
-  parse(psbt) {
+  async parse(psbt) {
     psbt = Psbt.fromBase64(psbt);
-    return [
-      psbt.__CACHE.__TX.getId(),
-      psbt.__CACHE.__TX.outs.map((o) => {
-        let address;
+    let tx = psbt.__CACHE.__TX;
 
-        try {
-          address = Address.fromOutputScript(o.script, network);
-        } catch (e) {}
+    let { ins } = tx;
+    let inputs = [];
 
-        return {
-          ...o,
-          asset: parseAsset(o.asset),
-          value: parseVal(o.value),
-          address,
-        };
-      }),
-    ];
+    for (let i = 0; i < ins.length; i++) {
+      let { hash, index } = ins[i];
+      let txid = reverse(hash).toString("hex");
+      let input = (await electrs.url(`/tx/${txid}`).get().json()).vout[index];
+      input.address = input.scriptpubkey_address;
+      inputs.push(input);
+    }
+
+    let outputs = tx.outs.map((o) => {
+      let address;
+
+      try {
+        address = Address.fromOutputScript(o.script, network);
+      } catch (e) {}
+
+      return {
+        ...o,
+        asset: parseAsset(o.asset),
+        value: parseVal(o.value),
+        address,
+      };
+    });
+
+    return [tx.getId(), inputs, outputs];
   },
 
   release,
