@@ -6,7 +6,6 @@
 - "!include auth_roles.yaml"
 - "!include public_activebids.yaml"
 - "!include public_activelistings.yaml"
-- "!include public_userstats.yaml"
 - "!include public_artists.yaml"
 - "!include public_artworks.yaml"
 - "!include public_collectors.yaml"
@@ -24,4 +23,5 @@
 - "!include public_tags.yaml"
 - "!include public_transactions.yaml"
 - "!include public_users.yaml"
+- "!include public_userstats.yaml"
 - "!include public_utxos.yaml"

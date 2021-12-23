@@ -7,7 +7,6 @@
       props,
     };
   }
-
 </script>
 
 <script>
@@ -16,7 +15,6 @@
   export let featured;
   export let recent;
   export let latest;
-
 </script>
 
 <Index {featured} {recent} {latest} />

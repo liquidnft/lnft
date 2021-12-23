@@ -12,7 +12,6 @@ app.register(require("fastify-static"), {
   prefix: "/public/", // optional: default '/'
 });
 
-require("./mail");
 
 require("./auth");
 require("./artworks");
@@ -22,6 +21,7 @@ require("./proxy");
 require("./monitor");
 require("./signing");
 require("./upload");
+require("./mail");
 
 app.listen(8091, "0.0.0.0", function (err, address) {
   if (err) {

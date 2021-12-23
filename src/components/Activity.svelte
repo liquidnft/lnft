@@ -5,14 +5,13 @@
 
   export let transaction;
   export let showImage = false;
-
 </script>
 
 <div class="flex mb-6 text-left">
   <Avatar user={transaction.user} />
   <div class="ml-3">
     <TransactionText {transaction} />
-    <TransactionTime {transaction} />
+    <TransactionTime {transaction} on:accepted />
   </div>
 </div>
 

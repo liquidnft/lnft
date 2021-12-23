@@ -1,5 +1,10 @@
 <script context="module">
-  export async function load({ fetch, page }) {
+  export async function load({ fetch, page, session }) {
+    if (!(session && session.user)) return {
+      status: 302,
+      redirect: '/login'
+    } 
+
     const props = await fetch(`/artworks/${page.params.slug}.json`).then(
       (r) => r.json()
     );
@@ -85,8 +90,6 @@
   import branding from "$lib/branding";
 
   export let artwork, default_royalty_recipients;
-
-  $: requireLogin($page);
 
   let input;
   let initialized;

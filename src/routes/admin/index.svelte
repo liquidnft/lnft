@@ -39,13 +39,40 @@
 
   onDestroy(() => ($role = "user"));
 
-  let makeArtist = (user) => {
+  let makeArtist = async (user) => {
     user.is_artist = true;
     query(updateUser, { id: user.id, user: { is_artist: true } }).catch(err);
+
+    user.email &&
+      (await api
+        .url("/mail-artist-application-approved")
+        .auth(`Bearer ${$token}`)
+        .post({
+          to: user.email,
+          artistName: user.full_name ? user.full_name : "",
+        }));
+
     users = users.filter((u) => u.id !== user.id);
     info(`${user.username} is now an artist!`);
   };
 
+  let denyArtist = async (user) => {
+    user.is_denied = true;
+    query(updateUser, { id: user.id, user: { is_denied: true } }).catch(err);
+
+    user.email &&
+      (await api
+        .auth(`Bearer ${$token}`)
+        .url("/mail-artist-application-denied")
+        .post({
+          to: user.email,
+          artistName: user.full_name ? user.full_name : "",
+        })
+        .json());
+
+    users = users.filter((u) => u.id !== user.id);
+    info(`${user.username} has been denied!`);
+  };
 </script>
 
 <div class="container mx-auto mt-20">
@@ -69,17 +96,21 @@
             <div class="w-40 mb-2 mr-2">
               <a href={`https://ipfs.io/ipfs/${sample.url}`}>
                 <ArtworkMedia
-                  artwork={{ filename: sample.url, filetype: sample.type }} />
+                  artwork={{ filename: sample.url, filetype: sample.type }}
+                />
               </a>
             </div>
           {/each}
         </div>
       </div>
 
-      <div>
-        <button
-          class="primary-btn"
-          on:click={() => makeArtist(user)}>Approve</button>
+      <div class="text-center">
+        <button class="primary-btn" on:click={() => makeArtist(user)}
+          >Approve</button
+        >
+        <button class="primary-btn mt-4" on:click={() => denyArtist(user)}
+          >Deny</button
+        >
       </div>
     </div>
   {/each}

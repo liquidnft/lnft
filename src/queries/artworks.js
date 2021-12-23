@@ -76,6 +76,8 @@ export const fields = `
   owner {
     id
     username
+    full_name
+    email
     avatar_url
     address
     pubkey
@@ -116,6 +118,8 @@ export const txFields = `
     id
     username
     avatar_url
+    full_name
+    email
   } 
   artwork_id
   artwork {
@@ -155,7 +159,7 @@ export const getArtworks = `query($where: artworks_bool_exp!, $limit: Int, $offs
 }`;
 
 export const getUserArtworks = `query($id: uuid!) {
- artworks(where: { _or: [{ artist_id: { _eq: $id }}, { owner_id: { _eq: $id }}]}) {
+ artworks(where: { _or: [{ artist_id: { _eq: $id }}, { owner_id: { _eq: $id }}, { favorited: { _eq: true }}]}) {
     ${fields}
     tags {
       tag

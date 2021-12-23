@@ -7,21 +7,17 @@
   export let editable = true;
   import { tickers, royaltyRecipientIndividualType } from "$lib/utils";
   const onDelete = () => dispatch("removerecipient", recipient.name);
-
 </script>
-
-<style>
-  .btn:hover {
-    color: rgb(247, 162, 141);
-  }
-
-</style>
 
 <div class="flex mb-2">
   <div
-    class="py-2 {recipient.type === royaltyRecipientIndividualType ? 'bg-primary' : 'bg-gray-500'} w-3 rounded-l-lg" />
+    class="py-2 {recipient.type === royaltyRecipientIndividualType
+      ? 'bg-primary'
+      : 'bg-gray-500'} w-3 rounded-l-lg"
+  />
   <div
-    class="flex flex-wrap w-full bg-gray-600 text-gray-100 rounded-r-lg p-4 border-white">
+    class="flex flex-wrap w-full bg-gray-600 text-gray-100 rounded-r-lg p-4 border-white"
+  >
     <div class="flex flex-wrap flex-grow">
       <div>{recipient.name}</div>
       <div class="ml-auto my-auto">
@@ -41,3 +37,9 @@
     {/if}
   </div>
 </div>
+
+<style>
+  .btn:hover {
+    color: rgb(247, 162, 141);
+  }
+</style>

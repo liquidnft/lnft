@@ -31,8 +31,67 @@
   let open = (e) => {
     fileInput.click();
   };
-
 </script>
+
+{#if style === "box"}
+  <div
+    id="drop-area"
+    on:click={open}
+    on:dragenter={start}
+    on:dragover={start}
+    on:dragleave={stop}
+    on:focus={start}
+    on:mouseover={start}
+    on:blur={stop}
+    on:mouseout={stop}
+    on:drop={drop}
+    class:highlight
+  >
+    <form class="text-center">
+      <div class="flex justify-center flex-col align-center h-full">
+        <span class="uppercase">{title}</span>
+        <span class="mx-auto text-center mt-4 text-5xl text-lightblue">
+          <Fa icon={faCloudUploadAlt} />
+        </span>
+      </div>
+      <input
+        bind:this={fileInput}
+        type="file"
+        id="fileElem"
+        multiple
+        accept="image/*,video/*"
+        on:change={(e) => dispatch("file", e.target.files[0])}
+      />
+    </form>
+  </div>
+{:else}
+  <a
+    href="."
+    on:click|preventDefault={open}
+    class="secondary-color cursor-pointer"
+  >
+    <div class="flex">
+      <div>{title}</div>
+      <div class="ml-1 my-auto">
+        <Fa icon={faCloudUploadAlt} />
+      </div>
+    </div>
+  </a>
+  <form class="text-center invisible">
+    <div class="flex justify-center flex-col align-center h-full">
+      <span class="uppercase">{title}</span>
+      <Fa icon={faCloudUploadAlt} />
+    </div>
+    <input
+      bind:this={fileInput}
+      type="file"
+      id="fileElem"
+      multiple
+      accept="image/*,video/*"
+      on:change={(e) => dispatch("file", e.target.files[0])}
+    />
+  </form>
+{/if}
 
 <style>
   #fileElem {
@@ -72,61 +131,4 @@
       margin-top: 50px;
     }
   }
-
 </style>
-
-{#if style === 'box'}
-  <div
-    id="drop-area"
-    on:click={open}
-    on:dragenter={start}
-    on:dragover={start}
-    on:dragleave={stop}
-    on:focus={start}
-    on:mouseover={start}
-    on:blur={stop}
-    on:mouseout={stop}
-    on:drop={drop}
-    class:highlight>
-    <form class="text-center">
-      <div class="flex justify-center flex-col align-center h-full">
-        <span class="uppercase">{title}</span>
-        <span class="mx-auto text-center mt-4 text-5xl text-lightblue">
-          <Fa icon={faCloudUploadAlt} />
-        </span>
-      </div>
-      <input
-        bind:this={fileInput}
-        type="file"
-        id="fileElem"
-        multiple
-        accept="image/*,video/*"
-        on:change={(e) => dispatch('file', e.target.files[0])} />
-    </form>
-  </div>
-{:else}
-  <a
-    href="."
-    on:click|preventDefault={open}
-    class="secondary-color cursor-pointer">
-    <div class="flex">
-      <div>{title}</div>
-      <div class="ml-1 my-auto">
-        <Fa icon={faCloudUploadAlt} />
-      </div>
-    </div>
-  </a>
-  <form class="text-center invisible">
-    <div class="flex justify-center flex-col align-center h-full">
-      <span class="uppercase">{title}</span>
-      <Fa icon={faCloudUploadAlt} />
-    </div>
-    <input
-      bind:this={fileInput}
-      type="file"
-      id="fileElem"
-      multiple
-      accept="image/*,video/*"
-      on:change={(e) => dispatch('file', e.target.files[0])} />
-  </form>
-{/if}

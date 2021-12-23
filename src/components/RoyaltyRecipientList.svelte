@@ -43,13 +43,13 @@
   const addressIsInList = (address) => {
     return !!items.find((item) => item.address === address);
   };
-
 </script>
 
 <RoyaltyRecipientAdd
-  defaultAddress={!addressIsInList(artist.address) ? artist.address : ''}
-  defaultName={!addressIsInList(artist.address) ? `${artist.username}` : ''}
-  on:addrecipient={addRecipient} />
+  defaultAddress={!addressIsInList(artist.address) ? artist.address : ""}
+  defaultName={!addressIsInList(artist.address) ? `${artist.username}` : ""}
+  on:addrecipient={addRecipient}
+/>
 <div class="rounded-lg mb-6">
   {#if items.length === 0}
     <div class="bg-gray-200 w-full rounded-lg p-4 text-center">

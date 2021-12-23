@@ -1,9 +1,10 @@
 <script context="module">
   export async function load({ session }) {
-    if (!(session && session.user)) return {
-      status: 302,
-      redirect: '/login'
-    } 
+    if (!(session && session.user))
+      return {
+        status: 302,
+        redirect: "/login",
+      };
 
     return {};
   }
@@ -14,7 +15,7 @@
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
   import { v4 } from "uuid";
-  import { hasura } from "$lib/api";
+  import { hasura, api } from "$lib/api";
   import { tick, onDestroy } from "svelte";
   import {
     edition,
@@ -88,7 +89,8 @@
     ({ type } = file);
     artwork.filetype = type;
 
-    if (supportedTypes.includes(type)) throw new Error("Supported file types are jpg, png, gif, mp4");
+    if (supportedTypes.includes(type))
+      throw new Error("Supported file types are jpg, png, gif, mp4");
 
     if (file.size < 100000000) previewFile(file);
 
@@ -153,12 +155,13 @@
   $: generateTicker(title);
   let generateTicker = (t) => {
     if (!t) return;
-    artwork.ticker = (t.split(" ").length > 2
-      ? t
-          .split(" ")
-          .map((w) => w[0])
-          .join("")
-      : t
+    artwork.ticker = (
+      t.split(" ").length > 2
+        ? t
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+        : t
     )
       .substr(0, 3)
       .toUpperCase();
@@ -293,6 +296,17 @@
           .json();
 
         if (result.error) throw new Error(result.error.message);
+
+        $user.email &&
+          (await api
+            .url("/mail-artwork-minted")
+            .auth(`Bearer ${$token}`)
+            .post({
+              to: $user.email,
+              userName: $user.full_name ? $user.full_name : "",
+              artworkTitle: artwork.title,
+              artworkUrl: `${branding.urls.protocol}/a/${artwork.slug}`,
+            }));
       }
 
       $prompt = undefined;
@@ -335,11 +349,13 @@
 
 <div class="container mx-auto py-20">
   <div
-    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow">
+    class="w-full mx-auto max-w-5xl bg-white md:p-14 rounded-xl submitArtwork boxShadow"
+  >
     <a
       class="block mb-6 text-midblue"
       href="."
-      on:click|preventDefault={() => window.history.back()}>
+      on:click|preventDefault={() => window.history.back()}
+    >
       <div class="flex">
         <Fa icon={faChevronLeft} class="my-auto mr-1" />
         <div>Back</div>
@@ -362,13 +378,15 @@
               {artwork}
               {preview}
               showDetails={false}
-              thumb={false} />
+              thumb={false}
+            />
             <div class="w-full bg-grey-light p-8">
               <div
                 class="font-light p-4 mx-auto max-w-xs text-center"
                 class:bg-primary={percent >= 100 && artwork.filename}
                 class:bg-yellow-200={percent < 100 || !artwork.filename}
-                style={width}>
+                style={width}
+              >
                 {#if percent < 100}
                   {percent}%
                 {:else if artwork.filename}
