@@ -402,32 +402,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  .container {
-    background-color: #ecf6f7;
-    width: 100% !important;
-    min-height: 100vh;
-    margin: 0;
-    max-width: 100%;
-  }
-
-  .upload-button {
-    width: 100%;
-    height: 320px;
-  }
-
-  @media only screen and (max-width: 1023px) {
-    .upload-button {
-      margin-top: 25px;
-    }
-
-    .submitArtwork {
-      box-shadow: none;
-    }
-
-    .container {
-      background: none;
-    }
-  }
-</style>
