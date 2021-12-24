@@ -59,7 +59,7 @@
     }
   };
 
-  let tab = "collection";
+  let tab = subject.is_artist ? "creations" : "collection";
 
 </script>
 
