@@ -1,6 +1,5 @@
 <script context="module">
   export async function load({ session }) {
-    console.log("WALLET", session);
     if (!(session && session.user)) return {
       status: 302,
       redirect: '/login'

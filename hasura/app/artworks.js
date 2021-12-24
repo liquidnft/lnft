@@ -196,6 +196,7 @@ app.post("/transaction", auth, async (req, res) => {
       artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
         auction_start
         auction_end
+        bid_increment
         owner {
           display_name
         } 
@@ -214,6 +215,7 @@ app.post("/transaction", auth, async (req, res) => {
     let { data, errors } = await hasura.post({ query }).json();
     if (errors) throw new Error(errors[0].message);
     let {
+      bid_increment,
       auction_end,
       auction_start,
       owner,
@@ -223,12 +225,13 @@ app.post("/transaction", auth, async (req, res) => {
     } = data.artworks[0];
 
     if (
+      bid &&
       transaction.type === "bid" &&
-      transaction.amount < bid.amount &&
+      transaction.amount < (bid.amount + bid_increment) &&
       auction_end &&
       compareAsc(parseISO(auction_end), new Date()) > 0
     ) {
-      throw new Error(`Minimum bid is ${(bid.amount + 1000) / 100000000}`);
+      throw new Error(`Minimum bid is ${((bid.amount + bid_increment) / 100000000).toFixed(8)}`);
     }
 
     let locals = {
