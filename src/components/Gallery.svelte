@@ -4,7 +4,20 @@
   import { onMount, tick } from "svelte";
 
   export let filtered;
-  export let count;
+  export let total;
+  export let loadMore;
+
+  let current = 0;
+  let offset = 210;
+
+  $: pages = [...Array(Math.ceil(total / offset)).keys()];
+
+  let load = (page) => {
+    current = page;
+    console.log("PO", page, offset);
+    loadMore(page * offset);
+    resize();
+  };
 
   let inview = filtered.slice(0, 24);
   let debug;
@@ -41,7 +54,7 @@
     let { top, bottom } = el.getBoundingClientRect();
     rh = bottom - top;
 
-    newrows = Math.ceil(count / columns);
+    newrows = Math.ceil(filtered.length / columns);
     nh = rh * (newrows + 1) - y;
     content.style.height = `${nh + (columns > 1 ? 200 : 0)}px`;
     scroll(y);
@@ -119,3 +132,22 @@
     {/each}
   </div>
 </div>
+
+<div class="full-width flex bg-white p-4 mx-auto">
+  <div class="mx-auto">
+    {#each pages as _, i}
+      <button
+        class="rounded-full w-12 h-12"
+        class:font-bold={i === current}
+        on:click={() => load(i)}>{i + 1}</button
+      >
+    {/each}
+  </div>
+</div>
+
+<style>
+  .full-width {
+    width: 100%;
+    left: calc(100vw - 100%);
+  }
+</style>

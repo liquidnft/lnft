@@ -107,86 +107,82 @@
   {#if subject}
     <div class="flex justify-between flex-wrap">
       <div class="w-full xl:w-1/3 xl:max-w-xs mb-20">
-        <div>
-          <div class="flex flex-col">
-            <div class="flex items-center">
-              <Avatar size="large" user={subject} />
-              <div class="ml-12">
-                <h3>{subject.full_name}</h3>
-                <div class="text-gray-600">@{subject.username}</div>
-              </div>
-            </div>
-            <div class="flex mt-5">
-              <div class="mr-8">Followers: {subject.num_followers}</div>
-              <div>Following: {subject.num_follows}</div>
+        <div class="w-full flex flex-col">
+          <div class="flex items-center">
+            <Avatar size="large" user={subject} />
+            <div class="ml-12">
+              <h3>{subject.full_name}</h3>
+              <div class="text-gray-600">@{subject.username}</div>
             </div>
           </div>
-          <div class="social-details">
-            {#if subject.instagram}
-              <a href={`https://instagram.com/${subject.instagram}`}>
-                <div class="flex">
-                  <div class="my-auto">
-                    <Fa icon={faInstagram} />
-                  </div>
-                  <div><span>@{subject.instagram}</span></div>
-                </div>
-              </a>
-            {/if}
-            {#if subject.twitter}
-              <a href={`https://twitter.com/${subject.twitter}`}>
-                <div class="flex">
-                  <div class="my-auto">
-                    <Fa icon={faTwitter} />
-                  </div>
-                  <div><span>@{subject.twitter}</span></div>
-                </div>
-              </a>
-            {/if}
-            {#if subject.email}
-              <a href={`mailto:${subject.email}`}>
-                <div class="flex">
-                  <div class="my-auto">
-                    <Fa icon={faEnvelope} />
-                  </div>
-                  <div><span>{subject.email}</span></div>
-                </div>
-              </a>
-            {/if}
-            {#if subject.website}
-              <a href={`https://${subject.website}`}>
-                <div class="flex">
-                  <div class="my-auto">
-                    <Fa icon={faLink} />
-                  </div>
-                  <div><span>{subject.website}</span></div>
-                </div>
-              </a>
-            {/if}
-            {#if subject.location}
-              <a href=".">
-                <div class="flex">
-                  <div class="my-auto">
-                    <Fa icon={faMapMarkerAlt} />
-                  </div>
-                  <div><span>{subject.location}</span></div>
-                </div>
-              </a>
-            {/if}
-          </div>
-          {#if subject.bio}
-            <p>{subject.bio}</p>
-          {/if}
-          <div>
-            {#if $user}
-              {#if $user.id === subject.id}
-                <Menu />
-              {:else}
-                <button class="p-2 primary-btn follow mt-8" on:click={follow}>
-                  {subject.followed ? 'Unfollow' : 'Follow'}</button>
-              {/if}
-            {/if}
+          <div class="flex mt-5">
+            <div class="mr-8">Followers: {subject.num_followers}</div>
+            <div>Following: {subject.num_follows}</div>
           </div>
         </div>
+        <div class="social-details">
+          {#if subject.instagram}
+            <a href={`https://instagram.com/${subject.instagram}`}>
+              <div class="flex">
+                <div class="my-auto">
+                  <Fa icon={faInstagram} />
+                </div>
+                <div><span>@{subject.instagram}</span></div>
+              </div>
+            </a>
+          {/if}
+          {#if subject.twitter}
+            <a href={`https://twitter.com/${subject.twitter}`}>
+              <div class="flex">
+                <div class="my-auto">
+                  <Fa icon={faTwitter} />
+                </div>
+                <div><span>@{subject.twitter}</span></div>
+              </div>
+            </a>
+          {/if}
+          {#if subject.email}
+            <a href={`mailto:${subject.email}`}>
+              <div class="flex">
+                <div class="my-auto">
+                  <Fa icon={faEnvelope} />
+                </div>
+                <div><span>{subject.email}</span></div>
+              </div>
+            </a>
+          {/if}
+          {#if subject.website}
+            <a href={`https://${subject.website}`}>
+              <div class="flex">
+                <div class="my-auto">
+                  <Fa icon={faLink} />
+                </div>
+                <div><span>{subject.website}</span></div>
+              </div>
+            </a>
+          {/if}
+          {#if subject.location}
+            <a href=".">
+              <div class="flex">
+                <div class="my-auto">
+                  <Fa icon={faMapMarkerAlt} />
+                </div>
+                <div><span>{subject.location}</span></div>
+              </div>
+            </a>
+          {/if}
+        </div>
+        {#if subject.bio}
+          <p>{subject.bio}</p>
+        {/if}
+        {#if $user}
+          {#if $user.id === subject.id}
+            <Menu />
+          {:else}
+            <button class="p-2 primary-btn follow mt-8" on:click={follow}>
+              {subject.followed ? 'Unfollow' : 'Follow'}</button>
+          {/if}
+        {/if}
       </div>
 
       <div class="w-full xl:w-2/3">

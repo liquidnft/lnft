@@ -315,7 +315,7 @@
 <div class="container mx-auto mt-10 md:mt-20">
   <div class="flex flex-wrap">
     <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
-      <h1 class="text-3xl font-black primary-color">
+      <h1 class="text-3xl font-black primary-color break-words">
         {artwork.title || "Untitled"}
       </h1>
       <div class="flex mt-4 mb-6">

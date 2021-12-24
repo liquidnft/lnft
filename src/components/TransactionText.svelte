@@ -4,7 +4,7 @@
 </script>
 
 {#if transaction}
-  <div class:line-through={transaction.type.includes("cancelled")}>
+  <div class:line-through={transaction.type.includes("cancelled")} class="break-words">
     <a href={`/u/${transaction.user.username}`} class="secondary-color"
       >@{transaction.user.username}</a
     >

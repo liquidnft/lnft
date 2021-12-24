@@ -37,6 +37,10 @@
     @apply w-12 h-12;
   }
 
+  .xs {
+    @apply w-10 h-10;
+  } 
+
   .large {
     @apply w-16 h-16;
   }

@@ -3,12 +3,14 @@ import { hbp } from "$lib/api";
 
 export async function get({ headers, locals, query }) {
   let { q } = locals;
-  let limit = parseInt(query.get("limit")) || 5000;
-  let offset = 0;
+  let limit = parseInt(query.get("limit")) || 210;
+  let offset = parseInt(query.get("offset")) || 0;
   let where = {};
   let order_by = {
     created_at: "desc",
   };
+
+  console.log(limit, offset);
 
   try {
     let { artworks_aggregate: a } = await q(countArtworks, { where });
@@ -17,7 +19,7 @@ export async function get({ headers, locals, query }) {
     return {
       body: {
         artworks,
-        count: a.aggregate.count,
+        total: a.aggregate.count,
       },
       headers,
     };

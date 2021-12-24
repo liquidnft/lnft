@@ -1,11 +1,11 @@
 <script context="module">
   export async function load({ fetch }) {
-    const r = await fetch("/artworks.json?limit=5000").then((r) => r.json());
+    const r = await fetch("/artworks.json?limit=210").then((r) => r.json());
 
     return {
       maxage: 720,
       props: {
-        count: Math.min(r.count, 5000),
+        total: r.total,
         initialArtworks: r.artworks,
       },
     };
@@ -31,10 +31,10 @@
   import Filter from "./_filter.svelte";
   import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";
-  import { pub } from "$lib/api";
+  import { get } from "$lib/api";
   import { differenceInMilliseconds } from "date-fns";
 
-  export let count;
+  export let total;
   export let showFilters;
   export let initialArtworks;
 
@@ -42,6 +42,13 @@
   let filtered = $artworks;
 
   let offset = 0;
+
+  let loadMore = async (offset) => {
+    console.log("LOADING MORE", offset);
+    const r = await fetch(`/artworks.json?limit=210&offset=${offset}`).then((r) => r.json());
+    $artworks = [...r.artworks];
+    await reset();
+  } 
 
   $: reset($fc, $sc);
   let reset = async () => {
@@ -115,7 +122,7 @@
     </div>
     <Filter {showFilters} />
   </div>
-  <Gallery bind:filtered bind:count />
+  <Gallery bind:filtered bind:total bind:loadMore />
 </div>
 
 <style>
