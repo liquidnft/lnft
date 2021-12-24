@@ -38,8 +38,6 @@
   }, 6000);
 
   onDestroy(() => clearInterval(interval));
-
-  let current = 0;
 </script>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">
