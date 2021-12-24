@@ -32,7 +32,7 @@ export const marketFields = `
     } 
     amount 
   }
-`
+`;
 
 export const fields = `
   id,
@@ -127,7 +127,6 @@ export const txFields = `
     ${fields}
   } 
 `;
-
 
 export const getFeatured = `query {
  featured {

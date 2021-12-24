@@ -1,7 +1,7 @@
 import { get } from "svelte/store";
 import { token } from "$lib/store";
 
-export const supportedTypes = ['jpg', 'png', 'gif', 'mp4'];
+export const supportedTypes = ["jpg", "png", "gif", "mp4"];
 
 export const upload = async (file, progress) => {
   let url = "/api/upload";

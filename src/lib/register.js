@@ -14,7 +14,10 @@ export const register = async (email, username, password) => {
       email,
       password,
       username,
-      ...createWallet(generateMnemonic(undefined, undefined, wordlist), password),
+      ...createWallet(
+        generateMnemonic(undefined, undefined, wordlist),
+        password
+      ),
     })
     .res();
 };

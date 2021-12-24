@@ -1,4 +1,4 @@
-import { fields as artworkFields } from './artworks';
+import { fields as artworkFields } from "./artworks";
 
 export const createTransaction = `mutation create_transaction($transaction: transactions_insert_input!) {
   insert_transactions_one(object: $transaction) {
