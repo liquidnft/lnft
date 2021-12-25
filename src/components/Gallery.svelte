@@ -2,20 +2,21 @@
   import { browser } from "$app/env";
   import { Card, Pagination } from "$comp";
   import { onMount, tick } from "svelte";
+  import { offset } from "$lib/store";
 
   export let filtered;
   export let total;
   export let loadMore;
 
   let current = 0;
-  let offset = 210;
+  let pageSize = 210;
 
-  $: pages = [...Array(Math.ceil(total / offset)).keys()];
+  $: pages = [...Array(Math.ceil(total / pageSize)).keys()];
 
   let load = (page) => {
     current = page;
-    console.log("PO", page, offset);
-    loadMore(page * offset);
+    $offset = page * pageSize;
+    loadMore();
     resize();
   };
 
@@ -35,7 +36,6 @@
   let resize = () => {
     if (!browser) return;
     st = undefined;
-    window.scrollTo(0, 0);
     init();
   };
 
@@ -44,6 +44,7 @@
 
   $: browser && init(filtered);
   let init = async () => {
+    window.scrollTo(0, 0);
     await tick();
     if (y !== 0) return (retry = setTimeout(init, 50));
     clearTimeout(retry);

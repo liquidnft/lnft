@@ -21,6 +21,7 @@ export const loaded = writable({});
 export const locked = writable();
 export const loggedIn = writable();
 export const meta = writable();
+export const offset = writable(0);
 export const password = writable();
 export const pending = writable();
 export const poll = writable([]);

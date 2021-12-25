@@ -106,8 +106,6 @@ const check = async (psbt) => {
         })
         .reduce((a, b) => (a += b.value), 0);
 
-      console.log("INPUTS", inputs, owner);
-
       let toOwner =
         outs
           .filter(
@@ -136,7 +134,6 @@ const check = async (psbt) => {
       if (has_royalty) {
         if (toOwner) {
           let amountDue = 0;
-          console.log("TOOWNER", toOwner);
 
           for (let i = 0; i < royalty_recipients.length; i++) {
             const element = royalty_recipients[i];
@@ -144,7 +141,6 @@ const check = async (psbt) => {
             amountDue += Math.round((toOwner * element.amount) / 100);
           }
 
-          console.log("DUE", toRoyaltyRecipients, amountDue);
           if (toRoyaltyRecipients < amountDue && artist.id !== owner.id)
             throw new Error("Royalty not paid");
         }
