@@ -31,6 +31,8 @@
   export let recent;
   export let latest;
 
+  let current = 0;
+
   let interval = setInterval(() => {
     current++;
     if (current >= featured.length) current = 0;
@@ -38,7 +40,6 @@
 
   onDestroy(() => clearInterval(interval));
 
-  let current = 0;
 </script>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">

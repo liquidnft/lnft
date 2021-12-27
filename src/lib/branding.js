@@ -13,7 +13,7 @@ const BRANDING = {
       blog: 'https://junglelab.net',
     }
   },
-  
+
   meta: {
       title: 'JungleLab',
       keywords: "Bitcoin Liquid NFT Video,Music,Art",
@@ -34,7 +34,7 @@ const BRANDING = {
     })
     
   },
-  
+
   emails: {
     support : 'support@junglelab.io'
   }

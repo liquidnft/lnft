@@ -6,7 +6,8 @@ ENV NODE_ENV $NODE_ENV
 RUN apk add git python3 build-base
 RUN npm i -g pnpm
 
-WORKDIR /app
+RUN apk add git
+RUN npm i -g pnpm
 
 COPY package.json .
 RUN NODE_ENV=development pnpm i
