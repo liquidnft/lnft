@@ -79,15 +79,15 @@ app.post("/transfer", auth, async (req, res) => {
 app.post("/viewed", async (req, res) => {
   try {
     let query = `mutation ($id: uuid!) {
-    update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
-      id
-      owner {
-        address
-        multisig
-      } 
-      asset
-    }
-  }`;
+      update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
+        id
+        owner {
+          address
+          multisig
+        } 
+        asset
+      }
+    }`;
 
     let result = await hasura
       .post({
@@ -227,11 +227,15 @@ app.post("/transaction", auth, async (req, res) => {
     if (
       bid &&
       transaction.type === "bid" &&
-      transaction.amount < (bid.amount + bid_increment) &&
+      transaction.amount < bid.amount + bid_increment &&
       auction_end &&
       compareAsc(parseISO(auction_end), new Date()) > 0
     ) {
-      throw new Error(`Minimum bid is ${((bid.amount + bid_increment) / 100000000).toFixed(8)}`);
+      throw new Error(
+        `Minimum bid is ${((bid.amount + bid_increment) / 100000000).toFixed(
+          8
+        )}`
+      );
     }
 
     let locals = {

@@ -21,16 +21,14 @@
   import { prefetch } from "$app/navigation";
   import { browser } from "$app/env";
 
-  onMount(() => {
-    if (browser) prefetch("/market");
-  });
+  onMount(() => browser && prefetch("/market"));
 
   export let featured;
   export let recent;
   export let latest;
 
   let current = 0;
-  $: artwork = featured && featured[current].artwork;
+  $: artwork = featured && featured[current] && featured[current].artwork;
 
   let interval = setInterval(() => {
     if (!featured) return;

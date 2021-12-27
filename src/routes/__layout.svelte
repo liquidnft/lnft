@@ -87,7 +87,7 @@
 
   onDestroy(() => clearInterval(interval));
   onMount(() => {
-    if (!$password) $password = window.sessionStorage.getItem("password");
+    if (browser && !$password) $password = window.sessionStorage.getItem("password");
   });
 </script>
 

@@ -33,20 +33,22 @@
   import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";
   import { compareAsc, differenceInMilliseconds, parseISO } from "date-fns";
+  import { browser } from "$app/env";
 
   export let total;
-  export let initialArtworks;
+  export let initialArtworks = [];
 
   let showFilters;
   let filtered = [...initialArtworks];
 
-  $: filtersUpdated($fc, $sc)
+  $: filtersUpdated($fc, $sc);
   let filtersUpdated = () => {
     $offset = 0;
     loadMore();
-  } 
+  };
 
   let loadMore = async () => {
+    if (!browser) return;
     try {
       let where = {};
       if ($sc === "ending_soon")
@@ -58,7 +60,6 @@
       if ($fc.openBid) where.bid_id = { _is_null: false };
       if ($fc.ownedByCreator) where.artist_owned = { _eq: true };
       if ($fc.hasSold) where.transferred_at = { _is_null: false };
-
 
       let order_by = {
         newest: { created_at: "desc" },

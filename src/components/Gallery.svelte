@@ -11,7 +11,7 @@
   let current = 0;
   let pageSize = 210;
 
-  $: pages = [...Array(Math.ceil(total / pageSize)).keys()];
+  $: pages = total > 0 ? [...Array(Math.ceil(total / pageSize)).keys()] : [];
 
   let load = (page) => {
     current = page;
@@ -74,6 +74,7 @@
     }
 
     animationFrame = window.requestAnimationFrame(() => {
+      if (!content) return;
       st = content.offsetTop;
       if (!rh) return;
       cr = Math.round((y - st) / rh);
