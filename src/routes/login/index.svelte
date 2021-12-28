@@ -13,7 +13,6 @@
 
 <script>
   import Fa from "svelte-fa";
-  import { browser } from "$app/env";
   import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { page, session } from "$app/stores";
   import { dev, err, goto } from "$lib/utils";
