@@ -36,14 +36,11 @@
       metadata.keywords + " " + artwork.tags.map((t) => t.tag).join(" ");
     metadata.description = artwork.description;
 
-    if (artwork.filetype.includes("video"))
-      metadata.video = `https://${host}/api/public/${artwork.filename}.${
-        artwork.filetype.split("/")[1]
-      }`;
-    else
-      metadata.image = `${import.meta.env.VITE_HOST}/api/public/${
-        artwork.filename
-      }.${artwork.filetype.split("/")[1]}`;
+    let type = "image";
+    if (artwork.filetype.includes("video")) type = "video";
+    metadata[type] = `${host}/api/public/${artwork.filename}.${
+      artwork.filetype.split("/")[1]
+    }`;
 
     props.metadata = metadata;
 
