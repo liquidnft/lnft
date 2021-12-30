@@ -4,7 +4,6 @@ const reverse = require("buffer-reverse");
 const fs = require("fs");
 const { Psbt } = require("liquidjs-lib");
 
-const sleep = (n) => new Promise((r) => setTimeout(r, n));
 const txcache = {};
 
 const updateAvatars = async () => {
@@ -167,7 +166,6 @@ const isSpent = async ({ ins }, artwork_id) => {
     let { index, hash } = ins[i];
     let txid = reverse(hash).toString("hex");
 
-    await sleep(500);
     let { spent } = await electrs
       .url(`/tx/${txid}/outspend/${index}`)
       .get()
@@ -310,7 +308,6 @@ const checkTransactions = async () => {
 
     for (let i = 0; i < data.transactions.length; i++) {
       let tx = data.transactions[i];
-      await sleep(500);
       await electrs
         .url(`/tx/${tx.hash}/status`)
         .get()
@@ -437,8 +434,7 @@ app.get("/transactions", auth, async (req, res) => {
       for (let j = 0; j < vin.length; j++) {
         let { txid: prev, vout } = vin[j];
 
-        let tx =
-          txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
+        let tx = txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
         txcache[prev] = tx;
 
         let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
