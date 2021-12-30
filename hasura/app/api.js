@@ -24,6 +24,12 @@ const registry = wretch().url("https://assets.blockstream.info/");
 const coinos = wretch().url(COINOS_URL).auth(`Bearer ${COINOS_TOKEN}`);
 const ipfs = wretch().url(IPFS_WEB_URL);
 
+const q = async (query, variables) => {
+  let { data, errors } = await hasura.post({ query, variables }).json();
+  if (errors) throw new Error(errors[0].message);
+  return data;
+};
+
 const cf = wretch()
   .url(
     `https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records`
@@ -41,4 +47,5 @@ module.exports = {
   hbp,
   coinos,
   ipfs,
+  q
 };

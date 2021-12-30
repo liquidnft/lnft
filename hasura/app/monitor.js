@@ -1,4 +1,4 @@
-const { api, ipfs, hasura, electrs, registry } = require("./api");
+const { api, ipfs, hasura, q, electrs, registry } = require("./api");
 const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
 const reverse = require("buffer-reverse");
 const fs = require("fs");
@@ -9,13 +9,7 @@ const txcache = {};
 const updateAvatars = async () => {
   fs.readdir("/export", async (err, files) => {
     try {
-      let {
-        data: { users },
-      } = await hasura
-        .post({
-          query: `query { users { id, avatar_url }}`,
-        })
-        .json();
+      let { users } = await q(`query { users { id, avatar_url }}`);
 
       let query = `mutation update_user($user: users_set_input!, $id: uuid!) {
       update_users_by_pk(pk_columns: { id: $id }, _set: $user) {
@@ -29,13 +23,7 @@ const updateAvatars = async () => {
           user.avatar_url = f;
           console.log("updating user", user.avatar_url);
 
-          hasura
-            .post({
-              query,
-              variables: { user, id: user.id },
-            })
-            .json(console.log)
-            .catch(console.log);
+          q(query, { user, id: user.id }).catch(console.log);
         }
       });
     } catch (e) {
@@ -126,13 +114,7 @@ const transferOwnership = async ({
     } = transaction;
   }
 
-  hasura.post({
-    query: updateArtwork,
-    variables: {
-      id: transaction.artwork_id,
-      owner_id,
-    },
-  });
+  return q(updateArtwork, { id: transaction.artwork_id, owner_id });
 };
 
 const isSpent = async ({ ins }, artwork_id) => {
@@ -358,11 +340,8 @@ app.post("/asset/register", async (req, res) => {
   }`;
 
   try {
-    let r = await hasura.post({ query, variables: { asset } }).json();
-
-    if (!r.data) throw new Error();
-
-    let { contract } = r.data.transactions[0];
+    let { transactions } = await q(query, asset);
+    let { contract } = transactions[0];
 
     r = await registry
       .post({
@@ -423,8 +402,7 @@ app.get("/transactions", auth, async (req, res) => {
       }
     }`;
 
-    let result = await hasura.post({ query }).json();
-    let { transactions } = result.data;
+    let { transactions } = await q(query);
 
     for (let i = 0; i < txns.length; i++) {
       let { txid, vin, vout, status } = txns[i];
@@ -434,7 +412,8 @@ app.get("/transactions", auth, async (req, res) => {
       for (let j = 0; j < vin.length; j++) {
         let { txid: prev, vout } = vin[j];
 
-        let tx = txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
+        let tx =
+          txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
         txcache[prev] = tx;
 
         let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
@@ -489,16 +468,17 @@ app.get("/transactions", auth, async (req, res) => {
           }
         }`;
 
-        let insert = await hasura.post({ query }).json();
-
-        if (!insert.data) {
+        let insert_transactions_one;
+        try {
+          ({ insert_transactions_one } = await q(query));
+        } catch (e) {
           continue;
         }
 
         if (status.block_time) {
           query = `mutation {
             update_transactions_by_pk(
-              pk_columns: { id: "${insert.data.insert_transactions_one.id}" }, 
+              pk_columns: { id: "${insert_transactions_one.id}" }, 
               _set: { created_at: "${formatISO(
                 new Date(1000 * status.block_time)
               )}" }
@@ -507,7 +487,7 @@ app.get("/transactions", auth, async (req, res) => {
             }
           }`;
 
-          await hasura.post({ query }).json();
+          await q(query);
         }
       }
     }
@@ -526,7 +506,7 @@ app.get("/transactions", auth, async (req, res) => {
       }
     }`;
 
-    res.send((await hasura.post({ query }).json()).data);
+    res.send(await q(query));
   } catch (e) {
     console.log(e);
     res.code(500).send(e.message);
