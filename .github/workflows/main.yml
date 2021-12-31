@@ -1,19 +1,11 @@
-name: Cypress Tests using Cypress Docker Image
-
+name: Chrome headless
 on: [push]
-
 jobs:
   cypress-run:
-    runs-on: ubuntu-latest
-    container: cypress/browsers:node12.18.3-chrome87-ff82
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v2
         with:
-          # Specify Browser since container image is compile with Firefox
-          browser: firefox
+          browser: chrome
+          headless: true
