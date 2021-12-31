@@ -1,6 +1,8 @@
 {
   "pluginsFile": false,
-  "baseUrl": "http://localhost:3000",
-  "projectId": "sctu4q"
+  "baseUrl": "http://localhost:3000"
 }
 
+{
+  "projectId": "sctu4q"
+}

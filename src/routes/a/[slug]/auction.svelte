@@ -459,15 +459,15 @@
   input[type="checkbox"]:checked {
     appearance: none;
     border: 5px solid #fff;
-    outline: 2px solid #6ed8e0;
-    background-color: #6ed8e0;
+    outline: 2px solid #43470B;
+    background-color: #43470B;
     padding: 2px;
     border-radius: 0;
   }
 
   input[type="radio"]:checked {
     appearance: none;
-    border: 7px solid #6ed8e0;
+    border: 7px solid #43470B;
     background-color: #fff;
     padding: 2px;
     border-radius: 100%;
