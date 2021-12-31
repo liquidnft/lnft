@@ -30,7 +30,7 @@ describe("/login", () => {
 
   it("requires password", () => {
     cy.get("[data-cy=user]").type("user", { force: true });
-    cy.get("[data-cy=password]").type("", { force: true });
+    cy.get("[data-cy=password]").type("1234", { force: true });
     cy.get(".primary-btn").click();
     cy.get("h2").should("contain", "Sign In");
   });
