@@ -49,7 +49,7 @@
       <br />music video art
     </h1>
     <h5 class="md:max-w-lg mx-auto text-left md:text-center">
-      Upload, collect, and transact rare digital art on the Liquid Network
+      Upload, collect, and transact rare digital assets on the Liquid Network
     </h5>
     <a class="primary-btn" href={`/market`}>Start exploring</a>
   </div>
