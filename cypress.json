@@ -1,8 +1,5 @@
 {
+  "projectId": "sctu4q",
   "pluginsFile": false,
   "baseUrl": "http://localhost:3000"
-}
-
-{
-  "projectId": "sctu4q"
 }
