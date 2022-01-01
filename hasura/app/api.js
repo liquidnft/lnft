@@ -25,7 +25,7 @@ const coinos = wretch().url(COINOS_URL).auth(`Bearer ${COINOS_TOKEN}`);
 const ipfs = wretch().url(IPFS_WEB_URL);
 
 const q = async (query, variables) => {
-  let { data, errors } = await hasura.post({ query, variables }).json();
+  let { data, errors } = await adminApi.post({ query, variables }).json();
   if (errors) throw new Error(errors[0].message);
   return data;
 };
