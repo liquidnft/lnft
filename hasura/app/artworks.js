@@ -13,6 +13,7 @@ const {
   setOwner,
   setPsbt,
   setRelease,
+  updateViews,
 } = require("./queries");
 
 const crypto = require("crypto");
@@ -24,10 +25,13 @@ app.post("/cancel", auth, async (req, res) => {
     let { id } = req.body;
     let { transactions_by_pk: tx } = await q(getTransactionUser, { id });
 
-    let { data } = await api(req.headers)
+    let { data, errors } = await api(req.headers)
       .post({ query: getCurrentUser })
       .json();
+
+    if (errors) throw new Error(errors[0].message);
     let user = data.currentuser[0];
+
 
     if (tx.user_id !== user.id) return res.code(401).send();
 
