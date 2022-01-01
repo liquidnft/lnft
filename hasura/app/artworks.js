@@ -22,19 +22,16 @@ const { SERVER_URL } = process.env;
 app.post("/cancel", auth, async (req, res) => {
   try {
     let { id } = req.body;
-
-    let { transactions_by_pk } = await q(getTransactionUser, { id });
+    let { transactions_by_pk: tx } = await q(getTransactionUser, { id });
 
     let { data } = await api(req.headers)
       .post({ query: getCurrentUser })
       .json();
     let user = data.currentuser[0];
 
-    if (transactions_by_pk.user_id !== user.id) return res.code(401).send();
+    if (tx.user_id !== user.id) return res.code(401).send();
 
-    let { update_transactions_by_pk } = await q(cancelBid, { id });
-
-    res.send({ data: { update_transactions_by_pk } });
+    res.send(await q(cancelBid, { id }));
   } catch (e) {
     console.log("problem cancelling bid", e);
     res.code(500).send(e.message);

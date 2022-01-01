@@ -1,5 +1,5 @@
 module.exports = {
-  getTransactionUser: `query {
+  getTransactionUser: `query($id: uuid!) {
     transactions_by_pk(id: $id) {
       user_id
     }
