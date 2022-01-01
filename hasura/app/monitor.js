@@ -319,11 +319,10 @@ app.get("/transactions", auth, async (req, res) => {
   }
 });
 
-let getTransactions = async (address) => {
-  let { last_seen_tx } = await getUser(req.headers);
+let getTransactions = async (address, last) => {
   let curr = await electrs.url(`/address/${address}/txs/chain`).get().json();
   let txns = [...curr];
-  while (curr.length === 25 && !curr.find((tx) => tx.txid === last_seen_tx)) {
+  while (curr.length === 25 && !curr.find((tx) => tx.txid === last)) {
     curr = await electrs
       .url(`/address/${address}/txs/chain/${curr[24].txid}`)
       .get()
@@ -336,8 +335,8 @@ let getTransactions = async (address) => {
 
 app.get("/balance", auth, async (req, res) => {
   let { asset = btc } = req.query;
-  let { address } = await getUser(req.headers);
-  let txns = await getTransactions(address);
+  let { address, last_seen_tx } = await getUser(req.headers);
+  let txns = await getTransactions(address, last_seen_tx);
 
   let outs = [];
   txns.map(({ txid, vout }) => {
