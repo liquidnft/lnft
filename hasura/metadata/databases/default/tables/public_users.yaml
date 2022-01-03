@@ -175,6 +175,7 @@ select_permissions:
     - instagram
     - is_artist
     - is_denied
+    - last_seen_tx
     - location
     - multisig
     - pubkey

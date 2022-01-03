@@ -18,6 +18,7 @@ select_permissions:
     - instagram
     - is_admin
     - is_artist
+    - last_seen_tx
     - location
     - mnemonic
     - multisig
