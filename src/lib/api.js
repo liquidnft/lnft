@@ -25,7 +25,7 @@ export const query = async (query, variables) => {
 export const hbp = wretch().url(import.meta.env.VITE_HBP);
 export const serverApi = wretch().url(import.meta.env.VITE_APP);
 
-export const get = (url, fetch) => wretch().polyfills({ fetch }).url(url).get();
+export const get = (url, fetch) => wretch().polyfills({ fetch }).url(url).get().json();
 
 export const post = (url, body, fetch) =>
   wretch().polyfills({ fetch }).url(url).post(body);
