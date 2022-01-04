@@ -1,11 +1,13 @@
 version: '3.6'
 services:
-  app:
-    container_name: app
-    build:
-      context: ./app
+  lapp:
+    depends_on:
+      - hbp
+    container_name: lapp
+    image: asoltys/lnft-server
     restart: on-failure
     environment:
+      SERVER_URL: '${SERVER_URL}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       CLOUDFLARE_TOKEN: '${CLOUDFLARE_TOKEN}'
       CLOUDFLARE_ZONE: '${CLOUDFLARE_ZONE}'
@@ -19,34 +21,25 @@ services:
       IPFS_URL: '${IPFS_URL}'
       IPFS_WEB_URL: '${IPFS_WEB_URL}'
       SIGNING_SERVER_MNEMONIC: '${SIGNING_SERVER_MNEMONIC}'
+      SMTP_HOST: '${SMTP_HOST}'
+      SMTP_PORT: '${SMTP_PORT}'
+      SMTP_USER: '${SMTP_USER}'
+      SMTP_PASS: '${SMTP_PASS}'
+      SMTP_SENDER: '${SMTP_SENDER}'
+    volumes:
+      - ./app:/app
+      - ./custom:/opt/src/hasura/app/custom
+      - ${STORAGE_DIR}:/export
     ports:
       - '8091:8091'
-      - '8092:8092'
-    volumes:
-      - ${STORAGE_DIR}:/export
-  ipfs:
-    container_name: ipfs
-    image: ipfs/go-ipfs
+  ui:
+    image: junglelab/jungle
+    depends_on:
+      - lapp
+    container_name: ui
+    restart: on-failure
     ports:
-      - 8081:8080
-      - 4001:4001
-      - 5001:5001
-    volumes:
-      - ${IPFS_DATA}:/data/ipfs
-      - ${STORAGE_DIR}:/export
-  nginx:
-    container_name: nginx
-    image: nginx:1.21-alpine
-    restart: unless-stopped
-    volumes:
-      - ./data/nginx:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-      - /mnt/disks/data/raretoshi:/var/www/raretoshi
-    ports:
-      - "80:80"
-      - "443:443"
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+      - '3000:3000'
   postgres:
     container_name: postgres
     image: postgres:12
@@ -55,35 +48,43 @@ services:
       POSTGRES_PASSWORD: postgrespassword
     volumes:
       - ${DATA_DIR}:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
   hasura:
-    image: hasura/graphql-engine:v1.3.3
     container_name: hasura
+    image: hasura/graphql-engine:v2.0.9.cli-migrations-v3
     ports:
       - '8080:8080'
     depends_on:
-      - 'postgres'
+      - postgres
     restart: always
     volumes:
       - ./migrations:/hasura-migrations
       - ./metadata:/hasura-metadata
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
-      HASURA_GRAPHQL_ADMIN_SECRET: liquidart
+      HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
       HASURA_GRAPHQL_JWT_SECRET: '${HASURA_GRAPHQL_JWT_SECRET}'
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
   hbp:
     container_name: hbp
     image: nhost/hasura-backend-plus:v2.2.3
-    restart: unless-stopped
     depends_on:
-      - 'minio'
+      - hasura
     ports:
       - '3400:3000'
+    restart: unless-stopped
     environment:
       SERVER_URL: '${SERVER_URL}'
-      VERIFY_EMAILS: "true"
-      AUTO_ACTIVATE_NEW_USERS: "false"
+      HASURA_ENDPOINT: '${HASURA_URL}/v1/graphql'
+      HASURA_GRAPHQL_ADMIN_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
+      JWT_ALGORITHM: '${JWT_ALGORITHM}'
+      JWT_KEY: '${JWT_KEY}'
+      AUTO_MIGRATE: "true"
+      AUTO_ACTIVATE_NEW_USERS: "true"
+      STORAGE_ENABLE: "false"
+      MAX_REQUESTS: 10000
       LOST_PASSWORD_ENABLE: "true"
       EMAILS_ENABLE: "true"
       SMTP_HOST: '${SMTP_HOST}'
@@ -91,27 +92,16 @@ services:
       SMTP_USER: '${SMTP_USER}'
       SMTP_PASS: '${SMTP_PASS}'
       SMTP_SENDER: '${SMTP_SENDER}'
-      HASURA_ENDPOINT: '${HASURA_URL}/v1/graphql'
-      HASURA_GRAPHQL_ADMIN_SECRET: liquidart
-      JWT_ALGORITHM: '${JWT_ALGORITHM}'
-      JWT_KEY: '${JWT_KEY}'
-      AUTO_MIGRATE: "true"
-      STORAGE_ENABLE: "true"
-      S3_ENDPOINT: http://minio:9000
-      S3_SSL_ENABLED: "false"
-      S3_BUCKET: '${S3_BUCKET:-hasura-backend-plus}'
-      S3_ACCESS_KEY_ID: '${S3_ACCESS_KEY_ID:-minio_access_key}'
-      S3_SECRET_ACCESS_KEY: '${S3_SECRET_ACCESS_KEY:-liquidart}' ## min 8 character
     volumes:
       - ./custom:/app/custom
   ipfs:
     container_name: ipfs
     image: ipfs/go-ipfs
-    restart: unless-stopped
     ports:
       - 8081:8080
       - 4001:4001
       - 5001:5001
+    restart: unless-stopped
     volumes:
       - ${IPFS_DATA}:/data/ipfs
       - ${STORAGE_DIR}:/export
