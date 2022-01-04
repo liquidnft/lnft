@@ -1,5 +1,7 @@
 <script context="module">
   import { prerendering } from "$app/env";
+  import { get } from "$lib/api";
+
   export async function load({ fetch, page, session }) {
     if (prerendering)
       return {
@@ -9,7 +11,7 @@
         },
       };
 
-    const props = await fetch(`/addresses.json`).then((r) => r.json());
+    const props = await get(`/addresses.json`, fetch);
 
     if (
       session &&
@@ -45,14 +47,13 @@
   } from "$lib/store";
   import { onDestroy, onMount } from "svelte";
   import branding from "$lib/branding";
-  import { get } from "$lib/api";
 
   export let addresses, titles;
 
   let interval;
   let refresh = async () => {
     try {
-      let { jwt_token } = await get("/auth/refresh.json", fetch).json();
+      let { jwt_token } = await get("/auth/refresh.json", fetch);
       $token = jwt_token;
       if (!$token && $session) delete $session.user;
     } catch (e) {
