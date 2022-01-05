@@ -11,6 +11,7 @@ const BRANDING = {
       twitter: "https://twitter.com/raretoshi",
       telegram: "https://t.me/raretoshi",
       blog: "https://blog.raretoshi.com/",
+      facebook: "https://facebook.com/raretoshi",
     },
   },
 
