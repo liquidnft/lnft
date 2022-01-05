@@ -37,7 +37,9 @@
     metadata.description = artwork.description;
 
     let type = "image";
+    metadata[type] = `${host}/api/public/${artwork.filename}.png`;
     if (artwork.filetype.includes("video")) type = "video";
+
     metadata[type] = `${host}/api/public/${artwork.filename}.${
       artwork.filetype.split("/")[1]
     }`;
@@ -346,6 +348,7 @@
             </div>
           </div>
         </a>
+        {#if artwork.artist_id !== artwork.owner_id}
         <a href={`/u/${artwork.owner.username}`}>
           <div class="flex mb-6 secondary-color">
             <Avatar user={artwork.owner} />
@@ -357,6 +360,7 @@
             </div>
           </div>
         </a>
+      {/if}
       </div>
 
       <div class="mobileImage">
