@@ -1,6 +1,5 @@
 export { default as Activity } from "./Activity.svelte";
 export { default as AcceptOffer } from "./AcceptOffer.svelte";
-export { default as Amount } from "./Amount.svelte";
 export { default as ArtworkMedia } from "./ArtworkMedia.svelte";
 export { default as Avatar } from "./Avatar.svelte";
 export { default as Card } from "./Card.svelte";
@@ -24,7 +23,6 @@ export { default as Results } from "./Results.svelte";
 export { default as Row } from "./Row.svelte";
 export { default as Search } from "./Search.svelte";
 export { default as Sidebar } from "./Sidebar.svelte";
-export { default as SocialShare } from "./SocialShare.svelte";
 export { default as Snack } from "./Snack.svelte";
 export { default as Summary } from "./Summary.svelte";
 export { default as ToggleSwitch } from "./ToggleSwitch.svelte";
