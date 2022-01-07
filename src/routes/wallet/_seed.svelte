@@ -1,4 +1,5 @@
 <script>
+  import { browser } from "$app/env";
   import { page } from "$app/stores";
   import { onMount, tick } from "svelte";
   import wordlist from "$lib/wordlist";
@@ -55,7 +56,7 @@
   };
 
   $: init($page);
-  let init = () => tick().then(() => inputs[0].focus());
+  let init = () => browser && tick().then(() => inputs[0].focus());
 
   let words = new Array(12);
   let inputs = new Array(12);

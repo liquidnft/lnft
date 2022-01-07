@@ -88,7 +88,6 @@
   } from "$lib/wallet";
   import { Psbt } from "liquidjs-lib";
   import { api, query } from "$lib/api";
-  import { SocialShare } from "$comp";
 
   export let artwork, others, metadata, views;
 
@@ -349,18 +348,18 @@
           </div>
         </a>
         {#if artwork.artist_id !== artwork.owner_id}
-        <a href={`/u/${artwork.owner.username}`}>
-          <div class="flex mb-6 secondary-color">
-            <Avatar user={artwork.owner} />
-            <div class="ml-2">
-              <div>@{artwork.owner.username}</div>
-              <div class="text-xs text-gray-600">
-                {artwork.held ? "" : "Presumed "}Owner
+          <a href={`/u/${artwork.owner.username}`}>
+            <div class="flex mb-6 secondary-color">
+              <Avatar user={artwork.owner} />
+              <div class="ml-2">
+                <div>@{artwork.owner.username}</div>
+                <div class="text-xs text-gray-600">
+                  {artwork.held ? "" : "Presumed "}Owner
+                </div>
               </div>
             </div>
-          </div>
-        </a>
-      {/if}
+          </a>
+        {/if}
       </div>
 
       <div class="mobileImage">
