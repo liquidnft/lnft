@@ -51,7 +51,7 @@
             <button
               type="button"
               class="secondary-btn"
-              on:click={() => ($prompt = undefined)}
+              on:click={!!comp.cancel ? comp.cancel : ($prompt = undefined)}
             >
               Cancel
             </button>

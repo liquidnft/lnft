@@ -21,6 +21,7 @@ select_permissions:
     - location
     - mnemonic
     - multisig
+    - prompt_sign
     - pubkey
     - twitter
     - updated_at
