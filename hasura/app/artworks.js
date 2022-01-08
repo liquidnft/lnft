@@ -1,134 +1,84 @@
-const { api, electrs, hasura } = require("./api");
+const { api, electrs, q } = require("./api");
 const { broadcast } = require("./wallet");
 const { Psbt } = require("liquidjs-lib");
 const { compareAsc, parseISO } = require("date-fns");
+const {
+  acceptBid,
+  cancelBid,
+  createTransaction,
+  getCurrentUser,
+  getTransactionArtwork,
+  getTransactionUser,
+  setHeld,
+  setOwner,
+  setPsbt,
+  setRelease,
+  updateViews,
+} = require("./queries");
 
 const crypto = require("crypto");
 const wretch = require("wretch");
-const { HASURA_URL, SERVER_URL } = process.env;
+const { SERVER_URL } = process.env;
 
 app.post("/cancel", auth, async (req, res) => {
-  let { id } = req.body;
+  try {
+    let { id } = req.body;
+    let { transactions_by_pk: tx } = await q(getTransactionUser, { id });
 
-  let query = `query { 
-    transactions_by_pk(id: "${id}") {
-      user_id
-    }
-  }`;
+    let { data, errors } = await api(req.headers)
+      .post({ query: getCurrentUser })
+      .json();
 
-  let r = await hasura.post({ query }).json().catch(console.error);
+    if (errors) throw new Error(errors[0].message);
+    let user = data.currentuser[0];
 
-  query = `query {
-      currentuser {
-        id
-      } 
-    }`;
 
-  let { data } = await api(req.headers).post({ query }).json();
-  let user = data.currentuser[0];
+    if (tx.user_id !== user.id) return res.code(401).send();
 
-  if (r.errors) return res.code(500).send("could not fetch transaction");
-  if (r.data.transactions_by_pk.user_id !== user.id)
-    return res.code(401).send();
-
-  query = `mutation ($id: uuid!) {
-    update_transactions_by_pk(
-      pk_columns: { id: $id }, 
-      _set: { 
-        type: "cancelled_bid"
-      }
-    ) {
-     id
-    }
-  }`;
-
-  r = await hasura
-    .post({ query, variables: { id } })
-    .json()
-    .catch(console.error);
-
-  res.send(r);
+    res.send(await q(cancelBid, { id }));
+  } catch (e) {
+    console.log("problem cancelling bid", e);
+    res.code(500).send(e.message);
+  }
 });
 
 app.post("/transfer", auth, async (req, res) => {
-  let { address, transaction } = req.body;
-  await new Promise((r) => setTimeout(r, 2000));
+  try {
+    let { address, transaction } = req.body;
+    await new Promise((r) => setTimeout(r, 2000));
 
-  let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
 
-  if (utxos.find((tx) => tx.asset === transaction.asset)) {
-    let query = `mutation create_transaction($transaction: transactions_insert_input!) {
-      insert_transactions_one(object: $transaction) {
-        id,
-        artwork_id
-      } 
-    }`;
+    if (utxos.find((tx) => tx.asset === transaction.asset)) {
+      transaction.user_id = req.body.id;
+      transaction.type = "receipt";
 
-    transaction.user_id = req.body.id;
-    transaction.type = "receipt";
+      await q(createTransaction, { transaction });
+    }
 
-    r = await hasura
-      .post({ query, variables: { transaction } })
-      .json()
-      .catch(console.error);
+    res.send({});
+  } catch (e) {
+    console.log("problem transferring artwork", e);
+    res.code(500).send(e.message);
   }
-
-  res.send({});
 });
 
 app.post("/viewed", async (req, res) => {
   try {
-    let query = `mutation ($id: uuid!) {
-      update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
-        id
-        owner {
-          address
-          multisig
-        } 
-        asset
-      }
-    }`;
+    let { update_artworks_by_pk } = await q(updateViews, { id: req.body.id });
+    let { asset, owner } = update_artworks_by_pk;
+    let { address, multisig } = owner;
 
-    let result = await hasura
-      .post({
-        query,
-        variables: { id: req.body.id },
-      })
-      .json();
+    let find = async (a) =>
+      (await electrs.url(`/address/${a}/utxo`).get().json()).find(
+        (tx) => tx.asset === asset
+      );
 
-    if (result.data) {
-      let { asset, owner } = result.data.update_artworks_by_pk;
-      let { address, multisig } = owner;
+    let held = null;
+    if (await find(address)) held = "single";
+    if (await find(multisig)) held = "multisig";
 
-      let find = async (a) =>
-        (await electrs.url(`/address/${a}/utxo`).get().json()).find(
-          (tx) => tx.asset === asset
-        );
-
-      let held = null;
-      if (await find(address)) held = "single";
-      if (await find(multisig)) held = "multisig";
-
-      query = `mutation ($id: uuid!, $held: String!) {
-      update_artworks_by_pk(pk_columns: { id: $id }, _set: { held: $held }) {
-        id
-        owner {
-          address
-          multisig
-        } 
-        asset
-      }
-    }`;
-
-      result = await hasura
-        .post({
-          query,
-          variables: { id: req.body.id, held },
-        })
-        .json();
-
-      if (result.errors) console.log("problem updating held status", result);
-    }
+    await q(setHeld, { id: req.body.id, held });
 
     res.send({});
   } catch (e) {
@@ -142,15 +92,10 @@ app.post("/claim", auth, async (req, res) => {
     let {
       artwork: { asset, id },
     } = req.body;
-    let query = `query {
-      currentuser {
-        id
-        address
-        multisig
-      } 
-    }`;
 
-    let { data } = await api(req.headers).post({ query }).json();
+    let { data } = await api(req.headers)
+      .post({ query: getCurrentUser })
+      .json();
     let user = data.currentuser[0];
 
     let { address, multisig } = user;
@@ -162,26 +107,7 @@ app.post("/claim", auth, async (req, res) => {
 
     let held = !!utxos.find((tx) => tx.asset === asset);
 
-    query = `mutation($id: uuid!, $owner_id: uuid!) {
-      update_artworks_by_pk(
-        pk_columns: { id: $id },
-        _set: { 
-          owner_id: $owner_id,
-        }
-      ) {
-        id
-      }
-    }`;
-
-    r = await hasura
-      .post({
-        query,
-        variables: { id, owner_id: user.id },
-      })
-      .json()
-      .catch(console.error);
-
-    res.send(r);
+    res.send(await q(setOwner, { id, owner_id: user.id }));
   } catch (e) {
     console.log(e);
     res.code(500).send(e.message);
@@ -192,28 +118,9 @@ app.post("/transaction", auth, async (req, res) => {
   try {
     const { transaction } = req.body;
 
-    let query = `query {
-      artworks(where: { id: { _eq: "${transaction.artwork_id}" }}) {
-        auction_start
-        auction_end
-        bid_increment
-        owner {
-          display_name
-        } 
-        title
-        slug
-        bid {
-          amount
-          user {
-            id
-            display_name
-          } 
-        } 
-      }
-    }`;
-
-    let { data, errors } = await hasura.post({ query }).json();
-    if (errors) throw new Error(errors[0].message);
+    let { artworks } = await q(getTransactionArtwork, {
+      id: transaction.artwork_id,
+    });
     let {
       bid_increment,
       auction_end,
@@ -222,7 +129,7 @@ app.post("/transaction", auth, async (req, res) => {
       title,
       bid,
       slug,
-    } = data.artworks[0];
+    } = artworks[0];
 
     if (
       bid &&
@@ -269,94 +176,42 @@ app.post("/transaction", auth, async (req, res) => {
       console.error(err);
     }
 
-    query = `mutation create_transaction($transaction: transactions_insert_input!) {
-      insert_transactions_one(object: $transaction) {
-        id,
-        artwork_id
-      } 
-    }`;
-
     ({ data, errors } = await api(req.headers)
-      .post({ query, variables: { transaction } })
+      .post({ query: createTransaction, variables: { transaction } })
       .json());
 
     if (errors) throw new Error(errors[0].message);
 
     res.send(data.insert_transactions_one);
   } catch (e) {
-    console.log(e);
+    console.log("problem creating transaction", e);
     res.code(500).send(e.message);
   }
 });
 
 app.post("/release/update", auth, async (req, res) => {
-  const query = `mutation($id: uuid!, $psbt: String!) {
-    update_artworks_by_pk(
-      pk_columns: { id: $id },
-      _set: { 
-        auction_release_tx: $psbt,
-      }
-    ) {
-      id
-    }
-  }`;
-
-  r = await hasura
-    .post({ query, variables: req.body })
-    .json()
-    .catch(console.error);
-
-  res.send(r);
+  try {
+    res.send(await q(setRelease, req.body));
+  } catch (e) {
+    console.log("problem releasing from auction", e);
+    res.code(500).send(e.message);
+  }
 });
 
 app.post("/tx/update", auth, async (req, res) => {
-  const query = `mutation update_transaction($id: uuid!, $psbt: String!) {
-    update_transactions_by_pk(
-      pk_columns: { id: $id },
-      _set: { 
-        psbt: $psbt,
-      }
-    ) {
-      id
-    }
-  }`;
-
-  r = await hasura
-    .post({ query, variables: req.body })
-    .json()
-    .catch(console.error);
-
-  res.send(r);
+  try {
+    res.send(await q(setPsbt, req.body));
+  } catch (e) {
+    console.log("problem updating transaction", e);
+    res.code(500).send(e.message);
+  }
 });
 
 app.post("/accept", auth, async (req, res) => {
-  let query = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!, $bid_id: uuid) {
-    update_artworks_by_pk(
-      pk_columns: { id: $id }, 
-      _set: { 
-        owner_id: $owner_id,
-      }
-    ) {
-      id
-    }
-    insert_transactions_one(object: {
-      artwork_id: $id,
-      asset: $asset,
-      type: "accept",
-      amount: $amount,
-      hash: $hash,
-      psbt: $psbt,
-      bid_id: $bid_id,
-    }) {
-      id,
-      artwork_id
-    } 
-  }`;
-
   try {
     await broadcast(Psbt.fromBase64(req.body.psbt));
     let { data } = await api(req.headers)
-      .post({ query, variables: req.body })
+      .post({ query: acceptBid, variables: req.body })
       .json();
     res.send(data);
   } catch (e) {
