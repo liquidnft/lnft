@@ -3,7 +3,6 @@
     const props = await fetch(`/artworks/recent.json`).then((r) => r.json());
 
     return {
-      maxage: 90,
       props,
     };
   }

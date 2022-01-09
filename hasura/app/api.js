@@ -1,6 +1,6 @@
 const wretch = require("wretch");
 const fetch = require("node-fetch");
-wretch().polyfills({ fetch });
+const w = wretch().polyfills({ fetch });
 const {
   LIQUID_ELECTRS_URL,
   HASURA_SECRET,
@@ -13,13 +13,25 @@ const {
   IPFS_WEB_URL,
 } = process.env;
 
+const DELAY = LIQUID_ELECTRS_URL.includes("blockstream") ? 25 : 0;
+
+const queue = [];
+
+const enqueue = (next) => (url, opts) =>
+  new Promise((r) => queue.push(() => r(next(url, opts))) && ddequeue());
+
+let timer;
+const dequeue = () => queue.length && queue.shift()() && ddequeue();
+const ddequeue = () => {
+  clearTimeout(timer);
+  timer = setTimeout(dequeue, DELAY);
+};
+
 const hasura = wretch().url(`${HASURA_URL}/v1/graphql`);
-const delay = (time) => (next) => (url, opts) =>
-  new Promise((res) => setTimeout(() => res(next(url, opts)), time));
 const api = (h) => hasura.headers(h);
 const adminApi = hasura.headers({ "x-hasura-admin-secret": HASURA_SECRET });
 
-const electrs = wretch().middlewares([delay(200)]).url(LIQUID_ELECTRS_URL);
+const electrs = wretch().middlewares([enqueue]).url(LIQUID_ELECTRS_URL);
 const registry = wretch().url("https://assets.blockstream.info/");
 const coinos = wretch().url(COINOS_URL).auth(`Bearer ${COINOS_TOKEN}`);
 const ipfs = wretch().url(IPFS_WEB_URL);
@@ -47,5 +59,6 @@ module.exports = {
   hbp,
   coinos,
   ipfs,
-  q
+  q,
+  w,
 };

@@ -4,12 +4,18 @@ module.exports = {
       user_id
     }
   }`,
+  getUserByAddress: `query($address: String!) {
+    users(where: { _or: [{ address: { _eq: $address }}, { multisig: { _eq: $address }}]}) {
+      id
+      address
+      multisig
+    }
+  }`,
   getCurrentUser: `query {
     currentuser {
       id
       address
       multisig
-      last_seen_tx
     }
   }`,
   cancelBid: `mutation ($id: uuid!) {
@@ -22,10 +28,33 @@ module.exports = {
      id
     }
   }`,
-  createTransaction: `mutation create_transaction($transaction: transactions_insert_input!) {
+  createUtxo: `mutation create_utxo($utxo: utxos_insert_input!) {
+    insert_utxos_one(object: $utxo) {
+      id
+    }
+  }`,
+  createTransaction: `mutation create_transaction(
+    $transaction: transactions_insert_input!,
+    $hash: String!,
+    $asset: String!,
+    $user_id: uuid!,
+    $address: String!
+  ) {
+    delete_transactions(where: { 
+      hash: { _eq: $hash },
+      asset: { _eq: $asset },
+      user_id: { _eq: $user_id },
+      address: { _eq: $address },
+    }) {
+      affected_rows
+    }
     insert_transactions_one(object: $transaction) {
-      id,
-      artwork_id
+      id
+    }
+  }`,
+  deleteUtxo: `mutation delete_utxo($id: uuid!) {
+    delete_utxos_by_pk(id: $id) {
+      id
     }
   }`,
   updateViews: `mutation ($id: uuid!) {
@@ -167,10 +196,12 @@ module.exports = {
     }
   }`,
   getUnconfirmed: `query {
-    transactions(where: {
-      confirmed: {_eq: false},
-      type: {_in: ["purchase", "creation", "royalty", "accept", "release", "auction", "cancel"] },
-    }) {
+    transactions(
+      where: {
+        confirmed: {_eq: false},
+        type: {_in: ["purchase", "creation", "royalty", "accept", "release", "auction", "cancel", "deposit", "withdrawal"] },
+      }
+    ) {
       id
       hash
       bid {
@@ -178,9 +209,17 @@ module.exports = {
       } 
     }
   }`,
+  setTransactionTime: `mutation($id: uuid!, $created_at: timestamptz!) {
+    update_transactions_by_pk(
+      pk_columns: { id: $id }, 
+      _set: { created_at: $created_at }
+    ) {
+      id
+    }
+  }`,
   getLastTransaction: `query($artwork_id: uuid!) { 
     transactions(
-      where: { artwork_id: { _eq: $artwork_id }},
+      where: { artwork_id: { _eq: $artwork_id }, confirmed: { _eq: true }},
       order_by: { created_at: desc }, 
       limit: 1
     ) {
@@ -204,25 +243,39 @@ module.exports = {
       contract
     } 
   }`,
-  getChainTxs: `query($id: uuid!) {
-    transactions(order_by: {created_at: desc}, where: {
-      user_id: {_eq: $id}, 
-      type: {_in: ["deposit", "withdrawal"]}
-    }) {
+  getLastTransactionForAddress: `query($address: String!) {
+    transactions(
+      where: {
+        address: {_eq: $address}, 
+        type: {_in: ["deposit", "withdrawal"]}
+      },
+      limit: 1,
+      order_by: [{ sequence: desc }]
+    ) {
+      hash
+    }
+  }`,
+  getTransactions: `query($id: uuid!, $limit: Int) {
+    transactions(
+      where: {
+        user_id: {_eq: $id}, 
+        type: {_in: ["deposit", "withdrawal"]}
+      },
+      order_by: {sequence: desc}, 
+      limit: $limit
+    ) {
       id
       hash
       amount
       created_at
+      sequence
       asset
       type
-    }
-  }`,
-  setTransactionTime: `mutation($id: uuid!, $created_at: timestamptz!) {
-    update_transactions_by_pk(
-      pk_columns: { id: $id }, 
-      _set: { created_at: $created_at }
-    ) {
-      id
+      json
+      hex
+      user_id
+      address
+      confirmed
     }
   }`,
   setConfirmed: `mutation setConfirmed($id: uuid!) {
@@ -252,6 +305,22 @@ module.exports = {
         id
         user_id
       } 
+    }
+  }`,
+  getUtxos: `query($address: String!) {
+    utxos(where: { address: { _eq: $address }}, order_by: [{ tx: { sequence: desc }}]) {
+      id
+      transaction_id
+      tx {
+        hash
+        hex
+        created_at
+        sequence
+        confirmed
+      }
+      vout
+      asset
+      value
     }
   }`,
 };

@@ -4,7 +4,6 @@
     const r = await post("/artworks.json", {}, fetch).json();
 
     return {
-      maxage: 720,
       props: {
         total: r.total,
         initialArtworks: r.artworks,

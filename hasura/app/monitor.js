@@ -1,4 +1,4 @@
-const { api, ipfs, q, electrs, registry } = require("./api");
+const { api, ipfs, q, electrs, registry, w } = require("./api");
 const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
 const reverse = require("buffer-reverse");
 const fs = require("fs");
@@ -8,17 +8,22 @@ const {
   cancelBid,
   cancelListing,
   createTransaction,
+  createUtxo,
+  deleteUtxo,
   getActiveBids,
   getActiveListings,
   getAvatars,
-  getChainTxs,
   getContract,
   getCurrentUser,
   getLastTransaction,
+  getLastTransactionForAddress,
+  getTransactions,
+  getUserByAddress,
   getUnconfirmed,
+  getUtxos,
   setConfirmed,
+  setOwner,
   setTransactionTime,
-  updateArtwork,
   updateUser,
 } = require("./queries");
 
@@ -61,26 +66,7 @@ app.post("/updateAvatars", async (req, res) => {
   }
 });
 
-const transferOwnership = async ({
-  data: { update_transactions_by_pk: transaction },
-}) => {
-  let owner_id;
-
-  if (transaction.type === "accept") owner_id = transaction.bid.user_id;
-
-  if (transaction.type === "purchase") {
-    owner_id = transaction.user_id;
-
-    let {
-      artwork_id,
-      hash,
-      psbt,
-      artwork: { asset },
-    } = transaction;
-  }
-
-  return q(updateArtwork, { id: transaction.artwork_id, owner_id });
-};
+const transferOwnership = async (transaction) => {};
 
 const isSpent = async ({ ins }, artwork_id) => {
   try {
@@ -163,14 +149,26 @@ const checkTransactions = async () => {
 
     for (let i = 0; i < transactions.length; i++) {
       let tx = transactions[i];
-      let { confirmed } = await electrs
+      let { block_time, confirmed } = await electrs
         .url(`/tx/${tx.hash}/status`)
         .get()
         .json();
 
+
       if (confirmed) {
-        await q(setConfirmed, { id: tx.id });
-        await transferOwnership();
+        let {
+          update_transactions_by_pk: { artwork_id, type, bid },
+        } = await q(setConfirmed, {
+          id: tx.id,
+        });
+
+        if (["deposit", "withdrawal"].includes(type))
+          await q(setTransactionTime, {
+            id: tx.id,
+            created_at: formatISO(new Date(1000 * block_time)),
+          });
+
+        if (type === "accept") await q(setOwner, { id: artwork_id, owner_id: bid.user_id });
       }
     }
   } catch (e) {
@@ -232,131 +230,252 @@ app.get("/proof/liquid-asset-proof-:asset", (req, res) => {
 });
 
 let getUser = async (headers) => {
-  let { data, errors } = await api(headers).post({ query: getCurrentUser }).json();
+  let { data, errors } = await api(headers)
+    .post({ query: getCurrentUser })
+    .json();
   if (errors) throw new Error(errors[0].message);
   return data.currentuser[0];
 };
 
-let seen = (user, address, txid, asset, transactions) =>
-  [user.address, user.multisig].includes(address) &&
-  asset &&
-  !transactions.find((t) => t.hash === txid && t.asset === asset);
-
 app.get("/transactions", auth, async (req, res) => {
   try {
-    let user = await getUser(req.headers);
-    let get = (addr) => electrs.url(`/address/${addr}/txs`).get().json();
-    let txns = [...(await get(user.address)), ...(await get(user.multisig))];
+    let { id, address, multisig } = await getUser(req.headers);
 
-    let { transactions } = await q(getChainTxs, { id: user.id });
+    await updateTransactions(address, id);
+    await updateTransactions(multisig, id);
 
-    for (let i = 0; i < txns.length; i++) {
-      let { txid, vin, vout, status } = txns[i];
-
-      let total = {};
-
-      for (let j = 0; j < vin.length; j++) {
-        let { txid: prev, vout } = vin[j];
-
-        let tx =
-          txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
-        txcache[prev] = tx;
-
-        let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
-
-        if (seen(user, a, txid, asset, transactions))
-          total[asset]
-            ? (total[asset] -= parseInt(value))
-            : (total[asset] = parseInt(-value));
-      }
-
-      for (let k = 0; k < vout.length; k++) {
-        let { asset, value, scriptpubkey_address: a } = vout[k];
-
-        if (seen(user, a, txid, asset, transactions))
-          total[asset]
-            ? (total[asset] += parseInt(value))
-            : (total[asset] = parseInt(value));
-      }
-
-      let assets = Object.keys(total);
-
-      for (let l = 0; l < assets.length; l++) {
-        let asset = assets[l];
-        if (total[asset] === 0) continue;
-        let type = total[asset] < 0 ? "withdrawal" : "deposit";
-        let transaction = {
-          user_id: user.id,
-          asset: asset,
-          type: type,
-          amount: total[asset],
-          hash: txid,
-          confirmed: true,
-        };
-
-        try {
-          let {
-            insert_transactions_one: { id },
-          } = await q(createTransaction, { transaction });
-
-          if (status.block_time) {
-            await q(setTransactionTime, {
-              id,
-              created_at: formatISO(new Date(1000 * status.block_time)),
-            });
-          }
-        } catch (e) {
-          console.log(e);
-          continue;
-        }
-      }
-    }
-
-    res.send(await q(getChainTxs, { id: user.id }));
+    res.send(await q(getTransactions, { id }));
   } catch (e) {
     console.log(e);
     res.code(500).send(e.message);
   }
 });
 
-let getTransactions = async (address, last) => {
-  let curr = await electrs.url(`/address/${address}/txs/chain`).get().json();
+let getTxns = async (address, last) => {
+  let curr = await electrs.url(`/address/${address}/txs`).get().json();
   let txns = [...curr];
   while (curr.length === 25 && !curr.find((tx) => tx.txid === last)) {
     curr = await electrs
-      .url(`/address/${address}/txs/chain/${curr[24].txid}`)
+      .url(`/address/${address}/txs/${curr[24].txid}`)
       .get()
       .json();
     txns.push(...curr);
   }
 
+  let index = txns.findIndex((tx) => tx.txid === last);
+  index >= 0 && txns.splice(index);
   return txns;
 };
 
-app.get("/balance", auth, async (req, res) => {
-  let { asset = btc } = req.query;
-  let { address, last_seen_tx } = await getUser(req.headers);
-  let txns = await getTransactions(address, last_seen_tx);
+let updateTransactions = async (address, user_id) => {
+  let { transactions } = await q(getLastTransactionForAddress, { address });
+  let last;
+  if (transactions.length) ({ hash: last } = transactions[0]);
 
-  let outs = [];
-  txns.map(({ txid, vout }) => {
-    vout.map(
+  let txns = (await getTxns(address, last)).reverse();
+
+  for (let i = 0; i < txns.length; i++) {
+    let { txid, vin, vout, status } = txns[i];
+
+    let hex = await electrs.url(`/tx/${txid}/hex`).get().text();
+
+    let total = {};
+
+    for (let j = 0; j < vin.length; j++) {
+      let { txid: prev, vout } = vin[j];
+
+      let tx = txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
+      txcache[prev] = tx;
+
+      let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
+      if (address === a) total[asset] = (total[asset] || 0) - parseInt(value);
+    }
+
+    for (let k = 0; k < vout.length; k++) {
+      let { asset, value, scriptpubkey_address: a } = vout[k];
+      if (address === a) total[asset] = (total[asset] || 0) + parseInt(value);
+    }
+
+    let assets = Object.keys(total);
+
+    for (let l = 0; l < assets.length; l++) {
+      let asset = assets[l];
+
+      if (
+        total[asset] === 0 ||
+        transactions.find(
+          (tx) =>
+            tx.user_id === user_id && tx.hash === txid && tx.asset === asset
+        )
+      )
+        continue;
+
+      let type = total[asset] < 0 ? "withdrawal" : "deposit";
+      let transaction = {
+        address,
+        user_id,
+        asset,
+        type,
+        amount: total[asset],
+        hash: txid,
+        confirmed: status.confirmed,
+        hex,
+        json: JSON.stringify(txns[i]),
+      };
+
+      if (status.block_time)
+        transaction.created_at = formatISO(new Date(1000 * status.block_time));
+
+      try {
+        let {
+          insert_transactions_one: { id },
+        } = await q(createTransaction, {
+          transaction,
+          hash: txid,
+          user_id,
+          asset,
+          address,
+        });
+        transactions.push(transaction);
+      } catch (e) {
+        console.log(e);
+        continue;
+      }
+    }
+  }
+
+  return txns;
+};
+
+let scanUtxos = async (address) => {
+  let { users } = await q(getUserByAddress, { address });
+  if (!users.length) return [];
+  let { id } = users[0];
+
+  await updateTransactions(address, id);
+  let { transactions } = await q(getTransactions, { id });
+
+  let { utxos } = await q(getUtxos, { address });
+  let outs = utxos.map(
+    ({
+      id,
+      transaction_id,
+      tx: { hash, sequence, confirmed },
+      vout,
+      value,
+      asset,
+    }) => ({
+      id,
+      txid: hash,
+      vout,
+      value,
+      asset,
+      sequence,
+      confirmed,
+      transaction_id,
+    })
+  );
+
+  transactions = transactions.filter(
+    (tx) => !outs.length || tx.sequence > outs[0].sequence
+  );
+
+  transactions.map(({ id, hash, asset: txAsset, json, confirmed }) => {
+    JSON.parse(json).vout.map(
       ({ value, asset, scriptpubkey_address }, vout) =>
         scriptpubkey_address === address &&
-        outs.push({ txid, vout, value, asset })
+        asset === txAsset &&
+        !outs.find(
+          (o) => hash === o.txid && vout === o.vout && o.asset === asset
+        ) &&
+        outs.push({
+          transaction_id: id,
+          txid: hash,
+          vout,
+          value,
+          asset,
+          confirmed,
+        })
     );
   });
 
-  txns.map((tx) => {
-    tx.vin.map((input) => {
-      let i = outs.findIndex(
-        (o) => o.txid === input.txid && o.vout === input.vout
+  transactions.map(({ json }) => {
+    JSON.parse(json).vin.map(({ txid, vout }) => {
+      let spent = [];
+
+      outs = outs.filter((o) =>
+        o.txid === txid && o.vout === vout ? spent.push(o) && false : true
       );
-      if (i > -1) outs.splice(i, 1);
+
+      spent.map(
+        ({ id }) =>
+          id && q(deleteUtxo, { id }).then().catch(console.log)
+      );
     });
   });
 
-  res.send(
-    outs.filter((o) => o.asset === asset).reduce((a, b) => a + b.value, 0)
+  let unseen = outs.filter(
+    (o) => !utxos.find((u) => u.tx.hash === o.txid && u.vout === o.vout)
   );
+
+  for (let i = 0; i < unseen.length; i++) {
+    let { vout, asset, value, transaction_id } = unseen[i];
+
+    try {
+      await q(createUtxo, {
+        utxo: {
+          vout,
+          asset,
+          value,
+          transaction_id,
+          address,
+          user_id: id,
+        },
+      });
+    } catch (e) {
+      continue;
+    }
+  }
+
+  return outs;
+};
+
+app.get("/balance", auth, async (req, res) => {
+  try {
+    let { address, multisig, id, last_seen_tx } = await getUser(req.headers);
+    let outs = [...(await scanUtxos(address)), ...(await scanUtxos(multisig))];
+    let pending = [];
+
+    outs = outs.filter((o) => (o.confirmed ? true : pending.push(o) && false));
+
+    let sum = (a, b) => ({ ...a, [b.asset]: (a[b.asset] || 0) + b.value });
+    res.send({
+      confirmed: outs.reduce(sum, {}),
+      pending: pending.reduce(sum, {}),
+    });
+  } catch (e) {
+    console.log("problem getting balance", e);
+    res.code(500).send(e.message);
+  }
+});
+
+app.get("/address/:address/utxo", async (req, res) => {
+  try {
+    let { address } = req.params;
+    await scanUtxos(address);
+    let { utxos } = await q(getUtxos, { address });
+    res.send(
+      utxos.map(({ vout, tx: { hash, hex, confirmed }, asset, value }) => ({
+        vout,
+        txid: hash,
+        hex,
+        asset,
+        value,
+        confirmed,
+      }))
+    );
+  } catch (e) {
+    console.log("problem getting utxos", e);
+    res.code(500).send(e.message);
+  }
 });

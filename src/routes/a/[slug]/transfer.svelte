@@ -10,7 +10,6 @@
     );
 
     return {
-      maxage: 90,
       props,
     };
   }

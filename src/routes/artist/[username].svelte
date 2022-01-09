@@ -4,7 +4,6 @@
     const r = await fetch(`/artworks/username/${username}.json`).then((r) => r.json());
 
     return {
-      maxage: 720,
       props: {
         count: r.count,
         artworks: r.artworks,

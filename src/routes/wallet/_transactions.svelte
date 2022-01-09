@@ -8,21 +8,17 @@
 
   let show = false;
 
-  let poll;
-  onMount(() => {
-    getTransactions();
-    poll = setInterval(getTransactions, 5000);
-  });
-
   let txns = [];
-  let getTransactions = () => 
+  let getTransactions = () =>
     $token &&
     api
       .auth(`Bearer ${$token}`)
       .url("/transactions")
       .get()
       .json((data) => {
-        txns = data.transactions.filter(t => t.type === 'withdrawal' || t.type === 'deposit');
+        txns = data.transactions.filter(
+          (t) => t.type === "withdrawal" || t.type === "deposit"
+        );
 
         $assets = txns
           .map(({ asset }) => ({ name: assetLabel(asset), asset }))
@@ -30,7 +26,14 @@
           .filter((a, i, r) => a && (!i || a.asset != r[i - 1].asset));
       });
 
-  onDestroy(() => clearInterval(poll));
+  let poll;
+  let pollTransactions = async () => {
+    await getTransactions();
+    poll = setTimeout(pollTransactions, 5000);
+  };
+
+  onMount(pollTransactions);
+  onDestroy(() => clearTimeout(poll));
 
   $: txAssets = (tx) => [
     ...new Set(
@@ -48,7 +51,8 @@
         label={`Show only ${assetLabel($asset)}`}
         on:change={(e) => {
           show = !show;
-        }} />
+        }}
+      />
     </div>
 
     {#each txns as tx}
@@ -57,10 +61,16 @@
           <div class="w-full mb-4">
             <div class="flex">
               <div class="flex-grow text-sm text-gray-500">
-                {format(parseISO(tx.created_at), 'MMM do, yyyy')}
+                {format(parseISO(tx.created_at), "MMM do, yyyy")}
               </div>
-              <div class:text-secondary={tx.amount > 0}>
-                {tx.amount > 0 ? '+' : tx.amount < 0 ? '-' : ''}{val(tx.asset, Math.abs(tx.amount))}
+              <div
+                class:pending={!tx.confirmed}
+                class:text-secondary={tx.confirmed && tx.amount > 0}
+              >
+                {tx.amount > 0 ? "+" : tx.amount < 0 ? "-" : ""}{val(
+                  tx.asset,
+                  Math.abs(tx.amount)
+                )}
               </div>
             </div>
 
@@ -71,3 +81,9 @@
     {/each}
   {/if}
 </div>
+
+<style>
+  .pending {
+    @apply text-orange-400;
+  }
+</style>

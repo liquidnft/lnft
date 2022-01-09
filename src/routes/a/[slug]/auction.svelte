@@ -1,34 +1,34 @@
 <script context="module">
   export async function load({ fetch, page, session }) {
-    if (!(session && session.user)) return {
-      status: 302,
-      redirect: '/login'
-    } 
+    if (!(session && session.user))
+      return {
+        status: 302,
+        redirect: "/login",
+      };
 
-    const props = await fetch(`/artworks/${page.params.slug}.json`).then(
-      (r) => r.json()
+    const props = await fetch(`/artworks/${page.params.slug}.json`).then((r) =>
+      r.json()
     );
 
-    if (!props.artwork) return {
-      status: 404,
-    } 
+    if (!props.artwork)
+      return {
+        status: 404,
+      };
 
     let { artwork } = props;
-
 
     const { default_royalty_recipients } = await fetch(`/royalties.json`).then(
       (r) => r.json()
     );
 
     return {
-      maxage: 90,
       props: {
         artwork,
         default_royalty_recipients,
+        user: session.user,
       },
     };
   }
-
 </script>
 
 <script>
@@ -50,8 +50,6 @@
     sighash,
     prompt,
     psbt,
-    user,
-    token,
   } from "$lib/store";
   import { requireLogin, requirePassword } from "$lib/auth";
   import { createTransaction } from "$queries/transactions";
@@ -90,14 +88,14 @@
   import Select from "svelte-select";
   import branding from "$lib/branding";
 
-  export let artwork, default_royalty_recipients;
+  export let artwork, default_royalty_recipients, user;
 
   let input;
   let initialized;
   let focus = (i) => browser && i && tick().then(() => input && input.focus());
   $: focus(initialized);
 
-  let loading = true;
+  let loading;
   let list_price,
     royalty_value,
     start_date,
@@ -108,76 +106,60 @@
     auction_underway,
     multi_royalty_recipients_enabled,
     royalty_recipients;
-  $: setup($token);
 
   let reserve_price;
 
-  let setup = async (t) => {
-    if (!t) return;
+  if (!artwork.asking_asset) artwork.asking_asset = btc;
+  auction_enabled =
+    auction_enabled ||
+    compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
 
-    try {
-      if (!artwork.asking_asset) artwork.asking_asset = btc;
-      auction_enabled =
-        auction_enabled ||
-        compareAsc(parseISO(artwork.auction_end), new Date()) === 1;
+  let start, end;
+  if (artwork.auction_start) {
+    start = parseISO(artwork.auction_start);
+    start_date = format(start, "yyyy-MM-dd");
+    start_time = format(start, "HH:mm");
+  }
 
-      let start, end;
-      if (artwork.auction_start) {
-        start = parseISO(artwork.auction_start);
-        start_date = format(start, "yyyy-MM-dd");
-        start_time = format(start, "HH:mm");
-      }
+  if (artwork.auction_end) {
+    end = parseISO(artwork.auction_end);
+    end_date = format(end, "yyyy-MM-dd");
+    end_time = format(end, "HH:mm");
+  }
 
-      if (artwork.auction_end) {
-        end = parseISO(artwork.auction_end);
-        end_date = format(end, "yyyy-MM-dd");
-        end_time = format(end, "HH:mm");
-      }
+  auction_underway =
+    auction_enabled &&
+    isWithinInterval(new Date(), {
+      start,
+      end,
+    });
 
-      auction_underway =
-        auction_enabled &&
-        isWithinInterval(new Date(), {
-          start,
-          end,
+  if (default_royalty_recipients && default_royalty_recipients.length) {
+    for (let index = 0; index < default_royalty_recipients.length; index++) {
+      const { address, amount, name } = default_royalty_recipients[index];
+      if (!artwork.royalty_recipients.find((e) => e.address === address)) {
+        artwork.royalty_recipients.push({
+          address,
+          amount,
+          name,
+          type: royaltyRecipientSystemType,
         });
-
-      if (default_royalty_recipients && default_royalty_recipients.length) {
-        for (
-          let index = 0;
-          index < default_royalty_recipients.length;
-          index++
-        ) {
-          const { address, amount, name } = default_royalty_recipients[index];
-          if (!artwork.royalty_recipients.find((e) => e.address === address)) {
-            artwork.royalty_recipients.push({
-              address,
-              amount,
-              name,
-              type: royaltyRecipientSystemType,
-            });
-          }
-        }
       }
-
-      royalty_recipients = artwork.royalty_recipients;
-
-      if (!list_price && artwork.list_price)
-        list_price = val(artwork.asking_asset, artwork.list_price);
-      if (!royalty_value)
-        royalty_value = royalty_recipients.reduce(
-          (a, b) => a + (b["amount"] || 0),
-          0
-        );
-      multi_royalty_recipients_enabled = !!royalty_value;
-      if (!reserve_price && artwork.reserve_price)
-        reserve_price = val(artwork.asking_asset, artwork.reserve_price);
-    } catch (e) {
-      err(e);
     }
+  }
 
-    initialized = true;
-    loading = false;
-  };
+  royalty_recipients = artwork.royalty_recipients;
+
+  if (!list_price && artwork.list_price)
+    list_price = val(artwork.asking_asset, artwork.list_price);
+  if (!royalty_value)
+    royalty_value = royalty_recipients.reduce(
+      (a, b) => a + (b["amount"] || 0),
+      0
+    );
+  multi_royalty_recipients_enabled = !!royalty_value;
+  if (!reserve_price && artwork.reserve_price)
+    reserve_price = val(artwork.asking_asset, artwork.reserve_price);
 
   const spendPreviousSwap = async () => {
     if (
@@ -423,8 +405,241 @@
   $: listingCurrencies = artwork.transferred_at
     ? Object.keys(tickers)
     : [...Object.keys(tickers), undefined];
-
 </script>
+
+<div class="container mx-auto md:p-20">
+  <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
+    <a class="block mb-6 text-midblue" href={`/a/${artwork.slug}`}>
+      <div class="flex">
+        <Fa icon={faChevronLeft} class="my-auto mr-1" />
+        <div>Back</div>
+      </div>
+    </a>
+
+    <h2>List artwork</h2>
+
+    {#if loading}
+      <ProgressLinear />
+    {:else}
+      {#if auction_underway}
+        <h4 class="mt-12">
+          Listing cannot be updated while auction is underway
+        </h4>
+      {/if}
+
+      <form class="w-full mb-6 mt-12" on:submit={update} autocomplete="off">
+        <div class="flex flex-col mt-4">
+          <p>Listing currency</p>
+          <div class="flex flex-wrap">
+            {#each listingCurrencies as asset}
+              <label for={asset} class="ml-2 mr-6 flex items-center">
+                <input
+                  id={asset}
+                  class="form-radio h-6 w-6 mt-4 mr-2"
+                  type="radio"
+                  name={asset}
+                  value={asset}
+                  bind:group={artwork.asking_asset}
+                  on:change={clearPrice}
+                  disabled={auction_underway}
+                />
+                <p class="mb-2 whitespace-nowrap">
+                  {asset ? assetLabel(asset) : "Unlisted"}
+                </p>
+              </label>
+            {/each}
+          </div>
+        </div>
+
+        {#if artwork.asking_asset}
+          <div class="flex w-full sm:w-3/4 mb-4">
+            <div class="relative mt-1 rounded-md w-2/3 mr-6">
+              <label for="price"
+                >Price
+                <span class="tooltip">
+                  <i class="text-midblue text-xl tooltip">
+                    <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
+                  </i>
+                  <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
+                    Setting a price is optional. If you set one, your wallet
+                    will generate a partially signed atomic swap transaction. If
+                    you run an auction, this price will be the "buy it now" or
+                    buyout price that lets people skip the bidding process and
+                    immediately purchase the artwork.
+                    <br /><br />
+                    Changing the price involves sending an on-chain cancellation
+                    transaction to invalidate your half of the atomic swap transaction
+                    and will incur a transaction fee.
+                  </span>
+                </span></label
+              >
+              <input
+                id="price"
+                class="form-input block w-full pl-7 pr-12"
+                placeholder={val(artwork.asking_asset, 0)}
+                bind:value={list_price}
+                bind:this={input}
+                disabled={auction_underway}
+              />
+              <div
+                class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4"
+              >
+                {assetLabel(artwork.asking_asset)}
+              </div>
+            </div>
+          </div>
+          {#if user.id === artwork.artist_id}
+            <div class="flex w-full sm:w-3/4 mb-4">
+              <div class="relative mt-1 rounded-md w-2/3 mr-6">
+                <div class="auction-toggle">
+                  <label class="inline-flex items-center">
+                    <input
+                      class="form-checkbox h-6 w-6 mt-3"
+                      type="checkbox"
+                      bind:checked={multi_royalty_recipients_enabled}
+                      disabled={auction_underway}
+                    />
+                    <span class="ml-3 text-xl">Royalty Recipients</span>
+                    <span class="tooltip">
+                      <i class="ml-3 text-midblue text-xl tooltip">
+                        <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
+                      </i>
+                      <span
+                        class="tooltip-text bg-gray-100 shadow ml-4 rounded"
+                      >
+                        Setting royalty recipients involves transferring the
+                        artwork to a 2-of-2 multisig address with us. Our server
+                        will co-sign on transfers if the buyer pays the
+                        specified royalty to each recipient.
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            {#if multi_royalty_recipients_enabled}
+              <div class="w-full ">
+                <RoyaltyRecipientList
+                  bind:items={royalty_recipients}
+                  bind:royaltyValue={royalty_value}
+                  maxTotalRate={100}
+                  askingAsset={artwork.asking_asset}
+                  artist={artwork.artist}
+                />
+              </div>
+            {/if}
+          {/if}
+          <div class="auction-toggle">
+            <label for="auction" class="inline-flex items-center">
+              <input
+                id="auction"
+                class="form-checkbox h-6 w-6 mt-3"
+                type="checkbox"
+                bind:checked={auction_enabled}
+                disabled={auction_underway}
+              />
+              <span class="ml-3 text-xl">Create an auction</span>
+            </label>
+          </div>
+          {#if auction_enabled}
+            <div class="aution-container">
+              <div class="flex auction justify-between flex-wrap">
+                <div class="flex flex-col">
+                  <h4 class="mb-4">Auction start</h4>
+                  <div class="flex justify-between">
+                    <div class="flex flex-col mb-4 mr-6">
+                      <label for="date">Date</label>
+                      <input
+                        id="date"
+                        type="date"
+                        name="date"
+                        bind:value={start_date}
+                        disabled={auction_underway}
+                      />
+                    </div>
+                    <div class="flex flex-col mb-4">
+                      <label for="time">Time</label>
+                      <input
+                        id="time"
+                        type="time"
+                        name="time"
+                        bind:value={start_time}
+                        disabled={auction_underway}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <h4 class="mb-4">Auction end</h4>
+                  <div class="flex justify-between">
+                    <div class="flex flex-col mb-4 mr-6">
+                      <label for="date">Date</label>
+                      <input
+                        type="date"
+                        name="date"
+                        bind:value={end_date}
+                        disabled={auction_underway}
+                      />
+                    </div>
+                    <div class="flex flex-col mb-4">
+                      <label for="time">Time</label>
+                      <input
+                        type="time"
+                        name="time"
+                        bind:value={end_time}
+                        disabled={auction_underway}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col mb-4">
+                <div>
+                  <div
+                    class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm"
+                  >
+                    <label>
+                      Reserve price
+                      <span class="tooltip">
+                        <i class="ml-3 text-midblue text-xl tooltip">
+                          <Fa
+                            icon={faQuestionCircle}
+                            pull="right"
+                            class="mt-1"
+                          />
+                        </i>
+                        <span
+                          class="tooltip-text bg-gray-100 shadow ml-4 rounded"
+                        >
+                          Reserve price is the minimum price that you'll accept
+                          for the artwork. Setting one is optional.
+                        </span>
+                      </span>
+                      <input
+                        class="form-input block w-full pl-7 pr-12"
+                        placeholder="0"
+                        bind:value={reserve_price}
+                        disabled={auction_underway}
+                      />
+                      <div
+                        class="absolute inset-y-0 right-0 flex items-center mr-2 mt-8"
+                      >
+                        {assetLabel(artwork.asking_asset)}
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {/if}
+        {/if}
+        <div class="flex mt-10">
+          <button type="submit" class="primary-btn">Submit</button>
+        </div>
+      </form>
+    {/if}
+  </div>
+</div>
 
 <style>
   .container {
@@ -484,221 +699,4 @@
       top: 30px;
     }
   }
-
 </style>
-
-<div class="container mx-auto md:p-20">
-  <div class="w-full max-w-4xl mx-auto bg-white md:p-10 rounded-xl">
-    <a class="block mb-6 text-midblue" href={`/a/${artwork.slug}`}>
-      <div class="flex">
-        <Fa icon={faChevronLeft} class="my-auto mr-1" />
-        <div>Back</div>
-      </div>
-    </a>
-
-    <h2>List artwork</h2>
-
-    {#if loading}
-      <ProgressLinear />
-    {:else}
-      {#if auction_underway}
-        <h4 class="mt-12">
-          Listing cannot be updated while auction is underway
-        </h4>
-      {/if}
-
-      <form class="w-full mb-6 mt-12" on:submit={update} autocomplete="off">
-        <div class="flex flex-col mt-4">
-          <p>Listing currency</p>
-          <div class="flex flex-wrap">
-            {#each listingCurrencies as asset}
-              <label for={asset} class="ml-2 mr-6 flex items-center">
-                <input
-                  id={asset}
-                  class="form-radio h-6 w-6 mt-4 mr-2"
-                  type="radio"
-                  name={asset}
-                  value={asset}
-                  bind:group={artwork.asking_asset}
-                  on:change={clearPrice}
-                  disabled={auction_underway} />
-                <p class="mb-2 whitespace-nowrap">
-                  {asset ? assetLabel(asset) : 'Unlisted'}
-                </p>
-              </label>
-            {/each}
-          </div>
-        </div>
-
-        {#if artwork.asking_asset}
-          <div class="flex w-full sm:w-3/4 mb-4">
-            <div class="relative mt-1 rounded-md w-2/3 mr-6">
-              <label for="price">Price
-                <span class="tooltip">
-                  <i class="text-midblue text-xl tooltip">
-                    <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
-                  </i>
-                  <span class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                    Setting a price is optional. If you set one, your wallet
-                    will generate a partially signed atomic swap transaction. If
-                    you run an auction, this price will be the "buy it now" or
-                    buyout price that lets people skip the bidding process and
-                    immediately purchase the artwork.
-                    <br /><br />
-                    Changing the price involves sending an on-chain cancellation
-                    transaction to invalidate your half of the atomic swap
-                    transaction and will incur a transaction fee.
-                  </span>
-                </span></label>
-              <input
-                id="price"
-                class="form-input block w-full pl-7 pr-12"
-                placeholder={val(artwork.asking_asset, 0)}
-                bind:value={list_price}
-                bind:this={input}
-                disabled={auction_underway} />
-              <div
-                class="absolute inset-y-0 right-0 flex items-center mr-2 mt-4">
-                {assetLabel(artwork.asking_asset)}
-              </div>
-            </div>
-          </div>
-          {#if $user.id === artwork.artist_id}
-            <div class="flex w-full sm:w-3/4 mb-4">
-              <div class="relative mt-1 rounded-md w-2/3 mr-6">
-                <div class="auction-toggle">
-                  <label class="inline-flex items-center">
-                    <input
-                      class="form-checkbox h-6 w-6 mt-3"
-                      type="checkbox"
-                      bind:checked={multi_royalty_recipients_enabled}
-                      disabled={auction_underway} />
-                    <span class="ml-3 text-xl">Royalty Recipients</span>
-                    <span class="tooltip">
-                      <i class="ml-3 text-midblue text-xl tooltip">
-                        <Fa icon={faQuestionCircle} pull="right" class="mt-1" />
-                      </i>
-                      <span
-                        class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                        Setting royalty recipients involves transferring the
-                        artwork to a 2-of-2 multisig address with us. Our server
-                        will co-sign on transfers if the buyer pays the
-                        specified royalty to each recipient.
-                      </span>
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            {#if multi_royalty_recipients_enabled}
-              <div class="w-full ">
-                <RoyaltyRecipientList
-                  bind:items={royalty_recipients}
-                  bind:royaltyValue={royalty_value}
-                  maxTotalRate={100}
-                  askingAsset={artwork.asking_asset}
-                  artist={artwork.artist} />
-              </div>
-            {/if}
-          {/if}
-          <div class="auction-toggle">
-            <label for="auction" class="inline-flex items-center">
-              <input
-                id="auction"
-                class="form-checkbox h-6 w-6 mt-3"
-                type="checkbox"
-                bind:checked={auction_enabled}
-                disabled={auction_underway} />
-              <span class="ml-3 text-xl">Create an auction</span>
-            </label>
-          </div>
-          {#if auction_enabled}
-            <div class="aution-container">
-              <div class="flex auction justify-between flex-wrap">
-                <div class="flex flex-col">
-                  <h4 class="mb-4">Auction start</h4>
-                  <div class="flex justify-between">
-                    <div class="flex flex-col mb-4 mr-6">
-                      <label for="date">Date</label>
-                      <input
-                        id="date"
-                        type="date"
-                        name="date"
-                        bind:value={start_date}
-                        disabled={auction_underway} />
-                    </div>
-                    <div class="flex flex-col mb-4">
-                      <label for="time">Time</label>
-                      <input
-                        id="time"
-                        type="time"
-                        name="time"
-                        bind:value={start_time}
-                        disabled={auction_underway} />
-                    </div>
-                  </div>
-                </div>
-                <div class="flex flex-col">
-                  <h4 class="mb-4">Auction end</h4>
-                  <div class="flex justify-between">
-                    <div class="flex flex-col mb-4 mr-6">
-                      <label for="date">Date</label>
-                      <input
-                        type="date"
-                        name="date"
-                        bind:value={end_date}
-                        disabled={auction_underway} />
-                    </div>
-                    <div class="flex flex-col mb-4">
-                      <label for="time">Time</label>
-                      <input
-                        type="time"
-                        name="time"
-                        bind:value={end_time}
-                        disabled={auction_underway} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col mb-4">
-                <div>
-                  <div
-                    class="mt-1 relative w-1/2 xl:w-1/3 rounded-md shadow-sm">
-                    <label>
-                      Reserve price
-                      <span class="tooltip">
-                        <i class="ml-3 text-midblue text-xl tooltip">
-                          <Fa
-                            icon={faQuestionCircle}
-                            pull="right"
-                            class="mt-1" />
-                        </i>
-                        <span
-                          class="tooltip-text bg-gray-100 shadow ml-4 rounded">
-                          Reserve price is the minimum price that you'll accept
-                          for the artwork. Setting one is optional.
-                        </span>
-                      </span>
-                      <input
-                        class="form-input block w-full pl-7 pr-12"
-                        placeholder="0"
-                        bind:value={reserve_price}
-                        disabled={auction_underway} />
-                      <div
-                        class="absolute inset-y-0 right-0 flex items-center mr-2 mt-8">
-                        {assetLabel(artwork.asking_asset)}
-                      </div>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          {/if}
-        {/if}
-        <div class="flex mt-10">
-          <button type="submit" class="primary-btn">Submit</button>
-        </div>
-      </form>
-    {/if}
-  </div>
-</div>
