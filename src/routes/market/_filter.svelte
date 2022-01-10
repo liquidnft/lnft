@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { ToggleSwitch } from "$comp";
   import { filterCriteria as fc } from "$lib/store";
-
   export let showFilters;
 </script>
 
@@ -47,7 +46,6 @@
     justify-content: space-around;
     margin-top: 20px;
   }
-
   .switch-container div {
     margin: 0px 20px 20px 0;
   }
@@ -57,7 +55,6 @@
       display: none;
       margin-top: -10px;
     }
-
     .showFilters {
       display: block !important;
       width: 100%;

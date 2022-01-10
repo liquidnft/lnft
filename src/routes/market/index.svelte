@@ -1,4 +1,5 @@
 <script context="module">
+	import { asset } from './../../lib/store.js';
   export async function load({ fetch }) {
     const r = await fetch("/artworks.json?limit=5000").then((r) => r.json());
 
@@ -84,7 +85,7 @@
   <h2 class="md:mb-0">Market</h2>
   {#if $user && $user.is_artist}
     <a href="/a/create" class="primary-btn" data-cy="new-artwork"
-      >Submit a new artwork</a
+      >Submit a new asset</a
     >
   {/if}
 </div>
@@ -124,7 +125,7 @@
       width: 90%;
       appearance: none;
       border: 0;
-      border-bottom: 1px solid #6ed8e0;
+      border-bottom: 1px solid #cedc21;
     }
   }
 

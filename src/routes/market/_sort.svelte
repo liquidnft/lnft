@@ -1,7 +1,6 @@
 <script>
   import { differenceInMilliseconds } from "date-fns";
   import { sortCriteria } from "$lib/store";
-
 </script>
 
 <div class="sort-container">
