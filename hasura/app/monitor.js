@@ -256,7 +256,7 @@ let getTxns = async (address, last) => {
   let txns = [...curr];
   while (curr.length === 25 && !curr.find((tx) => tx.txid === last)) {
     curr = await electrs
-      .url(`/address/${address}/txs/${curr[24].txid}`)
+      .url(`/address/${address}/txs/chain/${curr[24].txid}`)
       .get()
       .json();
     txns.push(...curr);
@@ -273,6 +273,7 @@ let updateTransactions = async (address, user_id) => {
   if (transactions.length) ({ hash: last } = transactions[0]);
 
   let txns = (await getTxns(address, last)).reverse();
+  if (txns.length) console.log(`updating ${txns.length} transactions for ${address}`)
 
   for (let i = 0; i < txns.length; i++) {
     let { txid, vin, vout, status } = txns[i];
@@ -343,6 +344,8 @@ let updateTransactions = async (address, user_id) => {
       }
     }
   }
+
+  if (txns.length) console.log("done");
 
   return txns;
 };
