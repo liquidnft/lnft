@@ -3,6 +3,7 @@ const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
 const reverse = require("buffer-reverse");
 const fs = require("fs");
 const { networks, Psbt } = require("liquidjs-lib");
+const sleep = (n) => new Promise((r) => setTimeout(r, n));
 
 const {
   cancelBid,
@@ -285,9 +286,17 @@ let updateTransactions = async (address, user_id) => {
   for (let i = 0; i < txns.length; i++) {
     let { txid, vin, vout, status } = txns[i];
 
-    let hex =
-      hexcache[txid] || (await electrs.url(`/tx/${txid}/hex`).get().text());
-    hexcache[txid] = hex;
+    let hex;
+    try {
+      hex =
+        hexcache[txid] || (await electrs.url(`/tx/${txid}/hex`).get().text());
+      hexcache[txid] = hex;
+    } catch (e) {
+      await sleep(3000);
+      hex =
+        hexcache[txid] || (await electrs.url(`/tx/${txid}/hex`).get().text());
+      hexcache[txid] = hex;
+    }
 
     let total = {};
 
