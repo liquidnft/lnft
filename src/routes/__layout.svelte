@@ -2,7 +2,7 @@
   import { prerendering } from "$app/env";
   import { get } from "$lib/api";
 
-  export async function load({ fetch, page, session }) {
+  export async function load({ fetch, url, session }) {
     if (prerendering)
       return {
         props: {
@@ -17,7 +17,7 @@
       session &&
       session.user &&
       !session.user.wallet_initialized &&
-      !["/wallet", "/logout"].find((p) => page.path.includes(p))
+      !["/wallet", "/logout"].find((p) => url.pathname.includes(p))
     )
       return {
         status: 302,
@@ -93,7 +93,7 @@
 
 <svelte:window bind:scrollY={y} />
 
-{#if !($page.path.includes("/a/") && $page.path.split("/").length === 3)}
+{#if !($page.url.pathname.includes("/a/") && $page.url.pathname.split("/").length === 3)}
   <Head metadata={branding.meta} />
 {/if}
 

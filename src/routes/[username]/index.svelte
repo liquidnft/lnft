@@ -1,8 +1,8 @@
 <script context="module">
   import { get } from "$lib/api";
-  export async function load({ fetch, page }) {
+  export async function load({ fetch, params }) {
     try {
-      const { subject } = await get(`/${page.params.username}.json`, fetch);
+      const { subject } = await get(`/${params.username}.json`, fetch);
 
       return {
         props: {

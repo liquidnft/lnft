@@ -1,12 +1,12 @@
 <script context="module">
-  export async function load({ fetch, page, session }) {
+  export async function load({ fetch, params: { slug }, session }) {
     if (!(session && session.user))
       return {
         status: 302,
         redirect: "/login",
       };
 
-    const props = await fetch(`/artworks/${page.params.slug}.json`).then((r) =>
+    const props = await fetch(`/artworks/${slug}.json`).then((r) =>
       r.json()
     );
 
@@ -38,7 +38,6 @@
   import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
   import { Psbt } from "liquidjs-lib";
   import { onMount, tick } from "svelte";
-  import { page } from "$app/stores";
   import {
     updateArtwork,
     updateArtworkWithRoyaltyRecipients,
