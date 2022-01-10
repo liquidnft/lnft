@@ -21,7 +21,13 @@ const enqueue = (next) => (url, opts) =>
   new Promise((r) => queue.push(() => r(next(url, opts))) && ddequeue());
 
 let timer;
-const dequeue = () => queue.length && queue.shift()() && ddequeue();
+const dequeue = () => {
+  if (queue.length) {
+    queue.shift()();
+    ddequeue();
+  }
+};
+
 const ddequeue = () => {
   clearTimeout(timer);
   timer = setTimeout(dequeue, DELAY);
