@@ -1,6 +1,6 @@
 <script>
   import { browser } from "$app/env";
-  import { Card, Pagination } from "$comp";
+  import { Card } from "$comp";
   import { onMount, tick } from "svelte";
   import { offset } from "$lib/store";
 
