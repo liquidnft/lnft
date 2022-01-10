@@ -1,4 +1,4 @@
-const { api, electrs, q } = require("./api");
+const { api, q, lnft } = require("./api");
 const { broadcast } = require("./wallet");
 const { Psbt } = require("liquidjs-lib");
 const { compareAsc, parseISO } = require("date-fns");
@@ -17,8 +17,6 @@ const {
 } = require("./queries");
 
 const crypto = require("crypto");
-const wretch = require("wretch");
-const { SERVER_URL } = process.env;
 
 app.post("/cancel", auth, async (req, res) => {
   try {
@@ -45,11 +43,20 @@ app.post("/cancel", auth, async (req, res) => {
 app.post("/transfer", auth, async (req, res) => {
   try {
     let { address, transaction } = req.body;
-    await new Promise((r) => setTimeout(r, 2000));
 
-    let utxos = await electrs.url(`/address/${address}/utxo`).get().json();
+    let utxos = await lnft.url(`/address/${address}/utxo`).get().json();
+    let attempts = 0;
+    let received = () => utxos.find((tx) => tx.asset === transaction.asset)
 
-    if (utxos.find((tx) => tx.asset === transaction.asset)) {
+    console.log("transferring", transaction);
+
+    while (!received() && attempts < 5) {
+      await new Promise((r) => setTimeout(r, 2000));
+      utxos = await lnft.url(`/address/${address}/utxo`).get().json();
+      attempts++;
+    }
+
+    if (received()) {
       transaction.user_id = req.body.id;
       transaction.type = "receipt";
 
@@ -70,7 +77,7 @@ app.post("/viewed", async (req, res) => {
     let { address, multisig } = owner;
 
     let find = async (a) =>
-      (await electrs.url(`/address/${a}/utxo`).get().json()).find(
+      (await lnft.url(`/address/${a}/utxo`).get().json()).find(
         (tx) => tx.asset === asset
       );
 
@@ -101,11 +108,9 @@ app.post("/claim", auth, async (req, res) => {
     let { address, multisig } = user;
 
     let utxos = [
-      ...(await electrs.url(`/address/${address}/utxo`).get().json()),
-      ...(await electrs.url(`/address/${multisig}/utxo`).get().json()),
+      ...(await lnft.url(`/address/${address}/utxo`).get().json()),
+      ...(await lnft.url(`/address/${multisig}/utxo`).get().json()),
     ];
-
-    let held = !!utxos.find((tx) => tx.asset === asset);
 
     res.send(await q(setOwner, { id, owner_id: user.id }));
   } catch (e) {

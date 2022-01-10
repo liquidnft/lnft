@@ -1,4 +1,4 @@
-const { api, ipfs, q, electrs, registry, w } = require("./api");
+const { api, ipfs, q, electrs, registry } = require("./api");
 const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
 const reverse = require("buffer-reverse");
 const fs = require("fs");
@@ -33,6 +33,7 @@ const network = process.env.LIQUID_ELECTRS_URL.includes("blockstream")
 
 const btc = network.assetHash;
 const txcache = {};
+const hexcache = {};
 
 const updateAvatars = async () => {
   fs.readdir("/export", async (err, files) => {
@@ -154,7 +155,6 @@ const checkTransactions = async () => {
         .get()
         .json();
 
-
       if (confirmed) {
         let {
           update_transactions_by_pk: { artwork_id, type, bid },
@@ -168,7 +168,8 @@ const checkTransactions = async () => {
             created_at: formatISO(new Date(1000 * block_time)),
           });
 
-        if (type === "accept") await q(setOwner, { id: artwork_id, owner_id: bid.user_id });
+        if (type === "accept")
+          await q(setOwner, { id: artwork_id, owner_id: bid.user_id });
       }
     }
   } catch (e) {
@@ -252,7 +253,12 @@ app.get("/transactions", auth, async (req, res) => {
 });
 
 let getTxns = async (address, last) => {
-  let curr = await electrs.url(`/address/${address}/txs`).get().json();
+  let curr = await electrs
+    .url(`/address/${address}/txs`)
+    .get()
+    .notFound(console.log)
+    .json();
+
   let txns = [...curr];
   while (curr.length === 25 && !curr.find((tx) => tx.txid === last)) {
     curr = await electrs
@@ -273,12 +279,15 @@ let updateTransactions = async (address, user_id) => {
   if (transactions.length) ({ hash: last } = transactions[0]);
 
   let txns = (await getTxns(address, last)).reverse();
-  if (txns.length) console.log(`updating ${txns.length} transactions for ${address}`)
+  if (txns.length)
+    console.log(`updating ${txns.length} transactions for ${address}`);
 
   for (let i = 0; i < txns.length; i++) {
     let { txid, vin, vout, status } = txns[i];
 
-    let hex = await electrs.url(`/tx/${txid}/hex`).get().text();
+    let hex =
+      hexcache[txid] || (await electrs.url(`/tx/${txid}/hex`).get().text());
+    hexcache[txid] = hex;
 
     let total = {};
 
@@ -330,13 +339,7 @@ let updateTransactions = async (address, user_id) => {
       try {
         let {
           insert_transactions_one: { id },
-        } = await q(createTransaction, {
-          transaction,
-          hash: txid,
-          user_id,
-          asset,
-          address,
-        });
+        } = await q(createTransaction, { transaction });
         transactions.push(transaction);
       } catch (e) {
         console.log(e);
@@ -356,9 +359,11 @@ let scanUtxos = async (address) => {
   let { id } = users[0];
 
   await updateTransactions(address, id);
+
   let { transactions } = await q(getTransactions, { id });
 
   let { utxos } = await q(getUtxos, { address });
+
   let outs = utxos.map(
     ({
       id,
@@ -411,8 +416,7 @@ let scanUtxos = async (address) => {
       );
 
       spent.map(
-        ({ id }) =>
-          id && q(deleteUtxo, { id }).then().catch(console.log)
+        ({ id }) => id && q(deleteUtxo, { id }).then().catch(console.log)
       );
     });
   });
