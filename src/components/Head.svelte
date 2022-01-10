@@ -21,7 +21,7 @@
     <meta property="og:video:height" content="640" />
     <meta property="og:video:width" content="385" />
     <meta name="twitter:card" content="player" />
-    <meta name="twitter:player" content={host + $page.path} />
+    <meta name="twitter:player" content={host + $page.url.pathname} />
   {:else if metadata.image}
     <meta property="og:image" content={metadata.image} />
     <meta name="twitter:image" content={metadata.image} />
@@ -29,7 +29,7 @@
   {/if}
 
 
-  <meta property="og:url" content={host + $page.path} />
+  <meta property="og:url" content={host + $page.url.pathname} />
   <meta name="twitter:site" content={metadata.twitter.site} />
   <meta name="twitter:creator" content={metadata.twitter.creator} />
 

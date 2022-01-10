@@ -7,7 +7,7 @@ import { addSeconds } from "date-fns";
 import { prerendering } from "$app/env";
 
 export async function handle({ request, resolve }) {
-  const { headers, path } = request;
+  const { headers, url: { pathname }} = request;
   const cookies = cookie.parse(headers.cookie || "");
   let { refresh_token, token: jwt } = cookies;
 
@@ -17,7 +17,7 @@ export async function handle({ request, resolve }) {
     decode(jwt);
   } catch (e) {
     try {
-      if (!path.includes('.json') && refresh_token) {
+      if (!pathname.includes('.json') && refresh_token) {
         let res = await hbp
           .headers({ cookie: `refresh_token=${refresh_token}` })
           .url("/auth/token/refresh")
@@ -70,7 +70,7 @@ export async function handle({ request, resolve }) {
 
   const response = await resolve(request);
 
-  if (setCookie && request.path !== "/auth/login")
+  if (setCookie && pathname !== "/auth/login")
     response.headers["set-cookie"] = setCookie;
 
   return response;
