@@ -4,12 +4,7 @@
   import branding from "$lib/branding";
   import { host } from "$lib/utils";
 
-  export async function load({
-    fetch,
-    page: {
-      params: { slug },
-    },
-  }) {
+  export async function load({ fetch, params: { slug } }) {
     const props = await fetch(`/artworks/${slug}.json`).then((r) => r.json());
 
     let { artwork } = props;
