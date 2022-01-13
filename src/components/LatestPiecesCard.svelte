@@ -30,7 +30,7 @@
           <div
             class="my-auto cursor-pointer"
             on:click|stopPropagation={() =>
-              goto(`/u/${artwork.artist.username}`)}
+              goto(`/${artwork.artist.username}`)}
           >
             <Avatar user={transaction.artwork.artist} size="large" />
           </div>
@@ -38,7 +38,7 @@
             <p
               class="cursor-pointer hover:underline"
               on:click|stopPropagation={() =>
-                goto(`/u/${artwork.artist.username}`)}
+                goto(`/${artwork.artist.username}`)}
             >
               {artwork.artist.username}
             </p>

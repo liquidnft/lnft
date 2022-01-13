@@ -83,7 +83,7 @@
               <div class="price">{val(artwork.bid.amount)} {ticker}</div>
               <div class="text-xs font-medium">
                 Current bid by
-                <a href={`/u/${artwork.bid.user.username}`} class="secondary-color"
+                <a href={`/${artwork.bid.user.username}`} class="secondary-color"
                   >@{artwork.bid.user.username}</a
                 >
               </div>
@@ -92,7 +92,7 @@
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div class="text-sm">
-            <a href={`/u/${artwork.artist.username}`}>
+            <a href={`/${artwork.artist.username}`}>
               <div class="flex">
                 <Avatar user={artwork.artist} size="xs" />
                 <div class="mx-1 w-3/4">
@@ -105,7 +105,7 @@
 
           {#if artwork.owner.id !== artwork.artist.id}
             <div class="text-sm">
-              <a href={`/u/${artwork.artist.username}`}>
+              <a href={`/${artwork.artist.username}`}>
                 <div class="flex">
                   <Avatar user={artwork.owner} size="xs" />
                   <div class="ml-2 w-3/4">

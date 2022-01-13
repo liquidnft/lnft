@@ -16,7 +16,7 @@
 
     <div class="wallet-nav flex flex-col uppercase">
       {#if $user.wallet_initialized}
-        <a href={`/u/${$user.username}`}>
+        <a href={`/${$user.username}`}>
           <div
             class="flex flex-wrap justify-center sm:justify-start items-center sm:items-start h-full"
           >

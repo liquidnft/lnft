@@ -332,7 +332,7 @@
       </div>
 
       <div class="flex flex-wrap justify-between text-left">
-        <a href={`/u/${artwork.artist.username}`}>
+        <a href={`/${artwork.artist.username}`}>
           <div class="flex mb-6">
             <Avatar user={artwork.artist} />
             <div class="ml-2 secondary-color">
@@ -342,7 +342,7 @@
           </div>
         </a>
         {#if artwork.artist_id !== artwork.owner_id}
-          <a href={`/u/${artwork.owner.username}`}>
+          <a href={`/${artwork.owner.username}`}>
             <div class="flex mb-6 secondary-color">
               <Avatar user={artwork.owner} />
               <div class="ml-2">

@@ -5,7 +5,7 @@
 
 {#if transaction}
   <div class:line-through={transaction.type.includes("cancelled")} class="break-words">
-    <a href={`/u/${transaction.user.username}`} class="secondary-color"
+    <a href={`/${transaction.user.username}`} class="secondary-color"
       >@{transaction.user.username}</a
     >
     {#if transaction.type.includes("bid")}
@@ -45,7 +45,7 @@
       {val(transaction.asset, transaction.amount)}
       {ticker(transaction.asset)}
       from
-      <a href={`/u/${transaction.bid.user.username}`} class="secondary-color"
+      <a href={`/${transaction.bid.user.username}`} class="secondary-color"
         >@{transaction.bid.user.username}</a
       >
       for

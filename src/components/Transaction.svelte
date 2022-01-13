@@ -219,7 +219,7 @@
                       </div>
                       <div class="my-auto ml-2 truncate">
                         <a
-                          href={`/u/${username.replace(" 2of2", "")}`}
+                          href={`/${username.replace(" 2of2", "")}`}
                           class="secondary-color"
                         >
                           {username}
@@ -268,7 +268,7 @@
                       </div>
                       <div class="my-auto ml-2 truncate">
                         <a
-                          href={`/u/${username.replace(" 2of2", "")}`}
+                          href={`/${username.replace(" 2of2", "")}`}
                           class="secondary-color"
                         >
                           {username}
