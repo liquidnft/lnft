@@ -33,21 +33,7 @@ module.exports = {
       id
     }
   }`,
-  createTransaction: `mutation create_transaction(
-    $transaction: transactions_insert_input!,
-    $hash: String!,
-    $asset: String!,
-    $user_id: uuid!,
-    $address: String!
-  ) {
-    delete_transactions(where: { 
-      hash: { _eq: $hash },
-      asset: { _eq: $asset },
-      user_id: { _eq: $user_id },
-      address: { _eq: $address },
-    }) {
-      affected_rows
-    }
+  createTransaction: `mutation create_transaction($transaction: transactions_insert_input!) {
     insert_transactions_one(object: $transaction) {
       id
     }
