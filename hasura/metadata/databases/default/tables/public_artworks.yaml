@@ -19,6 +19,13 @@ array_relationships:
       table:
         name: favorites
         schema: public
+- name: featureds
+  using:
+    foreign_key_constraint_on:
+      column: artwork_id
+      table:
+        name: featured
+        schema: public
 - name: offers
   using:
     manual_configuration:

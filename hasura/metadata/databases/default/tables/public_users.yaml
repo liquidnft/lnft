@@ -85,6 +85,20 @@ array_relationships:
       table:
         name: samples
         schema: public
+- name: transactions
+  using:
+    foreign_key_constraint_on:
+      column: user_id
+      table:
+        name: transactions
+        schema: public
+- name: utxos
+  using:
+    foreign_key_constraint_on:
+      column: user_id
+      table:
+        name: utxos
+        schema: public
 computed_fields:
 - comment: ""
   definition:
@@ -150,7 +164,6 @@ select_permissions:
     - location
     - mnemonic
     - multisig
-    - prompt_sign
     - pubkey
     - twitter
     - updated_at
@@ -196,7 +209,6 @@ update_permissions:
     columns:
     - is_artist
     - is_denied
-    - prompt_sign
     filter: {}
   role: approver
 - permission:
@@ -215,7 +227,6 @@ update_permissions:
     - location
     - mnemonic
     - multisig
-    - prompt_sign
     - pubkey
     - twitter
     - username

@@ -75,6 +75,7 @@ const isSpent = async ({ ins }, artwork_id) => {
     let { transactions } = await q(getLastTransaction, { artwork_id });
 
     if (
+      !transactions.length ||
       compareAsc(
         parseISO(transactions[0].created_at),
         subMinutes(new Date(), 2)
@@ -108,6 +109,7 @@ const checkBids = async () => {
     for (let i = 0; i < activebids.length; i++) {
       let tx = activebids[i];
 
+      await sleep(1000);
       let p = Psbt.fromBase64(tx.psbt);
       try {
         if (await isSpent(p.data.globalMap.unsignedTx.tx, tx.artwork_id))
