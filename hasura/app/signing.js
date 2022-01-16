@@ -145,13 +145,13 @@ const check = async (psbt) => {
             throw new Error("Royalty not paid");
         }
 
-        if (
-          outputs.find(
-            (o) => o.asset === asset && !multisig.includes(o.address)
-          )
-        ) {
-          throw new Error("Unrecognized recipient address");
-        }
+        // if (
+        //   outputs.find(
+        //     (o) => o.asset === asset && !multisig.includes(o.address)
+        //   )
+        // ) {
+        //   throw new Error("Unrecognized recipient address");
+        // }
       }
     }
   );
