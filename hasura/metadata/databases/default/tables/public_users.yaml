@@ -136,6 +136,7 @@ select_permissions:
     - is_denied
     - location
     - multisig
+    - prompt_sign
     - pubkey
     - twitter
     - username
@@ -164,6 +165,7 @@ select_permissions:
     - location
     - mnemonic
     - multisig
+    - prompt_sign
     - pubkey
     - twitter
     - updated_at
@@ -209,6 +211,7 @@ update_permissions:
     columns:
     - is_artist
     - is_denied
+    - prompt_sign
     filter: {}
   role: approver
 - permission:

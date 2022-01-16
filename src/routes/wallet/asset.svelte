@@ -16,7 +16,6 @@
   import { page } from "$app/stores";
   import { asset, assets, balances, user } from "$lib/store";
   import { ProgressLinear } from "$comp";
-  import { requireLogin } from "$lib/auth";
   import { getBalances } from "$lib/wallet";
   import { btc, cad, usd, val } from "$lib/utils";
   import { border, bg, outer } from "./_colors";
