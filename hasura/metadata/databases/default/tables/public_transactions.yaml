@@ -5,6 +5,13 @@ object_relationships:
 - name: artwork
   using:
     foreign_key_constraint_on: artwork_id
+- name: artworkById
+  using:
+    foreign_key_constraint_on:
+      column: bid_id
+      table:
+        name: artworks
+        schema: public
 - name: bid
   using:
     foreign_key_constraint_on: bid_id
@@ -16,6 +23,21 @@ object_relationships:
       insertion_order: null
       remote_table:
         name: users
+        schema: public
+array_relationships:
+- name: transactions
+  using:
+    foreign_key_constraint_on:
+      column: bid_id
+      table:
+        name: transactions
+        schema: public
+- name: utxos
+  using:
+    foreign_key_constraint_on:
+      column: transaction_id
+      table:
+        name: utxos
         schema: public
 insert_permissions:
 - permission:

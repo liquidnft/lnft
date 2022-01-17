@@ -25,25 +25,19 @@ export const query = async (query, variables) => {
 export const hbp = wretch().url(import.meta.env.VITE_HBP);
 export const serverApi = wretch().url(import.meta.env.VITE_APP);
 
-export const get = (url, fetch) =>
-  wretch()
-    .polyfills({ fetch })
-    .url(url)
-    .get();
+export const get = (url, fetch) => wretch().polyfills({ fetch }).url(url).get().json();
 
 export const post = (url, body, fetch) =>
-  wretch()
-    .polyfills({ fetch })
-    .url(url)
-    .post(body);
+  wretch().polyfills({ fetch }).url(url).post(body);
 
 export const getQ = (defaultHeaders) => {
   const fn = async (query, variables, headers) => {
-    let { data, errors } = await wretch()
+    let r = await wretch()
       .url(import.meta.env.VITE_HASURA)
       .headers(headers)
       .post({ query, variables })
       .json();
+    let { data, errors } = r;
     if (errors) throw new Error(errors[0].message);
     return data;
   };

@@ -1,4 +1,5 @@
 <script>
+  import { session } from "$app/stores";
   import { Avatar, Search } from "$comp";
   import { show, user, token } from "$lib/store";
   import branding from "$lib/branding";
@@ -22,13 +23,13 @@
     ><button on:click={toggle}>Blog</button></a
   >
   <a href="/faq"><button on:click={toggle}>FAQ</button></a>
-  {#if $user}
-    {#if $user.is_admin}
+  {#if $session.user}
+    {#if $session.user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
     {/if}
-    <a href={`/${$user.username}`}>
+    <a href={`/${$session.user.username}`}>
       <button on:click={toggle} class="flex">
-        <Avatar user={$user} />
+        <Avatar user={$session.user} />
       </button></a
     >
   {:else}<a href="/login"><button on:click={toggle}>Sign In</button></a>{/if}

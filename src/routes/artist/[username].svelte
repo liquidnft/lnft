@@ -1,10 +1,8 @@
 <script context="module">
-  export async function load({ fetch, page }) {
-    let { username } = page.params;
+  export async function load({ fetch, params: { username } }) {
     const r = await fetch(`/artworks/username/${username}.json`).then((r) => r.json());
 
     return {
-      maxage: 720,
       props: {
         count: r.count,
         artworks: r.artworks,
@@ -26,5 +24,5 @@
 
 <div class="container mx-auto mt-10 md:mt-20">
   <h2 class="mb-10">{username}</h2>
-  <Gallery {artworks} bind:count />
+  <Gallery filtered={artworks} bind:count />
 </div>

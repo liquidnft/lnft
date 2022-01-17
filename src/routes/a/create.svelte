@@ -128,17 +128,11 @@
 
     await requirePassword();
 
-    try {
-      contract = await createIssuance(artwork, domain, tx);
+    contract = await createIssuance(artwork, domain, tx);
 
-      await sign();
-      await broadcast(true);
-      await tick();
-    } catch (e) {
-      console.log(e, "wee", e.message.includes("Insufficient"));
-      if (e.message.includes("Insufficient")) throw e;
-      throw new Error("Issuance failed: " + e.message);
-    }
+    await sign();
+    await broadcast(true);
+    await tick();
 
     tx = $psbt.extractTransaction();
     artwork.asset = parseAsset(

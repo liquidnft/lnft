@@ -1,9 +1,8 @@
 <script context="module">
-  export async function load({ fetch, page }) {
+  export async function load({ fetch }) {
     const props = await fetch(`/artworks/recent.json`).then((r) => r.json());
 
     return {
-      maxage: 90,
       props,
     };
   }
@@ -21,15 +20,14 @@
   import { prefetch } from "$app/navigation";
   import { browser } from "$app/env";
 
-  onMount(() => {
-    if (browser) prefetch("/market");
-  });
+  onMount(() => browser && prefetch("/market"));
 
   export let featured;
   export let recent;
   export let latest;
 
   let current = 0;
+  $: artwork = featured && featured[current] && featured[current].artwork;
 
   let interval = setInterval(() => {
     if (!featured) return;
@@ -38,8 +36,89 @@
   }, 6000);
 
   onDestroy(() => clearInterval(interval));
-
 </script>
+
+<div class="flex header-container mx-auto justify-center marg-bottom">
+  <div class="header text-center">
+    <h1 class="text-left md:text-center md:w-full">
+      {branding.projectName}
+      <br />digital art
+    </h1>
+    <h5 class="md:max-w-lg mx-auto text-left md:text-center">
+      Upload, collect, and transact rare digital art on the Liquid Network
+    </h5>
+    <a class="primary-btn" href={`/market`}>Start exploring</a>
+  </div>
+</div>
+
+{#if artwork}
+  <div class="flex secondary-header marg-bottom">
+    <div
+      class="container flex mx-auto flex-col justify-end md:justify-center secondary-header-text m-10 pl-6 z-10"
+    >
+      <div class="blur-bg">
+        <h2>{artwork.artist.username}</h2>
+        <p>
+          {artwork.title}
+          <a href="/a/{artwork.slug}">
+            <button
+              class="button-transparent header-button border mt-10"
+              style="border-color: white; color: white"
+            >
+              View Artwork</button
+            ></a
+          >
+        </p>
+      </div>
+    </div>
+
+    {#if artwork.filetype.includes("video")}
+      <video
+        in:fade
+        out:fade
+        class="lazy cover absolute secondary-header"
+        autoplay
+        muted
+        playsinline
+        loop
+        src={`/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`}
+        :key={featured[current].id}
+      />
+    {:else}
+      <img
+        in:fade
+        out:fade
+        class="lazy cover absolute secondary-header"
+        alt={artwork.title}
+        src={`/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`}
+      />
+    {/if}
+  </div>
+{/if}
+
+<div class="container mx-auto px-10">
+  <h3>Recent Activity</h3>
+</div>
+<div class="container mx-auto flex overflow-x-auto">
+  {#each recent as transaction}
+    <RecentActivityCard {transaction} />
+  {/each}
+</div>
+<div class="container more marg-bottom">
+  <a class="secondary-btn" href={"/activity"}>View more</a>
+</div>
+
+<div class="container mx-auto px-10">
+  <h3>Latest Pieces</h3>
+</div>
+<div class="container mx-auto flex pb-1 overflow-x-auto">
+  {#each latest as transaction}
+    <LatestPiecesCard {transaction} />
+  {/each}
+</div>
+<div class="container more marg-bottom">
+  <a class="secondary-btn" href={"/market"}>View gallery</a>
+</div>
 
 <div class="flex header-container mx-auto justify-center marg-bottom">
   <div class="header text-center">

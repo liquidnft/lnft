@@ -4,12 +4,7 @@
   import branding from "$lib/branding";
   import { host } from "$lib/utils";
 
-  export async function load({
-    fetch,
-    page: {
-      params: { slug },
-    },
-  }) {
+  export async function load({ fetch, params: { slug } }) {
     const props = await fetch(`/artworks/${slug}.json`).then((r) => r.json());
 
     let { artwork } = props;
@@ -36,14 +31,17 @@
       metadata.keywords + " " + artwork.tags.map((t) => t.tag).join(" ");
     metadata.description = artwork.description;
 
-    if (artwork.filetype.includes("video"))
-      metadata.video = `https://${host}/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
-    else metadata.image = `${import.meta.env.VITE_HOST}/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`;
+    let type = "image";
+    metadata[type] = `${host}/api/public/${artwork.filename}.png`;
+    if (artwork.filetype.includes("video")) type = "video";
+
+    metadata[type] = `${host}/api/public/${artwork.filename}.${
+      artwork.filetype.split("/")[1]
+    }`;
 
     props.metadata = metadata;
 
     return {
-      maxage: 90,
       props,
     };
   }
@@ -85,7 +83,6 @@
   } from "$lib/wallet";
   import { Psbt } from "liquidjs-lib";
   import { api, query } from "$lib/api";
-  import { SocialShare } from "$comp";
 
   export let artwork, others, metadata, views;
 
@@ -469,8 +466,8 @@
 <div class="container mx-auto mt-10 md:mt-20">
   <div class="flex flex-wrap">
     <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
-      <h1 class="text-3xl font-black primary-color">
-        {artwork.title || 'Untitled'}
+      <h1 class="text-3xl font-black primary-color break-words">
+        {artwork.title || "Untitled"}
       </h1>
       <div class="flex mt-4 mb-6">
         <div class="my-auto">
@@ -493,7 +490,7 @@
       </div>
 
       <div class="flex flex-wrap justify-between text-left">
-        <a href={`/u/${artwork.artist.username}`}>
+        <a href={`/${artwork.artist.username}`}>
           <div class="flex mb-6">
             <Avatar user={artwork.artist} />
             <div class="ml-2 secondary-color">
@@ -502,17 +499,19 @@
             </div>
           </div>
         </a>
-        <a href={`/u/${artwork.owner.username}`}>
-          <div class="flex mb-6 secondary-color">
-            <Avatar user={artwork.owner} />
-            <div class="ml-2">
-              <div>@{artwork.owner.username}</div>
-              <div class="text-xs text-gray-600">
-                {artwork.held ? '' : 'Presumed '}Owner
+        {#if artwork.artist_id !== artwork.owner_id}
+          <a href={`/${artwork.owner.username}`}>
+            <div class="flex mb-6 secondary-color">
+              <Avatar user={artwork.owner} />
+              <div class="ml-2">
+                <div>@{artwork.owner.username}</div>
+                <div class="text-xs text-gray-600">
+                  {artwork.held ? "" : "Presumed "}Owner
+                </div>
               </div>
             </div>
-          </div>
-        </a>
+          </a>
+        {/if}
       </div>
 
       <div class="mobileImage">
@@ -557,13 +556,14 @@
             class="block text-center text-sm secondary-btn w-full"
             class:disabled>List</a>
         </div>
-        {#if artwork.held === 'multisig' && !artwork.has_royalty && !artwork.auction_end}
+        {#if artwork.held === "multisig" && !artwork.has_royalty && !artwork.auction_end}
           <div class="w-full mb-2">
             <a
               href="/"
               on:click|preventDefault={release}
               class="block text-center text-sm secondary-btn w-full"
-              class:disabled>Release</a>
+              class:disabled>Release</a
+            >
           </div>
         {/if}
         <div class="w-full mb-2">

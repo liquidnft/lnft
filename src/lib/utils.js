@@ -261,14 +261,14 @@ const linkify = (text) => {
 };
 
 function post(endpoint, data) {
-	return fetch(endpoint, {
-		method: 'POST',
-		credentials: 'include',
-		body: JSON.stringify(data || {}),
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	});
+  return fetch(endpoint, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(data || {}),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 export {

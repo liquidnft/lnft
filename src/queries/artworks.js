@@ -14,6 +14,7 @@ export const marketFields = `
   slug
   views
   created_at
+  transferred_at
   owner {
     id
     username
@@ -32,7 +33,7 @@ export const marketFields = `
     } 
     amount 
   }
-`
+`;
 
 export const fields = `
   id,
@@ -128,7 +129,6 @@ export const txFields = `
   } 
 `;
 
-
 export const getFeatured = `query {
  featured {
     id
@@ -144,9 +144,6 @@ export const getFeatured = `query {
 export const getLimited = `query($where: artworks_bool_exp!, $limit: Int, $offset: Int, $order_by: artworks_order_by!) {
  artworks(where: $where, limit: $limit, offset: $offset, order_by: [$order_by]) {
     ${marketFields}
-    tags {
-      tag
-    } 
   }
 }`;
 

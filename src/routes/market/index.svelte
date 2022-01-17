@@ -1,11 +1,11 @@
 <script context="module">
+  import { post } from "$lib/api";
   export async function load({ fetch }) {
-    const r = await fetch("/artworks.json?limit=5000").then((r) => r.json());
+    const r = await post("/artworks.json", {}, fetch).json();
 
     return {
-      maxage: 720,
       props: {
-        count: Math.min(r.count, 5000),
+        total: r.total,
         initialArtworks: r.artworks,
       },
     };
@@ -13,13 +13,13 @@
 </script>
 
 <script>
-  import { onMount } from "svelte";
   import { ProgressLinear } from "$comp";
   import Fa from "svelte-fa";
   import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
   import {
     artworks,
     filterCriteria as fc,
+    offset,
     results,
     show,
     sortCriteria as sc,
@@ -31,49 +31,56 @@
   import Filter from "./_filter.svelte";
   import Sort from "./_sort.svelte";
   import { requirePassword } from "$lib/auth";
-  import { pub } from "$lib/api";
-  import { differenceInMilliseconds } from "date-fns";
+  import { compareAsc, differenceInMilliseconds, parseISO } from "date-fns";
+  import { browser } from "$app/env";
 
-  export let count;
-  export let showFilters;
-  export let initialArtworks;
+  export let total;
+  export let initialArtworks = [];
 
-  $artworks = [...initialArtworks];
-  let filtered = $artworks;
+  let showFilters;
+  let filtered = [...initialArtworks];
 
-  let offset = 0;
-
-  $: reset($fc, $sc);
-  let reset = async () => {
-    filtered = [...$artworks];
-    filtered = filtered.filter(filter).sort(sort);
+  $: filtersUpdated($fc, $sc);
+  let filtersUpdated = () => {
+    $offset = 0;
+    loadMore();
   };
 
-  let sort = (a, b) =>
-    ({
-      newest: new Date(b.created_at) - new Date(a.created_at),
-      oldest: new Date(a.created_at) - new Date(b.created_at),
-      highest: b.list_price - a.list_price,
-      lowest: a.list_price - b.list_price,
-      ending_soon: !a.auction_end
-        ? 1
-        : !b.auction_end
-        ? -1
-        : differenceInMilliseconds(new Date(), new Date(b.auction_end)) -
-          differenceInMilliseconds(new Date(), new Date(a.auction_end)),
-      most_viewed: b.views - a.views,
-    }[$sc]);
+  let loadMore = async () => {
+    if (!browser) return;
+    try {
+      let where = {};
+      if ($sc === "ending_soon")
+        where.auction_end = { _is_null: false, _gte: new Date() };
+      if ($fc.listPrice || ["lowest", "highest"].includes($sc)) {
+        $fc.listPrice = true;
+        where.list_price = { _is_null: false, _gt: 0 };
+      }
+      if ($fc.openBid) where.bid_id = { _is_null: false };
+      if ($fc.ownedByCreator) where.artist_owned = { _eq: true };
+      if ($fc.hasSold) where.transferred_at = { _is_null: false };
 
-  let filter = (a) =>
-    (!$fc.listPrice || a.list_price) &&
-    (!$fc.openBid || (a.bid && a.bid.amount)) &&
-    (!$fc.ownedByCreator || a.artist_id === a.owner_id) &&
-    (!$fc.hasSold || a.transferred_at);
+      let order_by = {
+        newest: { created_at: "desc" },
+        oldest: { created_at: "asc" },
+        highest: { list_price: "desc" },
+        lowest: { list_price: "asc" },
+        ending_soon: { auction_end: "asc" },
+        most_viewed: { views: "desc" },
+      }[$sc];
 
-  onMount(async () => {
-    const r = await fetch("/artworks.json").then((r) => r.json());
-    $artworks = r.artworks;
-  });
+      const r = await post(
+        "/artworks.json",
+        { offset: $offset, order_by, where },
+        fetch
+      ).json();
+
+      filtered = [...r.artworks];
+      total = r.total;
+    } catch (e) {
+      console.log(e);
+    }
+  };
 </script>
 
 <Results />
@@ -115,7 +122,7 @@
     </div>
     <Filter {showFilters} />
   </div>
-  <Gallery bind:filtered bind:count />
+  <Gallery bind:filtered bind:total bind:loadMore />
 </div>
 
 <style>

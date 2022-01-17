@@ -1,6 +1,6 @@
 <script context="module">
-  export async function load({ fetch, page }) {
-    const props = await fetch(`/artworks/${page.params.id}.json`).then((r) =>
+  export async function load({ fetch, params: { id } }) {
+    const props = await fetch(`/artworks/${id}.json`).then((r) =>
       r.json()
     );
 

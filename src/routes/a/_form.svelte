@@ -1,4 +1,5 @@
 <script>
+  import { browser } from "$app/env";
   import { err } from "$lib/utils";
   import { query } from "$lib/api";
   import Fa from "svelte-fa";
@@ -38,7 +39,7 @@
   });
 
   $: focus($page);
-  export let focus = (p) => p && tick().then(() => input && input.select());
+  export let focus = (p) => browser && p && tick().then(() => input && input.select());
 
   $: value = artwork.tags.map(({ tag }) => ({
     value: tag,

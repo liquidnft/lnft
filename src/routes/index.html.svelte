@@ -1,9 +1,8 @@
 <script context="module">
-  export async function load({ fetch, page }) {
+  export async function load({ fetch }) {
     const props = await fetch(`/artworks/recent.json`).then((r) => r.json());
 
     return {
-      maxage: 90,
       props,
     };
   }

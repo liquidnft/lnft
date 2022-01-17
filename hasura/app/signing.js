@@ -106,8 +106,6 @@ const check = async (psbt) => {
         })
         .reduce((a, b) => (a += b.value), 0);
 
-      console.log("INPUTS", inputs, owner);
-
       let toOwner =
         outs
           .filter(

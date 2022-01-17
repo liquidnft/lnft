@@ -4,10 +4,10 @@ import decode from "jwt-decode";
 import cookie from "cookie";
 import { hbp, getQ } from "$lib/api";
 import { addSeconds } from "date-fns";
-import { prerendering } from '$app/env';
+import { prerendering } from "$app/env";
 
 export async function handle({ request, resolve }) {
-  const { headers } = request;
+  const { headers, url: { pathname }} = request;
   const cookies = cookie.parse(headers.cookie || "");
   let { refresh_token, token: jwt } = cookies;
 
@@ -17,30 +17,37 @@ export async function handle({ request, resolve }) {
     decode(jwt);
   } catch (e) {
     try {
-      let res = await hbp
-        .headers({ cookie: `refresh_token=${refresh_token}` })
-        .url("/auth/token/refresh")
-        .get()
-        .res();
+      if (!pathname.includes('.json') && refresh_token) {
+        let res = await hbp
+          .headers({ cookie: `refresh_token=${refresh_token}` })
+          .url("/auth/token/refresh")
+          .get()
+          .res();
 
-      let body = await res.json();
-      let { jwt_token, jwt_expires_in } = body;
-      jwt = jwt_token;
+        let body = await res.json();
+        let { jwt_token, jwt_expires_in } = body;
+        jwt = jwt_token;
 
-      let tokenExpiry = parseInt(jwt_expires_in / 1000);
+        let tokenExpiry = parseInt(jwt_expires_in / 1000);
 
+        setCookie = [
+          res.headers.get("set-cookie").split(",").slice(0, 2).join(""),
+          cookie.serialize("token", jwt_token, {
+            httpOnly: true,
+            maxAge: tokenExpiry,
+            sameSite: "lax",
+            path: "/",
+            expires: addSeconds(new Date(), tokenExpiry),
+          }),
+        ];
+      }
+    } catch (e) {
       setCookie = [
-        res.headers.get("set-cookie").split(",").slice(0, 2).join(""),
-        cookie.serialize("token", jwt_token, {
-          httpOnly: true,
-          maxAge: tokenExpiry,
-          sameSite: "lax",
+        cookie.serialize("refresh_token", "", {
           path: "/",
-          expires: addSeconds(new Date(), tokenExpiry),
+          expires: new Date(0),
         }),
       ];
-    } catch (e) {
-      // console.log(e);
     }
   }
 
@@ -63,7 +70,7 @@ export async function handle({ request, resolve }) {
 
   const response = await resolve(request);
 
-  if (setCookie && request.path !== "/auth/login")
+  if (setCookie && pathname !== "/auth/login")
     response.headers["set-cookie"] = setCookie;
 
   return response;
