@@ -46,7 +46,6 @@
   } from "$lib/store";
   import { onDestroy, onMount } from "svelte";
   import branding from "$lib/branding";
-  import { get } from "$lib/api";
 
   export let addresses, titles;
 

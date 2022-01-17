@@ -23,7 +23,6 @@
     balances,
     pending,
     password,
-    poll,
     user,
     token,
   } from "$lib/store";
