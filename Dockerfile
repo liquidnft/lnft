@@ -16,7 +16,4 @@ COPY . .
 RUN NODE_ENV=development pnpm i
 RUN pnpm build
 
-RUN cat build/middlewares.js >> shim.js
-RUN mv shim.js build/middlewares.js
-
 CMD ["node", "build"]
