@@ -43,14 +43,12 @@
     user.is_artist = true;
     query(updateUser, { id: user.id, user: { is_artist: true } }).catch(err);
 
-    user.email &&
-      (await api
-        .url("/mail-artist-application-approved")
-        .auth(`Bearer ${$token}`)
-        .post({
-          to: user.email,
-          artistName: user.full_name ? user.full_name : "",
-        }));
+    await api
+      .url("/mail-artist-application-approved")
+      .auth(`Bearer ${$token}`)
+      .post({
+        userId: user.id,
+      });
 
     users = users.filter((u) => u.id !== user.id);
     info(`${user.username} is now an artist!`);
@@ -60,15 +58,13 @@
     user.is_denied = true;
     query(updateUser, { id: user.id, user: { is_denied: true } }).catch(err);
 
-    user.email &&
-      (await api
-        .auth(`Bearer ${$token}`)
-        .url("/mail-artist-application-denied")
-        .post({
-          to: user.email,
-          artistName: user.full_name ? user.full_name : "",
-        })
-        .json());
+    await api
+      .auth(`Bearer ${$token}`)
+      .url("/mail-artist-application-denied")
+      .post({
+        userId: user.id,
+      })
+      .json();
 
     users = users.filter((u) => u.id !== user.id);
     info(`${user.username} has been denied!`);

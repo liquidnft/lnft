@@ -1,6 +1,13 @@
 const Email = require("email-templates");
 const nodemailer = require("nodemailer");
-const path = require("path");
+const { q: query, api } = require("./api");
+const {
+  getUser,
+  getArtworkWithBidTransactionByHash,
+  getArtworkByPk,
+  getCurrentUser
+} = require("./queries");
+const constants = require("./const");
 
 const { SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_PORT, SMTP_SENDER } = process.env;
 
@@ -28,15 +35,19 @@ mail = new Email({
 
 app.post("/mail-artist-application-approved", auth, async (req, res) => {
   try {
-    const { artistName, to } = req.body;
+    const { userId: id } = req.body;
+    if (!id) {
+      return res.code(400).send("Missing userId parameter.");
+    }
+    let { users_by_pk: user } = await query(getUser, { id });
 
     await mail.send({
       template: "artist-application-approved",
       locals: {
-        artistName,
+        artistName: user.full_name,
       },
       message: {
-        to,
+        to: user.display_name,
       },
     });
 
@@ -49,15 +60,19 @@ app.post("/mail-artist-application-approved", auth, async (req, res) => {
 
 app.post("/mail-artist-application-denied", auth, async (req, res) => {
   try {
-    const { artistName, to } = req.body;
+    const { userId: id } = req.body;
+    if (!id) {
+      return res.code(400).send("Missing userId parameter.");
+    }
+    const { users_by_pk: user } = await query(getUser, { id });
 
     await mail.send({
       template: "artist-application-denied",
       locals: {
-        artistName,
+        artistName: user.full_name,
       },
       message: {
-        to,
+        to: user.display_name,
       },
     });
 
@@ -68,44 +83,77 @@ app.post("/mail-artist-application-denied", auth, async (req, res) => {
   }
 });
 
-app.post("/mail-bid-processed", auth, async (req, res) => {
+app.post("/offer-notifications", auth, async (req, res) => {
   try {
-    const { userName, to, artworkUrl, artworkTitle, bidAmount } = req.body;
+    const { artworkId, transactionHash } = req.body;
+
+    let { data, errors } = await api(req.headers)
+      .post({ query: getCurrentUser })
+      .json();
+
+    if (errors) throw new Error(errors[0].message);
+    let currentUser = data.currentuser[0];
+
+    const { artworks_by_pk: artwork, transactions } = await query(
+      getArtworkWithBidTransactionByHash,
+      { id: artworkId, hash: transactionHash }
+    );
+
+    const transaction = transactions.length ? transactions[0] : null;
+
+    if (!transaction || !artwork) {
+      return res
+        .code(400)
+        .send(`Missing ${!artwork ? "artwork" : "transaction"}`);
+    }
+
+    const sortedBidTransactions = artwork.transactions.sort(
+      (a, b) => b.amount - a.amount
+    );
+
+    const highestBidTransaction = sortedBidTransactions.length
+      ? sortedBidTransactions[0]
+      : null;
+
+    highestBidTransaction &&
+      (await mail.send({
+        template: "outbid",
+        locals: {
+          userName: highestBidTransaction.user.full_name
+            ? highestBidTransaction.user.full_name
+            : "",
+          bidAmount: `${transaction.amount / 100000000} L-BTC`,
+          artworkTitle: artwork.title,
+          artworkUrl: `${constants.urls.protocol}/a/${artwork.slug}`,
+        },
+        message: {
+          to: highestBidTransaction.user.display_name,
+        },
+      }));
 
     await mail.send({
       template: "bid-processed",
       locals: {
-        userName,
-        bidAmount,
-        artworkTitle,
-        artworkUrl,
+        userName: currentUser.full_name,
+        bidAmount: `${transaction.amount / 100000000} L-BTC`,
+        artworkTitle: artwork.title,
+        artworkUrl: `${constants.urls.protocol}/a/${artwork.slug}`,
       },
       message: {
-        to,
+        to: currentUser.display_name,
       },
     });
 
-    return res.send("ok");
-  } catch (err) {
-    console.error(err);
-    return res.code(400).send();
-  }
-});
-
-app.post("/mail-outbid", auth, async (req, res) => {
-  try {
-    const { userName, to, artworkUrl, artworkTitle, bidAmount } = req.body;
-
     await mail.send({
-      template: "outbid",
+      template: "someone-bid",
       locals: {
-        userName,
-        bidAmount,
-        artworkTitle,
-        artworkUrl,
+        userName: artwork.owner.full_name ? artwork.owner.full_name : "",
+        bidAmount: `${transaction.amount / 100000000} L-BTC`,
+        artworkTitle: artwork.title,
+        artworkUrl: `${constants.urls.protocol}/a/${artwork.slug}`,
       },
       message: {
-        to,
+        to: artwork.owner.display_name,
       },
     });
 
@@ -118,18 +166,30 @@ app.post("/mail-outbid", auth, async (req, res) => {
 
 app.post("/mail-purchase-successful", auth, async (req, res) => {
   try {
-    const { userName, to, artworkUrl, artworkTitle, bidAmount } = req.body;
+    const { userId: id, artworkId } = req.body;
+    if (!id) {
+      return res.code(400).send("Missing userId parameter.");
+    }
+    let { users_by_pk: user } = await query(getUser, { id });
+
+    const { artworks_by_pk: artwork } = await query(getArtworkByPk, {
+      id: artworkId,
+    });
+
+    if (!artwork) {
+      return res.code(400).send(`Missing artwork.`);
+    }
 
     await mail.send({
       template: "purchase-successful",
       locals: {
-        userName,
-        bidAmount,
-        artworkTitle,
-        artworkUrl,
+        userName: user.full_name,
+        bidAmount: `${artwork.list_price / 100000000} L-BTC`,
+        artworkTitle: artwork.title,
+        artworkUrl: `${constants.urls.protocol}/a/${artwork.slug}`,
       },
       message: {
-        to,
+        to: user.display_name,
       },
     });
 
@@ -142,41 +202,29 @@ app.post("/mail-purchase-successful", auth, async (req, res) => {
 
 app.post("/mail-artwork-minted", auth, async (req, res) => {
   try {
-    const { userName, to, artworkUrl, artworkTitle, bidAmount } = req.body;
+    const { userId: id, artworkId } = req.body;
+    if (!id) {
+      return res.code(400).send("Missing userId parameter.");
+    }
+    let { users_by_pk: user } = await query(getUser, { id });
+
+    const { artworks_by_pk: artwork } = await query(getArtworkByPk, {
+      id: artworkId,
+    });
+
+    if (!artwork) {
+      return res.code(400).send(`Missing artwork.`);
+    }
 
     await mail.send({
       template: "artwork-minted",
       locals: {
-        userName,
-        artworkTitle,
-        artworkUrl,
+        userName: user.full_name,
+        artworkTitle: artwork.title,
+        artworkUrl: `${constants.urls.protocol}/a/${artwork.slug}`,
       },
       message: {
-        to,
-      },
-    });
-
-    return res.send("ok");
-  } catch (err) {
-    console.error(err);
-    return res.code(400).send();
-  }
-});
-
-app.post("/mail-someone-bid", auth, async (req, res) => {
-  try {
-    const { userName, to, artworkUrl, artworkTitle, bidAmount } = req.body;
-
-    await mail.send({
-      template: "someone-bid",
-      locals: {
-        userName,
-        bidAmount,
-        artworkTitle,
-        artworkUrl,
-      },
-      message: {
-        to,
+        to: user.display_name,
       },
     });
 
@@ -188,20 +236,31 @@ app.post("/mail-someone-bid", auth, async (req, res) => {
 });
 
 app.post("/mail-artwork-sold", auth, async (req, res) => {
-  console.log("auth", auth)
   try {
-    const { userName, to, artworkUrl, artworkTitle, bidAmount } = req.body;
+    const { userId: id, artworkId } = req.body;
+    if (!id) {
+      return res.code(400).send("Missing userId parameter.");
+    }
+    let { users_by_pk: user } = await query(getUser, { id });
+
+    const { artworks_by_pk: artwork } = await query(getArtworkByPk, {
+      id: artworkId,
+    });
+
+    if (!artwork) {
+      return res.code(400).send(`Missing artwork.`);
+    }
 
     await mail.send({
       template: "artwork-sold",
       locals: {
-        userName,
-        bidAmount,
-        artworkTitle,
-        artworkUrl,
+        userName: user.full_name,
+        bidAmount: artwork.list_price,
+        artworkTitle: artwork.title,
+        artworkUrl: `${constants.urls.protocol}/a/${artwork.slug}`,
       },
       message: {
-        to,
+        to: user.display_name,
       },
     });
 
