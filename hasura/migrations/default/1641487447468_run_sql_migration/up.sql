@@ -1,3 +1,4 @@
+DROP VIEW currentuser;
 CREATE OR REPLACE VIEW "public"."currentuser" AS 
  SELECT users.id,
     users.created_at,
