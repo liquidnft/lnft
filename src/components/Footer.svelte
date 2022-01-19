@@ -49,7 +49,7 @@
             target="_blank"
             href={branding.urls.external.discord}
             class="flex items-center"
-            ><div class="w-6 mr-1"><Fa icon={faDiscord} /></div>
+            ><div class="w-6 mr-1"><Fa icon={faDiscord} size="sm" /></div>
             Discord</a
           >
         </li>
