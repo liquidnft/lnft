@@ -2,7 +2,7 @@ import cookie from "cookie";
 import wretch from "wretch";
 import * as middlewares from "wretch-middlewares";
 import { token } from "$lib/store";
-import { get as g } from "svelte/store";
+import { get as getFromStore } from "svelte/store";
 import { err } from "$lib/utils";
 
 const { retry } = middlewares.default || middlewares;
@@ -14,9 +14,12 @@ export const hasura = wretch()
   .middlewares([retry({ maxAttempts: 2 })])
   .url("/api/v1/graphql");
 
-export const pub = (t) => (t ? hasura.auth(`Bearer ${t}`) : hasura);
-export const query = async (query, variables) => {
-  let { data, errors } = await pub(g(token)).post({ query, variables }).json();
+export const pub = (token, headers = {}) =>
+  token ? hasura.auth(`Bearer ${token}`).headers(headers) : hasura;
+export const query = async (query, variables, headers = {}) => {
+  let { data, errors } = await pub(getFromStore(token), headers)
+    .post({ query, variables })
+    .json();
   if (errors) throw new Error(errors[0].message);
   return data;
 };
@@ -24,7 +27,8 @@ export const query = async (query, variables) => {
 export const hbp = wretch().url(import.meta.env.VITE_HBP);
 export const serverApi = wretch().url(import.meta.env.VITE_APP);
 
-export const get = (url, fetch) => wretch().polyfills({ fetch }).url(url).get().json();
+export const get = (url, fetch) =>
+  wretch().polyfills({ fetch }).url(url).get().json();
 
 export const post = (url, body, fetch) =>
   wretch().polyfills({ fetch }).url(url).post(body);
