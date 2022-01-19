@@ -12,6 +12,8 @@ const BRANDING = {
       telegram: "https://t.me/raretoshi",
       blog: "https://blog.raretoshi.com/",
       facebook: "https://facebook.com/raretoshi",
+			instagram: "https://www.instagram.com/raretoshi/",
+			discord: "https://discord.gg/XUxPs3YnQz",
     },
   },
 
