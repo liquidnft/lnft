@@ -26,6 +26,7 @@ services:
       SMTP_USER: '${SMTP_USER}'
       SMTP_PASS: '${SMTP_PASS}'
       SMTP_SENDER: '${SMTP_SENDER}'
+      APP_URL: '${APP_URL}'
     volumes:
       - ./app:/app
       - ./custom:/opt/src/hasura/app/custom

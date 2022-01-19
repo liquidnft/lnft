@@ -1,8 +1,7 @@
 <script>
+  import branding from "$lib/branding";
   import { session } from "$app/stores";
   import { Avatar, Search } from "$comp";
-  import { show, user, token } from "$lib/store";
-  import branding from "$lib/branding";
 
   export let open = false;
   let toggle = () => (open = !open);
@@ -16,14 +15,11 @@
   <a sveltekit:prefetch href="/activity"
     ><button on:click={toggle}>Activity</button></a
   >
-  <!--
-  <a href="/galleries"><button on:click={toggle}>Galleries</button></a>
-  -->
   <a href={branding.urls.external.blog}
     ><button on:click={toggle}>Blog</button></a
   >
   <a href="/faq"><button on:click={toggle}>FAQ</button></a>
-  {#if $session.user}
+  {#if $session?.user}
     {#if $session.user.is_admin}
       <a href="/admin"><button on:click={toggle}>Admin</button></a>
     {/if}

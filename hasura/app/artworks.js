@@ -15,6 +15,7 @@ const {
   setRelease,
   updateViews,
 } = require("./queries");
+const { SERVER_URL } = process.env;
 
 const crypto = require("crypto");
 
@@ -46,7 +47,7 @@ app.post("/transfer", auth, async (req, res) => {
 
     let utxos = await lnft.url(`/address/${address}/utxo`).get().json();
     let attempts = 0;
-    let received = () => utxos.find((tx) => tx.asset === transaction.asset)
+    let received = () => utxos.find((tx) => tx.asset === transaction.asset);
 
     console.log("transferring", transaction);
 
@@ -127,6 +128,7 @@ app.post("/transaction", auth, async (req, res) => {
       id: transaction.artwork_id,
     });
     let {
+      id: artwork_id,
       bid_increment,
       auction_end,
       auction_start,
@@ -148,6 +150,17 @@ app.post("/transaction", auth, async (req, res) => {
           8
         )}`
       );
+    }
+
+    if (transaction.type === "purchase") {
+      let { data, errors } = await api(req.headers)
+        .post({ query: getCurrentUser })
+        .json();
+
+      if (errors) throw new Error(errors[0].message);
+      let user = data.currentuser[0];
+
+      await q(setOwner, { id: artwork_id, owner_id: user.id });
     }
 
     let locals = {

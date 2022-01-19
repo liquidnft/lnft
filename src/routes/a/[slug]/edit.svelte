@@ -26,7 +26,6 @@
   import { updateArtwork, updateTags } from "$queries/artworks";
   import { err, goto } from "$lib/utils";
   import { password, user, token } from "$lib/store";
-  import { requireLogin, requirePassword } from "$lib/auth";
   import { query } from "$lib/api";
 
   export let artwork;

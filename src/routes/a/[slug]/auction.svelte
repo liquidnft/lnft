@@ -50,7 +50,7 @@
     prompt,
     psbt,
   } from "$lib/store";
-  import { requireLogin, requirePassword } from "$lib/auth";
+  import { requirePassword } from "$lib/auth";
   import { createTransaction } from "$queries/transactions";
   import {
     createSwap,
@@ -333,7 +333,6 @@
 
       await setupAuction();
       await spendPreviousSwap();
-      await setupRoyalty();
       await setupSwaps();
 
       let {

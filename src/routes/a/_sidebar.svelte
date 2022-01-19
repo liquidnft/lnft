@@ -3,7 +3,6 @@
   import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
   import { Avatar, Eye, Heart } from "$comp";
   import { explorer, goto } from "$lib/utils";
-  import { requireLogin } from "$lib/auth";
 
   export let artwork;
   let showDetails = false;
