@@ -31,7 +31,8 @@
             target="_blank"
             href={branding.urls.external.blog}
             class="flex items-center"
-            ><Fa icon={faRss} /><span class="ml-1">Blog</span></a
+            ><div class="w-6"><Fa icon={faRss} /></div>
+            <span class="ml-1">Blog</span></a
           >
         </li>
         <li class="mb-2">
@@ -39,7 +40,8 @@
             target="_blank"
             href={branding.urls.external.twitter}
             class="flex items-center"
-            ><Fa icon={faTwitter} /><span class="ml-1">Twitter</span></a
+            ><div class="w-6"><Fa icon={faTwitter} /></div>
+            <span class="ml-1">Twitter</span></a
           >
         </li>
         <li class="mb-2">
@@ -47,7 +49,8 @@
             target="_blank"
             href={branding.urls.external.discord}
             class="flex items-center"
-            ><Fa icon={faDiscord} /><span class="ml-1">Discord</span></a
+            ><div class="w-6"><Fa icon={faDiscord} /></div>
+            <span class="ml-1">Discord</span></a
           >
         </li>
         <li class="mb-2">
@@ -55,7 +58,8 @@
             target="_blank"
             href={branding.urls.external.telegram}
             class="flex items-center"
-            ><Fa icon={faTelegramPlane} /><span class="ml-1">Telegram</span></a
+            ><div class="w-6"><Fa icon={faTelegramPlane} /></div>
+            <span class="ml-1">Telegram</span></a
           >
         </li>
         <li class="mb-2">
@@ -63,8 +67,8 @@
             target="_blank"
             href={branding.urls.external.instagram}
             class="flex items-center"
-            ><Fa icon={faInstagramSquare} /><span class="ml-1">Instagram</span
-            ></a
+            ><div class="w-6"><Fa icon={faInstagramSquare} /></div>
+            <span class="ml-1">Instagram</span></a
           >
         </li>
         <li class="mb-2">
@@ -72,7 +76,8 @@
             target="_blank"
             href={branding.urls.external.facebook}
             class="flex items-center"
-            ><Fa icon={faFacebook} /><span class="ml-1">Facebook</span></a
+            ><div class="w-6"><Fa icon={faFacebook} /></div>
+            <span class="ml-1">Facebook</span></a
           >
         </li>
       </ul>
