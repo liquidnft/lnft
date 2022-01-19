@@ -15,6 +15,7 @@ const {
   setRelease,
   updateViews,
 } = require("./queries");
+const { SERVER_URL } = process.env;
 
 const crypto = require("crypto");
 

@@ -291,16 +291,10 @@
 
         if (result.error) throw new Error(result.error.message);
 
-        $user.email &&
-          (await api
-            .url("/mail-artwork-minted")
-            .auth(`Bearer ${$token}`)
-            .post({
-              to: $user.email,
-              userName: $user.full_name ? $user.full_name : "",
-              artworkTitle: artwork.title,
-              artworkUrl: `${branding.urls.protocol}/a/${artwork.slug}`,
-            }));
+        await api.url("/mail-artwork-minted").auth(`Bearer ${$token}`).post({
+          userId: $user.id,
+          artworkId: artwork.id,
+        });
       }
 
       $prompt = undefined;
