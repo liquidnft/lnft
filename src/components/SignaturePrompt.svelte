@@ -57,34 +57,32 @@
 <div class="flex justify-between">
   <h1 class="font-black text-4xl primary-color">Sign transaction</h1>
 </div>
-<div class="flex justify-between items-center my-6">
-  <button
-    class="secondary-btn copy-transaction"
-    on:click={() => copy($psbt.toBase64())}>Copy transaction</button
-  >
-  <div>
-    <input
-      type="checkbox"
-      id="remove_prompt_sign"
-      bind:checked={remove_prompt_sign}
-    />
-    <label for="remove_prompt_sign">Disable next sign prompts</label>
-    <span class="tooltip">
-      <i class="text-midblue text-xl">
-        <Fa icon={faQuestionCircle} />
-      </i>
-      <span class="tooltip-text bg-gray-100 shadow ml-4 rounded"
-        >This option can be edited from the user profile.</span
-      >
-    </span>
-  </div>
-</div>
 <hr class="mb-4" />
 
 <Transaction summary={true} />
 {#if base64}
   <div class="break-all font-mono text-xs mb-2">{$psbt.toBase64()}</div>
 {/if}
+
+<div class="flex justify-between items-center my-6">
+  <div class="flex">
+    <input
+      type="checkbox"
+      id="remove_prompt_sign"
+      bind:checked={remove_prompt_sign}
+      class="my-auto mr-2"
+    />
+    <label for="remove_prompt_sign" class="my-auto mr-1">&nbsp;Don't ask me again</label>
+    <span class="tooltip">
+      <i class="text-secondary text-xl">
+        <Fa icon={faQuestionCircle} />
+      </i>
+      <span class="tooltip-text bg-gray-100 shadow ml-4 rounded"
+        >You can change this setting on your user profile page</span
+      >
+    </span>
+  </div>
+</div>
 
 <style>
   input[type="checkbox"] {
@@ -102,11 +100,6 @@
     border: none;
     background-color: #6ed8e0;
   }
-  .secondary-btn.copy-transaction {
-    font-size: 16px;
-    line-height: 22px;
-    padding: 0 20px;
-  }
   label {
     line-height: 22px;
   }
@@ -114,7 +107,9 @@
   .tooltip {
     cursor: pointer;
     display: inline-block;
+    margin-top: -5px;
   }
+
   .tooltip .tooltip-text {
     display: none;
     padding: 15px;
