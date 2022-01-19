@@ -28,23 +28,22 @@
     <meta name="twitter:card" content="summary_large_image" />
   {/if}
 
-
   <meta property="og:url" content={host + $page.url.pathname} />
   <meta name="twitter:site" content={metadata.twitter.site} />
   <meta name="twitter:creator" content={metadata.twitter.creator} />
 
   {#if !dev}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
       async
-      src="https://www.googletagmanager.com/gtag/js?id=G-DJNPT2CQXL"></script>
+      src="https://www.googletagmanager.com/gtag/js?id=G-H25E4PKPEC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
-      gtag("config", "G-DJNPT2CQXL");
+      gtag("config", "G-H25E4PKPEC");
     </script>
 
     <script>
