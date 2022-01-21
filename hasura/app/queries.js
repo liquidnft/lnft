@@ -239,16 +239,20 @@ module.exports = {
       contract
     } 
   }`,
-  getLastTransactionForAddress: `query($address: String!) {
+  getLastTransactionsForAddress: `query($address: String!) {
     transactions(
       where: {
         address: {_eq: $address}, 
         type: {_in: ["deposit", "withdrawal"]}
       },
-      limit: 1,
+      limit: 25,
       order_by: [{ sequence: desc }]
     ) {
       hash
+      type
+      asset
+      address
+      user_id
     }
   }`,
   getTransactions: `query($id: uuid!, $limit: Int) {
