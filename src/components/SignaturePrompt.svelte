@@ -57,7 +57,6 @@
 <div class="flex justify-between">
   <h1 class="font-black text-4xl primary-color">Sign transaction</h1>
 </div>
-<hr class="mb-4" />
 
 <Transaction summary={true} />
 {#if base64}
@@ -73,14 +72,6 @@
       class="my-auto mr-2"
     />
     <label for="remove_prompt_sign" class="my-auto mr-1">&nbsp;Don't ask me again</label>
-    <span class="tooltip">
-      <i class="text-secondary text-xl">
-        <Fa icon={faQuestionCircle} />
-      </i>
-      <span class="tooltip-text bg-gray-100 shadow ml-4 rounded"
-        >You can change this setting on your user profile page</span
-      >
-    </span>
   </div>
 </div>
 
@@ -102,24 +93,5 @@
   }
   label {
     line-height: 22px;
-  }
-
-  .tooltip {
-    cursor: pointer;
-    display: inline-block;
-    margin-top: -5px;
-  }
-
-  .tooltip .tooltip-text {
-    display: none;
-    padding: 15px;
-    position: absolute;
-    z-index: 100;
-    width: 300px;
-    right: 20px;
-    font-style: normal;
-  }
-  .tooltip:hover .tooltip-text {
-    display: block;
   }
 </style>

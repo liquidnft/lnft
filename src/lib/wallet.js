@@ -671,7 +671,7 @@ export const sign = async (sighash) => {
     const signResult = await requireSign();
 
     if(signResult === SIGN_CANCELLED){
-      throw new Error('Signing cancelled.');
+      throw new Error('Signing cancelled');
     }
 
     info('Transaction signed!');
