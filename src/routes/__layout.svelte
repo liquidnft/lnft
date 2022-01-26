@@ -40,10 +40,8 @@
     addresses as a,
     meta,
     titles as t,
-    user,
     password,
     poll,
-    token,
   } from "$lib/store";
   import { onDestroy, onMount } from "svelte";
   import branding from "$lib/branding";
@@ -53,9 +51,7 @@
   let interval;
   let refresh = async () => {
     try {
-      let { jwt_token } = await get("/auth/refresh.json", fetch);
-      $token = jwt_token;
-      if (!$token && $session) delete $session.user;
+      await get("/auth/refresh.json", fetch);
     } catch (e) {
       console.log(e);
     }
@@ -71,11 +67,6 @@
 
     $a = addresses;
     $t = titles;
-
-    if ($session) {
-      $user = $session.user;
-      $token = $session.jwt;
-    }
 
     interval = setInterval(refresh, 60000);
   }

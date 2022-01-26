@@ -1,8 +1,9 @@
 <svelte:options accessors={true} />
 
 <script>
+  import { session } from "$app/stores";
   import { tick } from "svelte";
-  import { prompt, password, user, token } from "$lib/store";
+  import { prompt, password } from "$lib/store";
   import { api } from "$lib/api";
   import { err, dev } from "$lib/utils";
   import Fa from "svelte-fa";
@@ -23,7 +24,7 @@
     api
       .url("/login")
       .post({
-        email: $user.username,
+        email: $session.user.username,
         password: attempt,
       })
       .badRequest(err)
@@ -31,7 +32,6 @@
       .json((r) => {
         $token = r.jwt_token;
         window.sessionStorage.setItem("password", attempt);
-        window.sessionStorage.setItem("token", $token);
         $password = attempt;
         $prompt = undefined;
       })

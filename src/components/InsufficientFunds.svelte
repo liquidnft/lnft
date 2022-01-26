@@ -1,6 +1,7 @@
 <svelte:options accessors={true} />
 
 <script>
+  import { session } from "$app/stores";
   import Fa from "svelte-fa";
   import {
     faUserSecret,
@@ -37,7 +38,7 @@
   $: amountUpdated(amount);
   let amountUpdated = (a) => isNaN(a) && ($prompt = undefined);
 
-  let url = `liquidnetwork:${$user.address}?amount=${amount}`;
+  let url = `liquidnetwork:${$session.user.address}?amount=${amount}`;
 
   let showInvoice = false;
   let toggle = () => {
@@ -63,7 +64,7 @@
   let toggleConfidential = () => {
     confidential = !confidential;
     if (confidential) liquid();
-    else address = $user.address;
+    else address = $session.user.address;
   };
 
   $: current = ($balances && $balances[$error.asset]) || 0;
@@ -100,7 +101,7 @@
         .auth(`Bearer ${$token}`)
         .post({
           amount: Math.max($error.amount, 1000),
-          liquidAddress: $user.address,
+          liquidAddress: $session.user.address,
         })
         .json());
     } catch (e) {
@@ -115,7 +116,7 @@
 
     if (!confidential) {
       explainer = false;
-      address = $user.address;
+      address = $session.user.address;
       return;
     }
 
@@ -128,7 +129,7 @@
         .auth(`Bearer ${$token}`)
         .post({
           amount: Math.max($error.amount, 1000),
-          liquidAddress: $user.address,
+          liquidAddress: $session.user.address,
         })
         .json());
     } catch (e) {
@@ -148,7 +149,7 @@
         .auth(`Bearer ${$token}`)
         .post({
           amount: Math.max($error.amount, 1000),
-          liquidAddress: $user.address,
+          liquidAddress: $session.user.address,
         })
         .json());
     } catch (e) {
@@ -159,7 +160,7 @@
   };
 
   let address;
-  $: if ($user) address = $user.address;
+  $: if ($session.user) address = $session.user.address;
 </script>
 
 <div class="mb-2 rounded-lg">

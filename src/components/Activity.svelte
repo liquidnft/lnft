@@ -1,6 +1,5 @@
 <script>
   import { Avatar, Card, TransactionTime, TransactionText } from "$comp";
-  import { user } from "$lib/store";
   import { formatDistanceStrict } from "date-fns";
 
   export let transaction;

@@ -1,8 +1,8 @@
 <script>
+  import { session } from "$app/stores";
   import Fa from "svelte-fa";
   import { ProgressLinear } from "$comp";
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-  import { user, token } from "$lib/store";
   import {
     isWithinInterval,
     parseISO,
@@ -20,8 +20,8 @@
   let canCancel = ({ artwork, created_at, type, user: { id } }) =>
     type === "bid" &&
     isCurrent(artwork, created_at, type) &&
-    $user &&
-    $user.id === id;
+    $session.user &&
+    $session.user.id === id;
 
   let isCurrent = ({ transferred_at: t }, created_at, type) =>
     type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);
@@ -29,7 +29,7 @@
   let canAccept = ({ type, artwork, created_at, accepted }, debug) => {
     if (accepted) return false;
 
-    let isOwner = ({ owner }) => $user && $user.id === owner.id;
+    let isOwner = ({ owner }) => $session.user && $session.user.id === owner.id;
 
     let underway = ({ auction_start: s, auction_end: e }) =>
       e &&

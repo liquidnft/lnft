@@ -1,4 +1,5 @@
 <script>
+  import { session } from "$app/stores";
   import { tick } from "svelte";
   import Fa from "svelte-fa";
   import {
@@ -6,7 +7,7 @@
     faChevronUp,
   } from "@fortawesome/free-solid-svg-icons";
   import { Avatar, ProgressLinear } from "$comp";
-  import { addresses, psbt, user } from "$lib/store";
+  import { addresses, psbt } from "$lib/store";
   import reverse from "buffer-reverse";
   import { electrs } from "$lib/api";
   import {
@@ -41,13 +42,13 @@
 
   let ins, outs, totals, senders, recipients, showDetails, users, lock, pp, uu;
   let loading;
-  $: init($psbt, $user, $addresses, tx);
+  $: init($psbt, $session.user, $addresses, tx);
   let retries = 0;
   let init = async (p, u) => {
     if (lock) return setTimeout(() => init(p, u), 50);
     lock = true;
     p = $psbt;
-    u = $user;
+    u = $session.user;
     if (!p) return (lock = false);
 
     ins = [];
@@ -154,7 +155,7 @@
     if (base64) {
       tx = undefined;
       $psbt = Psbt.fromBase64(base64);
-      await init($psbt, $user);
+      await init($psbt, $session.user);
     }
   };
 

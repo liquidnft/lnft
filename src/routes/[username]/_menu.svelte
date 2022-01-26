@@ -1,18 +1,18 @@
 <script>
+  import { session } from "$app/stores";
   import Fa from "svelte-fa";
   import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
   import { faSignOutAlt, faWallet } from "@fortawesome/free-solid-svg-icons";
-  import { user } from "$lib/store";
   import { goto } from "$lib/utils";
 </script>
 
 <div class="mt-10 mb-5">
-  <a class="primary-btn w-52" href={`/${$user.username}/edit`}>Edit Profile</a
+  <a class="primary-btn w-52" href={`/${$session.user.username}/edit`}>Edit Profile</a
   >
 </div>
 
 <div class="menu uppercase">
-  {#if !$user.is_artist}
+  {#if !$session.user.is_artist}
     <a href="/become-artist">
       <div class="flex">
         <div class="my-auto">

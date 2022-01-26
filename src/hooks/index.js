@@ -2,7 +2,7 @@ import wretch from "wretch";
 import { getUser } from "$queries/users";
 import decode from "jwt-decode";
 import cookie from "cookie";
-import { hbp, getQ } from "$lib/api";
+import { hbp, getQ, serverApi } from "$lib/api";
 import { addSeconds } from "date-fns";
 import { prerendering } from "$app/env";
 
@@ -54,8 +54,9 @@ export async function handle({ request, resolve }) {
   if (jwt) headers.authorization = `Bearer ${jwt}`;
   else delete headers.authorization;
 
+  let api = serverApi.headers(headers);
   let q = getQ(headers);
-  request.locals = { jwt, q };
+  request.locals = { api, jwt, q };
 
   if (headers.authorization) {
     try {
