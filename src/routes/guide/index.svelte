@@ -539,7 +539,7 @@
     color: #3ba5ac;
   }
   .guide-image {
-    max-width: 800px;
+    max-width: 100%;
     margin: 10px auto;
   }
 </style>
