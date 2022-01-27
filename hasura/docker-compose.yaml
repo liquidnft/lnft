@@ -105,7 +105,7 @@ services:
       - ${LIQUID_BLOCK_PORT}:18602
       - ${LIQUID_TX_PORT}:18603
     volumes:
-      - ./liquidregtest/liquid-config/:/config
+      - ./liquidregtest/liquid-config/:/home/elements/.elements
     restart: unless-stopped
   electrs-liquid:
     image: vulpemventures/electrs-liquid:latest
