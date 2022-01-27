@@ -97,7 +97,7 @@ services:
       - ${IPFS_DATA}:/data/ipfs
       - ${STORAGE_DIR}:/export
   liquid:
-    image: asoltys/liquid:latest
+    image: ghcr.io/vulpemventures/elements:0.18.1.12
     container_name: liquid
     ports:
       - ${LIQUID_NODE_PORT}:18884
@@ -105,7 +105,7 @@ services:
       - ${LIQUID_BLOCK_PORT}:18602
       - ${LIQUID_TX_PORT}:18603
     volumes:
-      - ./liquidregtest/liquid-config/:/config
+      - ./liquidregtest/liquid-config/:/home/elements/.elements
     restart: unless-stopped
   electrs-liquid:
     image: vulpemventures/electrs-liquid:latest
