@@ -97,4 +97,4 @@ Mine some blocks to get the electrs API server warmed up
 
 Get a deposit address from the wallet page or users table in the db and send an amount with this command
 
-    docker exec -it liquid elements-cli -datadir=/config sendtoaddress <address> <amount>
+    docker exec -it liquid elements-cli -datadir=/home/elements/.elements sendtoaddress <address> <amount>
