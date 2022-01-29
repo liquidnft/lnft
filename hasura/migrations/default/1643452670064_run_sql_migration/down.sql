@@ -1,0 +1,12 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE OR REPLACE FUNCTION public.trigger_set_user_has_samples()
+--  RETURNS trigger
+--  LANGUAGE plpgsql
+-- AS $function$
+-- BEGIN
+--     UPDATE users SET has_samples = true WHERE id = NEW.user_id;
+--
+--     RETURN NEW;
+-- END;
+-- $function$;

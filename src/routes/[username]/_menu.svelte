@@ -3,7 +3,6 @@
   import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
   import { faSignOutAlt, faWallet } from "@fortawesome/free-solid-svg-icons";
   import { user } from "$lib/store";
-  import { goto } from "$lib/utils";
 </script>
 
 <div class="mt-10 mb-5">
@@ -12,7 +11,7 @@
 </div>
 
 <div class="menu uppercase">
-  {#if !$user.is_artist}
+  {#if !$user.is_artist && !$user.has_samples}
     <a href="/become-artist">
       <div class="flex">
         <div class="my-auto">

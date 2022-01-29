@@ -2,7 +2,7 @@
   import { onMount, tick, onDestroy } from "svelte";
   import { page } from "$app/stores";
   import { ArtworkMedia } from "$comp";
-  import { getSamples, updateUser } from "$queries/users";
+  import { getSamples, updateUser, deleteSamples } from "$queries/users";
   import { role, user, token } from "$lib/store";
   import { api, hasura, query } from "$lib/api";
   import { err, goto, info } from "$lib/utils";
@@ -44,46 +44,68 @@
   onDestroy(() => ($role = "user"));
 
   let makeArtist = async (user) => {
-    user.is_artist = true;
-    query(
-      updateUser,
-      { id: user.id, user: { is_artist: true } },
-      {
-        "X-Hasura-Role": "approver",
-      }
-    ).catch(err);
+    try {
+      user.is_artist = true;
+      await query(
+        updateUser,
+        { id: user.id, user: { is_artist: true, info: null } },
+        {
+          "X-Hasura-Role": "approver",
+        }
+      ).catch(err);
 
-    await api
-      .url("/mail-artist-application-approved")
-      .auth(`Bearer ${$token}`)
-      .post({
-        userId: user.id,
-      });
+      await query(
+        deleteSamples,
+        { user_id: user.id },
+        {
+          "X-Hasura-Role": "approver",
+        }
+      ).catch(err);
 
-    users = users.filter((u) => u.id !== user.id);
-    info(`${user.username} is now an artist!`);
+      await api
+        .url("/mail-artist-application-approved")
+        .auth(`Bearer ${$token}`)
+        .post({
+          userId: user.id,
+        });
+
+      users = users.filter((u) => u.id !== user.id);
+      info(`${user.username} is now an artist!`);
+    } catch (error) {
+      err(error);
+    }
   };
 
   let denyArtist = async (user) => {
-    user.is_denied = true;
-    query(
-      updateUser,
-      { id: user.id, user: { is_denied: true } },
-      {
-        "X-Hasura-Role": "approver",
-      }
-    ).catch(err);
+    try {
+      await query(
+        updateUser,
+        { id: user.id, user: { info: null } },
+        {
+          "X-Hasura-Role": "approver",
+        }
+      ).catch(err);
 
-    await api
-      .auth(`Bearer ${$token}`)
-      .url("/mail-artist-application-denied")
-      .post({
-        userId: user.id,
-      })
-      .json();
+      await query(
+        deleteSamples,
+        { user_id: user.id },
+        {
+          "X-Hasura-Role": "approver",
+        }
+      ).catch(err);
 
-    users = users.filter((u) => u.id !== user.id);
-    info(`${user.username} has been denied!`);
+      await api
+        .auth(`Bearer ${$token}`)
+        .url("/mail-artist-application-denied")
+        .post({
+          userId: user.id,
+        });
+
+      users = users.filter((u) => u.id !== user.id);
+      info(`${user.username} has been denied!`);
+    } catch (error) {
+      err(error);
+    }
   };
 </script>
 
@@ -123,6 +145,6 @@
         >
       </div>
     </div>
-    <hr>
+    <hr />
   {/each}
 </div>

@@ -130,10 +130,10 @@ select_permissions:
     - confidential
     - email
     - full_name
+    - has_samples
     - id
     - instagram
     - is_artist
-    - is_denied
     - location
     - multisig
     - prompt_sign
@@ -156,12 +156,12 @@ select_permissions:
     - display_name
     - email
     - full_name
+    - has_samples
     - id
     - info
     - instagram
     - is_admin
     - is_artist
-    - is_denied
     - location
     - mnemonic
     - multisig
@@ -187,10 +187,10 @@ select_permissions:
     - confidential
     - email
     - full_name
+    - has_samples
     - id
     - instagram
     - is_artist
-    - is_denied
     - location
     - multisig
     - prompt_sign
@@ -209,8 +209,8 @@ update_permissions:
 - permission:
     check: {}
     columns:
+    - info
     - is_artist
-    - is_denied
     - prompt_sign
     filter: {}
   role: approver

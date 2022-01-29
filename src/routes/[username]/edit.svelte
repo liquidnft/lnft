@@ -72,6 +72,7 @@
       pubkey,
       wallet_initialized,
       mnemonic,
+      has_samples,
       ...rest
     } = form;
     $user = { ...$user, ...rest };

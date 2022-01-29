@@ -5,7 +5,7 @@ import { fields as txFields } from "./transactions";
 let fields =
   "id, username, location, bio, email, full_name, website, twitter, instagram, avatar_url, address, multisig, pubkey, is_artist, prompt_sign";
 
-let privateFields = "mnemonic, wallet_initialized, is_admin, info";
+let privateFields = "mnemonic, wallet_initialized, is_admin, info, has_samples";
 
 let computed = "followed, num_follows, num_followers";
 
@@ -43,7 +43,7 @@ export const getUserByUsername = `query($username: String!) {
 }`;
 
 export const getSamples = `query {
-  users(where: { _and: [{ is_artist: { _eq: false }, is_denied: { _eq: false }}, { samples: {}}]}) {
+  users(where: { _and: [{ is_artist: { _eq: false }}, { samples: {}}]}) {
     ${fields} 
     info
     samples {
@@ -61,6 +61,14 @@ export const updateUser = `mutation update_user($user: users_set_input!, $id: uu
     ${computed}
   }
 }`;
+
+export const deleteSamples = `mutation deleteSamplesByUserId($user_id: uuid!) {
+  delete_samples(where: {user_id: {_eq: $user_id}}) {
+    returning {
+      id
+    }
+  }
+}`
 
 export const topCollectors = (limit) => `query {
   collectors(limit: ${limit}) { 

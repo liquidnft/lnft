@@ -1,0 +1,6 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE TRIGGER unset_user_has_samples
+--     AFTER DELETE ON samples
+--     FOR EACH ROW
+--     EXECUTE FUNCTION trigger_unset_user_has_samples();
