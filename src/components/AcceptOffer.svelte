@@ -12,7 +12,7 @@
 
   const dispatch = createEventDispatcher();
 
-  export const accept = async (transaction) => {
+  export const accept = async (transaction, cb) => {
     if (transaction.accepted) return;
 
     try {
@@ -42,6 +42,8 @@
       transaction.accepted = true;
 
       info("Offer accepted! Sold!");
+
+      cb && cb();
     } catch (e) {
       err(e);
     }

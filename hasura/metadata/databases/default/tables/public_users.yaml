@@ -16,6 +16,15 @@ object_relationships:
         name: accounts
         schema: auth
 array_relationships:
+- name: activebids
+  using:
+    manual_configuration:
+      column_mapping:
+        id: user_id
+      insertion_order: null
+      remote_table:
+        name: activebids
+        schema: public
 - name: artworks
   using:
     foreign_key_constraint_on:
@@ -130,10 +139,10 @@ select_permissions:
     - confidential
     - email
     - full_name
+    - has_samples
     - id
     - instagram
     - is_artist
-    - is_denied
     - location
     - multisig
     - prompt_sign
@@ -156,12 +165,12 @@ select_permissions:
     - display_name
     - email
     - full_name
+    - has_samples
     - id
     - info
     - instagram
     - is_admin
     - is_artist
-    - is_denied
     - location
     - mnemonic
     - multisig
@@ -187,10 +196,10 @@ select_permissions:
     - confidential
     - email
     - full_name
+    - has_samples
     - id
     - instagram
     - is_artist
-    - is_denied
     - location
     - multisig
     - prompt_sign
@@ -209,8 +218,8 @@ update_permissions:
 - permission:
     check: {}
     columns:
+    - info
     - is_artist
-    - is_denied
     - prompt_sign
     filter: {}
   role: approver

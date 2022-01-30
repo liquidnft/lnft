@@ -4,44 +4,16 @@
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import { user, token } from "$lib/store";
   import {
-    isWithinInterval,
-    parseISO,
-    compareAsc,
     formatDistanceStrict,
   } from "date-fns";
   import { AcceptOffer } from "$comp";
   import { api } from "$lib/api";
-  import { err } from "$lib/utils";
+  import { err, canAccept, canCancel } from "$lib/utils";
 
   export let transaction;
 
   let comp, loading;
 
-  let canCancel = ({ artwork, created_at, type, user: { id } }) =>
-    type === "bid" &&
-    isCurrent(artwork, created_at, type) &&
-    $user &&
-    $user.id === id;
-
-  let isCurrent = ({ transferred_at: t }, created_at, type) =>
-    type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);
-
-  let canAccept = ({ type, artwork, created_at, accepted }, debug) => {
-    if (accepted) return false;
-
-    let isOwner = ({ owner }) => $user && $user.id === owner.id;
-
-    let underway = ({ auction_start: s, auction_end: e }) =>
-      e &&
-      isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
-
-    return (
-      artwork &&
-      isCurrent(artwork, created_at, type) &&
-      isOwner(artwork) &&
-      !underway(artwork)
-    );
-  };
 
   $: stopLoading(transaction);
   let stopLoading = () => (loading = false);

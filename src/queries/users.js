@@ -34,6 +34,14 @@ export const getUserByUsername = `query($username: String!) {
         } 
       }
     } 
+    activebids {
+      transaction {
+        ${txFields}
+        artwork {
+          ${artworkFields}
+        } 
+      }
+    }
     favorites {
       artwork {
         ${artworkFields}

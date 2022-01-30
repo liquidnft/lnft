@@ -13,6 +13,7 @@ select_permissions:
     - display_name
     - email
     - full_name
+    - has_samples
     - id
     - info
     - instagram

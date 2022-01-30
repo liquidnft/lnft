@@ -9,6 +9,7 @@
   export let thumb = true;
   export let preview = false;
   export let popup = false;
+  export let classes = "";
 
   let img, vid;
   $: path =
@@ -103,7 +104,7 @@
     on:blur={out}
   >
     <video
-      class="lazy"
+      class={`lazy ${classes}`}
       autoplay
       muted
       playsinline
@@ -128,6 +129,7 @@
 {:else}
   <div class="w-full" class:cover class:contain>
     <img
+      class={`${classes}`}
       src={preview || path ? path : "/liquid_logo.svg"}
       alt={artwork.title}
       bind:this={img}

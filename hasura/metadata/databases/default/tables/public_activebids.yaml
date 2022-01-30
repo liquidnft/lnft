@@ -11,6 +11,24 @@ object_relationships:
       remote_table:
         name: artworks
         schema: public
+- name: transaction
+  using:
+    manual_configuration:
+      column_mapping:
+        id: id
+      insertion_order: null
+      remote_table:
+        name: transactions
+        schema: public
+- name: user
+  using:
+    manual_configuration:
+      column_mapping:
+        user_id: id
+      insertion_order: null
+      remote_table:
+        name: users
+        schema: public
 select_permissions:
 - permission:
     columns:
