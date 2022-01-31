@@ -67,6 +67,14 @@ The plan is to separate out any Raretoshi-specific features from the core platfo
     cd ..
     pnpm dev   # site is available at http://localhost:3000/
     
+   ### Setup pre-commit git hooks
+    
+   We have a pre-commit git hook for running prettier on all files to keep the formatting consistent.
+    
+   `git config core.hooksPath "./git_hooks"` - This will set the git config path to use this directory for hooks.
+    
+   `chmod +x ./git_hooks/pre-commit` - This will give the hook the necessary permissions to run.
+    
  ## Setup local development with cloud tools - VS CodeSpaces https://vscode.dev
 
      npm i -g pnpm
