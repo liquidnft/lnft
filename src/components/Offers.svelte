@@ -20,5 +20,5 @@
     </div>
   </div>
 {:else}
-  <div class="col-span-4 mx-auto">No offers yet</div>
+  <div class="w-full flex justify-center">No offers yet</div>
 {/each}
