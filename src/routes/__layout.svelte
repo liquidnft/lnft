@@ -1,6 +1,7 @@
 <script context="module">
   import { prerendering } from "$app/env";
   import { get } from "$lib/api";
+  import "../main.css";
 
   export async function load({ fetch, url, session }) {
     if (prerendering)
@@ -87,7 +88,8 @@
 
   onDestroy(() => clearInterval(interval));
   onMount(() => {
-    if (browser && !$password) $password = window.sessionStorage.getItem("password");
+    if (browser && !$password)
+      $password = window.sessionStorage.getItem("password");
   });
 </script>
 
@@ -112,6 +114,3 @@
 </main>
 
 <Footer />
-
-<style global src="../main.css">
-</style>
