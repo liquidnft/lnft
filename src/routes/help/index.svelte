@@ -81,10 +81,19 @@
       </div>
       <div class="contact boxShadow">
         <p>Need more help?</p>
-        <h5>Contact us through</h5>
-        <a href="mailto:{branding.emails.support}" target="_blank"
-          >{branding.emails.support}</a
-        >
+        <ul>
+          <li><a href="/guide">Explore user guide</a></li>
+          <li>
+            <a href={branding.urls.external.discord} target="_blank" rel='noreferrer'
+              >Chat with support</a
+            >
+          </li>
+          <li>
+            <a href="mailto:{branding.emails.support}" target="_blank" rel='noreferrer'
+              >Email support</a
+            >
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -108,8 +117,8 @@
   }
 
   .contact {
-    height: 180px;
-    width: 700px;
+    height: 300px;
+    width: 800px;
     padding: 30px;
     margin-left: 50px;
   }

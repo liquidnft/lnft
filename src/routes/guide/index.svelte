@@ -2,9 +2,14 @@
   export const prerender = true;
 </script>
 
+<script>
+  import branding from "$lib/branding";
+</script>
+
 <div class="container mx-auto sm:justify-between mt-10 md:mt-20">
   <div class="mx-auto">
     <h2 class="mb-10">Raretoshi User Guide</h2>
+  <div class="flex layout-container">
     <div class="guide-content">
       <div class="toc boxShadow">
         <h3>Table of contents</h3>
@@ -508,7 +513,23 @@
         </div>
       </div>
     </div>
-  </div>
+<div class="contact boxShadow">
+	<p>Need more help?</p>
+	<ul>
+          <li><a href="/help">Read FAQs</a></li>
+          <li>
+            <a href={branding.urls.external.discord} target="_blank" rel='noreferrer'
+              >Chat with support</a
+            >
+          </li>
+          <li>
+            <a href="mailto:{branding.emails.support}" target="_blank" rel='noreferrer'
+              >Email support</a
+            >
+          </li>
+	</ul>
+</div>
+  </div></div>
 </div>
 
 <style>
@@ -543,7 +564,32 @@
     color: #3ba5ac;
   }
   .guide-image {
-    max-width: 800px;
+    max-width: 100%;
     margin: 10px auto;
+  }
+.contact {
+	height: 300px;
+	width: 1325px;
+	padding: 30px;
+	margin-left: 50px;
+}
+.contact p {
+	margin-bottom: 30px;
+	font-size: 22px;
+	border-radius: 10px;
+}
+
+.contact a {
+	color: #3ba5ac;
+}
+
+  @media only screen and (max-width: 1023px) {
+    .layout-container {
+      flex-wrap: wrap;
+    }
+    .contact {
+      width: 100%;
+      margin: 30px 0;
+    }
   }
 </style>
