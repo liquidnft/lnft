@@ -1,10 +1,11 @@
 <script>
   import { AcceptOffer, ArtworkMedia, Activity, Avatar } from "$comp";
   import { canAccept, canCancel, err } from "$lib/utils";
-  import { val, ticker } from "$lib/utils";
+  import { val, ticker, info } from "$lib/utils";
+  import { requireAccept } from "$lib/wallet";
   import { formatDistanceStrict } from "date-fns";
   import { api } from "$lib/api";
-  import { token } from "$lib/store";
+  import { token, prompt } from "$lib/store";
   import Fa from "svelte-fa";
   import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 
@@ -13,7 +14,7 @@
 
   $: filteredOffers = offers.filter((o) => !o.transaction.accepted);
   $: filteredBids = activebids.filter((o) => !o.transaction.cancelled);
-  
+
   let comp;
   let selectedSection = "received";
 
@@ -25,6 +26,8 @@
   let cancel = async (transaction) => {
     const { id } = transaction;
 
+    await requireAccept();
+
     await api
       .auth(`Bearer ${$token}`)
       .url("/cancel")
@@ -34,6 +37,8 @@
 
     transaction.cancelled = true;
     update();
+
+    info("Bid cancelled!");
   };
 </script>
 

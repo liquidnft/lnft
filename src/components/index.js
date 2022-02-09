@@ -34,3 +34,4 @@ export { default as RoyaltyRecipientAdd } from "./RoyaltyRecipientAdd.svelte";
 export { default as RoyaltyRecipientList } from "./RoyaltyRecipientList.svelte";
 export { default as RoyaltyInfo } from "./RoyaltyInfo.svelte";
 export { default as SignaturePrompt } from "./SignaturePrompt.svelte";
+export { default as AcceptPrompt } from "./AcceptPrompt.svelte";

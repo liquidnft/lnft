@@ -29,6 +29,7 @@ import {
   transactions,
   token,
   signStatus,
+  acceptStatus,
   prompt,
 } from "$lib/store";
 import cryptojs from "crypto-js";
@@ -36,10 +37,10 @@ import { btc, info } from "$lib/utils";
 import { requirePassword } from "$lib/auth";
 import { getActiveBids } from "$queries/transactions";
 import { compareAsc, parseISO } from "date-fns";
-import { SignaturePrompt } from "$comp";
+import { SignaturePrompt, AcceptPrompt } from "$comp";
 
-export const SIGN_CANCELLED = 'cancelled';
-export const SIGN_ACCEPTED = 'accepted';
+export const CANCELLED = 'cancelled';
+export const ACCEPTED = 'accepted';
 
 // const { retry } = middlewares.default || middlewares;
 
@@ -661,6 +662,17 @@ export const requireSign = async () => {
   );
 };
 
+export const requireAccept = async () => {
+  acceptStatus.set(false);
+
+  return await new Promise(
+    (resolve) =>
+      (acceptStatus.subscribe((acceptedSub) => {
+        acceptedSub ? resolve(acceptedSub) : prompt.set(AcceptPrompt);
+      }))
+  );
+};
+
 export const sign = async (sighash) => {
   let p = get(psbt);
   const loggedUser = get(user);
@@ -670,7 +682,7 @@ export const sign = async (sighash) => {
   if(loggedUser.prompt_sign) {
     const signResult = await requireSign();
 
-    if(signResult === SIGN_CANCELLED){
+    if(signResult === CANCELLED){
       throw new Error('Signing cancelled');
     }
 

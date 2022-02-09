@@ -39,3 +39,4 @@ export const transactions = writable([]);
 export const user = writable();
 export const wallet = writable();
 export const signStatus = writable();
+export const acceptStatus = writable();
