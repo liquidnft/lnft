@@ -2,13 +2,17 @@ import wretch from "wretch";
 import { getUser } from "$queries/users";
 import decode from "jwt-decode";
 import cookie from "cookie";
-import { hbp, getQ, serverApi } from "$lib/api";
+import { hbp, getQ } from "$lib/api";
 import { addSeconds } from "date-fns";
 import { prerendering } from "$app/env";
 
-export async function handle({ request, resolve }) {
-  const { headers, url: { pathname }} = request;
-  const cookies = cookie.parse(headers.cookie || "");
+export async function handle({ event, resolve }) {
+  let {
+    request: { headers },
+    url: { pathname },
+  } = event;
+
+  const cookies = cookie.parse(headers.get("cookie") || "");
   let { refresh_token, token: jwt } = cookies;
 
   let user, setCookie;
@@ -17,7 +21,7 @@ export async function handle({ request, resolve }) {
     decode(jwt);
   } catch (e) {
     try {
-      if (!pathname.includes('.json') && refresh_token) {
+      if (!pathname.includes(".json") && refresh_token) {
         let res = await hbp
           .headers({ cookie: `refresh_token=${refresh_token}` })
           .url("/auth/token/refresh")
@@ -25,6 +29,7 @@ export async function handle({ request, resolve }) {
           .res();
 
         let body = await res.json();
+
         let { jwt_token, jwt_expires_in } = body;
         jwt = jwt_token;
 
@@ -51,14 +56,10 @@ export async function handle({ request, resolve }) {
     }
   }
 
-  if (jwt) headers.authorization = `Bearer ${jwt}`;
-  else delete headers.authorization;
+  let q = getQ({ authorization: `Bearer ${jwt}` });
+  event.locals = { jwt, q };
 
-  let api = serverApi.headers(headers);
-  let q = getQ(headers);
-  request.locals = { api, jwt, q };
-
-  if (headers.authorization) {
+  if (jwt) {
     try {
       let { currentuser } = await q(getUser);
       user = currentuser[0];
@@ -67,12 +68,12 @@ export async function handle({ request, resolve }) {
     }
   }
 
-  request.locals.user = user;
+  event.locals.user = user;
 
-  const response = await resolve(request);
+  const response = await resolve(event);
 
   if (setCookie && pathname !== "/auth/login")
-    response.headers["set-cookie"] = setCookie;
+    response.headers.set("set-cookie", setCookie);
 
   return response;
 }
