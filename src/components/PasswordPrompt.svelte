@@ -3,8 +3,8 @@
 <script>
   import { session } from "$app/stores";
   import { tick } from "svelte";
-  import { prompt, password } from "$lib/store";
-  import { api } from "$lib/api";
+  import { prompt, password as pw, user, token } from "$lib/store";
+  import { post } from "$lib/api";
   import { err, dev } from "$lib/utils";
   import Fa from "svelte-fa";
   import {
@@ -13,29 +13,27 @@
     faEyeSlash,
   } from "@fortawesome/free-solid-svg-icons";
 
-  let attempt = dev ? "liquidart" : "";
+  let password = dev ? "liquidart" : "";
   let input;
   let show;
 
   let focus = (p) => p && tick().then(() => input.focus());
   $: focus($prompt);
 
-  export let submit = (e) => {
-    api
-      .url("/login")
-      .post({
-        email: $session.user.username,
-        password: attempt,
-      })
-      .badRequest(err)
-      .unauthorized(err)
-      .json((r) => {
-        $token = r.jwt_token;
-        window.sessionStorage.setItem("password", attempt);
-        $password = attempt;
-        $prompt = undefined;
-      })
-      .catch(err);
+  export let submit = async (e) => {
+    try {
+      let email = $session.user.username;
+      let res = await post("/auth/login", { email, password }, fetch).json();
+
+      $pw = password;
+      $user = res.user;
+      $session = { user: res.user, jwt: res.jwt_token };
+      $token = $session.jwt;
+      window.sessionStorage.setItem("password", password);
+      $prompt = undefined;
+    } catch (e) {
+      err(e);
+    }
   };
 </script>
 
@@ -54,14 +52,14 @@
     <div class="relative mb-2">
       {#if show}
         <input
-          bind:value={attempt}
+          bind:value={password}
           placeholder="Password"
           class="w-full"
           bind:this={input}
         />
       {:else}
         <input
-          bind:value={attempt}
+          bind:value={password}
           placeholder="Password"
           class="w-full"
           type="password"

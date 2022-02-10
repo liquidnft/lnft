@@ -282,6 +282,12 @@ export const countArtworks = `query($where: artworks_bool_exp!) {
 export const getTags = `query {
   tags {
     tag
+  } 
+}`;
+
+export const getTagsWithArtwork = `query {
+  tags {
+    tag
     artwork {
       ${fields}
     } 
@@ -298,3 +304,6 @@ export const getTitles = `query {
     owner_id
   }
 }`;
+
+export const getArtworksByTicker = `query($ticker: String!) { artworks(where: { ticker: { _like: $ticker }}) { ticker }}`;
+export const queryTickers = `query($tickers: [String!]) { artworks(where: { ticker: { _in: $tickers }}) { ticker }}`;

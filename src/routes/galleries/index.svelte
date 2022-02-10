@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { hasura } from "$lib/api";
-  import { getTags } from "$queries/artworks";
+  import { getTagsWithArtwork } from "$queries/artworks";
   import { Card } from "$comp";
   import galleries from "$lib/galleries";
   import { parseISO, compareAsc } from "date-fns";
@@ -30,20 +30,15 @@
       <div class="flex flex-wrap">
         {#each tags
           .filter((t) => t.tag.toLowerCase() === gallery && t.artwork)
-          .sort((a, b) =>
-            compareAsc(
-              parseISO(b.artwork.created_at),
-              parseISO(a.artwork.created_at)
-            )
-          )
+          .sort( (a, b) => compareAsc(parseISO(b.artwork.created_at), parseISO(a.artwork.created_at)) )
           .slice(0, 3) as tag}
           <div class="w-full lg:w-1/3 px-10 mb-8">
             <Card artwork={tag.artwork} />
           </div>
         {/each}
-        <a
-          class="mx-auto secondary-btn mb-20"
-          href={`/galleries/${gallery}`}>View gallery</a>
+        <a class="mx-auto secondary-btn mb-20" href={`/galleries/${gallery}`}
+          >View gallery</a
+        >
       </div>
     {/each}
   </div>

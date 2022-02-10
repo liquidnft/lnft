@@ -13,6 +13,7 @@
 </script>
 
 <script>
+  import { session } from "$app/stores";
   import { ProgressLinear } from "$comp";
   import Fa from "svelte-fa";
   import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
@@ -23,8 +24,6 @@
     results,
     show,
     sortCriteria as sc,
-    token,
-    user,
   } from "$lib/store";
   import { info, err, goto } from "$lib/utils";
   import { Gallery, Results, Search } from "$comp";
@@ -89,7 +88,7 @@
   class="container mx-auto flex flex-wrap flex-col-reverse md:flex-row sm:justify-between mt-10 md:mt-20"
 >
   <h2 class="md:mb-0">Market</h2>
-  {#if $user && $user.is_artist}
+  {#if $session.user && $session.user.is_artist}
     <a href="/a/create" class="primary-btn" data-cy="new-artwork"
       >Submit a new artwork</a
     >

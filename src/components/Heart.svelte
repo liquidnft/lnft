@@ -15,7 +15,7 @@
 
   let favorite = async () => {
     try {
-      await requireLogin();
+      await requireLogin(null, $session.jwt);
       let { id: artwork_id } = artwork;
       let { id: user_id } = $session.user;
 

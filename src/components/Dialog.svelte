@@ -11,6 +11,11 @@
 
   let focus = (p) => browser && p && tick().then(() => ok && ok.focus());
   $: focus($prompt);
+
+  let cancel = () => {
+    if (comp.cancel) comp.cancel();
+    $prompt = undefined;
+  };
 </script>
 
 {#if $prompt}
@@ -48,11 +53,7 @@
             >
               Continue
             </button>
-            <button
-              type="button"
-              class="secondary-btn"
-              on:click={!!comp.cancel ? comp.cancel : ($prompt = undefined)}
-            >
+            <button type="button" class="secondary-btn" on:click={cancel}>
               Cancel
             </button>
           </div>

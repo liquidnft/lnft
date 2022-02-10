@@ -3,7 +3,7 @@ import { api } from "$lib/api";
 import decode from "jwt-decode";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { password as pw, poll, prompt, user, token } from "$lib/store";
+import { password as pw, poll, prompt, token } from "$lib/store";
 import { PasswordPrompt } from "$comp";
 import { goto, err } from "$lib/utils";
 
@@ -11,9 +11,8 @@ export const expired = (t) => !t || decode(t).exp * 1000 < Date.now();
 
 export const requireLogin = async (page) => {
   if (page && page.path === "/login") return;
-  let $token = get(token);
   try {
-    if (expired($token)) throw new Error("Login required");
+    if (expired(get(token))) throw new Error("Login required");
   } catch (e) {
     console.log(e);
     goto("/login");
@@ -23,6 +22,7 @@ export const requireLogin = async (page) => {
 
 export const requirePassword = async () => {
   await requireLogin();
+
   if (get(pw)) return;
   let unsub;
   await new Promise(

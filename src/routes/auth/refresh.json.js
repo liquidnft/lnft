@@ -2,9 +2,15 @@ import cookie from "cookie";
 import { hbp } from "$lib/api";
 import { addSeconds } from "date-fns";
 
-export async function get({ headers }) {
+const opts = {
+  httpOnly: true,
+  sameSite: "lax",
+  path: "/",
+};
+
+export async function get({ request: { headers } }) {
   try {
-    let cookies = cookie.parse(headers.cookie || "");
+    const cookies = cookie.parse(headers.get("cookie") || "");
     let { refresh_token, token: jwt } = cookies;
     if (!refresh_token) throw new Error("no refresh token");
 
@@ -25,10 +31,8 @@ export async function get({ headers }) {
         "set-cookie": [
           res.headers.get("set-cookie").split(",").slice(0, 2).join(""),
           cookie.serialize("token", jwt_token, {
-            httpOnly: true,
+            ...opts,
             maxAge: tokenExpiry,
-            sameSite: "lax",
-            path: "/",
             expires: addSeconds(new Date(), tokenExpiry),
           }),
         ],
@@ -36,18 +40,20 @@ export async function get({ headers }) {
     };
   } catch (e) {
     return {
-      headers: {
+      body: {},
+      status: 200,
+      headers: new Headers({
         "set-cookie": [
           cookie.serialize("token", "", {
-            path: "/",
+            ...opts,
             expires: new Date(0),
           }),
           cookie.serialize("refresh_token", "", {
-            path: "/",
+            ...opts,
             expires: new Date(0),
           }),
-        ],
-      },
+        ].join(","),
+      }),
     };
   }
 }

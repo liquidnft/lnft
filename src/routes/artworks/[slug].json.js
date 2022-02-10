@@ -7,7 +7,7 @@ import {
 import { getArtworkTransactions } from "$queries/transactions";
 import { hbp } from "$lib/api";
 
-export async function get({ headers, locals, params }) {
+export async function get({ request: { headers }, locals, params }) {
   try {
     let { slug } = params;
     let { q } = locals;
@@ -22,7 +22,9 @@ export async function get({ headers, locals, params }) {
 
     if (!artwork) return { status: 500 };
 
-    let { artworks: others } = await q(getArtworksByArtist, { id: artwork.artist_id });
+    let { artworks: others } = await q(getArtworksByArtist, {
+      id: artwork.artist_id,
+    });
 
     others = others.filter((a) => a.id !== artwork.id).slice(0, 3);
 

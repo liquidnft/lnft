@@ -10,7 +10,6 @@ import shim from "vite-plugin-shim-react-pdf";
 export default {
   kit: {
     adapter: node(),
-    target: "#svelte",
     vite: {
       plugins: [shim()],
       resolve: {

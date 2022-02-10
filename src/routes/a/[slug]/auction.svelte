@@ -6,9 +6,7 @@
         redirect: "/login",
       };
 
-    const props = await fetch(`/artworks/${slug}.json`).then((r) =>
-      r.json()
-    );
+    const props = await fetch(`/artworks/${slug}.json`).then((r) => r.json());
 
     if (!props.artwork)
       return {
@@ -43,13 +41,7 @@
     updateArtworkWithRoyaltyRecipients,
   } from "$queries/artworks";
   import { api, query } from "$lib/api";
-  import {
-    fee,
-    password,
-    sighash,
-    prompt,
-    psbt,
-  } from "$lib/store";
+  import { fee, password, sighash, prompt, psbt } from "$lib/store";
   import { requirePassword } from "$lib/auth";
   import { createTransaction } from "$queries/transactions";
   import {
@@ -262,17 +254,23 @@
       await requirePassword();
 
       let base64, tx;
+
+      console.log("ROYALTY", royalty_value);
       if (royalty_value) {
         tx = await signOver(artwork, tx);
         artwork.auction_tx = $psbt.toBase64();
       } else {
+        console.log("HERE");
         $psbt = await sendToMultisig(artwork);
+        console.log("BERE");
         $psbt = await signAndBroadcast();
         base64 = $psbt.toBase64();
         tx = $psbt.extractTransaction();
+        console.log("HERE");
 
         tx = await signOver(artwork, tx);
         artwork.auction_tx = $psbt.toBase64();
+        console.log("HERE");
 
         artwork.auction_release_tx = (
           await createRelease(artwork, tx)

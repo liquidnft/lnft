@@ -21,15 +21,15 @@ import {
   pending,
   password,
   snack,
-  user,
   poll,
   psbt,
   sighash,
   titles,
   transactions,
-  token,
   signStatus,
   prompt,
+  user,
+  token,
 } from "$lib/store";
 import cryptojs from "crypto-js";
 import { btc, info } from "$lib/utils";
@@ -38,8 +38,8 @@ import { getActiveBids } from "$queries/transactions";
 import { compareAsc, parseISO } from "date-fns";
 import { SignaturePrompt } from "$comp";
 
-export const SIGN_CANCELLED = 'cancelled';
-export const SIGN_ACCEPTED = 'accepted';
+export const SIGN_CANCELLED = "cancelled";
+export const SIGN_ACCEPTED = "accepted";
 
 // const { retry } = middlewares.default || middlewares;
 
@@ -59,8 +59,8 @@ export const parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 const nonce = Buffer.alloc(1);
 
-export const getTransactions = () => {
-  let { address } = get(user);
+export const getTransactions = (user) => {
+  let { address } = user;
   if (!get(poll).find((p) => p.name === "txns"))
     poll.set([
       ...get(poll),
@@ -77,26 +77,22 @@ export const getTransactions = () => {
   return txns();
 };
 
-export const getBalances = async () => {
-  await requirePassword();
+export const getBalances = async ({ user, jwt }) => {
+  await requirePassword({ jwt });
 
   let { confirmed: c, pending: p } = await api
-    .auth(`Bearer ${get(token)}`)
+    .auth(`Bearer ${jwt}`)
     .url("/balance")
     .get()
     .json();
 
   Object.keys(c).map(async (a) => {
     let artwork = get(titles).find(
-      (t) => t.asset === a && t.owner_id !== get(user).id
+      (t) => t.asset === a && t.owner_id !== user.id
     );
 
     if (artwork) {
-      await api
-        .auth(`Bearer ${get(token)}`)
-        .url("/claim")
-        .post({ artwork })
-        .json();
+      await api.auth(`Bearer ${jwt}`).url("/claim").post({ artwork }).json();
     }
   });
 
@@ -135,7 +131,7 @@ export const createWallet = (mnemonic, pass) => {
 };
 
 export const getMnemonic = (mnemonic, pass) => {
-  if (!mnemonic && get(user)) mnemonic = get(user).mnemonic;
+  if (!mnemonic && user) mnemonic = get(user).mnemonic;
   if (!pass) pass = get(password);
 
   mnemonic = cryptojs.AES.decrypt(mnemonic, pass).toString(cryptojs.enc.Utf8);
@@ -528,9 +524,7 @@ const addFee = (p) =>
 const bumpFee = (v) => fee.set(get(fee) + v);
 
 export const isMultisig = ({ auction_end }) => {
-  return !!(
-    (auction_end && compareAsc(parseISO(auction_end), new Date()) > 0)
-  );
+  return !!(auction_end && compareAsc(parseISO(auction_end), new Date()) > 0);
 };
 
 export const releaseToSelf = async (artwork) => {
@@ -653,11 +647,10 @@ export const cancelSwap = async (artwork) => {
 export const requireSign = async () => {
   signStatus.set(false);
 
-  return await new Promise(
-    (resolve) =>
-      (signStatus.subscribe((signedSub) => {
-        signedSub ? resolve(signedSub) : prompt.set(SignaturePrompt);
-      }))
+  return await new Promise((resolve) =>
+    signStatus.subscribe((signedSub) => {
+      signedSub ? resolve(signedSub) : prompt.set(SignaturePrompt);
+    })
   );
 };
 
@@ -667,14 +660,14 @@ export const sign = async (sighash) => {
 
   let { privkey } = keypair();
 
-  if(loggedUser.prompt_sign) {
+  if (loggedUser.prompt_sign) {
     const signResult = await requireSign();
 
-    if(signResult === SIGN_CANCELLED){
-      throw new Error('Signing cancelled');
+    if (signResult === SIGN_CANCELLED) {
+      throw new Error("Signing cancelled");
     }
 
-    info('Transaction signed!');
+    info("Transaction signed!");
   }
 
   p.data.inputs.map(({ sighashType }, i) => {
@@ -1100,6 +1093,7 @@ export const sendToMultisig = async (artwork) => {
     value,
   });
 
+  debugger;
   await fund(p, out, asset, value);
   await fund(p, out, btc, get(fee));
   addFee(p);

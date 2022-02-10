@@ -35,5 +35,7 @@ export const snack = writable();
 export const sortCriteria = writable("newest");
 export const titles = writable([]);
 export const transactions = writable([]);
+export const user = writable();
+export const token = writable();
 export const wallet = writable();
 export const signStatus = writable();

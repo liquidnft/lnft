@@ -11,24 +11,17 @@
 </script>
 
 <script>
+  import { session } from "$app/stores";
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
   import { v4 } from "uuid";
-  import { hasura, api } from "$lib/api";
+  import { query, api } from "$lib/api";
   import { tick, onDestroy } from "svelte";
-  import {
-    edition,
-    fee,
-    psbt,
-    password,
-    prompt,
-    user,
-    token,
-  } from "$lib/store";
+  import { edition, fee, psbt, password, prompt, titles } from "$lib/store";
   import { Dropzone, ProgressLinear } from "$comp";
   import { upload, supportedTypes } from "$lib/upload";
-  import { create } from "$queries/artworks";
+  import { create, getArtworksByTicker, queryTickers } from "$queries/artworks";
   import { btc, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
@@ -120,25 +113,27 @@
   const issue = async (ticker) => {
     let contract;
     let domain =
-      $user.username === branding.superUserName
+      $session.user.username === branding.superUserName
         ? branding.urls.base
-        : `${$user.username.toLowerCase()}.${branding.urls.base}`;
+        : `${$session.user.username.toLowerCase()}.${branding.urls.base}`;
 
     let error, success;
 
-    await requirePassword();
+    await requirePassword($session);
 
     contract = await createIssuance(artwork, domain, tx);
+
+    ({ tx } = $psbt.data.globalMap.unsignedTx);
+    artwork.asset = parseAsset(
+      tx.outs.find((o) => parseAsset(o.asset) !== btc).asset
+    );
+    $titles = [...$titles, artwork];
 
     await sign();
     await broadcast(true);
     await tick();
 
-    tx = $psbt.extractTransaction();
-    artwork.asset = parseAsset(
-      tx.outs.find((o) => parseAsset(o.asset) !== btc).asset
-    );
-    hash = tx.getId();
+    hash = $psbt.extractTransaction().getId();
 
     return JSON.stringify(contract);
   };
@@ -164,15 +159,13 @@
   };
 
   let checkTicker = async () => {
-    let { data } = await hasura
-      .auth(`Bearer ${$token}`)
-      .post({
-        query: `query { artworks(where: { ticker: { _like: "${artwork.ticker.toUpperCase()}%" }}) { ticker }}`,
-      })
-      .json();
+    let { ticker } = artwork;
+    let { artworks } = await query(getArtworksByTicker, {
+      ticker: ticker + "%",
+    });
 
-    if (!data.errors && data.artworks && data.artworks.length) {
-      let tickers = data.artworks.sort(({ ticker: a }, { ticker: b }) =>
+    if (artworks && artworks.length) {
+      let tickers = artworks.sort(({ ticker: a }, { ticker: b }) =>
         b.length < a.length
           ? 1
           : b.length > a.length
@@ -180,29 +173,18 @@
           : a.charCodeAt(a.length - 1) - b.charCodeAt(b.length - 1)
       );
 
-      if (tickers.map((a) => a.ticker).includes(artwork.ticker)) {
-        let { ticker } = tickers.pop();
-        artwork.ticker =
-          ticker.substr(0, 3) + c[c.indexOf(ticker.substr(3)) + 1];
+      if (tickers.map((a) => a.ticker).includes(ticker)) {
+        let { ticker: t } = tickers.pop();
+        artwork.ticker = t.substr(0, 3) + c[c.indexOf(t.substr(3)) + 1];
       }
     }
   };
 
   let checkTickers = async (tickers) => {
-    let { data } = await hasura
-      .auth(`Bearer ${$token}`)
-      .post({
-        query: `query { artworks(where: { ticker: { _in: ${JSON.stringify(
-          tickers
-        )} }}) { ticker }}`,
-      })
-      .json();
-
-    if (data.artworks && data.artworks.length)
+    let { artworks } = await query(queryTickers, { tickers });
+    if (artworks.length)
       throw new Error(
-        `Ticker(s) not available: ${data.artworks
-          .map((a) => a.ticker)
-          .join(", ")}`
+        `Ticker(s) not available: ${artworks.map((a) => a.ticker).join(", ")}`
       );
   };
 
@@ -227,7 +209,7 @@
     loading = true;
 
     try {
-      await requireLogin();
+      await requireLogin(null, $session.jwt);
 
       let { ticker } = artwork;
       let tickers = [];
@@ -255,6 +237,7 @@
         artwork.id = v4();
         artwork.edition = $edition;
         artwork.slug = kebab(artwork.title || "untitled");
+        artwork.held = "singlesig";
 
         if ($edition > 1) artwork.slug += "-" + $edition;
         artwork.slug += "-" + artwork.id.substr(0, 5);
@@ -281,25 +264,21 @@
           tags,
         };
 
-        let result = await hasura
-          .auth(`Bearer ${$token}`)
+        await query(create, variables);
+
+        await api
+          .url("/mail-artwork-minted")
+          .auth(`Bearer ${$session.jwt}`)
           .post({
-            query: create,
-            variables,
-          })
-          .json();
-
-        if (result.error) throw new Error(result.error.message);
-
-        await api.url("/mail-artwork-minted").auth(`Bearer ${$token}`).post({
-          userId: $user.id,
-          artworkId: artwork.id,
-        });
+            userId: $session.user.id,
+            artworkId: artwork.id,
+          });
       }
 
       $prompt = undefined;
       goto(`/a/${artwork.slug}`);
     } catch (e) {
+      console.log(e);
       err(e);
       loading = false;
     }

@@ -15,12 +15,12 @@
   import Fa from "svelte-fa";
   import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { page, session } from "$app/stores";
+  import { user, token } from "$lib/store";
   import { dev, err, goto } from "$lib/utils";
   import { post } from "$lib/api";
   import cryptojs from "crypto-js";
   import { tick } from "svelte";
   import { keypair, singlesig, multisig } from "$lib/wallet";
-  import { token, user } from "$lib/store";
   import { onMount } from "svelte";
 
   let show;
@@ -37,8 +37,8 @@
       let res = await post("/auth/login", { email, password }, fetch).json();
 
       $user = res.user;
-      $token = res.jwt_token;
-      $session = { user: $user };
+      $session = { user: res.user, jwt: res.jwt_token };
+      $token = $session.jwt;
       window.sessionStorage.setItem("password", password);
 
       goto("/");
@@ -46,12 +46,6 @@
       err(e);
     }
   };
-
-  onMount(() => {
-    session.set(null);
-    token.set(null);
-    user.set(null);
-  });
 </script>
 
 <div class="form-container bg-lightblue px-4">

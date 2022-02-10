@@ -1,18 +1,19 @@
 <script>
+  import { session } from "$app/stores";
   import { onMount, onDestroy } from "svelte";
   import { format, parseISO } from "date-fns";
   import { api } from "$lib/api";
   import { ToggleSwitch } from "$comp";
-  import { asset, assets, user, token } from "$lib/store";
+  import { asset, assets } from "$lib/store";
   import { assetLabel, val, units } from "$lib/utils";
 
   let show = false;
 
   let txns = [];
   let getTransactions = () =>
-    $token &&
+    $session.jwt &&
     api
-      .auth(`Bearer ${$token}`)
+      .auth(`Bearer ${$session.jwt}`)
       .url("/transactions")
       .get()
       .json((data) => {
@@ -56,7 +57,7 @@
     </div>
 
     {#each txns as tx}
-      {#if !show || tx.asset === $asset}
+      {#if tx.amount && (!show || tx.asset === $asset)}
         <a href={`/tx/${tx.id}`}>
           <div class="w-full mb-4">
             <div class="flex">

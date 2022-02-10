@@ -11,17 +11,9 @@
   } from "@fortawesome/free-solid-svg-icons";
   import { faClone } from "@fortawesome/free-regular-svg-icons";
   import { ProgressLinear } from "$comp";
-  import { onMount, tick } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import qrcode from "qrcode-generator-es6";
-  import {
-    balances,
-    error,
-    locked,
-    pending,
-    prompt,
-    user,
-    token,
-  } from "$lib/store";
+  import { balances, error, locked, pending, prompt } from "$lib/store";
   import { assetLabel, btc, copy, err, fullscreen, val } from "$lib/utils";
   import { getBalances } from "$lib/wallet";
   import { api } from "$lib/api";
@@ -58,7 +50,7 @@
   };
 
   onDestroy(() => clearInterval(poll));
-  let poll = setInterval(() => getBalances.catch(err), 5000);
+  let poll = setInterval(() => getBalances($session), 5000);
 
   let confidential = false;
   let toggleConfidential = () => {
@@ -72,7 +64,6 @@
   $: incoming && (confirming = true);
   $: newBalance(current);
   let newBalance = () => {
-    console.log("SKOO");
     if (confirming) {
       confirmed = true;
       confirming = false;
@@ -98,7 +89,7 @@
     try {
       ({ address, fee } = await api
         .url("/bitcoin")
-        .auth(`Bearer ${$token}`)
+        .auth(`Bearer ${$session.jwt}`)
         .post({
           amount: Math.max($error.amount, 1000),
           liquidAddress: $session.user.address,
@@ -126,7 +117,7 @@
     try {
       ({ address, fee } = await api
         .url("/liquid")
-        .auth(`Bearer ${$token}`)
+        .auth(`Bearer ${$session.jwt}`)
         .post({
           amount: Math.max($error.amount, 1000),
           liquidAddress: $session.user.address,
@@ -146,7 +137,7 @@
     try {
       ({ address, fee } = await api
         .url("/lightning")
-        .auth(`Bearer ${$token}`)
+        .auth(`Bearer ${$session.jwt}`)
         .post({
           amount: Math.max($error.amount, 1000),
           liquidAddress: $session.user.address,

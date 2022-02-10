@@ -1,9 +1,10 @@
 <script>
+  import { session } from "$app/stores";
   import { onMount, tick, onDestroy } from "svelte";
   import { page } from "$app/stores";
   import { ArtworkMedia } from "$comp";
   import { getSamples, updateUser } from "$queries/users";
-  import { role, user, token } from "$lib/store";
+  import { role } from "$lib/store";
   import { api, hasura, query } from "$lib/api";
   import { err, goto, info } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
@@ -12,9 +13,9 @@
   let samples;
 
   onMount(async () => {
-    if ($token) {
+    if ($session.jwt) {
       const applicantsRequest = await hasura
-        .auth(`Bearer ${$token}`)
+        .auth(`Bearer ${$session.jwt}`)
         .headers({
           "X-Hasura-Role": "approver",
         })
@@ -28,17 +29,17 @@
     }
   });
 
-  $: pageChange($page, $user);
+  $: pageChange($page, $session.user);
 
   let pageChange = async () => {
     try {
-      if (!$user) return;
-      if (!$user.is_admin) goto("/market");
+      if (!$session.user) return;
+      if (!$session.user.is_admin) goto("/market");
       $role = "approver";
     } catch (error) {
       err(error);
     }
-    await requireLogin();
+    await requireLogin(null, $session.jwt);
   };
 
   onDestroy(() => ($role = "user"));
@@ -55,7 +56,7 @@
 
     await api
       .url("/mail-artist-application-approved")
-      .auth(`Bearer ${$token}`)
+      .auth(`Bearer ${$session.jwt}`)
       .post({
         userId: user.id,
       });
@@ -75,7 +76,7 @@
     ).catch(err);
 
     await api
-      .auth(`Bearer ${$token}`)
+      .auth(`Bearer ${$session.jwt}`)
       .url("/mail-artist-application-denied")
       .post({
         userId: user.id,
@@ -123,6 +124,6 @@
         >
       </div>
     </div>
-    <hr>
+    <hr />
   {/each}
 </div>

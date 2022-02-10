@@ -151,12 +151,16 @@ const checkTransactions = async () => {
   try {
     let { transactions } = await q(getUnconfirmed);
 
+    console.log("UNCONF", transactions);
+
     for (let i = 0; i < transactions.length; i++) {
       let tx = transactions[i];
       let { block_time, confirmed } = await electrs
         .url(`/tx/${tx.hash}/status`)
         .get()
         .json();
+
+      console.log("BT", block_time, confirmed);
 
       if (confirmed) {
         let {
@@ -288,6 +292,8 @@ let updateTransactions = async (address, user_id) => {
   if (txns.length)
     console.log(`updating ${txns.length} transactions for ${address}`);
 
+  console.log("TXNS", txns);
+
   for (let i = 0; i < txns.length; i++) {
     let { txid, vin, vout, status } = txns[i];
 
@@ -322,15 +328,19 @@ let updateTransactions = async (address, user_id) => {
 
     let assets = Object.keys(total);
 
+    console.log("TOT", total);
+
     for (let l = 0; l < assets.length; l++) {
       let asset = assets[l];
       let type = total[asset] < 0 ? "withdrawal" : "deposit";
 
       if (
-        total[asset] === 0 ||
         transactions.find(
           (tx) =>
-            tx.user_id === user_id && tx.hash === txid && tx.asset === asset && tx.type === type
+            tx.user_id === user_id &&
+            tx.hash === txid &&
+            tx.asset === asset &&
+            tx.type === type
         )
       )
         continue;

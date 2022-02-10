@@ -160,7 +160,7 @@
   };
 
   let signTx = async () => {
-    await requirePassword();
+    await requirePassword($session.jwt);
     $psbt = await sign();
     try {
       $psbt = await requestSignature($psbt);
@@ -202,7 +202,6 @@
       class:mt-10={summary}
     >
       <div>
-
         <div class="grid grid-cols-3 mb-4">
           <h4 class="mb-2 text-xs text-gray-400">Sending</h4>
           <h4 class="mb-2 text-xs text-gray-400 text-right">Amount</h4>
@@ -236,11 +235,11 @@
                     <div>{username}</div>
                   {/if}
                   <div class="my-auto ml-auto">
-                    {#if val(asset, Math.abs(totals[username][asset])) !== "1"}
-                      <div class="mr-1 ml-auto">
-                        {val(asset, Math.abs(totals[username][asset]))}
-                      </div>
-                    {/if}
+                    <div class="mr-1 ml-auto">
+                      {parseFloat(
+                        val(asset, Math.abs(totals[username][asset]))
+                      ).toFixed(8)}
+                    </div>
                   </div>
                   <div class="truncate ml-auto mr-2 my-auto">
                     {assetLabel(asset)}
@@ -254,7 +253,7 @@
 
       <div>
         <div class="grid grid-cols-3 mb-4">
-        <h4 class="mb-2 text-xs text-gray-400">Receiving</h4>
+          <h4 class="mb-2 text-xs text-gray-400">Receiving</h4>
           <h4 class="mb-2 text-xs text-gray-400 text-right">Amount</h4>
           <h4 class="mb-2 text-xs text-gray-400 text-right">Asset</h4>
           {#each Object.keys(totals) as username}

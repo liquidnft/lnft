@@ -13,7 +13,6 @@
   import { query } from "$lib/api";
   import { Summary } from "$comp";
   import { fade } from "svelte/transition";
-  import { user } from "$lib/store";
   import { Activity, RecentActivityCard, LatestPiecesCard } from "$comp";
   import { err } from "$lib/utils";
   import branding from "$lib/branding";
@@ -81,7 +80,9 @@
         muted
         playsinline
         loop
-        src={`/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`}
+        src={`/api/public/${artwork.filename}.${
+          artwork.filetype.split("/")[1]
+        }`}
         :key={featured[current].id}
       />
     {:else}
@@ -90,7 +91,9 @@
         out:fade
         class="lazy cover absolute secondary-header"
         alt={artwork.title}
-        src={`/api/public/${artwork.filename}.${artwork.filetype.split("/")[1]}`}
+        src={`/api/public/${artwork.filename}.${
+          artwork.filetype.split("/")[1]
+        }`}
       />
     {/if}
   </div>

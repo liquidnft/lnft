@@ -48,7 +48,12 @@
 
   let cancel = ({ id }) => {
     loading = true;
-    api.auth(`Bearer ${$token}`).url("/cancel").post({ id }).json().catch(err);
+    api
+      .auth(`Bearer ${$session.jwt}`)
+      .url("/cancel")
+      .post({ id })
+      .json()
+      .catch(err);
   };
 </script>
 

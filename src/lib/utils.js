@@ -10,6 +10,7 @@ import {
   titles,
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
+import { InsufficientFunds } from "$comp";
 
 const btc = import.meta.env.VITE_BTC;
 const cad = import.meta.env.VITE_CAD;
@@ -154,7 +155,7 @@ const err = (e) => {
   } catch {}
   if (!msg) msg = "An error occurred";
   if (msg.includes("EPIPE")) return;
-  if (msg.includes("Insufficient")) return;
+  if (msg.includes("Insufficient")) return prompt.set(InsufficientFunds);
   if (msg.includes("socket")) return;
   if (msg.includes("JWT")) return;
   setTimeout(() => snack.set({ msg, type: "error" }), 100);

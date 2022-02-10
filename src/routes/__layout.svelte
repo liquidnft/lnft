@@ -41,7 +41,10 @@
     meta,
     titles as t,
     password,
+    prompt,
     poll,
+    user,
+    token,
   } from "$lib/store";
   import { onDestroy, onMount } from "svelte";
   import branding from "$lib/branding";
@@ -51,7 +54,8 @@
   let interval;
   let refresh = async () => {
     try {
-      await get("/auth/refresh.json", fetch);
+      let res = await get("/auth/refresh.json", fetch);
+      $token = res.jwt_token;
     } catch (e) {
       console.log(e);
     }
@@ -67,14 +71,19 @@
 
     $a = addresses;
     $t = titles;
+    $user = $session.user;
+    $token = $session.jwt;
 
-    interval = setInterval(refresh, 60000);
+    interval = setInterval(refresh, 6000);
   }
 
   let open = false;
   let y;
 
-  let stopPolling = () => $poll.map(clearInterval);
+  let stopPolling = () => {
+    $poll.map(clearInterval);
+    $prompt = false;
+  };
   $: stopPolling($page);
 
   onDestroy(() => clearInterval(interval));
@@ -105,3 +114,19 @@
 </main>
 
 <Footer />
+
+<style global>
+  input,
+  textarea,
+  select {
+    @apply border bg-white focus:outline-none;
+    overflow-y: auto;
+    padding: 0;
+    padding: 10px;
+  }
+
+  .title {
+    @apply font-bold pb-14 text-4xl text-left;
+    color: #133e7c;
+  }
+</style>

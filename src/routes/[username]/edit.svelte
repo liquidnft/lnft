@@ -7,6 +7,7 @@
 </script>
 
 <script>
+  import { session } from "$app/stores";
   import Fa from "svelte-fa";
   import {
     faImage,
@@ -62,31 +63,30 @@
     update(form);
   };
 
-  let update = (form) => {
-    let {
-      is_artist,
-      is_admin,
-      num_followers,
-      num_follows,
-      followed,
-      id,
-      balance,
-      pubkey,
-      wallet_initialized,
-      mnemonic,
-      ...rest
-    } = form;
-    $session.user = { ...$session.user, ...rest };
+  let update = async (form) => {
+    try {
+      let {
+        is_artist,
+        is_admin,
+        num_followers,
+        num_follows,
+        followed,
+        id,
+        balance,
+        pubkey,
+        wallet_initialized,
+        mnemonic,
+        ...rest
+      } = form;
+      $session.user = { ...$session.user, ...rest };
 
-    query(updateUser, { user: rest, id }).then((r) => {
-      if (r.error) {
-        if (r.error.message.includes("Uniqueness")) err("Username taken");
-        else err(r.error);
-      } else {
-        info("Profile updated");
-        goto(`/${rest.username}`);
-      }
-    });
+      await query(updateUser, { user: rest, id });
+      info("Profile updated");
+      goto(`/${rest.username}`);
+    } catch (e) {
+      if (e.message.includes("Uniqueness")) err("Username taken");
+      else err(e);
+    }
   };
 </script>
 

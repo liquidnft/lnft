@@ -1,9 +1,9 @@
 import { get } from "svelte/store";
-import { token } from "$lib/store";
+import { session } from "$app/stores";
 
 export const supportedTypes = ["jpg", "png", "gif", "mp4"];
 
-export const upload = async (file, progress) => {
+export const upload = async (file, progress, token) => {
   let url = "/api/upload";
   let formData = new FormData();
   formData.append("file", file);
@@ -18,7 +18,7 @@ export const upload = async (file, progress) => {
     });
     ajax.upload.addEventListener("progress", progress, false);
     ajax.open("POST", url);
-    ajax.setRequestHeader("Authorization", `Bearer ${get(token)}`);
+    ajax.setRequestHeader("Authorization", `Bearer ${token}`);
     ajax.send(formData);
   });
 };

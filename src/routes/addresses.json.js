@@ -1,6 +1,6 @@
 import { getTitles } from "$queries/artworks";
 import { getUsersAddresses } from "$queries/users";
-export async function get({ headers, locals: { q } }) {
+export async function get({ request: { headers }, locals: { q } }) {
   try {
     let { artworks: titles } = await q(getTitles);
     let { users: addresses } = await q(getUsersAddresses);

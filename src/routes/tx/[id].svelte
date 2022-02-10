@@ -4,7 +4,7 @@
   import { page } from "$app/stores";
   import reverse from "buffer-reverse";
   import { onMount } from "svelte";
-  import { electrs, hasura, pub } from "$lib/api";
+  import { query } from "$lib/api";
   import { getTransaction } from "$queries/transactions";
   import { Psbt } from "liquidjs-lib";
   import { psbt, token } from "$lib/store";
@@ -19,19 +19,9 @@
 
   onMount(async () => {
     try {
-      let result = await pub($token)
-        .post({
-          query: getTransaction(id),
-        })
-        .json();
-
-      if (result.errors) throw new Error(result.errors[0].message);
-
       let {
-        data: {
-          transactions_by_pk: { hash, psbt: p },
-        },
-      } = result;
+        transactions_by_pk: { hash, psbt: p },
+      } = await query(getTransaction(id));
 
       if (p) $psbt = Psbt.fromBase64(p);
       else if (!$psbt) {
@@ -61,7 +51,8 @@
     <a
       on:click|preventDefault={() => window.history.back()}
       href="/"
-      class="text-midblue">
+      class="text-midblue"
+    >
       <div class="flex">
         <Fa icon={faChevronLeft} class="my-auto mr-1" />
         <div>Back</div>

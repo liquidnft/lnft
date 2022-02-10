@@ -1,4 +1,5 @@
 <script>
+  import { session } from "$app/stores";
   import {
     getUserStats,
     getArtworksStats,
@@ -6,16 +7,15 @@
   } from "$queries/stats";
   import StatCard from "./card.svelte";
   import { page } from "$app/stores";
-  import { user } from "$lib/store";
   import { goto } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
 
-  $: pageChange($page, $user);
+  $: pageChange($page, $session.user);
   let pageChange = async () => {
     try {
-      await requireLogin();
-      if (!$user) return;
-      if (!$user.is_admin) goto("/");
+      await requireLogin(null, $session.jwt);
+      if (!$session.user) return;
+      if (!$session.user.is_admin) goto("/");
     } catch (error) {
       err(error);
     }

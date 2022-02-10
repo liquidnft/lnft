@@ -2,14 +2,14 @@
   import Fa from "svelte-fa";
   import { faSearch } from "@fortawesome/free-solid-svg-icons";
   import { err, go, goto } from "$lib/utils";
-  import { hasura } from "$lib/api";
-  import { results, token } from "$lib/store";
+  import { query } from "$lib/api";
+  import { results } from "$lib/store";
   import Select from "svelte-select";
   import { ArtworkMedia } from "$comp";
 
   export let suggest = true;
 
-  const query = `query($filterText: String!) {
+  const searchQuery = `query($filterText: String!) {
     searchable(args: { t: $filterText }) {
       id
       s
@@ -22,17 +22,14 @@
     if (!filterText) return {};
 
     return new Promise((resolve) =>
-      hasura
-        .headers($token ? { authorization: `Bearer ${$token}` } : undefined)
-        .post({ query, variables: { filterText } })
-        .json(({ data: { searchable: r } }) =>
-          resolve(
-            groupBy(
-              r.sort((a, b) => a.s.localeCompare(b.s)),
-              "type"
-            )
+      query(searchQuery, { filterText }).then(({ searchable: r }) =>
+        resolve(
+          groupBy(
+            r.sort((a, b) => a.s.localeCompare(b.s)),
+            "type"
           )
         )
+      )
     );
   }
 

@@ -37,6 +37,7 @@ const hasura = wretch().url(`${HASURA_URL}/v1/graphql`);
 const api = (h) => hasura.headers(h);
 const adminApi = hasura.headers({ "x-hasura-admin-secret": HASURA_SECRET });
 
+console.log(LIQUID_ELECTRS_URL);
 const electrs = wretch().middlewares([enqueue]).url(LIQUID_ELECTRS_URL);
 const registry = wretch().url("https://assets.blockstream.info/");
 const coinos = wretch().url(COINOS_URL).auth(`Bearer ${COINOS_TOKEN}`);
@@ -52,7 +53,6 @@ const q = async (query, variables) => {
     for (let index = 0; index < errors.length; index++) {
       const element = errors[index];
       console.error(`Error ${index + 1}: ${JSON.stringify(element)}`);
-      
     }
     throw new Error(errors[0].message);
   }

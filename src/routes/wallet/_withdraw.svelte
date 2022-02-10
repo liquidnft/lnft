@@ -1,7 +1,8 @@
 <script>
+  import { session } from "$app/stores";
   import { query } from "$lib/api";
   import { tick } from "svelte";
-  import { asset, assets, balances, psbt, user, token } from "$lib/store";
+  import { asset, assets, balances, psbt } from "$lib/store";
   import { broadcast, pay, keypair, requestSignature } from "$lib/wallet";
   import { btc, dev, err, info, sats, val, assetLabel } from "$lib/utils";
   import sign from "$lib/sign";
@@ -31,7 +32,7 @@
   };
 
   let send = async (e) => {
-    await requirePassword();
+    await requirePassword($session);
 
     loading = true;
     try {
@@ -53,24 +54,14 @@
     }
     loading = false;
   };
-
 </script>
 
-<style>
-  textarea,
-  input,
-  select {
-    @apply rounded-lg p-2 text-black;
-    margin-top: 10px;
-  }
-
-</style>
-
-{#if $user && withdrawing}
+{#if $session.user && withdrawing}
   <form
     class="dark-bg md:rounded-lg p-5 w-full flex flex-col"
     on:submit|preventDefault={send}
-    autocomplete="off">
+    autocomplete="off"
+  >
     {#if loading}
       <ProgressLinear />
     {:else}
@@ -89,7 +80,8 @@
             id="amount"
             class="w-full"
             placeholder={val($asset, 0)}
-            bind:value={amount} />
+            bind:value={amount}
+          />
         </div>
       </div>
       <div class="flex flex-col mb-4">
@@ -99,9 +91,21 @@
           style="overflow:auto"
           placeholder="Address"
           bind:value={to}
-          rows={4} />
+          rows={4}
+        />
       </div>
-      <button type="submit" class="primary-btn w-full mt-5">Complete withdraw</button>
+      <button type="submit" class="primary-btn w-full mt-5"
+        >Complete withdraw</button
+      >
     {/if}
   </form>
 {/if}
+
+<style>
+  textarea,
+  input,
+  select {
+    @apply rounded-lg p-2 text-black;
+    margin-top: 10px;
+  }
+</style>

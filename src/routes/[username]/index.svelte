@@ -12,6 +12,7 @@
 </script>
 
 <script>
+  import { session } from "$app/stores";
   import Fa from "svelte-fa";
   import {
     faEnvelope,
@@ -21,7 +22,6 @@
   import { faTwitter, faInstagram } from "@fortawesome/free-brands-svg-icons";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
-  import { user, token } from "$lib/store";
   import { err, goto } from "$lib/utils";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { createFollow, deleteFollow } from "$queries/follows";
@@ -40,7 +40,7 @@
 
   let follow = () => {
     if (subject.followed) {
-      query(deleteFollow($user, subject)).catch(err);
+      query(deleteFollow($session.user, subject)).catch(err);
       subject.followed = false;
       subject.num_followers--;
     } else {
@@ -125,8 +125,8 @@
         {#if subject.bio}
           <p>{subject.bio}</p>
         {/if}
-        {#if $user}
-          {#if $user.id === subject.id}
+        {#if $session.user}
+          {#if $session.user.id === subject.id}
             <Menu />
           {:else}
             <button class="p-2 primary-btn follow mt-8" on:click={follow}>
@@ -154,7 +154,7 @@
           >
             Collection
           </div>
-          {#if $user && $user.id === id}
+          {#if $session.user && $session.user.id === id}
             <div
               class:hover={tab === "offers"}
               on:click={() => (tab = "offers")}
@@ -172,7 +172,7 @@
         {#if tab === "creations"}
           <div class="w-full justify-center">
             <div class="w-full max-w-sm mx-auto mb-12">
-              {#if $user && $user.is_artist && $user.id === subject.id}
+              {#if $session.user && $session.user.is_artist && $session.user.id === subject.id}
                 <a href="/a/create" class="primary-btn">Submit a new artwork</a>
               {/if}
             </div>
