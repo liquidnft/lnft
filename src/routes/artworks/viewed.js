@@ -1,5 +1,5 @@
 import { serverApi } from "$lib/api";
-export async function post(request) {
+export async function post({ request }) {
   try {
     let body = await request.json();
     return {

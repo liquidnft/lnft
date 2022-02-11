@@ -237,7 +237,6 @@
         artwork.id = v4();
         artwork.edition = $edition;
         artwork.slug = kebab(artwork.title || "untitled");
-        artwork.held = "singlesig";
 
         if ($edition > 1) artwork.slug += "-" + $edition;
         artwork.slug += "-" + artwork.id.substr(0, 5);
