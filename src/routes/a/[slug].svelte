@@ -98,6 +98,7 @@
     await requirePassword($session);
     $psbt = await releaseToSelf(artwork);
     $psbt = await sign();
+    $psbt = await requestSignature($psbt);
     await broadcast($psbt);
   };
 

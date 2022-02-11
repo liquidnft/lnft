@@ -559,6 +559,7 @@ export const releaseToSelf = async (artwork) => {
   addFee(p);
 
   estimateFee(p);
+
   await construct(p2);
 
   addFee(p2);
@@ -1096,7 +1097,6 @@ export const sendToMultisig = async (artwork) => {
     value,
   });
 
-  debugger;
   await fund(p, out, asset, value);
   await fund(p, out, btc, get(fee));
   addFee(p);
