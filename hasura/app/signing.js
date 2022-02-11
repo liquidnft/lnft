@@ -94,8 +94,9 @@ const check = async (psbt) => {
           const recipientsWithOuts = royalty_recipients.find((recipient) => {
             let unconfidential;
             try {
-              unconfidential = Address.fromConfidential(recipient.address)
-                .unconfidentialAddress;
+              unconfidential = Address.fromConfidential(
+                recipient.address
+              ).unconfidentialAddress;
             } catch (e) {}
 
             return (
@@ -145,13 +146,13 @@ const check = async (psbt) => {
             throw new Error("Royalty not paid");
         }
 
-        // if (
-        //   outputs.find(
-        //     (o) => o.asset === asset && !multisig.includes(o.address)
-        //   )
-        // ) {
-        //   throw new Error("Unrecognized recipient address");
-        // }
+        if (
+          outputs.find(
+            (o) => o.asset === asset && !multisig.includes(o.address)
+          )
+        ) {
+          throw new Error("Unrecognized recipient address");
+        }
       }
     }
   );

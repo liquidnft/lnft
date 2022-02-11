@@ -523,8 +523,12 @@ const addFee = (p) =>
 
 const bumpFee = (v) => fee.set(get(fee) + v);
 
-export const isMultisig = ({ auction_end }) =>
-  !!(auction_end && compareAsc(parseISO(auction_end), new Date()) > 0);
+export const isMultisig = ({ has_royalty, auction_end }) => {
+  return !!(
+    (auction_end && compareAsc(parseISO(auction_end), new Date()) > 0) ||
+    has_royalty
+  );
+};
 
 export const releaseToSelf = async (artwork) => {
   fee.set(100);
@@ -722,7 +726,7 @@ export const executeSwap = async (artwork) => {
   } = artwork;
   let p = Psbt.fromBase64(list_price_tx);
   let out = singlesig();
-  let script = singlesig().output;
+  let script = (has_royalty ? multisig() : singlesig()).output;
   let total = list_price;
 
   fee.set(100);

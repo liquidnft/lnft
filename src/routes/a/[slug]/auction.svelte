@@ -331,6 +331,7 @@
 
       await setupAuction();
       await spendPreviousSwap();
+      await setupRoyalty();
       await setupSwaps();
 
       let {
