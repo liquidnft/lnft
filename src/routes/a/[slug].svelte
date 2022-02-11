@@ -71,7 +71,15 @@
   import { tick, onDestroy } from "svelte";
   import { art, meta, prompt, password, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
-  import { goto, err, explorer, info, linkify, units } from "$lib/utils";
+  import {
+    goto,
+    err,
+    explorer,
+    info,
+    linkify,
+    units,
+    underway,
+  } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import {
     createOffer,
@@ -96,6 +104,7 @@
   $: disabled =
     loading ||
     !artwork ||
+    (artwork.owner_id === $session.user.id && underway(artwork)) ||
     artwork.transactions.some(
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
     );
@@ -542,6 +551,7 @@
   }
 
   .disabled {
+    pointer-events: none;
     @apply text-gray-400 border-gray-400;
   }
 

@@ -11,7 +11,7 @@
   } from "date-fns";
   import { AcceptOffer } from "$comp";
   import { api } from "$lib/api";
-  import { err } from "$lib/utils";
+  import { err, underway } from "$lib/utils";
 
   export let transaction;
 
@@ -30,10 +30,6 @@
     if (accepted) return false;
 
     let isOwner = ({ owner }) => $session.user && $session.user.id === owner.id;
-
-    let underway = ({ auction_start: s, auction_end: e }) =>
-      e &&
-      isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
 
     return (
       artwork &&

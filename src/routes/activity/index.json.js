@@ -1,6 +1,6 @@
 import { getRecentActivity } from "$queries/transactions";
 
-export async function get({ headers, locals }) {
+export async function get({ request: { headers }, locals }) {
   let { q } = locals;
 
   try {

@@ -1,0 +1,3 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- create trigger cancel_bid after update on transactions for each row execute procedure trigger_cancel_bid();

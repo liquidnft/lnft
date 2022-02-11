@@ -54,8 +54,8 @@
   let interval;
   let refresh = async () => {
     try {
-      let res = await get("/auth/refresh.json", fetch);
-      $token = res.jwt_token;
+      let { jwt_token } = await get("/auth/refresh.json", fetch);
+      $token = jwt_token;
     } catch (e) {
       console.log(e);
     }
@@ -74,7 +74,7 @@
     $user = $session.user;
     $token = $session.jwt;
 
-    interval = setInterval(refresh, 6000);
+    interval = setInterval(refresh, 60000);
   }
 
   let open = false;

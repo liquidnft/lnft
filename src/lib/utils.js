@@ -11,6 +11,7 @@ import {
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
 import { InsufficientFunds } from "$comp";
+import { isWithinInterval, parseISO } from "date-fns";
 
 const btc = import.meta.env.VITE_BTC;
 const cad = import.meta.env.VITE_CAD;
@@ -272,6 +273,9 @@ function post(endpoint, data) {
   });
 }
 
+const underway = ({ auction_start: s, auction_end: e }) =>
+  e && isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
+
 export {
   addressLabel,
   addressUser,
@@ -297,6 +301,7 @@ export {
   kebab,
   ticker,
   tickers,
+  underway,
   units,
   usd,
   val,
