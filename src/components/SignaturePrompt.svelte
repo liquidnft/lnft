@@ -55,11 +55,17 @@
   let base64 = false;
 </script>
 
-<div class="flex justify-between">
-  <h1 class="font-black text-4xl primary-color">Sign transaction</h1>
-</div>
+{#await Promise.resolve($psbt)}
+  Loading
+{:then p}
+  <div class="flex justify-between">
+    <h1 class="font-black text-4xl primary-color">Sign transaction</h1>
+  </div>
 
-<Transaction summary={true} />
-{#if base64}
-  <div class="break-all font-mono text-xs mb-2">{$psbt.toBase64()}</div>
-{/if}
+  <Transaction summary={true} />
+  {#if base64}
+    <div class="break-all font-mono text-xs mb-2">{p.toBase64()}</div>
+  {/if}
+{:catch error}
+  <p style="color: red">{error.message}</p>
+{/await}

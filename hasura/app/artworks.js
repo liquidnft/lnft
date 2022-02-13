@@ -31,7 +31,6 @@ app.post("/cancel", auth, async (req, res) => {
     if (errors) throw new Error(errors[0].message);
     let user = data.currentuser[0];
 
-
     if (tx.user_id !== user.id) return res.code(401).send();
 
     res.send(await q(cancelBid, { id }));
@@ -232,6 +231,55 @@ app.post("/accept", auth, async (req, res) => {
       .post({ query: acceptBid, variables: req.body })
       .json();
     res.send(data);
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
+  }
+});
+
+app.post("/issue", auth, async (req, res) => {
+  try {
+    let { artwork, transactions } = req.body;
+    for (let i = 0; i < transactions.length; i++) {
+      let p = Psbt.fromBase64(transactions[i]);
+      await broadcast(p);
+      let tx = p.extractTransaction();
+      let hash = tx.getId();
+
+      // let tags = artwork.tags.map(({ tag }) => ({
+      //   tag,
+      //   artwork_id: artwork.id,
+      // }));
+
+      // let artworkSansTags = { ...artwork };
+      // delete artworkSansTags.tags;
+
+      // let variables = {
+      // artwork: artworkSansTags,
+      // transaction: {
+      //   artwork_id: artwork.id,
+      //   type: "creation",
+      //   hash,
+      //   contract,
+      //   asset: artwork.asset,
+      //   amount: 1,
+      //   psbt: $psbt.toBase64(),
+      // },
+      // tags,
+      // };
+
+      // await query(create, variables);
+    }
+
+    // await api
+    //   .url("/mail-artwork-minted")
+    //   .auth(`Bearer ${$session.jwt}`)
+    //   .post({
+    //     userId: $session.user.id,
+    //     artworkId: artwork.id,
+    //   });
+
+    res.send({ ok: true });
   } catch (e) {
     console.log(e);
     res.code(500).send(e.message);

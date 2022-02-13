@@ -49,7 +49,7 @@
       info("Payment sent!");
       withdrawing = false;
     } catch (e) {
-      console.log("BAD", e);
+      console.log(e);
       err(e);
     }
     loading = false;

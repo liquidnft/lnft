@@ -11,14 +11,21 @@
 </script>
 
 <script>
-  import { session } from "$app/stores";
+  import { page, session } from "$app/stores";
   import Fa from "svelte-fa";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-  import { page } from "$app/stores";
   import { v4 } from "uuid";
   import { query, api } from "$lib/api";
   import { tick, onDestroy } from "svelte";
-  import { edition, fee, psbt, password, prompt, titles } from "$lib/store";
+  import {
+    edition,
+    fee,
+    psbt,
+    password,
+    prompt,
+    titles,
+    txcache,
+  } from "$lib/store";
   import { Dropzone, ProgressLinear } from "$comp";
   import { upload, supportedTypes } from "$lib/upload";
   import { create, getArtworksByTicker, queryTickers } from "$queries/artworks";
@@ -27,9 +34,9 @@
   import {
     createIssuance,
     sign,
-    broadcast,
     parseAsset,
     keypair,
+    getInputs,
   } from "$lib/wallet";
   import reverse from "buffer-reverse";
   import { ArtworkMedia } from "$comp";
@@ -109,7 +116,8 @@
     tags: [],
   };
 
-  let hash, tx;
+  let hash, tx, inputs, total;
+  let txns = [];
   const issue = async (ticker) => {
     let contract;
     let domain =
@@ -121,7 +129,7 @@
 
     await requirePassword($session);
 
-    contract = await createIssuance(artwork, domain, tx);
+    contract = await createIssuance(artwork, domain, inputs.pop());
 
     ({ tx } = $psbt.data.globalMap.unsignedTx);
     artwork.asset = parseAsset(
@@ -130,10 +138,12 @@
     $titles = [...$titles, artwork];
 
     await sign();
-    await broadcast(true);
     await tick();
 
-    hash = $psbt.extractTransaction().getId();
+    tx = $psbt.extractTransaction();
+    $txcache[tx.getId()] = tx;
+    inputs.unshift(tx);
+    txns.push($psbt.toBase64());
 
     return JSON.stringify(contract);
   };
@@ -225,10 +235,12 @@
 
       if (artwork.editions > 1) $prompt = Issuing;
 
+      [inputs, total] = await getInputs();
+
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
         if ($edition > 1) {
           artwork.ticker = tickers[$edition - 1];
-          await new Promise((r) => setTimeout(r, 5000));
+          // await new Promise((r) => setTimeout(r, 5000));
         }
         artwork.ticker = artwork.ticker.toUpperCase();
 
@@ -240,39 +252,10 @@
 
         if ($edition > 1) artwork.slug += "-" + $edition;
         artwork.slug += "-" + artwork.id.substr(0, 5);
-
-        let tags = artwork.tags.map(({ tag }) => ({
-          tag,
-          artwork_id: artwork.id,
-        }));
-
-        let artworkSansTags = { ...artwork };
-        delete artworkSansTags.tags;
-
-        let variables = {
-          artwork: artworkSansTags,
-          transaction: {
-            artwork_id: artwork.id,
-            type: "creation",
-            hash,
-            contract,
-            asset: artwork.asset,
-            amount: 1,
-            psbt: $psbt.toBase64(),
-          },
-          tags,
-        };
-
-        await query(create, variables);
-
-        await api
-          .url("/mail-artwork-minted")
-          .auth(`Bearer ${$session.jwt}`)
-          .post({
-            userId: $session.user.id,
-            artworkId: artwork.id,
-          });
       }
+
+      /* if (total < required) */
+      /*   throw { message: "Insufficient funds", required, btc, total }; */
 
       $prompt = undefined;
       goto(`/a/${artwork.slug}`);

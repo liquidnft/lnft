@@ -25,6 +25,7 @@ import {
   psbt,
   sighash,
   titles,
+  txcache,
   transactions,
   signStatus,
   prompt,
@@ -47,7 +48,7 @@ const DUST = 800;
 const satsPerByte = 0.15;
 
 const serverKey = Buffer.from(import.meta.env.VITE_PUBKEY, "hex");
-const network = networks[import.meta.env.VITE_NETWORK];
+export const network = networks[import.meta.env.VITE_NETWORK];
 
 const singleAnyoneCanPay =
   Transaction.SIGHASH_SINGLE | Transaction.SIGHASH_ANYONECANPAY;
@@ -105,7 +106,9 @@ const getHex = async (txid) => {
 };
 
 export const getTx = async (txid) => {
-  return Transaction.fromHex(await getHex(txid));
+  let tx = Transaction.fromHex(await getHex(txid));
+  txcache.set({ ...get(txcache), txid: tx });
+  return tx;
 };
 
 export const createWallet = (mnemonic, pass) => {
@@ -651,7 +654,7 @@ export const cancelSwap = async (artwork) => {
 export const requireSign = async () => {
   signStatus.set(false);
 
-  return await new Promise((resolve) =>
+  return new Promise((resolve) =>
     signStatus.subscribe((signedSub) => {
       signedSub ? resolve(signedSub) : prompt.set(SignaturePrompt);
     })
@@ -690,8 +693,10 @@ export const sign = async (sighash) => {
   return p;
 };
 
-export const broadcast = (disableRetries = false) => {
-  let tx = get(psbt).extractTransaction();
+export const broadcast = async (disableRetries = false) => {
+  let p = await get(psbt);
+  let tx = p.extractTransaction();
+
   let hex = tx.toHex();
   let middlewares = [
     // retry({
@@ -789,38 +794,6 @@ export const createIssuance = async (
     value: 0,
   });
 
-  if (tx) {
-    let index = tx.outs.findIndex(
-      (o) =>
-        parseAsset(o.asset) === btc &&
-        o.script.toString("hex") === out.output.toString("hex")
-    );
-
-    if (index > -1) {
-      let input = {
-        index,
-        hash: tx.getId(),
-        nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
-        redeemScript: out.redeem.output,
-      };
-
-      p.addInput(input);
-
-      let value = parseVal(tx.outs[index].value) - get(fee);
-
-      if (value > DUST)
-        p.addOutput({
-          asset: btc,
-          nonce,
-          script: out.output,
-          value,
-        });
-      else bumpFee(value);
-    }
-  } else {
-    await fund(p, out, btc, get(fee), 1, false, false);
-  }
-
   let contract = {
     entity: { domain },
     file,
@@ -831,20 +804,74 @@ export const createIssuance = async (
     version: 0,
   };
 
-  p.addIssuance({
-    assetAmount: 1,
-    assetAddress: out.address,
-    tokenAmount: 0,
-    precision: 0,
-    net: network,
-    contract,
-  });
+  let construct = async (p) => {
+    if (tx) {
+      let index = tx.outs.findIndex(
+        (o) =>
+          parseAsset(o.asset) === btc &&
+          o.script.toString("hex") === out.output.toString("hex")
+      );
 
+      if (index > -1) {
+        let input = {
+          index,
+          hash: tx.getId(),
+          nonWitnessUtxo: Buffer.from(tx.toHex(), "hex"),
+          redeemScript: out.redeem.output,
+        };
+
+        p.addInput(input);
+
+        let value = parseVal(tx.outs[index].value) - get(fee);
+
+        if (value > DUST)
+          p.addOutput({
+            asset: btc,
+            nonce,
+            script: out.output,
+            value,
+          });
+        else bumpFee(value);
+      }
+    } else {
+      await fund(p, out, btc, get(fee), 1, false, false);
+    }
+
+    p.addIssuance({
+      assetAmount: 1,
+      assetAddress: out.address,
+      tokenAmount: 0,
+      precision: 0,
+      net: network,
+      contract,
+    });
+  };
+
+  let p2 = Psbt.fromBase64(p.toBase64());
+  await construct(p);
   addFee(p);
+  estimateFee(p);
 
-  psbt.set(p);
+  await construct(p2);
+  addFee(p2);
+  psbt.set(p2);
 
   return contract;
+};
+
+export const getInputs = async () => {
+  let utxos = await electrs
+    .url(`/address/${singlesig().address}/utxo`)
+    .get()
+    .json();
+
+  let txns = [];
+  let a = utxos.filter((o) => o.asset === btc && o.value > DUST);
+  for (let i = 0; i < a.length; i++) {
+    txns.push(Transaction.fromHex(await getHex(a[i].txid)));
+  }
+
+  return [txns, utxos.reduce((a, b) => a + b.value, 0)];
 };
 
 export const signOver = async ({ asset }, tx) => {

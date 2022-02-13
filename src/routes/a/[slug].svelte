@@ -104,8 +104,7 @@
 
   $: disabled =
     loading ||
-    !artwork ||
-    (artwork.owner_id === $session.user.id && underway(artwork)) ||
+    (artwork.owner_id === $session.user?.id && underway(artwork)) ||
     artwork.transactions.some(
       (t) => ["purchase", "creation", "cancel"].includes(t.type) && !t.confirmed
     );

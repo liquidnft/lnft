@@ -7,7 +7,7 @@
     faChevronUp,
   } from "@fortawesome/free-solid-svg-icons";
   import { Avatar, ProgressLinear } from "$comp";
-  import { addresses, psbt } from "$lib/store";
+  import { addresses, psbt, txcache } from "$lib/store";
   import reverse from "buffer-reverse";
   import { electrs } from "$lib/api";
   import {
@@ -16,11 +16,12 @@
     parseVal,
     parseAsset,
     broadcast,
+    network,
     sign,
     requestSignature,
   } from "$lib/wallet";
   import { requirePassword } from "$lib/auth";
-  import { Psbt, Transaction } from "liquidjs-lib";
+  import { address as Address, Psbt, Transaction } from "liquidjs-lib";
   import {
     explorer,
     addressLabel,
@@ -58,7 +59,11 @@
       try {
         tx = p.extractTransaction();
       } catch (e) {
-        tx = p.data.globalMap.unsignedTx.tx;
+        try {
+          tx = p.data.globalMap.unsignedTx.tx;
+        } catch (e) {
+          err(e);
+        }
       }
     }
 
@@ -67,37 +72,50 @@
     recipients = {};
     users = {};
 
+    let address, asset, value;
+
     for (let i = 0; i < tx.ins.length; i++) {
       let { hash, index } = tx.ins[i];
       let txid = reverse(hash).toString("hex");
-      let input = (await electrs.url(`/tx/${txid}`).get().json()).vout[index];
-      input.spent = (
-        await electrs.url(`/tx/${txid}/outspend/${index}`).get().json()
-      ).spent;
+      let prev = ($txcache[txid] || (await getTx(txid))).outs[index];
 
-      input.signed =
-        p.data.inputs[i] &&
-        (!!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig);
-      input.pSig = p.data.inputs[i] && !!p.data.inputs[i].partialSig;
-      input.txid = txid;
-      input.index = index;
+      asset = parseAsset(prev.asset);
+      address = Address.fromOutputScript(prev.script, network);
+      value = parseVal(prev.value);
+
+      let input = {
+        address,
+        asset,
+        signed:
+          p.data.inputs[i] &&
+          (!!p.data.inputs[i].partialSig || !!p.data.inputs[i].finalScriptSig),
+        pSig: p.data.inputs[i] && !!p.data.inputs[i].partialSig,
+        index,
+        txid,
+        value,
+      };
+
+      try {
+        input.spent = (
+          await electrs.url(`/tx/${txid}/outspend/${index}`).get().json()
+        ).spent;
+      } catch (e) {
+        input.spent = false;
+      }
 
       ins = [...ins, input];
 
-      let { asset, scriptpubkey_address: address } = input;
       let username = addressLabel(address);
       users[username] = addressUser(address);
 
       if (!totals[username]) totals[username] = {};
       if (!totals[username][asset]) totals[username][asset] = 0;
-      totals[username][asset] += input.value;
+      totals[username][asset] += value;
       senders[username] = true;
     }
 
     for (let j = 0; j < tx.outs.length; j++) {
       let out = tx.outs[j];
-
-      let address, asset, value;
 
       asset = parseAsset(out.asset);
       value = parseVal(out.value);
@@ -393,8 +411,8 @@
 
                 <div class="text-gray-400 text-xs">Address</div>
                 <div class="mb-2">
-                  <a href={`${explorer}/address/${input.scriptpubkey_address}`}
-                    >{input.scriptpubkey_address}</a
+                  <a href={`${explorer}/address/${input.address}`}
+                    >{input.address}</a
                   >
                 </div>
                 <div class="mb-2">
