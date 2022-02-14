@@ -2,8 +2,9 @@ const { api, ipfs, q, electrs, registry } = require("./api");
 const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
 const reverse = require("buffer-reverse");
 const fs = require("fs");
-const { networks, Psbt } = require("liquidjs-lib");
+const { Psbt } = require("liquidjs-lib");
 const sleep = (n) => new Promise((r) => setTimeout(r, n));
+const { btc, network } = require("./wallet");
 
 const {
   cancelBid,
@@ -28,11 +29,6 @@ const {
   updateUser,
 } = require("./queries");
 
-const network = process.env.LIQUID_ELECTRS_URL.includes("blockstream")
-  ? networks.liquid
-  : networks.regtest;
-
-const btc = network.assetHash;
 const txcache = {};
 const hexcache = {};
 
@@ -287,8 +283,6 @@ let updateTransactions = async (address, user_id) => {
   ).reverse();
   if (txns.length)
     console.log(`updating ${txns.length} transactions for ${address}`);
-
-  console.log("TXNS", txns);
 
   for (let i = 0; i < txns.length; i++) {
     let { txid, vin, vout, status } = txns[i];

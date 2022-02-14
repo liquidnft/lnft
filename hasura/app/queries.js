@@ -354,4 +354,15 @@ module.exports = {
       value
     }
   }`,
+  createArtwork: `mutation ($artwork: artworks_insert_input!, $tags: [tags_insert_input!]!, $transaction: transactions_insert_input!) {
+    insert_artworks_one(object: $artwork) {
+      id
+    }
+    insert_tags(objects: $tags) {
+      affected_rows
+    }
+    insert_transactions_one(object: $transaction) {
+      id
+    } 
+  }`,
 };

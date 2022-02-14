@@ -12,12 +12,14 @@ const {
 const { electrs } = require("./api");
 const reverse = require("buffer-reverse");
 
-let network;
-if (process.env.LIQUID_ELECTRS_URL.includes("blockstream")) {
-  network = networks.liquid;
-} else {
-  network = networks.regtest;
-}
+const network =
+  networks[
+    process.env.LIQUID_ELECTRS_URL.includes("blockstream")
+      ? "liquid"
+      : "regtest"
+  ];
+
+const btc = network.assetHash;
 
 const mnemonic = process.env.SIGNING_SERVER_MNEMONIC;
 
@@ -77,9 +79,11 @@ let parseVal = (v) => parseInt(v.slice(1).toString("hex"), 16);
 let parseAsset = (v) => reverse(v.slice(1)).toString("hex");
 
 module.exports = {
+  btc,
   broadcast,
   combine,
   keypair,
+  parseAsset,
 
   async parse(psbt) {
     psbt = Psbt.fromBase64(psbt);
@@ -114,6 +118,7 @@ module.exports = {
     return [tx.getId(), inputs, outputs];
   },
 
+  network,
   release,
   sign,
 };

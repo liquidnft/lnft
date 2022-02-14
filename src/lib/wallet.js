@@ -661,13 +661,13 @@ export const requireSign = async () => {
   );
 };
 
-export const sign = async (sighash) => {
+export const sign = async (sighash, prompt = true) => {
   let p = get(psbt);
   const loggedUser = get(user);
 
   let { privkey } = keypair();
 
-  if (loggedUser.prompt_sign) {
+  if (prompt && loggedUser.prompt_sign) {
     const signResult = await requireSign();
 
     if (signResult === SIGN_CANCELLED) {

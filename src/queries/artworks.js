@@ -211,21 +211,6 @@ export const getArtworksByTag = (tag) => `query {
   }
 }`;
 
-export const create = `mutation ($artwork: artworks_insert_input!, $tags: [tags_insert_input!]!, $transaction: transactions_insert_input!) {
-  insert_artworks_one(object: $artwork) {
-    ${fields}
-    tags {
-      tag
-    } 
-  }
-  insert_tags(objects: $tags) {
-    affected_rows
-  }
-  insert_transactions_one(object: $transaction) {
-    ${txFields}
-  } 
-}`;
-
 export const updateArtwork = `mutation update_artwork($artwork: artworks_set_input!, $id: uuid!) {
   update_artworks_by_pk(pk_columns: { id: $id }, _set: $artwork) {
     id

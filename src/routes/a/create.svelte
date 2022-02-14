@@ -17,24 +17,17 @@
   import { v4 } from "uuid";
   import { query, api } from "$lib/api";
   import { tick, onDestroy } from "svelte";
-  import {
-    edition,
-    fee,
-    psbt,
-    password,
-    prompt,
-    titles,
-    txcache,
-  } from "$lib/store";
+  import { edition, fee, psbt, password, titles, txcache } from "$lib/store";
   import { Dropzone, ProgressLinear } from "$comp";
   import { upload, supportedTypes } from "$lib/upload";
-  import { create, getArtworksByTicker, queryTickers } from "$queries/artworks";
+  import { getArtworksByTicker, queryTickers } from "$queries/artworks";
   import { btc, kebab, goto, err } from "$lib/utils";
   import { requireLogin, requirePassword } from "$lib/auth";
   import {
     createIssuance,
     sign,
     parseAsset,
+    parseVal,
     keypair,
     getInputs,
   } from "$lib/wallet";
@@ -116,8 +109,8 @@
     tags: [],
   };
 
-  let hash, tx, inputs, total;
-  let txns = [];
+  let hash, tx, inputs, total, transactions;
+  let required = 0;
   const issue = async (ticker) => {
     let contract;
     let domain =
@@ -131,21 +124,16 @@
 
     contract = await createIssuance(artwork, domain, inputs.pop());
 
-    ({ tx } = $psbt.data.globalMap.unsignedTx);
-    artwork.asset = parseAsset(
-      tx.outs.find((o) => parseAsset(o.asset) !== btc).asset
-    );
     $titles = [...$titles, artwork];
 
-    await sign();
+    await sign(1, false);
     await tick();
 
     tx = $psbt.extractTransaction();
+    required += parseVal(tx.outs.find((o) => o.script.length === 0).value);
     $txcache[tx.getId()] = tx;
     inputs.unshift(tx);
-    txns.push($psbt.toBase64());
-
-    return JSON.stringify(contract);
+    transactions.push({ contract, psbt: $psbt.toBase64() });
   };
 
   let tries;
@@ -208,6 +196,7 @@
   let c = [...a, ...b];
 
   let submit = async (e) => {
+    transactions = [];
     e.preventDefault();
     if (!artwork.title) return err("Please enter a title");
     if (!artwork.ticker) return err("Please enter a ticker symbol");
@@ -233,32 +222,27 @@
 
       await checkTickers(tickers);
 
-      if (artwork.editions > 1) $prompt = Issuing;
-
       [inputs, total] = await getInputs();
 
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
-        if ($edition > 1) {
-          artwork.ticker = tickers[$edition - 1];
-          // await new Promise((r) => setTimeout(r, 5000));
-        }
-        artwork.ticker = artwork.ticker.toUpperCase();
-
-        let contract = await issue();
+        await issue();
         tries = 0;
-        artwork.id = v4();
-        artwork.edition = $edition;
-        artwork.slug = kebab(artwork.title || "untitled");
-
-        if ($edition > 1) artwork.slug += "-" + $edition;
-        artwork.slug += "-" + artwork.id.substr(0, 5);
       }
 
-      /* if (total < required) */
-      /*   throw { message: "Insufficient funds", required, btc, total }; */
+      if (total < required)
+        throw { message: "Insufficient funds", required, btc, total };
 
-      $prompt = undefined;
-      goto(`/a/${artwork.slug}`);
+      let { slug } = await api
+        .url("/issue")
+        .auth(`Bearer ${$session.jwt}`)
+        .post({
+          artwork,
+          tickers,
+          transactions,
+        })
+        .json();
+
+      goto(`/a/${slug}`);
     } catch (e) {
       console.log(e);
       err(e);

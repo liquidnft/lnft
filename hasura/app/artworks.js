@@ -1,10 +1,12 @@
+const { v4 } = require("uuid");
 const { api, q, lnft } = require("./api");
-const { broadcast } = require("./wallet");
+const { broadcast, btc, parseAsset } = require("./wallet");
 const { Psbt } = require("liquidjs-lib");
 const { compareAsc, parseISO } = require("date-fns");
 const {
   acceptBid,
   cancelBid,
+  createArtwork,
   createTransaction,
   getCurrentUser,
   getTransactionArtwork,
@@ -238,37 +240,66 @@ app.post("/accept", auth, async (req, res) => {
 });
 
 app.post("/issue", auth, async (req, res) => {
+  const kebab = (str) =>
+    str &&
+    str
+      .match(
+        /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g
+      )
+      .map((x) => x.toLowerCase())
+      .join("-");
+
   try {
-    let { artwork, transactions } = req.body;
+    let { artwork, tickers, transactions } = req.body;
+    let slug;
     for (let i = 0; i < transactions.length; i++) {
-      let p = Psbt.fromBase64(transactions[i]);
+      artwork.ticker = tickers[i].toUpperCase();
+      artwork.id = v4();
+      artwork.edition = i + 1;
+      artwork.slug = kebab(artwork.title || "untitled");
+
+      if (i > 0) artwork.slug += "-" + i + 1;
+
+      artwork.slug += "-" + artwork.id.substr(0, 5);
+      if (i === 0) slug = artwork.slug;
+
+      let { contract, psbt } = transactions[i];
+      let p = Psbt.fromBase64(psbt);
       await broadcast(p);
       let tx = p.extractTransaction();
       let hash = tx.getId();
+      contract = JSON.stringify(contract);
+      artwork.asset = parseAsset(
+        tx.outs.find((o) => parseAsset(o.asset) !== btc).asset
+      );
 
-      // let tags = artwork.tags.map(({ tag }) => ({
-      //   tag,
-      //   artwork_id: artwork.id,
-      // }));
+      let tags = artwork.tags.map(({ tag }) => ({
+        tag,
+        artwork_id: artwork.id,
+      }));
 
-      // let artworkSansTags = { ...artwork };
-      // delete artworkSansTags.tags;
+      let artworkSansTags = { ...artwork };
+      delete artworkSansTags.tags;
 
-      // let variables = {
-      // artwork: artworkSansTags,
-      // transaction: {
-      //   artwork_id: artwork.id,
-      //   type: "creation",
-      //   hash,
-      //   contract,
-      //   asset: artwork.asset,
-      //   amount: 1,
-      //   psbt: $psbt.toBase64(),
-      // },
-      // tags,
-      // };
+      let variables = {
+        artwork: artworkSansTags,
+        transaction: {
+          artwork_id: artwork.id,
+          type: "creation",
+          hash,
+          contract,
+          asset: artwork.asset,
+          amount: 1,
+          psbt,
+        },
+        tags,
+      };
 
-      // await query(create, variables);
+      ({ data, errors } = await api(req.headers)
+        .post({ query: createArtwork, variables })
+        .json());
+
+      if (errors) throw new Error(errors[0].message);
     }
 
     // await api
@@ -279,7 +310,7 @@ app.post("/issue", auth, async (req, res) => {
     //     artworkId: artwork.id,
     //   });
 
-    res.send({ ok: true });
+    res.send({ slug });
   } catch (e) {
     console.log(e);
     res.code(500).send(e.message);
