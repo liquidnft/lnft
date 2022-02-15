@@ -18,6 +18,7 @@ const {
   updateViews,
 } = require("./queries");
 const { SERVER_URL } = process.env;
+const { kebab, sleep, wait } = require("./utils");
 
 const crypto = require("crypto");
 
@@ -239,22 +240,20 @@ app.post("/accept", auth, async (req, res) => {
   }
 });
 
-app.post("/issue", auth, async (req, res) => {
-  const kebab = (str) =>
-    str &&
-    str
-      .match(
-        /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g
-      )
-      .map((x) => x.toLowerCase())
-      .join("-");
+const issuances = {};
+const issue = async (
+  issuance,
+  ids,
+  { body: { artwork, tickers, transactions }, headers }
+) => {
+  issuances[issuance] = { length: transactions.length, i: 0 };
+  let tries = 0;
+  let i = 0;
 
-  try {
-    let { artwork, tickers, transactions } = req.body;
-    let slug;
-    for (let i = 0; i < transactions.length; i++) {
-      artwork.ticker = tickers[i].toUpperCase();
-      artwork.id = v4();
+  while (transactions.length && tries < 40) {
+    try {
+      artwork.ticker = tickers[0].toUpperCase();
+      artwork.id = ids[i];
       artwork.edition = i + 1;
       artwork.slug = kebab(artwork.title || "untitled");
 
@@ -263,7 +262,7 @@ app.post("/issue", auth, async (req, res) => {
       artwork.slug += "-" + artwork.id.substr(0, 5);
       if (i === 0) slug = artwork.slug;
 
-      let { contract, psbt } = transactions[i];
+      let { contract, psbt } = transactions[0];
       let p = Psbt.fromBase64(psbt);
       await broadcast(p);
       let tx = p.extractTransaction();
@@ -295,13 +294,24 @@ app.post("/issue", auth, async (req, res) => {
         tags,
       };
 
-      ({ data, errors } = await api(req.headers)
+      ({ data, errors } = await api(headers)
         .post({ query: createArtwork, variables })
         .json());
 
       if (errors) throw new Error(errors[0].message);
-    }
 
+      tries = 0;
+      transactions.shift();
+      tickers.shift();
+      issuances[issuance].i = ++i;
+    } catch (e) {
+      console.log("failed issuance", e);
+      await sleep(5000);
+      tries++;
+    }
+  }
+
+  try {
     // await api
     //   .url("/mail-artwork-minted")
     //   .auth(`Bearer ${$session.jwt}`)
@@ -309,8 +319,31 @@ app.post("/issue", auth, async (req, res) => {
     //     userId: $session.user.id,
     //     artworkId: artwork.id,
     //   });
+  } catch (e) {
+    console.log(e);
+  }
+};
 
-    res.send({ slug });
+app.post("/issue", auth, async (req, res) => {
+  try {
+    let issuance = v4();
+    let ids = req.body.transactions.map((t) => v4());
+    issue(issuance, ids, req);
+    let slug =
+      kebab(req.body.artwork.title || "untitled") + "-" + ids[0].substr(0, 5);
+
+    await wait(() => issuances[issuance].i > 0 || console.log(issuances));
+
+    res.send({ issuance, slug });
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
+  }
+});
+
+app.get("/issuance", auth, async (req, res) => {
+  try {
+    res.send(issuance[req.body.issuance]);
   } catch (e) {
     console.log(e);
     res.code(500).send(e.message);

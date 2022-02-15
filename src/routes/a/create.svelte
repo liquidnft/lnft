@@ -232,7 +232,7 @@
       if (total < required)
         throw { message: "Insufficient funds", required, btc, total };
 
-      let { slug } = await api
+      let { issuance, slug } = await api
         .url("/issue")
         .auth(`Bearer ${$session.jwt}`)
         .post({
