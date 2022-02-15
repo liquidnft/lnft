@@ -40,3 +40,4 @@ export const user = writable();
 export const token = writable();
 export const wallet = writable();
 export const signStatus = writable();
+export const acceptStatus = writable();

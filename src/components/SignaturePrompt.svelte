@@ -6,7 +6,7 @@
   import { Transaction } from "$comp";
   import { copy, err } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
-  import { SIGN_ACCEPTED, SIGN_CANCELLED } from "../lib/wallet";
+  import { ACCEPTED, CANCELLED } from "../lib/wallet";
   import { query } from "$lib/api";
   import { updateUser } from "$queries/users";
   import Fa from "svelte-fa";
@@ -26,7 +26,7 @@
     await requirePassword($session);
 
     try {
-      $signStatus = SIGN_ACCEPTED;
+      $signStatus = ACCEPTED;
 
       if (remove_prompt_sign) {
         await disableSignPrompts();
@@ -40,7 +40,7 @@
 
   export const cancel = async (e) => {
     try {
-      $signStatus = SIGN_CANCELLED;
+      $signStatus = CANCELLED;
 
       if (remove_prompt_sign) {
         await disableSignPrompts();

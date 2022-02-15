@@ -2,35 +2,53 @@ table:
   name: activebids
   schema: public
 object_relationships:
-- name: artwork
-  using:
-    manual_configuration:
-      column_mapping:
-        artwork_id: id
-      insertion_order: null
-      remote_table:
-        name: artworks
-        schema: public
+  - name: artwork
+    using:
+      manual_configuration:
+        column_mapping:
+          artwork_id: id
+        insertion_order: null
+        remote_table:
+          name: artworks
+          schema: public
+  - name: transaction
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: transactions
+          schema: public
+  - name: user
+    using:
+      manual_configuration:
+        column_mapping:
+          user_id: id
+        insertion_order: null
+        remote_table:
+          name: users
+          schema: public
 select_permissions:
-- permission:
-    columns:
-    - amount
-    - artwork_id
-    - hash
-    - id
-    - psbt
-    - type
-    - user_id
-    filter: {}
-  role: anonymous
-- permission:
-    columns:
-    - amount
-    - artwork_id
-    - hash
-    - id
-    - psbt
-    - type
-    - user_id
-    filter: {}
-  role: user
+  - permission:
+      columns:
+        - amount
+        - artwork_id
+        - hash
+        - id
+        - psbt
+        - type
+        - user_id
+      filter: {}
+    role: anonymous
+  - permission:
+      columns:
+        - amount
+        - artwork_id
+        - hash
+        - id
+        - psbt
+        - type
+        - user_id
+      filter: {}
+    role: user

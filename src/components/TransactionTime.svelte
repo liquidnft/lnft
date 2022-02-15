@@ -3,41 +3,14 @@
   import Fa from "svelte-fa";
   import { ProgressLinear } from "$comp";
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-  import {
-    isWithinInterval,
-    parseISO,
-    compareAsc,
-    formatDistanceStrict,
-  } from "date-fns";
+  import { formatDistanceStrict } from "date-fns";
   import { AcceptOffer } from "$comp";
   import { api } from "$lib/api";
-  import { err, underway } from "$lib/utils";
+  import { err, canAccept, canCancel, underway } from "$lib/utils";
 
   export let transaction;
 
   let comp, loading;
-
-  let canCancel = ({ artwork, created_at, type, user: { id } }) =>
-    type === "bid" &&
-    isCurrent(artwork, created_at, type) &&
-    $session.user &&
-    $session.user.id === id;
-
-  let isCurrent = ({ transferred_at: t }, created_at, type) =>
-    type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);
-
-  let canAccept = ({ type, artwork, created_at, accepted }, debug) => {
-    if (accepted) return false;
-
-    let isOwner = ({ owner }) => $session.user && $session.user.id === owner.id;
-
-    return (
-      artwork &&
-      isCurrent(artwork, created_at, type) &&
-      isOwner(artwork) &&
-      !underway(artwork)
-    );
-  };
 
   $: stopLoading(transaction);
   let stopLoading = () => (loading = false);

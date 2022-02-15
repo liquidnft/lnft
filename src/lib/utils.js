@@ -8,10 +8,11 @@ import {
   prompt,
   snack,
   titles,
+  user,
 } from "$lib/store";
 import { goto as svelteGoto } from "$app/navigation";
 import { InsufficientFunds } from "$comp";
-import { isWithinInterval, parseISO } from "date-fns";
+import { isWithinInterval, parseISO, compareAsc } from "date-fns";
 
 const btc = import.meta.env.VITE_BTC;
 const cad = import.meta.env.VITE_CAD;
@@ -276,6 +277,37 @@ function post(endpoint, data) {
 const underway = ({ auction_start: s, auction_end: e }) =>
   e && isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
 
+let canCancel = ({ artwork, created_at, type, user: { id } }) => {
+  let $user = get(user);
+
+  return (
+    type === "bid" &&
+    isCurrent(artwork, created_at, type) &&
+    $user &&
+    $user.id === id
+  );
+};
+
+let isCurrent = ({ transferred_at: t }, created_at, type) =>
+  type === "bid" && (!t || compareAsc(parseISO(created_at), parseISO(t)) > 0);
+
+let canAccept = ({ type, artwork, created_at, accepted }, debug) => {
+  let $user = get(user);
+  if (accepted) return false;
+
+  let isOwner = ({ owner }) => $user && $user.id === owner.id;
+
+  let underway = ({ auction_start: s, auction_end: e }) =>
+    e && isWithinInterval(new Date(), { start: parseISO(s), end: parseISO(e) });
+
+  return (
+    artwork &&
+    isCurrent(artwork, created_at, type) &&
+    isOwner(artwork) &&
+    !underway(artwork)
+  );
+};
+
 export {
   addressLabel,
   addressUser,
@@ -310,4 +342,6 @@ export {
   royaltyRecipientSystemType,
   royaltyRecipientIndividualType,
   royaltyRecipientTypes,
+  canCancel,
+  canAccept,
 };

@@ -199,7 +199,7 @@
             </div>
           </div>
         {:else if tab === "offers"}
-          <Offers offers={subject.offers} />
+          <Offers offers={subject.offers} activebids={subject.activebids} />
         {:else}
           <div class="w-full flex justify-center">
             <div class="w-full flex flex-wrap">

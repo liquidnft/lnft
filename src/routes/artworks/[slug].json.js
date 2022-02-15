@@ -20,8 +20,6 @@ export async function get({ request: { headers }, locals, params }) {
       artwork = artworks[0];
     }
 
-    console.log("ARTWORK", artwork);
-
     if (!artwork) return { status: 500 };
 
     let { artworks: others } = await q(getArtworksByArtist, {
