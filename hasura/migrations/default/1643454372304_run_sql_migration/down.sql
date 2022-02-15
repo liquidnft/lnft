@@ -1,0 +1,4 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- -- Fix current applicants
+-- UPDATE users SET has_samples = (SELECT EXISTS (SELECT id FROM samples WHERE user_id = users.id));
