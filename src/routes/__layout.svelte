@@ -55,8 +55,7 @@
   let refresh = async () => {
     try {
       let { jwt_token } = await get("/auth/refresh.json", fetch);
-      $session.jwt = jwt_token;
-      $token = jwt_token;
+      if (browser) $token = jwt_token;
     } catch (e) {
       console.log(e);
     }
