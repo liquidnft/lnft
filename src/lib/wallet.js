@@ -138,6 +138,7 @@ export const getMnemonic = (mnemonic, pass) => {
   if (!mnemonic && user) mnemonic = get(user).mnemonic;
   if (!pass) pass = get(password);
 
+  console.log("PASS", pass);
   mnemonic = cryptojs.AES.decrypt(mnemonic, pass).toString(cryptojs.enc.Utf8);
   if (!mnemonic) throw new Error("Unable to decrypt mnmemonic");
   return mnemonic;

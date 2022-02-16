@@ -22,7 +22,7 @@
   import { upload, supportedTypes } from "$lib/upload";
   import { getArtworksByTicker, queryTickers } from "$queries/artworks";
   import { btc, kebab, goto, err } from "$lib/utils";
-  import { requireLogin, requirePassword } from "$lib/auth";
+  import { requirePassword } from "$lib/auth";
   import {
     createIssuance,
     sign,
@@ -120,8 +120,6 @@
 
     let error, success;
 
-    await requirePassword($session);
-
     contract = await createIssuance(artwork, domain, inputs.pop());
 
     $titles = [...$titles, artwork];
@@ -196,8 +194,9 @@
   let c = [...a, ...b];
 
   let submit = async (e) => {
-    transactions = [];
     e.preventDefault();
+    await requirePassword($session);
+    transactions = [];
     if (!artwork.title) return err("Please enter a title");
     if (!artwork.ticker) return err("Please enter a ticker symbol");
 
@@ -208,8 +207,6 @@
     loading = true;
 
     try {
-      await requireLogin(null, $session.jwt);
-
       let { ticker } = artwork;
       let tickers = [];
 
