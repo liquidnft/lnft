@@ -192,7 +192,7 @@ app.post("/asset/register", async (req, res) => {
   fs.writeFileSync("/export/proofs.json", JSON.stringify(proofs));
 
   try {
-    let { transactions } = await q(getContract, asset);
+    let { transactions } = await q(getContract, { asset });
     let { contract } = transactions[0];
 
     r = await registry
