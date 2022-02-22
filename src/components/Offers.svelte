@@ -99,8 +99,8 @@
       {#each filteredOffers as offer}
         <tr>
           <td class="py-4 pr-6 text-sm ">
-            <div class="flex">
-              <div class="w-16 pr-3 rounded-md">
+            <div class="flex flex-wrap justify-center items-center">
+              <div class="w-16 rounded-md">
                 <ArtworkMedia
                   artwork={offer.transaction.artwork}
                   classes="rounded-md"
@@ -109,7 +109,7 @@
               {#if offer.transaction.artwork}
                 <a
                   href={`/a/${offer.transaction.artwork.slug}`}
-                  class="secondary-color py-3"
+                  class="secondary-color"
                   >{offer.transaction.artwork.title || "Untitled"}</a
                 >
               {/if}
@@ -187,8 +187,8 @@
       {#each filteredBids as offer}
         <tr>
           <td class="py-4 pr-6 text-sm ">
-            <div class="flex">
-              <div class="w-16 pr-3 rounded-md">
+            <div class="flex flex-wrap justify-center items-center">
+              <div class="w-16 rounded-md">
                 <ArtworkMedia
                   artwork={offer.transaction.artwork}
                   classes="rounded-md"
@@ -197,7 +197,7 @@
               {#if offer.transaction.artwork}
                 <a
                   href={`/a/${offer.transaction.artwork.slug}`}
-                  class="secondary-color py-3"
+                  class="secondary-color"
                   >{offer.transaction.artwork.title || "Untitled"}</a
                 >
               {/if}
