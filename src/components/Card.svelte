@@ -51,7 +51,7 @@
       <div class="p-4">
         <div class="flex flex-row justify-between h-20">
           <a href={`/a/${artwork.slug}`} class="mr-2">
-            <h1 class="text-xl break-words overflow-y-hidden max-h-14">
+            <h1 class="text-xl break-all overflow-y-hidden max-h-14">
               {artwork.title || "Untitled"}
               {#if !(artwork.transferred_at || artwork.asking_asset)}
                 (unlisted)

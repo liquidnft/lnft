@@ -269,7 +269,7 @@
 <div class="container mx-auto mt-10 md:mt-20">
   <div class="flex flex-wrap">
     <div class="lg:text-left w-full lg:w-1/3 lg:max-w-xs">
-      <h1 class="text-3xl font-black primary-color break-words">
+      <h1 class="text-3xl font-black primary-color break-all">
         {artwork.title || "Untitled"}
       </h1>
       <div class="flex mt-4 mb-6">
@@ -458,7 +458,7 @@
 
       {#if artwork.description}
         <div
-          class="mob-desc description text-gray-600 whitespace-pre-wrap break-words"
+          class="mob-desc description text-gray-600 whitespace-pre-wrap break-all"
         >
           <h4 class="mt-10 font-bold">About this artwork</h4>
           <div class="desc-text {showMore ? 'openDesc' : ''}">
@@ -500,7 +500,7 @@
       </div>
 
       {#if artwork.description}
-        <div class="desk-desc description text-gray-600 break-words">
+        <div class="desk-desc description text-gray-600 break-all">
           <h4 class="mt-10 mb-5 font-bold">About this artwork</h4>
           <div class="whitespace-pre-wrap">
             {@html linkify(artwork.description)}
