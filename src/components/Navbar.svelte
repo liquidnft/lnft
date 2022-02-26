@@ -3,10 +3,18 @@
   import { faSearch } from "@fortawesome/free-solid-svg-icons";
   import Hamburger from "./Hamburger.svelte";
   import Menu from "./Menu.svelte";
+  import Popup from "./Popup.svelte";
+  import { get } from "svelte/store";
+  import { popup } from "$lib/store";
 
   export let sidebar = false;
+
+  const popupData = get(popup);
 </script>
 
+{#if popupData}
+  <Popup text={popupData.text} dismissible={popupData.dismissible} />
+{/if}
 <header
   class="flex container mx-auto justify-between px-4 py-4 items-center text-gray-600"
 >

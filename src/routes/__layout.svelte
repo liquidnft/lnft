@@ -9,6 +9,7 @@
         props: {
           addresses: [],
           titles: [],
+          popup: null,
         },
       };
 
@@ -40,6 +41,7 @@
     addresses as a,
     meta,
     titles as t,
+    popup as p,
     password,
     prompt,
     poll,
@@ -49,7 +51,7 @@
   import { onDestroy, onMount } from "svelte";
   import branding from "$lib/branding";
 
-  export let addresses, titles;
+  export let addresses, titles, popup;
 
   let interval;
   let refresh = async () => {
@@ -71,6 +73,7 @@
 
     $a = addresses;
     $t = titles;
+    $p = popup;
     $user = $session.user;
     $token = $session.jwt;
 
