@@ -311,6 +311,8 @@ const issue = async (
     }
   }
 
+  delete issuances[issuance];
+
   try {
     // await api
     //   .url("/mail-artwork-minted")
@@ -332,7 +334,7 @@ app.post("/issue", auth, async (req, res) => {
     let slug =
       kebab(req.body.artwork.title || "untitled") + "-" + ids[0].substr(0, 5);
 
-    await wait(() => issuances[issuance].i > 0 || console.log(issuances));
+    await wait(() => issuances[issuance].i > 0);
 
     res.send({ issuance, slug });
   } catch (e) {
