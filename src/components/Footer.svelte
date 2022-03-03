@@ -9,6 +9,9 @@
     faTwitter,
   } from "@fortawesome/free-brands-svg-icons";
   import { faRss } from "@fortawesome/free-solid-svg-icons";
+
+  const date = new Date();
+  const year = date.getFullYear();
 </script>
 
 <div class="bg-black px-2 mt-24">
@@ -17,7 +20,7 @@
       class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first"
     >
       <a href="/"><img src="/logo-white.svg" alt="logo" class="w-48" /></a>
-      <p class="mt-4">&copy;2021 {branding.projectName}</p>
+      <p class="mt-4">&copy;{year} {branding.projectName}</p>
       <div class="flex items-center mt-12">
         <p class="pr-3">Powered by:</p>
         <img src="/liquid_logo.svg" alt="liquid network logo" />

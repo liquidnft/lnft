@@ -14,7 +14,7 @@
     !visible ? "hidden" : ""
   }`}
 >
-  <p>{text}</p>
+  <p class="bodyText">{@html text}</p>
   {#if dismissible}
     <span on:click|preventDefault={togglePopup} class="close">
       <Fa icon={faTimes} />
@@ -37,4 +37,9 @@
       padding-top: 7px;
       padding-left: 10px;
   }
+
+  .bodyText > :global(a) {
+    text-decoration: underline;
+  }
+  
 </style>
