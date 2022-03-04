@@ -108,7 +108,7 @@
 
     await query(insertSamples, { samples }).catch(err);
 
-    $user.has_samples = true;
+    $session.user.has_samples = true;
 
     submitted = true;
   };
