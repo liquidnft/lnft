@@ -9,6 +9,7 @@
         props: {
           addresses: [],
           titles: [],
+          popup: null,
         },
       };
 
@@ -29,6 +30,7 @@
       props,
     };
   }
+
 </script>
 
 <script>
@@ -40,6 +42,7 @@
     addresses as a,
     meta,
     titles as t,
+    popup as p,
     password,
     prompt,
     poll,
@@ -49,7 +52,7 @@
   import { onDestroy, onMount } from "svelte";
   import branding from "$lib/branding";
 
-  export let addresses, titles;
+  export let addresses, titles, popup;
 
   let interval;
   let refresh = async () => {
@@ -71,6 +74,7 @@
 
     $a = addresses;
     $t = titles;
+    $p = popup;
     $user = $session.user;
     $token = $session.jwt;
 
@@ -91,29 +95,8 @@
     if (browser && !$password)
       $password = window.sessionStorage.getItem("password");
   });
+
 </script>
-
-<svelte:window bind:scrollY={y} />
-
-{#if !($page.url.pathname.includes("/a/") && $page.url.pathname.split("/").length === 3)}
-  <Head metadata={branding.meta} />
-{/if}
-
-<Snack />
-
-<Sidebar bind:open />
-<div class={y > 50 ? "sticky" : ""}>
-  <Navbar bind:sidebar={open} />
-</div>
-<Dialog />
-
-<main>
-  <div class="mx-auto min-h-screen">
-    <slot />
-  </div>
-</main>
-
-<Footer />
 
 <style global>
   input,
@@ -129,4 +112,27 @@
     @apply font-bold pb-14 text-4xl text-left;
     color: #133e7c;
   }
+
 </style>
+
+<svelte:window bind:scrollY={y} />
+
+{#if !($page.url.pathname.includes('/a/') && $page.url.pathname.split('/').length === 3)}
+  <Head metadata={branding.meta} />
+{/if}
+
+<Snack />
+
+<Sidebar bind:open />
+<div class={y > 50 ? 'sticky' : ''}>
+  <Navbar bind:sidebar={open} />
+</div>
+<Dialog />
+
+<main>
+  <div class="mx-auto min-h-screen">
+    <slot />
+  </div>
+</main>
+
+<Footer />

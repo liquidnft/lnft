@@ -279,16 +279,5 @@ export const getTagsWithArtwork = `query {
   } 
 }`;
 
-export const getTitles = `query {
-  artworks {
-    id
-    asset
-    edition
-    editions
-    title
-    owner_id
-  }
-}`;
-
 export const getArtworksByTicker = `query($ticker: String!) { artworks(where: { ticker: { _like: $ticker }}) { ticker }}`;
 export const queryTickers = `query($tickers: [String!]) { artworks(where: { ticker: { _in: $tickers }}) { ticker }}`;

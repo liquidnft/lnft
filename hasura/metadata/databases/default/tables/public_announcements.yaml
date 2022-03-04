@@ -1,0 +1,43 @@
+table:
+  name: announcements
+  schema: public
+select_permissions:
+  - permission:
+      allow_aggregations: true
+      columns:
+        - dismissible
+        - text
+        - type
+        - created_at
+        - updated_at
+        - visible_end
+        - visible_start
+        - id
+      filter: {}
+    role: anonymous
+  - permission:
+      allow_aggregations: true
+      columns:
+        - dismissible
+        - text
+        - type
+        - created_at
+        - updated_at
+        - visible_end
+        - visible_start
+        - id
+      filter: {}
+    role: approver
+  - permission:
+      allow_aggregations: true
+      columns:
+        - id
+        - type
+        - text
+        - dismissible
+        - created_at
+        - updated_at
+        - visible_start
+        - visible_end
+      filter: {}
+    role: user

@@ -10,15 +10,15 @@
   } from "@fortawesome/free-brands-svg-icons";
   import { faRss } from "@fortawesome/free-solid-svg-icons";
 
-  let date = new Date();
-  let year = date.getFullYear();
+  const date = new Date();
+  const year = date.getFullYear();
+
 </script>
 
 <div class="bg-black px-2 mt-24">
   <div class="container footer mx-auto flex flex-wrap text-white pt-12">
     <div
-      class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first"
-    >
+      class="flex flex-col text-sm w-full lg:w-2/4 mb-10 order-last lg:order-first">
       <a href="/"><img src="/logo-white.svg" alt="logo" class="w-48" /></a>
       <p class="mt-4">&copy;{year} {branding.projectName}</p>
       <div class="flex items-center mt-12">
@@ -33,55 +33,55 @@
           <a
             target="_blank"
             href={branding.urls.external.blog}
-            class="flex items-center"
-            ><div class="w-6 mr-1"><Fa icon={faRss} /></div>
-            Blog</a
-          >
+            class="flex items-center"><div class="w-6 mr-1">
+              <Fa icon={faRss} />
+            </div>
+            Blog</a>
         </li>
         <li class="mb-2">
           <a
             target="_blank"
             href={branding.urls.external.twitter}
-            class="flex items-center"
-            ><div class="w-6 mr-1"><Fa icon={faTwitter} /></div>
-            Twitter</a
-          >
+            class="flex items-center"><div class="w-6 mr-1">
+              <Fa icon={faTwitter} />
+            </div>
+            Twitter</a>
         </li>
         <li class="mb-2">
           <a
             target="_blank"
             href={branding.urls.external.discord}
-            class="flex items-center"
-            ><div class="w-6 mr-1"><Fa icon={faDiscord} size="sm" /></div>
-            Discord</a
-          >
+            class="flex items-center"><div class="w-6 mr-1">
+              <Fa icon={faDiscord} size="sm" />
+            </div>
+            Discord</a>
         </li>
         <li class="mb-2">
           <a
             target="_blank"
             href={branding.urls.external.telegram}
-            class="flex items-center"
-            ><div class="w-6 mr-1"><Fa icon={faTelegramPlane} /></div>
-            Telegram</a
-          >
+            class="flex items-center"><div class="w-6 mr-1">
+              <Fa icon={faTelegramPlane} />
+            </div>
+            Telegram</a>
         </li>
         <li class="mb-2">
           <a
             target="_blank"
             href={branding.urls.external.instagram}
-            class="flex items-center"
-            ><div class="w-6 mr-1"><Fa icon={faInstagramSquare} /></div>
-            Instagram</a
-          >
+            class="flex items-center"><div class="w-6 mr-1">
+              <Fa icon={faInstagramSquare} />
+            </div>
+            Instagram</a>
         </li>
         <li class="mb-2">
           <a
             target="_blank"
             href={branding.urls.external.facebook}
-            class="flex items-center"
-            ><div class="w-6 mr-1"><Fa icon={faFacebook} /></div>
-            Facebook</a
-          >
+            class="flex items-center"><div class="w-6 mr-1">
+              <Fa icon={faFacebook} />
+            </div>
+            Facebook</a>
         </li>
       </ul>
     </div>

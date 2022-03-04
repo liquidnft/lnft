@@ -34,6 +34,7 @@ export const sighash = writable();
 export const snack = writable();
 export const sortCriteria = writable("newest");
 export const titles = writable([]);
+export const popup = writable();
 export const txcache = writable({});
 export const transactions = writable([]);
 export const user = writable();

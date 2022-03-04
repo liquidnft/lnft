@@ -103,13 +103,3 @@ export const topArtists = (limit) => `query {
     sold
   }
 }`;
-
-export const getUsersAddresses = `query {
-  users(order_by: { username: asc }) {
-    id
-    address
-    multisig
-    username
-    avatar_url
-  }
-}`;
