@@ -19,7 +19,6 @@
   const debounce = (v) => {
     loading = true;
     artwork.title = v;
-    artwork.ticker = "";
     clearTimeout(timer);
     timer = setTimeout(() => {
       title = v;
@@ -97,32 +96,6 @@
       bind:value={artwork.description}
     />
   </div>
-  {#if !artwork.id}
-    <div class="flex flex-col mb-6">
-      <div class="mb-0">
-        <label for="ticker" class="flex">
-          <div class="mr-2">Ticker</div>
-          <div class="mt-1 mb-0">
-            <span class="tooltip">
-              <i class="text-midblue text-xl">
-                <Fa icon={faQuestionCircle} />
-              </i>
-              <span class="tooltip-text bg-gray-100 shadow ml-4 rounded"
-                >The ticker is a short 3-5 character identifier for your asset
-                that you'll see in other wallets and explorers.</span
-              >
-            </span>
-          </div>
-        </label>
-      </div>
-      <input
-        id="ticker"
-        class="w-1/2"
-        bind:value={artwork.ticker}
-        maxlength="5"
-      />
-    </div>
-  {/if}
   <div class="flex flex-col mb-6">
     <label for="tags"
       >Tags

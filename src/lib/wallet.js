@@ -791,7 +791,7 @@ export const executeSwap = async (artwork) => {
 };
 
 export const createIssuance = async (
-  { filename: file, title: name, ticker },
+  { filename: file, title: name },
   domain,
   tx
 ) => {
@@ -811,7 +811,6 @@ export const createIssuance = async (
     issuer_pubkey: keypair().pubkey.toString("hex"),
     name,
     precision: 0,
-    ticker,
     version: 0,
   };
 

@@ -237,7 +237,7 @@ const issuances = {};
 const issue = async (
   issuance,
   ids,
-  { body: { artwork, tickers, transactions }, headers }
+  { body: { artwork, transactions }, headers }
 ) => {
   issuances[issuance] = { length: transactions.length, i: 0 };
   let tries = 0;
@@ -246,7 +246,6 @@ const issue = async (
   while (i < transactions.length && tries < 40) {
     let slug;
     try {
-      artwork.ticker = tickers[i].toUpperCase();
       artwork.id = ids[i];
       artwork.edition = i + 1;
       artwork.slug = kebab(artwork.title || "untitled");
@@ -276,7 +275,6 @@ const issue = async (
         asset,
         title,
         description,
-        ticker,
         edition,
         editions,
         filename,
@@ -289,7 +287,6 @@ const issue = async (
           id,
           title,
           description,
-          ticker,
           asset,
           slug,
           edition,

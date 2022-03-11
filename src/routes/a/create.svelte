@@ -20,7 +20,6 @@
   import { edition, fee, psbt, password, titles, txcache } from "$lib/store";
   import { Dropzone, ProgressLinear } from "$comp";
   import { upload, supportedTypes } from "$lib/upload";
-  import { getArtworksByTicker, queryTickers } from "$queries/artworks";
   import { btc, kebab, goto, err } from "$lib/utils";
   import { requirePassword } from "$lib/auth";
   import {
@@ -111,7 +110,7 @@
 
   let hash, tx, inputs, total, transactions;
   let required = 0;
-  const issue = async (ticker) => {
+  const issue = async () => {
     let contract;
     let domain =
       $session.user.username === branding.superUserName
@@ -137,68 +136,11 @@
   let tries;
   let l;
 
-  $: generateTicker(title);
-  let generateTicker = (t) => {
-    if (!t) return;
-    artwork.ticker = (
-      t.split(" ").length > 2
-        ? t
-            .split(" ")
-            .map((w) => w[0])
-            .join("")
-        : t
-    )
-      .substr(0, 3)
-      .toUpperCase();
-
-    checkTicker();
-  };
-
-  let checkTicker = async () => {
-    let { ticker } = artwork;
-    let { artworks } = await query(getArtworksByTicker, {
-      ticker: ticker + "%",
-    });
-
-    if (artworks && artworks.length) {
-      let tickers = artworks.sort(({ ticker: a }, { ticker: b }) =>
-        b.length < a.length
-          ? 1
-          : b.length > a.length
-          ? -1
-          : a.charCodeAt(a.length - 1) - b.charCodeAt(b.length - 1)
-      );
-
-      if (tickers.map((a) => a.ticker).includes(ticker)) {
-        let { ticker: t } = tickers.pop();
-        artwork.ticker = t.substr(0, 3) + c[c.indexOf(t.substr(3)) + 1];
-      }
-    }
-  };
-
-  let checkTickers = async (tickers) => {
-    let { artworks } = await query(queryTickers, { tickers });
-    if (artworks.length)
-      throw new Error(
-        `Ticker(s) not available: ${artworks.map((a) => a.ticker).join(", ")}`
-      );
-  };
-
-  let a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-  let b = [];
-  for (let i = 0; i < a.length; i++) {
-    for (let j = 0; j < a.length; j++) {
-      b.push(a[i] + a[j]);
-    }
-  }
-  let c = [...a, ...b];
-
   let submit = async (e) => {
     e.preventDefault();
     await requirePassword($session);
     transactions = [];
     if (!artwork.title) return err("Please enter a title");
-    if (!artwork.ticker) return err("Please enter a ticker symbol");
 
     if (!artwork.filename)
       return err("File not uploaded or hasn't finished processing");
@@ -207,18 +149,6 @@
     loading = true;
 
     try {
-      let { ticker } = artwork;
-      let tickers = [];
-
-      for ($edition = 1; $edition <= artwork.editions; $edition++) {
-        if ($edition > 1)
-          ticker =
-            artwork.ticker.substr(0, 3) + c[c.indexOf(ticker.substr(3)) + 1];
-        tickers.push(ticker.toUpperCase());
-      }
-
-      await checkTickers(tickers);
-
       [inputs, total] = await getInputs();
 
       for ($edition = 1; $edition <= artwork.editions; $edition++) {
@@ -234,7 +164,6 @@
         .auth(`Bearer ${$session.jwt}`)
         .post({
           artwork,
-          tickers,
           transactions,
         })
         .json();
