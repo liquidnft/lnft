@@ -112,11 +112,7 @@
   let required = 0;
   const issue = async () => {
     let contract;
-    let domain =
-      $session.user.username === branding.superUserName
-        ? branding.urls.base
-        : `${$session.user.username.toLowerCase()}.${branding.urls.base}`;
-
+    let domain = branding.urls.base;
     let error, success;
 
     contract = await createIssuance(artwork, domain, inputs.pop());
