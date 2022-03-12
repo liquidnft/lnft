@@ -39,6 +39,11 @@ import { requirePassword } from "$lib/auth";
 import { getActiveBids } from "$queries/transactions";
 import { compareAsc, parseISO } from "date-fns";
 import { SignaturePrompt, AcceptPrompt } from "$comp";
+import createHash from "create-hash";
+
+function sha256(buffer) {
+  return createHash("sha256").update(buffer).digest();
+}
 
 export const CANCELLED = "cancelled";
 export const ACCEPTED = "accepted";
@@ -811,8 +816,12 @@ export const createIssuance = async (
     issuer_pubkey: keypair().pubkey.toString("hex"),
     name,
     precision: 0,
+    ticker: "DANG",
     version: 0,
   };
+
+  let without = { ...contract };
+  delete without.file;
 
   let construct = async (p) => {
     if (tx) {

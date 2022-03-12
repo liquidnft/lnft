@@ -15,6 +15,7 @@ specifiers:
   buffer-reverse: ^1.0.1
   cipher-base: github:asoltys/cipher-base
   cookie: ^0.4.2
+  create-hash: ^1.2.0
   crypto-js: ^4.1.1
   cssnano: ^5.0.17
   cypress: ^9.4.1
@@ -23,7 +24,7 @@ specifiers:
   graphql: ^15.8.0
   hash-base: github:asoltys/hash-base
   jwt-decode: ^3.1.2
-  liquidjs-lib: ^5.2.3
+  liquidjs-lib: github:asoltys/liquidjs-lib#v6.0.3
   long: ^4.0.0
   node-fetch: ^3.2.0
   postcss: ^8.4.6
@@ -63,6 +64,7 @@ devDependencies:
   buffer-reverse: 1.0.1
   cipher-base: github.com/asoltys/cipher-base/c77307d86b71ece25f65079b5a8c3041f9f8b735
   cookie: 0.4.2
+  create-hash: 1.2.0
   crypto-js: 4.1.1
   cssnano: 5.0.17_postcss@8.4.6
   cypress: 9.4.1
@@ -71,7 +73,7 @@ devDependencies:
   graphql: 15.8.0
   hash-base: github.com/asoltys/hash-base/071b7d32fb805b3b9f99898f6f84c16a2ce98894
   jwt-decode: 3.1.2
-  liquidjs-lib: 5.2.3
+  liquidjs-lib: github.com/asoltys/liquidjs-lib/84aa5d1cc0bbb679609c625acb54fe1c99bd330f
   long: 4.0.0
   node-fetch: 3.2.0
   postcss: 8.4.6
@@ -377,6 +379,15 @@ packages:
       }
     dev: true
 
+  /@types/randombytes/2.0.0:
+    resolution:
+      {
+        integrity: sha512-bz8PhAVlwN72vqefzxa14DKNT8jK/mV66CSjwdVQM/k3Th3EPKfUtdMniwZgMedQTFuywAsfjnZsg+pEnltaMA==,
+      }
+    dependencies:
+      "@types/node": 17.0.16
+    dev: true
+
   /@types/sass/1.43.1:
     resolution:
       {
@@ -400,6 +411,15 @@ packages:
       }
     dev: true
 
+  /@types/wif/2.0.2:
+    resolution:
+      {
+        integrity: sha512-IiIuBeJzlh4LWJ7kVTrX0nwB60OG0vvGTaWC/SgSbVFw7uYUTF6gEuvDZ1goWkeirekJDD58Y8g7NljQh2fNkA==,
+      }
+    dependencies:
+      "@types/node": 17.0.16
+    dev: true
+
   /@types/yauzl/2.9.2:
     resolution:
       {
@@ -407,7 +427,7 @@ packages:
       }
     requiresBuild: true
     dependencies:
-      "@types/node": 14.18.10
+      "@types/node": 17.0.16
     dev: true
     optional: true
 
@@ -653,7 +673,7 @@ packages:
         integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==,
       }
     dependencies:
-      follow-redirects: 1.14.8
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -691,10 +711,10 @@ packages:
       tweetnacl: 0.14.5
     dev: true
 
-  /bech32/1.1.4:
+  /bech32/2.0.0:
     resolution:
       {
-        integrity: sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==,
+        integrity: sha512-LcknSilhIGatDAsY1ak2I8VtGaHNhgMSYVxFrGLXv+xLHytaKZKcaUJJUE7qmBr7h33o5YQwP55pMI0xmkpJwg==,
       }
     dev: true
 
@@ -764,10 +784,10 @@ packages:
       }
     dev: true
 
-  /blech32/1.0.1:
+  /blech32/1.1.0:
     resolution:
       {
-        integrity: sha512-1/vr1wwB8jvfVCkLQMVXLaIyx7Lgxh/6IqVuQlSsCNzWNzU+64oXzOQ/9BRnN4GANjx9i0O3OSQonDlL4FraSA==,
+        integrity: sha512-TGl9OgRq7woBzhQX1S5Im7opgyb2lpnEgqoApHpEZ8hgo8NSQkwJrf1Qxbg6frobTdBWxo2c+sFLjZFWGMLZHA==,
       }
     engines: { node: ">=10" }
     dependencies:
@@ -1653,6 +1673,18 @@ packages:
       safer-buffer: 2.1.2
     dev: true
 
+  /ecpair/2.0.1:
+    resolution:
+      {
+        integrity: sha512-iT3wztQMeE/nDTlfnAg8dAFUfBS7Tq2BXzq3ae6L+pWgFU0fQ3l0woTzdTBrJV3OxBjxbzjq8EQhAbEmJNWFSw==,
+      }
+    engines: { node: ">=8.0.0" }
+    dependencies:
+      randombytes: 2.1.0
+      typeforce: 1.18.0
+      wif: 2.0.6
+    dev: true
+
   /electron-to-chromium/1.4.67:
     resolution:
       {
@@ -2154,10 +2186,10 @@ packages:
     deprecated: flatten is deprecated in favor of utility frameworks such as lodash.
     dev: true
 
-  /follow-redirects/1.14.8:
+  /follow-redirects/1.14.9:
     resolution:
       {
-        integrity: sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==,
+        integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==,
       }
     engines: { node: ">=4.0" }
     peerDependencies:
@@ -2913,35 +2945,6 @@ packages:
       }
     dev: true
 
-  /liquidjs-lib/5.2.3:
-    resolution:
-      {
-        integrity: sha512-jV2GZ24kfT8k02G5Igk14Pr2AqDTig2MaqMlf4CullACwwhNMKf8GE3EyQcf6Q4qJanBQ4TyxG84S9LNCS8r6w==,
-      }
-    engines: { node: ">=8.0.0" }
-    dependencies:
-      "@vulpemventures/secp256k1-zkp": 2.0.0
-      axios: 0.21.4
-      bech32: 1.1.4
-      bip174-liquid: 1.0.3
-      bip32: 2.0.6
-      bip66: 1.1.5
-      bitcoin-ops: 1.4.1
-      blech32: 1.0.1
-      bs58check: 2.1.2
-      create-hash: 1.2.0
-      create-hmac: 1.1.7
-      merkle-lib: 2.0.10
-      pushdata-bitcoin: 1.0.1
-      randombytes: 2.1.0
-      tiny-secp256k1: 1.1.6
-      typeforce: 1.18.0
-      varuint-bitcoin: 1.1.2
-      wif: 2.0.6
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
   /listr2/3.14.0_enquirer@2.3.6:
     resolution:
       {
@@ -3065,10 +3068,6 @@ packages:
         integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==,
       }
     engines: { node: ">= 8" }
-    dev: true
-
-  /merkle-lib/2.0.10:
-    resolution: { integrity: sha1-grjbrnXieneFOItz+ddyXQ9vMyY= }
     dev: true
 
   /micromatch/4.0.4:
@@ -4374,12 +4373,6 @@ packages:
     engines: { node: ">=6" }
     dev: true
 
-  /pushdata-bitcoin/1.0.1:
-    resolution: { integrity: sha1-FZMdPNlnreUiBvUjqnMxrvfUOvc= }
-    dependencies:
-      bitcoin-ops: 1.4.1
-    dev: true
-
   /qrcode-generator-es6/1.1.4:
     resolution: { integrity: sha1-raBxVMfG5FcjkKUQhzhdxInNooE= }
     dev: true
@@ -5497,4 +5490,33 @@ packages:
       readable-stream: 3.6.0
       safe-buffer: 5.2.1
       vite-compatible-readable-stream: 3.6.0
+    dev: true
+
+  github.com/asoltys/liquidjs-lib/84aa5d1cc0bbb679609c625acb54fe1c99bd330f:
+    resolution:
+      {
+        tarball: https://codeload.github.com/asoltys/liquidjs-lib/tar.gz/84aa5d1cc0bbb679609c625acb54fe1c99bd330f,
+      }
+    name: liquidjs-lib
+    version: 6.0.3
+    engines: { node: ">=8.0.0" }
+    dependencies:
+      "@types/randombytes": 2.0.0
+      "@types/wif": 2.0.2
+      "@vulpemventures/secp256k1-zkp": 2.0.0
+      axios: 0.21.4
+      bech32: 2.0.0
+      bip174-liquid: 1.0.3
+      bip32: 2.0.6
+      bip66: 1.1.5
+      bitcoin-ops: 1.4.1
+      blech32: 1.1.0
+      bs58check: 2.1.2
+      create-hash: 1.2.0
+      ecpair: 2.0.1
+      typeforce: 1.18.0
+      varuint-bitcoin: 1.1.2
+      wif: 2.0.6
+    transitivePeerDependencies:
+      - debug
     dev: true

@@ -30,7 +30,6 @@
       props,
     };
   }
-
 </script>
 
 <script>
@@ -58,7 +57,7 @@
   let refresh = async () => {
     try {
       let { jwt_token } = await get("/auth/refresh.json", fetch);
-      if (browser) $token = jwt_token;
+      $token = jwt_token;
     } catch (e) {
       console.log(e);
     }
@@ -95,8 +94,29 @@
     if (browser && !$password)
       $password = window.sessionStorage.getItem("password");
   });
-
 </script>
+
+<svelte:window bind:scrollY={y} />
+
+{#if !($page.url.pathname.includes("/a/") && $page.url.pathname.split("/").length === 3)}
+  <Head metadata={branding.meta} />
+{/if}
+
+<Snack />
+
+<Sidebar bind:open />
+<div class={y > 50 ? "sticky" : ""}>
+  <Navbar bind:sidebar={open} />
+</div>
+<Dialog />
+
+<main>
+  <div class="mx-auto min-h-screen">
+    <slot />
+  </div>
+</main>
+
+<Footer />
 
 <style global>
   input,
@@ -112,27 +132,4 @@
     @apply font-bold pb-14 text-4xl text-left;
     color: #133e7c;
   }
-
 </style>
-
-<svelte:window bind:scrollY={y} />
-
-{#if !($page.url.pathname.includes('/a/') && $page.url.pathname.split('/').length === 3)}
-  <Head metadata={branding.meta} />
-{/if}
-
-<Snack />
-
-<Sidebar bind:open />
-<div class={y > 50 ? 'sticky' : ''}>
-  <Navbar bind:sidebar={open} />
-</div>
-<Dialog />
-
-<main>
-  <div class="mx-auto min-h-screen">
-    <slot />
-  </div>
-</main>
-
-<Footer />

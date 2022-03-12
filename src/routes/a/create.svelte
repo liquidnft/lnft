@@ -17,7 +17,15 @@
   import { v4 } from "uuid";
   import { query, api } from "$lib/api";
   import { tick, onDestroy } from "svelte";
-  import { edition, fee, psbt, password, titles, txcache } from "$lib/store";
+  import {
+    edition,
+    fee,
+    psbt,
+    password,
+    titles,
+    token,
+    txcache,
+  } from "$lib/store";
   import { Dropzone, ProgressLinear } from "$comp";
   import { upload, supportedTypes } from "$lib/upload";
   import { btc, kebab, goto, err } from "$lib/utils";
@@ -134,7 +142,7 @@
 
   let submit = async (e) => {
     e.preventDefault();
-    await requirePassword($session);
+    await requirePassword();
     transactions = [];
     if (!artwork.title) return err("Please enter a title");
 
@@ -157,7 +165,7 @@
 
       let { issuance, slug } = await api
         .url("/issue")
-        .auth(`Bearer ${$session.jwt}`)
+        .auth(`Bearer ${$token}`)
         .post({
           artwork,
           transactions,
