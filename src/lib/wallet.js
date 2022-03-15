@@ -1,7 +1,7 @@
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { api, electrs, hasura } from "$lib/api";
-// import * as middlewares from "wretch-middlewares";
+import * as middlewares from "wretch-middlewares";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { fromBase58 } from "bip32";
@@ -48,7 +48,7 @@ function sha256(buffer) {
 export const CANCELLED = "cancelled";
 export const ACCEPTED = "accepted";
 
-// const { retry } = middlewares.default || middlewares;
+const { retry } = middlewares.default || middlewares;
 
 const DUST = 800;
 const satsPerByte = 0.15;
@@ -715,10 +715,10 @@ export const broadcast = async (disableRetries = false) => {
 
   let hex = tx.toHex();
   let middlewares = [
-    // retry({
-    //   delayTimer: 6000,
-    //   maxAttempts: 3,
-    // }),
+    retry({
+      delayTimer: 6000,
+      maxAttempts: 5,
+    }),
   ];
 
   if (disableRetries) middlewares = [];
