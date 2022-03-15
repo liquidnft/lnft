@@ -40,7 +40,7 @@
         If you too are excited about the Bitcoin Bond, what it means for
         humanity's future, and would like to contribute to the Bitcoin Bond
         gallery on Raretoshi, register to become an artist and upload a unique
-        piece of art (future meme lore) with the tag #BitcoinBond.
+        piece of art (future meme lore) with the tag <b>#BitcoinBond</b>.
       </p>
       <p>
         We will keep accepting artwork for the online gallery for as long as
