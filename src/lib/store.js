@@ -28,7 +28,6 @@ export const poll = writable([]);
 export const prompt = writable();
 export const psbt = writable();
 export const results = writable([]);
-export const role = writable("user");
 export const show = writable();
 export const sighash = writable();
 export const snack = writable();

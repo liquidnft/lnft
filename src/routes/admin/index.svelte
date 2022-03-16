@@ -1,12 +1,23 @@
+<script context="module">
+  export async function load({ session }) {
+    if (!(session && session.user && session.user.is_admin))
+      return {
+        status: 302,
+        redirect: "/",
+      };
+
+    return {};
+  }
+</script>
+
 <script>
   import { session } from "$app/stores";
   import { onMount, tick, onDestroy } from "svelte";
   import { page } from "$app/stores";
   import { ArtworkMedia } from "$comp";
   import { getSamples, updateUser, deleteSamples } from "$queries/users";
-  import { role } from "$lib/store";
   import { api, hasura, query } from "$lib/api";
-  import { err, goto, info } from "$lib/utils";
+  import { err, info } from "$lib/utils";
   import { requireLogin } from "$lib/auth";
 
   let users = [];
@@ -28,21 +39,6 @@
       );
     }
   });
-
-  $: pageChange($page, $session.user);
-
-  let pageChange = async () => {
-    try {
-      if (!$session.user) return;
-      if (!$session.user.is_admin) goto("/market");
-      $role = "approver";
-    } catch (error) {
-      err(error);
-    }
-    await requireLogin(null, $session.jwt);
-  };
-
-  onDestroy(() => ($role = "user"));
 
   let makeArtist = async (user) => {
     try {
@@ -117,6 +113,10 @@
       <div class="flex-grow mb-auto mr-2 mt-2">
         <div class="mb-2">
           <h4><span class="font-bold">Username: </span>{user.username}</h4>
+        </div>
+
+        <div class="mb-2">
+          <h4><span class="font-bold">Email: </span>{user.display_name}</h4>
         </div>
 
         <div class="mb-2">

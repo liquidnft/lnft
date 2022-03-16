@@ -52,6 +52,7 @@ export const getUserByUsername = `query($username: String!) {
 
 export const getSamples = `query {
   users(where: { _and: [{ is_artist: { _eq: false }}, { samples: {}}]}) {
+    display_name
     ${fields} 
     info
     samples {
