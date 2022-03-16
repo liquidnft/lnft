@@ -114,8 +114,10 @@ app.post("/offer-notifications", auth, async (req, res) => {
     const highestBidTransaction = sortedBidTransactions.length
       ? sortedBidTransactions[0]
       : null;
+    
+    const highestBidderIsCurrentBidder = highestBidTransaction?.user?.display_name === currentUser.display_name;
 
-    highestBidTransaction &&
+    highestBidTransaction && !highestBidderIsCurrentBidder &&
       (await mail.send({
         template: "outbid",
         locals: {
