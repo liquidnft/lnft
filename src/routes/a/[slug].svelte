@@ -55,7 +55,7 @@
     faChevronUp,
     faTimes,
   } from "@fortawesome/free-solid-svg-icons";
-  import { getArtwork } from "$queries/artworks";
+  import { getArtwork, deleteArtwork } from "$queries/artworks";
   import { faHeart, faImage } from "@fortawesome/free-regular-svg-icons";
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
@@ -72,6 +72,7 @@
   import { art, meta, prompt, password, psbt } from "$lib/store";
   import countdown from "$lib/countdown";
   import {
+    confirm,
     goto,
     err,
     explorer,
@@ -259,6 +260,17 @@
     loading = false;
   };
 
+  let handleDelete = async () => {
+    try {
+      await confirm();
+      await query(deleteArtwork, { id: artwork.id });
+      info("Artwork deleted");
+      goto("/market");
+    } catch (e) {
+      err(e);
+    }
+  };
+
   let showPopup = false;
   let showMore = false;
   let showActivity = false;
@@ -385,6 +397,13 @@
               href={`/a/${artwork.slug}/edit`}
               class="block text-center text-sm secondary-btn w-full"
               class:disabled>Edit</a
+            >
+          </div>
+          <div class="w-full mb-2">
+            <a
+              on:click={handleDelete}
+              class="block text-center text-sm secondary-btn w-full cursor-pointer"
+              >Delete</a
             >
           </div>
         {/if}

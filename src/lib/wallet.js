@@ -28,7 +28,6 @@ import {
   txcache,
   transactions,
   signStatus,
-  acceptStatus,
   prompt,
   user,
   token,
@@ -663,16 +662,6 @@ export const requireSign = async () => {
   return new Promise((resolve) =>
     signStatus.subscribe((signedSub) => {
       signedSub ? resolve(signedSub) : prompt.set(SignaturePrompt);
-    })
-  );
-};
-
-export const requireAccept = async () => {
-  acceptStatus.set(false);
-
-  return await new Promise((resolve) =>
-    acceptStatus.subscribe((acceptedSub) => {
-      acceptedSub ? resolve(acceptedSub) : prompt.set(AcceptPrompt);
     })
   );
 };

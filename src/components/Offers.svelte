@@ -1,9 +1,15 @@
 <script>
   import { session } from "$app/stores";
   import { AcceptOffer, ArtworkMedia, Activity, Avatar } from "$comp";
-  import { canAccept, canCancel, err } from "$lib/utils";
-  import { val, ticker, info } from "$lib/utils";
-  import { requireAccept } from "$lib/wallet";
+  import {
+    canAccept,
+    canCancel,
+    confirm,
+    err,
+    info,
+    ticker,
+    val,
+  } from "$lib/utils";
   import { formatDistanceStrict } from "date-fns";
   import { api } from "$lib/api";
   import { token, prompt } from "$lib/store";
@@ -27,7 +33,7 @@
   let cancel = async (transaction) => {
     const { id } = transaction;
 
-    await requireAccept();
+    await confirm();
 
     await api
       .auth(`Bearer ${$session.jwt}`)

@@ -217,6 +217,12 @@ export const updateArtwork = `mutation update_artwork($artwork: artworks_set_inp
   }
 }`;
 
+export const deleteArtwork = `mutation delete_artwork($id: uuid!) {
+  delete_artworks_by_pk(id: $id) {
+    id
+  }
+}`;
+
 export const updateArtworkWithRoyaltyRecipients = `mutation update_artwork_with_royalty_recipients($artwork: artworks_set_input!, $id: uuid!, $royaltyRecipients: [royalty_recipients_insert_input!]!) {
   update_artworks_by_pk(pk_columns: { id: $id }, _set: $artwork) {
     id
