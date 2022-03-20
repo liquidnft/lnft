@@ -13,6 +13,8 @@
 
   if (browser) {
     $session = {};
+    window.sessionStorage.removeItem("password");
+    window.sessionStorage.removeItem("username");
     goto("/login");
   }
 </script>

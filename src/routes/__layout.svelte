@@ -50,10 +50,13 @@
   } from "$lib/store";
   import { onDestroy, onMount } from "svelte";
   import branding from "$lib/branding";
+  import { checkAuthFromLocalStorage } from "$lib/auth";
 
   export let addresses, titles, popup;
+  let unsubscribeFromSession;
+  let refreshInterval;
+  let authCheckInterval;
 
-  let interval;
   let refresh = async () => {
     try {
       let { jwt_token } = await get("/auth/refresh.json", fetch);
@@ -61,6 +64,16 @@
     } catch (e) {
       console.log(e);
     }
+  };
+
+  let authCheck = async () => {
+    try {
+      if ($session.user) {
+        checkAuthFromLocalStorage($session.user);
+      }
+    } catch (e) {
+      console.log(e);
+    } 
   };
 
   if (browser) {
@@ -77,7 +90,12 @@
     $user = $session.user;
     $token = $session.jwt;
 
-    interval = setInterval(refresh, 60000);
+    refreshInterval = setInterval(refresh, 60000);
+    authCheckInterval = setInterval(authCheck, 5000);
+
+    unsubscribeFromSession = session.subscribe(value => {
+      value.user && checkAuthFromLocalStorage(value.user);
+    })
   }
 
   let open = false;
@@ -89,7 +107,11 @@
   };
   $: stopPolling($page);
 
-  onDestroy(() => clearInterval(interval));
+  onDestroy(() => {
+    clearInterval(refreshInterval);
+    clearInterval(authCheckInterval);
+    unsubscribeFromSession && unsubscribeFromSession();
+  });
   onMount(() => {
     if (browser && !$password)
       $password = window.sessionStorage.getItem("password");

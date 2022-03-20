@@ -38,3 +38,11 @@ export const requirePassword = async () => {
 export const activate = (ticket) => {
   return api.url("/activate").query({ ticket }).get().res();
 };
+
+export const checkAuthFromLocalStorage = (user) => {
+  const usernameFromStorage = window.sessionStorage.getItem("username");
+
+  if (usernameFromStorage && user.username !== usernameFromStorage) {
+    goto("/logout");
+  }
+};

@@ -40,6 +40,7 @@
       $session = { user: res.user, jwt: res.jwt_token };
       $token = $session.jwt;
       window.sessionStorage.setItem("password", password);
+      window.sessionStorage.setItem("username", res.user.username);
 
       goto("/");
     } catch (e) {
