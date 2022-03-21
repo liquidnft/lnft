@@ -245,7 +245,7 @@ module.exports = {
         address: {_eq: $address}, 
         type: {_in: ["deposit", "withdrawal"]}
       },
-      limit: 25,
+      limit: 50,
       order_by: [{ sequence: desc }]
     ) {
       hash
