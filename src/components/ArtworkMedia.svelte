@@ -10,6 +10,7 @@
   export let preview = false;
   export let popup = false;
   export let classes = "";
+  export let noAudio = false;
 
   let img, vid;
   $: path =
@@ -125,6 +126,20 @@
         <Fa icon={muted ? faVolumeMute : faVolumeUp} size="1.5x" />
       </button>
     {/if}
+  </div>
+{:else if artwork.filetype && artwork.filetype.includes("audio")}
+  <div
+    class="py-40 md:py-16 bg-primary/50 flex justify-center items-center h-full w-full mx-auto rounded-lg"
+  >
+    <figure>
+      <figcaption class="text-center">NFT audio file</figcaption>
+      {#if noAudio === false}
+        <audio class="mx-auto" controls src={preview || path}>
+          Your browser does not support the
+          <code>audio</code> element.
+        </audio>
+      {/if}
+    </figure>
   </div>
 {:else}
   <div class="w-full" class:cover class:contain>

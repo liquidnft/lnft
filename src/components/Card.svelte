@@ -12,6 +12,7 @@
   export let thumb = true;
   export let popup = false;
   export let height = undefined;
+  export let noAudio = false;
 
   $: style = height ? `height: ${height}px` : undefined;
 
@@ -42,7 +43,7 @@
   <div {style}>
     <a href={`/a/${artwork.slug}`} sveltekit:prefetch>
       {#if $loaded[artwork.id] || !justScrolled}
-        <ArtworkMedia {artwork} {showDetails} {popup} bind:thumb />
+        <ArtworkMedia {noAudio} {artwork} {showDetails} {popup} bind:thumb />
       {/if}
     </a>
   </div>
@@ -83,8 +84,9 @@
               <div class="price">{val(artwork.bid.amount)} {ticker}</div>
               <div class="text-xs font-medium">
                 Current bid by
-                <a href={`/${artwork.bid.user.username}`} class="secondary-color"
-                  >@{artwork.bid.user.username}</a
+                <a
+                  href={`/${artwork.bid.user.username}`}
+                  class="secondary-color">@{artwork.bid.user.username}</a
                 >
               </div>
             </div>
@@ -119,19 +121,19 @@
         </div>
       </div>
     </div>
-      {#if end_counter}
-        <div class="p-3 rounded-b-lg lightblue-grad text-black mt-auto">
-          Time left:
-          {end_counter}
-        </div>
-      {:else if start_counter}
-        <div class="p-3 rounded-b-lg lightblue-grad text-black mt-auto">
-          Auction starts in:
-          {start_counter}
-        </div>
-      {:else}
-        <div class="p-3 rounded-b-lg">&nbsp;</div>
-      {/if}
+    {#if end_counter}
+      <div class="p-3 rounded-b-lg lightblue-grad text-black mt-auto">
+        Time left:
+        {end_counter}
+      </div>
+    {:else if start_counter}
+      <div class="p-3 rounded-b-lg lightblue-grad text-black mt-auto">
+        Auction starts in:
+        {start_counter}
+      </div>
+    {:else}
+      <div class="p-3 rounded-b-lg">&nbsp;</div>
+    {/if}
   {/if}
 </div>
 
