@@ -39,6 +39,14 @@
       on:change={(e) => ($fc.hasSold = e.target.checked)}
     />
   </div>
+  <div>
+    <ToggleSwitch
+      id="is-physical"
+      label="Physical artwork"
+      checked={$fc.isPhysical}
+      on:change={(e) => ($fc.isPhysical = e.target.checked)}
+    />
+  </div>
 </div>
 
 <style>

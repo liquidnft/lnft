@@ -14,6 +14,7 @@ export const filterCriteria = writable({
   openBid: false,
   ownedByCreator: false,
   hasSold: false,
+  isPhysical: false,
 });
 export const full = writable();
 export const loading = writable();

@@ -58,6 +58,7 @@
       if ($fc.openBid) where.bid_id = { _is_null: false };
       if ($fc.ownedByCreator) where.artist_owned = { _eq: true };
       if ($fc.hasSold) where.transferred_at = { _is_null: false };
+      if ($fc.isPhysical) where.is_physical = { _eq: true };
 
       let order_by = {
         newest: { created_at: "desc" },
