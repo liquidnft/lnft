@@ -396,7 +396,7 @@ let scanUtxos = async (address) => {
   let { transactions } = await q(getTransactions, { id });
   transactions = uniq(
     transactions.sort((a, b) => a.sequence - b.sequence),
-    (tx) => tx.hash
+    (tx) => tx.hash + tx.asset
   ).filter((tx) => !outs.length || tx.sequence > outs[0].sequence);
 
   transactions.map(async ({ id, hash, asset: txAsset, json, confirmed }) => {
