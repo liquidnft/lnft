@@ -1,7 +1,11 @@
 <script>
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
-  import { faVolumeUp, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faVolumeUp,
+    faVolumeMute,
+    faHeadphones,
+  } from "@fortawesome/free-solid-svg-icons";
   import { loaded } from "$lib/store";
 
   export let artwork;
@@ -129,10 +133,12 @@
   </div>
 {:else if artwork.filetype && artwork.filetype.includes("audio")}
   <div
-    class="py-40 md:py-16 bg-primary/50 flex justify-center items-center h-full w-full mx-auto rounded-lg"
+    class="p-5 bg-primary/50 flex justify-center items-center h-full w-full mx-auto rounded-lg"
   >
     <figure>
+      <Fa icon={faHeadphones} class="mx-auto" size="3x" />
       <figcaption class="text-center">NFT audio file</figcaption>
+
       {#if noAudio === false}
         <audio class="mx-auto" controls src={preview || path}>
           Your browser does not support the
