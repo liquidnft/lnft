@@ -255,6 +255,14 @@ export const updateTags = `mutation insert_tags($tags: [tags_insert_input!]!, $a
 export const getArtwork = `query($id: uuid!) {
   artworks_by_pk(id: $id) {
     ${fields}
+    comments {
+      created_at
+      comment
+      user {
+        username
+        avatar_url
+      }
+    }
     tags {
       tag
     },

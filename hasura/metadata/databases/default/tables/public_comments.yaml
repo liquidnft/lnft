@@ -18,7 +18,7 @@ insert_permissions:
         - artwork_id
         - comment
       set:
-        user_id: x-hasura-User_Id
+        user_id: x-hasura-User-Id
     role: user
 select_permissions:
   - permission:

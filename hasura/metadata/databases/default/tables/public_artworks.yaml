@@ -2,260 +2,267 @@ table:
   name: artworks
   schema: public
 object_relationships:
-- name: artist
-  using:
-    foreign_key_constraint_on: artist_id
-- name: bid
-  using:
-    foreign_key_constraint_on: bid_id
-- name: owner
-  using:
-    foreign_key_constraint_on: owner_id
+  - name: artist
+    using:
+      foreign_key_constraint_on: artist_id
+  - name: bid
+    using:
+      foreign_key_constraint_on: bid_id
+  - name: owner
+    using:
+      foreign_key_constraint_on: owner_id
 array_relationships:
-- name: favorites
-  using:
-    foreign_key_constraint_on:
-      column: artwork_id
-      table:
-        name: favorites
-        schema: public
-- name: featureds
-  using:
-    foreign_key_constraint_on:
-      column: artwork_id
-      table:
-        name: featured
-        schema: public
-- name: offers
-  using:
-    manual_configuration:
-      column_mapping:
-        id: artwork_id
-      insertion_order: null
-      remote_table:
-        name: offers
-        schema: public
-- name: royalty_recipients
-  using:
-    foreign_key_constraint_on:
-      column: artwork_id
-      table:
-        name: royalty_recipients
-        schema: public
-- name: tags
-  using:
-    foreign_key_constraint_on:
-      column: artwork_id
-      table:
-        name: tags
-        schema: public
-- name: transactions
-  using:
-    foreign_key_constraint_on:
-      column: artwork_id
-      table:
-        name: transactions
-        schema: public
+  - name: comments
+    using:
+      foreign_key_constraint_on:
+        column: artwork_id
+        table:
+          name: comments
+          schema: public
+  - name: favorites
+    using:
+      foreign_key_constraint_on:
+        column: artwork_id
+        table:
+          name: favorites
+          schema: public
+  - name: featureds
+    using:
+      foreign_key_constraint_on:
+        column: artwork_id
+        table:
+          name: featured
+          schema: public
+  - name: offers
+    using:
+      manual_configuration:
+        column_mapping:
+          id: artwork_id
+        insertion_order: null
+        remote_table:
+          name: offers
+          schema: public
+  - name: royalty_recipients
+    using:
+      foreign_key_constraint_on:
+        column: artwork_id
+        table:
+          name: royalty_recipients
+          schema: public
+  - name: tags
+    using:
+      foreign_key_constraint_on:
+        column: artwork_id
+        table:
+          name: tags
+          schema: public
+  - name: transactions
+    using:
+      foreign_key_constraint_on:
+        column: artwork_id
+        table:
+          name: transactions
+          schema: public
 computed_fields:
-- definition:
-    function:
-      name: artwork_artist_owned
-      schema: public
-  name: artist_owned
-- definition:
-    function:
-      name: artwork_favorited
-      schema: public
-    session_argument: hasura_session
-    table_argument: artwork_row
-  name: favorited
-- definition:
-    function:
-      name: artwork_has_royalty
-      schema: public
-    table_argument: artwork_row
-  name: has_royalty
-- comment: ""
-  definition:
-    function:
-      name: artwork_last_tx
-      schema: public
-  name: last_active
-- comment: ""
-  definition:
-    function:
-      name: artwork_favorites
-      schema: public
-    session_argument: hasura_session
-    table_argument: artwork_row
-  name: num_favorites
+  - definition:
+      function:
+        name: artwork_artist_owned
+        schema: public
+    name: artist_owned
+  - definition:
+      function:
+        name: artwork_favorited
+        schema: public
+      session_argument: hasura_session
+      table_argument: artwork_row
+    name: favorited
+  - definition:
+      function:
+        name: artwork_has_royalty
+        schema: public
+      table_argument: artwork_row
+    name: has_royalty
+  - comment: ""
+    definition:
+      function:
+        name: artwork_last_tx
+        schema: public
+    name: last_active
+  - comment: ""
+    definition:
+      function:
+        name: artwork_favorites
+        schema: public
+      session_argument: hasura_session
+      table_argument: artwork_row
+    name: num_favorites
 insert_permissions:
-- permission:
-    backend_only: false
-    check:
-      artist_id:
-        _eq: X-Hasura-User-Id
-    columns:
-    - artist_id
-    - asking_asset
-    - asset
-    - auction_end
-    - auction_start
-    - bid_increment
-    - description
-    - edition
-    - editions
-    - extension_interval
-    - filename
-    - filetype
-    - id
-    - instagram
-    - is_physical
-    - list_price
-    - list_price_tx
-    - max_extensions
-    - owner_id
-    - reserve_price
-    - slug
-    - ticker
-    - title
-    set:
-      artist_id: x-hasura-User-Id
-      owner_id: x-hasura-User-Id
-  role: user
-select_permissions:
-- permission:
-    allow_aggregations: true
-    columns:
-    - artist_id
-    - asking_asset
-    - asset
-    - auction_end
-    - auction_start
-    - auction_tx
-    - bid_id
-    - bid_increment
-    - created_at
-    - description
-    - edition
-    - editions
-    - extension_interval
-    - filename
-    - filetype
-    - held
-    - id
-    - instagram
-    - is_physical
-    - list_price
-    - list_price_tx
-    - max_extensions
-    - owner_id
-    - reserve_price
-    - slug
-    - ticker
-    - title
-    - transferred_at
-    - views
-    computed_fields:
-    - artist_owned
-    - favorited
-    - has_royalty
-    - last_active
-    - num_favorites
-    filter:
-      _or:
-      - asking_asset:
-          _is_null: false
-      - transferred_at:
-          _is_null: false
-  role: anonymous
-- permission:
-    allow_aggregations: true
-    columns:
-    - artist_id
-    - asking_asset
-    - asset
-    - auction_end
-    - auction_start
-    - auction_tx
-    - bid_id
-    - bid_increment
-    - created_at
-    - description
-    - edition
-    - editions
-    - extension_interval
-    - filename
-    - filetype
-    - held
-    - id
-    - instagram
-    - is_physical
-    - list_price
-    - list_price_tx
-    - max_extensions
-    - owner_id
-    - reserve_price
-    - slug
-    - ticker
-    - title
-    - transferred_at
-    - views
-    computed_fields:
-    - artist_owned
-    - favorited
-    - has_royalty
-    - last_active
-    - num_favorites
-    filter:
-      _or:
-      - owner_id:
+  - permission:
+      backend_only: false
+      check:
+        artist_id:
           _eq: X-Hasura-User-Id
-      - asking_asset:
-          _is_null: false
-      - transferred_at:
-          _is_null: false
-      - _exists:
-          _table:
-            name: users
-            schema: public
-          _where:
-            _and:
-            - id:
-                _eq: X-Hasura-User-Id
-            - is_admin:
-                _eq: true
-  role: user
+      columns:
+        - artist_id
+        - asking_asset
+        - asset
+        - auction_end
+        - auction_start
+        - bid_increment
+        - description
+        - edition
+        - editions
+        - extension_interval
+        - filename
+        - filetype
+        - id
+        - instagram
+        - is_physical
+        - list_price
+        - list_price_tx
+        - max_extensions
+        - owner_id
+        - reserve_price
+        - slug
+        - ticker
+        - title
+      set:
+        artist_id: x-hasura-User-Id
+        owner_id: x-hasura-User-Id
+    role: user
+select_permissions:
+  - permission:
+      allow_aggregations: true
+      columns:
+        - artist_id
+        - asking_asset
+        - asset
+        - auction_end
+        - auction_start
+        - auction_tx
+        - bid_id
+        - bid_increment
+        - created_at
+        - description
+        - edition
+        - editions
+        - extension_interval
+        - filename
+        - filetype
+        - held
+        - id
+        - instagram
+        - is_physical
+        - list_price
+        - list_price_tx
+        - max_extensions
+        - owner_id
+        - reserve_price
+        - slug
+        - ticker
+        - title
+        - transferred_at
+        - views
+      computed_fields:
+        - artist_owned
+        - favorited
+        - has_royalty
+        - last_active
+        - num_favorites
+      filter:
+        _or:
+          - asking_asset:
+              _is_null: false
+          - transferred_at:
+              _is_null: false
+    role: anonymous
+  - permission:
+      allow_aggregations: true
+      columns:
+        - artist_id
+        - asking_asset
+        - asset
+        - auction_end
+        - auction_start
+        - auction_tx
+        - bid_id
+        - bid_increment
+        - created_at
+        - description
+        - edition
+        - editions
+        - extension_interval
+        - filename
+        - filetype
+        - held
+        - id
+        - instagram
+        - is_physical
+        - list_price
+        - list_price_tx
+        - max_extensions
+        - owner_id
+        - reserve_price
+        - slug
+        - ticker
+        - title
+        - transferred_at
+        - views
+      computed_fields:
+        - artist_owned
+        - favorited
+        - has_royalty
+        - last_active
+        - num_favorites
+      filter:
+        _or:
+          - owner_id:
+              _eq: X-Hasura-User-Id
+          - asking_asset:
+              _is_null: false
+          - transferred_at:
+              _is_null: false
+          - _exists:
+              _table:
+                name: users
+                schema: public
+              _where:
+                _and:
+                  - id:
+                      _eq: X-Hasura-User-Id
+                  - is_admin:
+                      _eq: true
+    role: user
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - asking_asset
-    - auction_end
-    - auction_release_tx
-    - auction_start
-    - auction_tx
-    - bid_increment
-    - description
-    - edition
-    - editions
-    - extension_interval
-    - id
-    - instagram
-    - is_physical
-    - list_price
-    - list_price_tx
-    - max_extensions
-    - owner_id
-    - reserve_price
-    - title
-    filter:
-      owner_id:
-        _eq: X-Hasura-User-Id
-  role: user
+  - permission:
+      check: null
+      columns:
+        - asking_asset
+        - auction_end
+        - auction_release_tx
+        - auction_start
+        - auction_tx
+        - bid_increment
+        - description
+        - edition
+        - editions
+        - extension_interval
+        - id
+        - instagram
+        - is_physical
+        - list_price
+        - list_price_tx
+        - max_extensions
+        - owner_id
+        - reserve_price
+        - title
+      filter:
+        owner_id:
+          _eq: X-Hasura-User-Id
+    role: user
 delete_permissions:
-- permission:
-    filter:
-      owner_id:
-        _eq: X-Hasura-User-Id
-  role: user
+  - permission:
+      filter:
+        owner_id:
+          _eq: X-Hasura-User-Id
+    role: user

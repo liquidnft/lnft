@@ -18,18 +18,15 @@
   let loading;
 
   let comment;
-
   let commentsToggle = "hidden";
 
-  let submit = async (artwork_id, comment) => {
+  let submit = async () => {
     await requireLogin();
     loading = true;
-    let variables = {
-      comment: { artwork_id, comment },
-    };
-
     try {
-      await query(createComment, variables);
+      await query(createComment, {
+        comment: { artwork_id: artwork.id, comment },
+      });
     } catch (e) {
       err(e);
     }
