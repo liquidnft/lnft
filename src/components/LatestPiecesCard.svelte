@@ -19,7 +19,7 @@
   >
     <div class="h-full box-shadow rounded-lg recentCard">
       <div class="thumb">
-        <ArtworkMedia {artwork} showDetails={false} />
+        <ArtworkMedia noAudio={true} {artwork} showDetails={false} />
       </div>
       <div class="p-4">
         <div class="flex justify-between mb-4">
@@ -29,8 +29,7 @@
         <div class="flex">
           <div
             class="my-auto cursor-pointer"
-            on:click|stopPropagation={() =>
-              goto(`/${artwork.artist.username}`)}
+            on:click|stopPropagation={() => goto(`/${artwork.artist.username}`)}
           >
             <Avatar user={transaction.artwork.artist} size="large" />
           </div>
