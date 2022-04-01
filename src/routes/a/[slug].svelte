@@ -544,10 +544,12 @@
       </div>
 
       <!-- Comments -->
-      <Comments bind:artwork bind:fetch />
+      <div class="mt-64">
+        <Comments bind:artwork bind:fetch />
+      </div>
 
       {#if others.length}
-        <div class="w-full mt-64 mb-4">
+        <div class="w-full mb-4">
           <h2 class="text-2xl font-bold primary-color py-10 px-0">
             More by this artist
           </h2>
