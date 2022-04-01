@@ -3,6 +3,7 @@
   import { browser } from "$app/env";
   import branding from "$lib/branding";
   import { host } from "$lib/utils";
+  import Comments from "./_comments.svelte";
 
   export async function load({ fetch, params: { slug } }) {
     const props = await fetch(`/artworks/${slug}.json`).then((r) => r.json());
@@ -541,6 +542,9 @@
           popup={true}
         />
       </div>
+
+      <!-- Comments -->
+      <Comments bind:artwork bind:fetch />
 
       {#if others.length}
         <div class="w-full mt-64 mb-4">
