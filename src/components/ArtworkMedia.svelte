@@ -16,7 +16,7 @@
   export let classes = "";
   export let noAudio = false;
 
-  let img, vid;
+  let img, vid, aud;
   $: path =
     artwork &&
     (thumb
@@ -25,8 +25,8 @@
 
   $: cover = !showDetails;
   $: contain = showDetails;
-  $: setLoaded(img, vid);
-  let setLoaded = (img, vid) => {
+  $: setLoaded(img, vid, aud);
+  let setLoaded = (img, vid, aud) => {
     img &&
       (img.onload = () => {
         $loaded[artwork.id] = true;
@@ -35,6 +35,12 @@
 
     vid &&
       (vid.onloadeddata = () => {
+        $loaded[artwork.id] = true;
+        $loaded = $loaded;
+      });
+
+    aud &&
+      (aud.onerror = () => {
         $loaded[artwork.id] = true;
         $loaded = $loaded;
       });
@@ -135,6 +141,7 @@
   <div
     class="p-5 bg-primary/50 flex justify-center items-center h-full w-full mx-auto rounded-lg"
   >
+    <img src class="hidden" bind:this={aud} />
     <figure>
       <Fa icon={faHeadphones} class="mx-auto" size="3x" />
       <figcaption class="text-center">NFT audio file</figcaption>
