@@ -57,10 +57,7 @@
     {/if}
     {#each artwork.comments as comment}
       <div class="flex mb-4">
-        <a href="https://www.raretoshi.com/{comment.user.username}"
-          ><Avatar user={comment.user} size="lg" /></a
-        >
-
+        <Avatar user={comment.user} size="large" />
         <div class="ml-10">
           <div class="font-bold">
             <a href="https://www.raretoshi.com/{comment.user.username}"
