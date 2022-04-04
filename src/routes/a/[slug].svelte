@@ -113,7 +113,7 @@
 
   let start_counter, end_counter, now, timeout;
 
-  let fetch = async () => {
+  let refreshArtwork = async () => {
     try {
       ({ artworks_by_pk: artwork } = await query(getArtwork, {
         id: artwork.id,
@@ -124,7 +124,7 @@
     }
   };
 
-  let poll = setInterval(fetch, 2500);
+  let poll = setInterval(refreshArtwork, 2500);
 
   onDestroy(() => {
     $art = undefined;
@@ -174,7 +174,7 @@
       transaction.hash = $psbt.data.globalMap.unsignedTx.tx.getId();
 
       await save();
-      await fetch();
+      await refreshArtwork();
 
       await api
         .url("/offer-notifications")
@@ -240,7 +240,7 @@
       transaction.psbt = $psbt.toBase64();
 
       await save();
-      await fetch();
+      await refreshArtwork();
 
       await api
         .url("/mail-purchase-successful")
@@ -545,7 +545,7 @@
 
       <!-- Comments -->
       <div class="mt-64">
-        <Comments bind:artwork bind:fetch />
+        <Comments bind:artwork bind:refreshArtwork />
       </div>
 
       {#if others.length}

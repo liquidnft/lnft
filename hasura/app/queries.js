@@ -365,4 +365,9 @@ module.exports = {
       id
     } 
   }`,
+  createComment: `mutation ($comment: comments_insert_input!) {
+    insert_comments_one(object: $comment) {
+      id
+    }
+  }`,
 };

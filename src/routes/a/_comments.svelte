@@ -6,31 +6,45 @@
     faChevronDown,
     faChevronRight,
   } from "@fortawesome/free-solid-svg-icons";
-  import { requireLogin } from "$lib/auth";
-  import { token } from "$lib/store";
-  import { query } from "$lib/api";
+  import { requirePassword } from "$lib/auth";
+  import { psbt, user, token } from "$lib/store";
+  import { api, query } from "$lib/api";
   import { createComment } from "$queries/artworks";
-  import { err } from "$lib/utils";
+  import { btc, err } from "$lib/utils";
+  import { broadcast, sign, pay } from "$lib/wallet";
 
   export let artwork;
-  export let fetch;
+  export let refreshArtwork;
 
   let loading;
 
   let comment;
   let commentsToggle = "hidden";
+  let amount = 1000;
 
   let submit = async () => {
-    await requireLogin();
+    await requirePassword();
     loading = true;
     try {
-      await query(createComment, {
-        comment: { artwork_id: artwork.id, comment },
-      });
+      if (artwork.owner.id !== $user.id) {
+        await pay(undefined, artwork.owner.address, 1000);
+        await sign();
+        await broadcast();
+        let res = await api
+          .auth(`Bearer ${$token}`)
+          .url("/comment")
+          .post({
+            psbt: $psbt.toBase64(),
+            artwork_id: artwork.id,
+            comment,
+            amount,
+          })
+          .json();
+      }
     } catch (e) {
       err(e);
     }
-    await fetch();
+    await refreshArtwork();
     comment = "";
     loading = false;
   };
@@ -82,6 +96,24 @@
           class="w-full mt-8 border rounded"
           bind:value={comment}
         />
+        <div class="relative pt-1">
+          <label for="customRange1" class="form-label"
+            >Artist Donation (min. 1000 sats)</label
+          >
+          <input
+            type="range"
+            class="
+      form-range
+      appearance-none
+      w-full
+      h-6
+      p-0
+      bg-transparent
+      focus:outline-none focus:ring-0 focus:shadow-none
+    "
+            id="customRange1"
+          />
+        </div>
         <button type="submit" class="primary-btn ml-auto">Add comment</button>
       </form>
     {/if}

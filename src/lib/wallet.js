@@ -625,6 +625,7 @@ export const pay = async (artwork, to, amount) => {
 
   addFee(p2);
 
+  psbt.set(p2);
   return p2;
 };
 
