@@ -14,7 +14,7 @@
       {ticker(transaction.asset)}
       for
     {:else if transaction.type === "comment"}
-      paid
+      donated
       {val(transaction.asset, transaction.amount)}
       {ticker(transaction.asset)}
       to comment on
