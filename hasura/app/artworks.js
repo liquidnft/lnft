@@ -9,6 +9,7 @@ const {
   createArtwork,
   createComment,
   createTransaction,
+  getArtwork,
   getCurrentUser,
   getTransactionArtwork,
   getTransactionUser,
@@ -379,20 +380,27 @@ app.post("/comment", auth, async (req, res) => {
   try {
     let { amount, comment: commentBody, psbt, artwork_id } = req.body;
 
-    let transaction = {
-      amount,
-      artwork_id,
-      asset: btc,
-      hash: Psbt.fromBase64(psbt).extractTransaction().getId(),
-      psbt,
-      type: "comment",
-    };
+    let {
+      artworks_by_pk: { owner_id },
+    } = await q(getArtwork, { id: artwork_id });
+    let user = await getUser(req);
 
-    let { data, errors } = await api(req.headers)
-      .post({ query: createTransaction, variables: { transaction } })
-      .json();
+    if (user.id !== owner_id) {
+      let transaction = {
+        amount,
+        artwork_id,
+        asset: btc,
+        hash: Psbt.fromBase64(psbt).extractTransaction().getId(),
+        psbt,
+        type: "comment",
+      };
 
-    if (errors) throw new Error(errors[0].message);
+      let { data, errors } = await api(req.headers)
+        .post({ query: createTransaction, variables: { transaction } })
+        .json();
+
+      if (errors) throw new Error(errors[0].message);
+    }
 
     let comment = {
       artwork_id,

@@ -30,17 +30,18 @@
         await pay(undefined, artwork.owner.address, 1000);
         await sign();
         await broadcast();
-        let res = await api
-          .auth(`Bearer ${$token}`)
-          .url("/comment")
-          .post({
-            psbt: $psbt.toBase64(),
-            artwork_id: artwork.id,
-            comment,
-            amount,
-          })
-          .json();
       }
+      let res = await api
+        .auth(`Bearer ${$token}`)
+        .url("/comment")
+        .post({
+          psbt: $psbt && $psbt.toBase64(),
+          artwork_id: artwork.id,
+          owner_id: artwork.owner_id,
+          comment,
+          amount,
+        })
+        .json();
     } catch (e) {
       err(e);
     }
