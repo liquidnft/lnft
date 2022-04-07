@@ -27,7 +27,7 @@
     loading = true;
     try {
       if (artwork.owner.id !== $user.id) {
-        await pay(undefined, artwork.owner.address, 1000);
+        await pay(undefined, artwork.owner.address, amount);
         await sign();
         await broadcast();
       }
@@ -99,20 +99,17 @@
         />
         <div class="relative pt-1">
           <label for="customRange1" class="form-label"
-            >Artist Donation (min. 1000 sats)</label
-          >
+            >Artist Donation (min. 1000 sats)<br />
+            Amount: <b>{amount} sats</b>
+          </label>
           <input
             type="range"
-            class="
-      form-range
-      appearance-none
-      w-full
-      h-6
-      p-0
-      bg-transparent
-      focus:outline-none focus:ring-0 focus:shadow-none
-    "
+            class="form-range w-full"
             id="customRange1"
+            min="1000"
+            step="100"
+            max="100000"
+            on:change={(e) => (amount = e.target.value)}
           />
         </div>
         <button type="submit" class="primary-btn ml-auto">Add comment</button>
