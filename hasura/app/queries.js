@@ -45,6 +45,11 @@ module.exports = {
       id
     }
   }`,
+  updateArtwork: `mutation ($artwork: artworks_set_input!, $id: uuid!) {
+    update_artworks_by_pk(pk_columns: { id: $id }, , _set: $artwork) {
+      id
+    }
+  }`,
   updateViews: `mutation ($id: uuid!) {
     update_artworks_by_pk(pk_columns: { id: $id }, _inc: { views: 1 }) {
       id
@@ -53,6 +58,11 @@ module.exports = {
         multisig
       }
       asset
+    }
+  }`,
+  deleteTransaction: `mutation delete_transaction($id: uuid!) {
+    delete_transactions_by_pk(id: $id) {
+      id
     }
   }`,
   setHeld: `mutation ($id: uuid!, $held: String!) {

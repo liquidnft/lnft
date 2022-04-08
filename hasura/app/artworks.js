@@ -8,9 +8,12 @@ const {
   cancelBid,
   createArtwork,
   createTransaction,
+  deleteTransaction,
   getCurrentUser,
+  getUserByAddress,
   getTransactionArtwork,
   getTransactionUser,
+  updateArtwork,
   setHeld,
   setOwner,
   setPsbt,
@@ -48,25 +51,51 @@ app.post("/cancel", auth, async (req, res) => {
 
 app.post("/transfer", auth, async (req, res) => {
   try {
+    let sender = await getUser(req);
     let { address, transaction } = req.body;
 
-    let utxos = await lnft.url(`/address/${address}/utxo`).get().json();
-    let attempts = 0;
-    let received = () => utxos.find((tx) => tx.asset === transaction.asset);
+    let { users } = await q(getUserByAddress, { address });
+    let transaction_id;
 
-    console.log("transferring", transaction);
+    if (users.length) {
+      let { id } = users[0];
 
-    while (!received() && attempts < 5) {
-      await new Promise((r) => setTimeout(r, 2000));
-      utxos = await lnft.url(`/address/${address}/utxo`).get().json();
-      attempts++;
+      console.log("transferring", transaction);
+
+      transaction.user_id = id;
+      transaction.type = "receipt";
+      let { insert_transactions_one: r } = await q(createTransaction, {
+        transaction,
+      });
+      transaction_id = r.id;
+
+      await q(updateArtwork, {
+        artwork: {
+          owner_id: id,
+        },
+        id: transaction.artwork_id,
+      });
     }
 
-    if (received()) {
-      transaction.user_id = req.body.id;
-      transaction.type = "receipt";
+    transaction.amount = -1;
+    transaction.type = "withdrawal";
+    transaction.user_id = sender.id;
+    await q(createTransaction, { transaction });
 
-      await q(createTransaction, { transaction });
+    try {
+      await broadcast(Psbt.fromBase64(transaction.psbt));
+    } catch (e) {
+      if (users.length) {
+        await q(deleteTransaction, { id: transaction_id });
+        await q(updateArtwork, {
+          artwork: {
+            owner_id: sender.id,
+          },
+          id: transaction.artwork_id,
+        });
+      }
+
+      throw e;
     }
 
     res.send({});

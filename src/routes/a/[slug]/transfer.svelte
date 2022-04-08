@@ -36,10 +36,14 @@
 
   export let artwork;
 
-  $: disabled = !recipient && !destination;
+  $: disabled = !recipient && !address;
 
   let recipient;
-  let destination = "";
+  $: address = recipient
+    ? artwork.has_royalty
+      ? recipient.multisig
+      : recipient.address
+    : "";
 
   let loading;
 
@@ -48,103 +52,33 @@
 
     loading = true;
 
-    function checkUser() {
-      $addresses.filter(function (el) {
-        return el.address === destination;
-      });
+    try {
+      $psbt = await pay(artwork, address, 1);
+      await sign();
+
+      let transaction = {
+        amount: 1,
+        artwork_id: artwork.id,
+        asset: artwork.asset,
+        hash: $psbt.extractTransaction().getId(),
+        psbt: $psbt.toBase64(),
+        type: "transfer",
+      };
+
+      query(createTransaction, { transaction });
+
+      await api
+        .auth(`Bearer ${$token}`)
+        .url("/transfer")
+        .post({ address, transaction })
+        .json();
+
+      info(`Artwork sent to ${address}!`);
+      goto(`/a/${artwork.slug}`);
+    } catch (e) {
+      err(e);
     }
 
-    if (checkUser()) {
-      recipient = checkUser()[0];
-    }
-
-    if (recipient && recipient !== "null") {
-      try {
-        let address = artwork.has_royalty
-          ? recipient.multisig
-          : recipient.address;
-        $psbt = await pay(artwork, address, 1);
-        await sign();
-
-        if (artwork.has_royalty) {
-          $psbt = await requestSignature($psbt);
-        }
-
-        await broadcast();
-
-        let transaction = {
-          amount: 1,
-          artwork_id: artwork.id,
-          asset: artwork.asset,
-          hash: $psbt.extractTransaction().getId(),
-          psbt: $psbt.toBase64(),
-          type: "transfer",
-        };
-
-        query(createTransaction, { transaction });
-
-        await api
-          .auth(`Bearer ${$token}`)
-          .url("/transfer")
-          .post({ address, id: recipient.id, transaction })
-          .json();
-
-        query(updateArtwork, {
-          artwork: {
-            owner_id: recipient.id,
-          },
-          id: artwork.id,
-        }).catch(err);
-
-        info(`Artwork sent to ${recipient.username}!`);
-        goto(`/a/${artwork.slug}`);
-      } catch (e) {
-        err(e);
-      }
-    } else if (destination.length > 0) {
-      if (artwork.has_royalty) {
-        throw new Error(
-          "Cannot send artworks with royalties off the platform."
-        );
-      } else {
-        try {
-          let address = destination;
-          $psbt = await pay(artwork, address, 1);
-          await sign();
-
-          await broadcast();
-
-          let transaction = {
-            amount: 1,
-            artwork_id: artwork.id,
-            asset: artwork.asset,
-            hash: $psbt.extractTransaction().getId(),
-            psbt: $psbt.toBase64(),
-            type: "transfer",
-          };
-
-          query(createTransaction, { transaction });
-
-          await api
-            .auth(`Bearer ${$token}`)
-            .url("/transfer")
-            .post({ address, id: uuidv4(), transaction })
-            .json();
-
-          query(updateArtwork, {
-            artwork: {
-              owner_id: destination,
-            },
-            id: artwork.id,
-          }).catch(err);
-
-          info(`Artwork sent to ${destination}!`);
-          goto(`/a/${artwork.slug}`);
-        } catch (e) {
-          err(e);
-        }
-      }
-    }
     loading = false;
   };
 
@@ -174,14 +108,15 @@
           </div>
         </AutoComplete>
         <p class="font-bold mt-10 mb-7">OR</p>
+
         <input
           type="text"
           class="w-full rounded-lg p-3 text-center"
           placeholder="Address"
-          value={recipient !== "null" ? "" : destination}
-          on:change={(e) => {
-            recipient = "null";
-            destination = e.target.value;
+          value={recipient ? "" : address}
+          on:keyup={(e) => {
+            recipient = undefined;
+            address = e.target.value;
           }}
         />
         <a
