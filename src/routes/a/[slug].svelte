@@ -555,7 +555,7 @@
           </h2>
           <div class="w-full grid md:grid-cols-3 gap-4 others">
             {#each others as artwork (artwork.id)}
-              <Card {artwork} showDetails={false} />
+              <Card {artwork} showDetails={false} noAudio={true} />
             {/each}
           </div>
         </div>
