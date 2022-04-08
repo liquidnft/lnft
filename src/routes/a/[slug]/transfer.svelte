@@ -23,6 +23,7 @@
   import { updateArtwork } from "$queries/artworks";
   import { createTransaction } from "$queries/transactions";
   import { api, query } from "$lib/api";
+  import { v4 as uuidv4 } from "uuid";
   import { page } from "$app/stores";
   import {
     broadcast,
@@ -35,9 +36,10 @@
 
   export let artwork;
 
-  $: disabled = !recipient;
+  $: disabled = !recipient && !destination;
 
   let recipient;
+  let destination = "";
 
   let loading;
 
@@ -45,50 +47,108 @@
     await requirePassword($session);
 
     loading = true;
-    try {
-      let address = artwork.has_royalty
-        ? recipient.multisig
-        : recipient.address;
-      $psbt = await pay(artwork, address, 1);
-      await sign();
 
-      if (artwork.has_royalty) {
-        $psbt = await requestSignature($psbt);
+    function checkUser() {
+      $addresses.filter(function (el) {
+        return el.address === destination;
+      });
+    }
+
+    if (checkUser()) {
+      recipient = checkUser()[0];
+    }
+
+    if (recipient && recipient !== "null") {
+      try {
+        let address = artwork.has_royalty
+          ? recipient.multisig
+          : recipient.address;
+        $psbt = await pay(artwork, address, 1);
+        await sign();
+
+        if (artwork.has_royalty) {
+          $psbt = await requestSignature($psbt);
+        }
+
+        await broadcast();
+
+        let transaction = {
+          amount: 1,
+          artwork_id: artwork.id,
+          asset: artwork.asset,
+          hash: $psbt.extractTransaction().getId(),
+          psbt: $psbt.toBase64(),
+          type: "transfer",
+        };
+
+        query(createTransaction, { transaction });
+
+        await api
+          .auth(`Bearer ${$token}`)
+          .url("/transfer")
+          .post({ address, id: recipient.id, transaction })
+          .json();
+
+        query(updateArtwork, {
+          artwork: {
+            owner_id: recipient.id,
+          },
+          id: artwork.id,
+        }).catch(err);
+
+        info(`Artwork sent to ${recipient.username}!`);
+        goto(`/a/${artwork.slug}`);
+      } catch (e) {
+        err(e);
       }
+    } else if (destination.length > 0) {
+      if (artwork.has_royalty) {
+        throw new Error(
+          "Cannot send artworks with royalties off the platform."
+        );
+      } else {
+        try {
+          let address = destination;
+          $psbt = await pay(artwork, address, 1);
+          await sign();
 
-      await broadcast();
+          await broadcast();
 
-      let transaction = {
-        amount: 1,
-        artwork_id: artwork.id,
-        asset: artwork.asset,
-        hash: $psbt.extractTransaction().getId(),
-        psbt: $psbt.toBase64(),
-        type: "transfer",
-      };
+          let transaction = {
+            amount: 1,
+            artwork_id: artwork.id,
+            asset: artwork.asset,
+            hash: $psbt.extractTransaction().getId(),
+            psbt: $psbt.toBase64(),
+            type: "transfer",
+          };
 
-      query(createTransaction, { transaction });
+          query(createTransaction, { transaction });
 
-      await api
-        .auth(`Bearer ${$token}`)
-        .url("/transfer")
-        .post({ address, id: recipient.id, transaction })
-        .json();
+          await api
+            .auth(`Bearer ${$token}`)
+            .url("/transfer")
+            .post({ address, id: uuidv4(), transaction })
+            .json();
 
-      query(updateArtwork, {
-        artwork: {
-          owner_id: recipient.id,
-        },
-        id: artwork.id,
-      }).catch(err);
+          query(updateArtwork, {
+            artwork: {
+              owner_id: destination,
+            },
+            id: artwork.id,
+          }).catch(err);
 
-      info(`Artwork sent to ${recipient.username}!`);
-      goto(`/a/${artwork.slug}`);
-    } catch (e) {
-      err(e);
+          info(`Artwork sent to ${destination}!`);
+          goto(`/a/${artwork.slug}`);
+        } catch (e) {
+          err(e);
+        }
+      }
     }
     loading = false;
   };
+
+  console.log($addresses);
 </script>
 
 {#if $addresses}
@@ -101,10 +161,10 @@
       <div class="w-full max-w-lg text-center my-8 mx-auto">
         <AutoComplete
           hideArrow={true}
-          placeholder="Recipient"
+          placeholder="Username"
           items={$addresses.filter((a) => a.id !== $session.user.id)}
           className="w-full"
-          inputClassName="huh"
+          inputClassName="huh text-center"
           labelFieldName="username"
           bind:selectedItem={recipient}
         >
@@ -113,6 +173,17 @@
             <div class="ml-1 my-auto">{item.username}</div>
           </div>
         </AutoComplete>
+        <p class="font-bold mt-10 mb-7">OR</p>
+        <input
+          type="text"
+          class="w-full rounded-lg p-3 text-center"
+          placeholder="Address"
+          value={recipient !== "null" ? "" : destination}
+          on:change={(e) => {
+            recipient = "null";
+            destination = e.target.value;
+          }}
+        />
         <a
           href="/"
           on:click|preventDefault={send}
