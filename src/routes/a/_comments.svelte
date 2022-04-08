@@ -109,7 +109,7 @@
             min="1000"
             step="100"
             max="100000"
-            on:change={(e) => (amount = e.target.value)}
+            on:input={(e) => (amount = e.target.value)}
           />
         </div>
         <button type="submit" class="primary-btn ml-auto">Add comment</button>
