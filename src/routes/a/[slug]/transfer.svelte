@@ -73,7 +73,7 @@
         .post({ address, transaction })
         .json();
 
-      info(`Artwork sent to ${address}!`);
+      info(`Artwork sent to ${recipient ? recipient.username : `${address.slice(0, 21)}...`}!`);
       goto(`/a/${artwork.slug}`);
     } catch (e) {
       err(e);
@@ -81,8 +81,6 @@
 
     loading = false;
   };
-
-  console.log($addresses);
 </script>
 
 {#if $addresses}
