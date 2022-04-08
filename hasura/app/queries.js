@@ -365,4 +365,15 @@ module.exports = {
       id
     } 
   }`,
+  createComment: `mutation ($comment: comments_insert_input!) {
+    insert_comments_one(object: $comment) {
+      id
+    }
+  }`,
+  getArtwork: `query($id: uuid!) {
+    artworks_by_pk(id: $id) {
+      id
+      owner_id
+    }
+  }`,
 };

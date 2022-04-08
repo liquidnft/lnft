@@ -7,7 +7,9 @@ const {
   acceptBid,
   cancelBid,
   createArtwork,
+  createComment,
   createTransaction,
+  getArtwork,
   getCurrentUser,
   getTransactionArtwork,
   getTransactionUser,
@@ -368,6 +370,50 @@ app.post("/issue", auth, async (req, res) => {
 app.get("/issuance", auth, async (req, res) => {
   try {
     res.send(issuance[req.body.issuance]);
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
+  }
+});
+
+app.post("/comment", auth, async (req, res) => {
+  try {
+    let { amount, comment: commentBody, psbt, artwork_id } = req.body;
+
+    let {
+      artworks_by_pk: { owner_id },
+    } = await q(getArtwork, { id: artwork_id });
+    let user = await getUser(req);
+
+    if (user.id !== owner_id) {
+      let transaction = {
+        amount,
+        artwork_id,
+        asset: btc,
+        hash: Psbt.fromBase64(psbt).extractTransaction().getId(),
+        psbt,
+        type: "comment",
+      };
+
+      let { data, errors } = await api(req.headers)
+        .post({ query: createTransaction, variables: { transaction } })
+        .json();
+
+      if (errors) throw new Error(errors[0].message);
+    }
+
+    let comment = {
+      artwork_id,
+      comment: commentBody,
+    };
+
+    ({ data, errors } = await api(req.headers)
+      .post({ query: createComment, variables: { comment } })
+      .json());
+
+    if (errors) throw new Error(errors[0].message);
+
+    res.send(data);
   } catch (e) {
     console.log(e);
     res.code(500).send(e.message);

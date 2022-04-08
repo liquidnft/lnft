@@ -3,6 +3,7 @@
   import { browser } from "$app/env";
   import branding from "$lib/branding";
   import { host } from "$lib/utils";
+  import Comments from "./_comments.svelte";
 
   export async function load({ fetch, params: { slug } }) {
     const props = await fetch(`/artworks/${slug}.json`).then((r) => r.json());
@@ -112,7 +113,7 @@
 
   let start_counter, end_counter, now, timeout;
 
-  let fetch = async () => {
+  let refreshArtwork = async () => {
     try {
       ({ artworks_by_pk: artwork } = await query(getArtwork, {
         id: artwork.id,
@@ -123,7 +124,7 @@
     }
   };
 
-  let poll = setInterval(fetch, 2500);
+  let poll = setInterval(refreshArtwork, 2500);
 
   onDestroy(() => {
     $art = undefined;
@@ -173,7 +174,7 @@
       transaction.hash = $psbt.data.globalMap.unsignedTx.tx.getId();
 
       await save();
-      await fetch();
+      await refreshArtwork();
 
       await api
         .url("/offer-notifications")
@@ -239,7 +240,7 @@
       transaction.psbt = $psbt.toBase64();
 
       await save();
-      await fetch();
+      await refreshArtwork();
 
       await api
         .url("/mail-purchase-successful")
@@ -542,8 +543,13 @@
         />
       </div>
 
+      <!-- Comments -->
+      <div class="mt-64">
+        <Comments bind:artwork bind:refreshArtwork />
+      </div>
+
       {#if others.length}
-        <div class="w-full mt-64 mb-4">
+        <div class="w-full mb-4">
           <h2 class="text-2xl font-bold primary-color py-10 px-0">
             More by this artist
           </h2>
