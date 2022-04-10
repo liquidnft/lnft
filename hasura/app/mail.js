@@ -111,25 +111,25 @@ app.post("/offer-notifications", auth, async (req, res) => {
       (a, b) => b.amount - a.amount
     );
 
-    const highestBidTransaction = sortedBidTransactions.length
-      ? sortedBidTransactions[0]
+    const outbiddedTransaction = sortedBidTransactions.length > 1
+      ? sortedBidTransactions[1]
       : null;
     
-    const highestBidderIsCurrentBidder = highestBidTransaction?.user?.display_name === currentUser.display_name;
+    const highestBidderIsCurrentBidder = outbiddedTransaction?.user?.display_name === currentUser.display_name;
 
-    highestBidTransaction && !highestBidderIsCurrentBidder &&
+    outbiddedTransaction && !highestBidderIsCurrentBidder &&
       (await mail.send({
         template: "outbid",
         locals: {
-          userName: highestBidTransaction.user.full_name
-            ? highestBidTransaction.user.full_name
+          userName: outbiddedTransaction.user.full_name
+            ? outbiddedTransaction.user.full_name
             : "",
           bidAmount: `${transaction.amount / 100000000} L-BTC`,
           artworkTitle: artwork.title,
           artworkUrl: `${constants.urls.protocol}/a/${artwork.slug}`,
         },
         message: {
-          to: highestBidTransaction.user.display_name,
+          to: outbiddedTransaction.user.display_name,
         },
       }));
 
