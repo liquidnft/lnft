@@ -12,6 +12,7 @@
   import { createComment } from "$queries/artworks";
   import { btc, err } from "$lib/utils";
   import { broadcast, sign, pay } from "$lib/wallet";
+ import { session } from "$app/stores";
 
   export let artwork;
   export let refreshArtwork;
@@ -97,7 +98,7 @@
           class="w-full mt-8 border rounded"
           bind:value={comment}
         />
-{#if artwork.owner.id !== $user.id}
+{#if $session.user && $session.user.id !== artwork.owner_id || !$session.user}
         <div class="relative pt-1">
           <label for="customRange1" class="form-label"
             >Artist Donation (min. 1000 sats)<br />
