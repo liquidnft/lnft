@@ -327,13 +327,15 @@
           </a>
         {/if}
         {#if !artwork.held}
-          <div class="flex mb-6 secondary-color">
-            <Avatar src="/static/satoshi.jpg" />
-            <div class="ml-2">
-              <div>@anon</div>
-              <div class="text-xs text-gray-600">Token Held Externally</div>
+          <a href="https://bitcoin.org/bitcoin.pdf">
+            <div class="flex mb-6 secondary-color">
+              <Avatar src="/static/satoshi.jpg" />
+              <div class="ml-2">
+                <div>@anon</div>
+                <div class="text-xs text-gray-600">Token Held Externally</div>
+              </div>
             </div>
-          </div>
+          </a>
         {/if}
       </div>
 
