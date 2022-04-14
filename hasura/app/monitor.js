@@ -400,42 +400,50 @@ let scanUtxos = async (address) => {
   ).filter((tx) => !outs.length || tx.sequence > outs[0].sequence);
 
   transactions.map(async ({ id, hash, asset: txAsset, json, confirmed }) => {
-    if (!json) json = await electrs.url(`/tx/${hash}`).get().json();
-    else json = JSON.parse(json);
+    try {
+      if (!json) json = await electrs.url(`/tx/${hash}`).get().json();
+      else json = JSON.parse(json);
 
-    json.vout.map(
-      ({ value, asset, scriptpubkey_address }, vout) =>
-        scriptpubkey_address === address &&
-        asset === txAsset &&
-        !outs.find(
-          (o) => hash === o.txid && vout === o.vout && o.asset === asset
-        ) &&
-        outs.push({
-          transaction_id: id,
-          txid: hash,
-          vout,
-          value,
-          asset,
-          confirmed,
-        })
-    );
+      json.vout.map(
+        ({ value, asset, scriptpubkey_address }, vout) =>
+          scriptpubkey_address === address &&
+          asset === txAsset &&
+          !outs.find(
+            (o) => hash === o.txid && vout === o.vout && o.asset === asset
+          ) &&
+          outs.push({
+            transaction_id: id,
+            txid: hash,
+            vout,
+            value,
+            asset,
+            confirmed,
+          })
+      );
+    } catch (e) {
+      console.log(e);
+    }
   });
 
   transactions.map(async ({ hash, json }) => {
-    if (!json) json = await electrs.url(`/tx/${hash}`).get().json();
-    else json = JSON.parse(json);
+    try {
+      if (!json) json = await electrs.url(`/tx/${hash}`).get().json();
+      else json = JSON.parse(json);
 
-    json.vin.map(({ txid, vout }) => {
-      let spent = [];
+      json.vin.map(({ txid, vout }) => {
+        let spent = [];
 
-      outs = outs.filter((o) =>
-        o.txid === txid && o.vout === vout ? spent.push(o) && false : true
-      );
+        outs = outs.filter((o) =>
+          o.txid === txid && o.vout === vout ? spent.push(o) && false : true
+        );
 
-      spent.map(
-        ({ id }) => id && q(deleteUtxo, { id }).then().catch(console.log)
-      );
-    });
+        spent.map(
+          ({ id }) => id && q(deleteUtxo, { id }).then().catch(console.log)
+        );
+      });
+    } catch (e) {
+      console.log(e);
+    }
   });
 
   let unseen = outs.filter(
