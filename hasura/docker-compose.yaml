@@ -6,6 +6,7 @@ services:
     container_name: lapp
     image: asoltys/lnft-server
     restart: on-failure
+    command: ["pnpm", "dev"]
     environment:
       SERVER_URL: '${SERVER_URL}'
       HASURA_SECRET:  '${HASURA_GRAPHQL_ADMIN_SECRET}'
