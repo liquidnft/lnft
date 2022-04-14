@@ -97,6 +97,7 @@
           class="w-full mt-8 border rounded"
           bind:value={comment}
         />
+{#if artwork.owner.id !== $user.id}
         <div class="relative pt-1">
           <label for="customRange1" class="form-label"
             >Artist Donation (min. 1000 sats)<br />
@@ -112,6 +113,7 @@
             on:input={(e) => (amount = e.target.value)}
           />
         </div>
+{/if}
         <button type="submit" class="primary-btn ml-auto">Add comment</button>
       </form>
     {/if}
