@@ -328,10 +328,10 @@
         {/if}
         {#if !artwork.held}
           <div class="flex mb-6 secondary-color">
+            <Avatar src="/static/satoshi.jpg" />
             <div class="ml-2">
-              <div class="text-xs text-gray-600">
-                Token Held Off Platform TODO make this sexy
-              </div>
+              <div>@anon</div>
+              <div class="text-xs text-gray-600">Token Held Externally</div>
             </div>
           </div>
         {/if}

@@ -14,7 +14,7 @@
         key={user && user.username}
         src={user
           ? `/api/public/${user.avatar_url}`
-          : src.startsWith("data")
+          : src.startsWith("data") || src.includes("static")
           ? src
           : `/api/public/${src}`}
         alt={user ? user.username : "lovely avatar"}
@@ -39,7 +39,7 @@
 
   .xs {
     @apply w-10 h-10;
-  } 
+  }
 
   .large {
     @apply w-16 h-16;
