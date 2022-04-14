@@ -315,18 +315,25 @@
             </div>
           </div>
         </a>
-        {#if artwork.artist_id !== artwork.owner_id}
+        {#if artwork.artist_id !== artwork.owner_id && artwork.held}
           <a href={`/${artwork.owner.username}`}>
             <div class="flex mb-6 secondary-color">
               <Avatar user={artwork.owner} />
               <div class="ml-2">
                 <div>@{artwork.owner.username}</div>
-                <div class="text-xs text-gray-600">
-                  {artwork.held ? "" : "Presumed "}Owner
-                </div>
+                <div class="text-xs text-gray-600">Owner</div>
               </div>
             </div>
           </a>
+        {/if}
+        {#if !artwork.held}
+          <div class="flex mb-6 secondary-color">
+            <div class="ml-2">
+              <div class="text-xs text-gray-600">
+                Token Held Off Platform TODO make this sexy
+              </div>
+            </div>
+          </div>
         {/if}
       </div>
 

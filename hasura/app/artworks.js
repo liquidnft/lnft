@@ -77,11 +77,6 @@ app.post("/transfer", auth, async (req, res) => {
       });
     }
 
-    transaction.amount = -1;
-    transaction.type = "withdrawal";
-    transaction.user_id = sender.id;
-    await q(createTransaction, { transaction });
-
     try {
       await broadcast(Psbt.fromBase64(transaction.psbt));
     } catch (e) {
