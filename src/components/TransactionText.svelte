@@ -4,7 +4,7 @@
 </script>
 
 {#if transaction}
-  <div class:line-through={transaction.type.includes("cancelled")} class="break-all">
+  <div class:line-through={transaction.type.includes("cancelled")}>
     <a href={`/${transaction.user.username}`} class="secondary-color"
       >@{transaction.user.username}</a
     >
@@ -13,6 +13,11 @@
       {val(transaction.asset, transaction.amount)}
       {ticker(transaction.asset)}
       for
+    {:else if transaction.type === "comment"}
+      donated
+      {val(transaction.asset, transaction.amount)}
+      {ticker(transaction.asset)}
+      to comment on
     {:else if transaction.type === "receipt"}
       received
     {:else if transaction.type === "transfer"}
