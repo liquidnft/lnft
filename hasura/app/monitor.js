@@ -146,6 +146,8 @@ const checkTransactions = async () => {
   try {
     let { transactions } = await q(getUnconfirmed);
 
+    console.log(`confirming ${transactions.length} transactions`);
+
     for (let i = 0; i < transactions.length; i++) {
       let tx = transactions[i];
       let { block_time, confirmed } = await electrs
@@ -171,7 +173,7 @@ const checkTransactions = async () => {
       }
     }
   } catch (e) {
-    console.log(e);
+    console.log("problem checking transactions", e);
   }
 
   setTimeout(checkTransactions, 5000);
