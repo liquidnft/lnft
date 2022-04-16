@@ -1,9 +1,12 @@
-const { v4 } = require("uuid");
-const { api, q, lnft } = require("./api");
-const { broadcast, btc, parseAsset } = require("./wallet");
-const { Psbt } = require("liquidjs-lib");
-const { compareAsc, parseISO } = require("date-fns");
-const {
+import { v4 } from "uuid";
+import { api, q, lnft } from "./api.js";
+import { broadcast, btc, parseAsset } from "./wallet.js";
+import { Psbt } from "liquidjs-lib";
+import { compareAsc, parseISO } from "date-fns";
+import { mail } from "./mail.js";
+import { auth } from "./auth.js";
+
+import {
   acceptBid,
   cancelBid,
   createArtwork,
@@ -21,11 +24,12 @@ const {
   setPsbt,
   setRelease,
   updateViews,
-} = require("./queries");
-const { SERVER_URL } = process.env;
-const { kebab, sleep, wait } = require("./utils");
+} from "./queries.js";
 
-const crypto = require("crypto");
+const { SERVER_URL } = process.env;
+import { kebab, sleep, wait } from "./utils.js";
+import crypto from "crypto";
+import { app } from "./app.js";
 
 const getUser = async ({ headers }) => {
   let { data, errors } = await api(headers)
@@ -333,11 +337,11 @@ const issue = async (
         tags,
       };
 
-      ({ data, errors } = await api(headers)
+      let result = await api(headers)
         .post({ query: createArtwork, variables })
-        .json());
+        .json();
 
-      if (errors) {
+      if (result.errors) {
         console.log(variables);
         throw new Error(errors[0].message);
       }

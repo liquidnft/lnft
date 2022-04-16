@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   projectName: "Raretoshi",
   urls: {
     protocol: "https://raretoshi.com",

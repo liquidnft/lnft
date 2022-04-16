@@ -1,7 +1,7 @@
-const { api, hasura } = require("./api");
-const { formatISO, compareAsc, parseISO } = require("date-fns");
-const { combine, release, sign, broadcast } = require("./wallet");
-const { check } = require("./signing");
+import { api, adminApi } from "./api.js";
+import { formatISO, compareAsc, parseISO } from "date-fns";
+import { combine, release, sign, broadcast } from "./wallet.js";
+import { check } from "./signing.js";
 
 const close = `mutation update_artwork($id: uuid!, $artwork: artworks_set_input!) {
   update_artworks_by_pk(
@@ -81,7 +81,7 @@ setInterval(async () => {
       } 
     }`;
 
-    let res = await hasura.post({ query }).json();
+    let res = await adminApi.post({ query }).json();
     let { data, errors } = res;
     if (errors) throw new Error(errors[0].message);
     let { artworks } = data;

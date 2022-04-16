@@ -1,12 +1,14 @@
-const { api, ipfs, q, electrs, registry } = require("./api");
-const { formatISO, compareAsc, parseISO, subMinutes } = require("date-fns");
-const reverse = require("buffer-reverse");
-const fs = require("fs");
-const { Psbt } = require("liquidjs-lib");
+import { api, ipfs, q, electrs, registry } from "./api.js";
+import { formatISO, compareAsc, parseISO, subMinutes } from "date-fns";
+import reverse from "buffer-reverse";
+import fs from "fs";
+import { Psbt } from "liquidjs-lib";
 const sleep = (n) => new Promise((r) => setTimeout(r, n));
-const { btc, network } = require("./wallet");
+import { btc, network } from "./wallet.js";
+import { app } from "./app.js";
+import { auth } from "./auth.js";
 
-const {
+import {
   cancelBid,
   cancelListing,
   createTransaction,
@@ -27,7 +29,7 @@ const {
   setOwner,
   setTransactionTime,
   updateUser,
-} = require("./queries");
+} from "./queries.js";
 
 const txcache = {};
 const hexcache = {};
@@ -145,8 +147,6 @@ const checkListings = async () => {
 const checkTransactions = async () => {
   try {
     let { transactions } = await q(getUnconfirmed);
-
-    console.log(`confirming ${transactions.length} transactions`);
 
     for (let i = 0; i < transactions.length; i++) {
       let tx = transactions[i];

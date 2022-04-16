@@ -1,13 +1,17 @@
-const Email = require("email-templates");
-const nodemailer = require("nodemailer");
-const { q: query, api } = require("./api");
-const {
+import Email from "email-templates";
+import nodemailer from "nodemailer";
+import { q as query, api } from "./api.js";
+import { app } from "./app.js";
+import { auth } from "./auth.js";
+
+import {
   getUser,
   getArtworkWithBidTransactionByHash,
   getArtworkByPk,
-  getCurrentUser
-} = require("./queries");
-const constants = require("./const");
+  getCurrentUser,
+} from "./queries.js";
+
+import constants from "./const.js";
 
 const { SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_PORT, SMTP_SENDER } = process.env;
 
@@ -21,7 +25,7 @@ let transport = nodemailer.createTransport({
   },
 });
 
-mail = new Email({
+export const mail = new Email({
   transport,
   message: { from: SMTP_SENDER },
   send: true,
@@ -111,13 +115,14 @@ app.post("/offer-notifications", auth, async (req, res) => {
       (a, b) => b.amount - a.amount
     );
 
-    const outbiddedTransaction = sortedBidTransactions.length > 1
-      ? sortedBidTransactions[1]
-      : null;
-    
-    const highestBidderIsCurrentBidder = outbiddedTransaction?.user?.display_name === currentUser.display_name;
+    const outbiddedTransaction =
+      sortedBidTransactions.length > 1 ? sortedBidTransactions[1] : null;
 
-    outbiddedTransaction && !highestBidderIsCurrentBidder &&
+    const highestBidderIsCurrentBidder =
+      outbiddedTransaction?.user?.display_name === currentUser.display_name;
+
+    outbiddedTransaction &&
+      !highestBidderIsCurrentBidder &&
       (await mail.send({
         template: "outbid",
         locals: {

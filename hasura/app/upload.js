@@ -1,11 +1,13 @@
-const fs = require("fs");
-const ipfsClient = require("ipfs-http-client");
-const sharp = require("sharp");
-const ffmpeg = require("fluent-ffmpeg");
-const { PassThrough } = require("stream");
-const Clone = require("readable-stream-clone");
+import fs from "fs";
+import ipfsClient from "ipfs-http-client";
+import sharp from "sharp";
+import ffmpeg from "fluent-ffmpeg";
+import { PassThrough } from "stream";
+import Clone from "readable-stream-clone";
+import { app } from "./app.js";
+import fastifyMultipart from "fastify-multipart";
 
-app.register(require("fastify-multipart"));
+app.register(fastifyMultipart);
 
 app.post("/upload", async function (req, res) {
   const ipfs = ipfsClient(process.env.IPFS_URL);
