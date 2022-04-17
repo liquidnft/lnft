@@ -28,6 +28,7 @@ services:
       SMTP_PASS: '${SMTP_PASS}'
       SMTP_SENDER: '${SMTP_SENDER}'
       APP_URL: '${APP_URL}'
+      AUTH_EVENT_VALUE: '${AUTH_EVENT_VALUE}'
     volumes:
       - ./app:/app
       - ./custom:/opt/src/hasura/app/custom

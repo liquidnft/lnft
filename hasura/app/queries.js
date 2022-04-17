@@ -165,6 +165,7 @@ module.exports = {
     users_by_pk(id: $id) {
       display_name
       full_name
+      username
     }
   }`,
   getAvatars: `query { users { id, avatar_url }}`,
@@ -386,4 +387,19 @@ module.exports = {
       owner_id
     }
   }`,
+  getTransferTransactionsByPsbt: `
+    query($psbt: String!) {
+      transactions(
+        where: {
+          psbt: {_eq: $psbt}, 
+          type: {_eq: "transfer"}
+        },
+        limit: 1
+      ) {
+        id
+        amount
+        user_id
+      }
+    }
+  `,
 };

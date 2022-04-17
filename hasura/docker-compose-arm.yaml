@@ -27,6 +27,7 @@ services:
       SMTP_USER: "${SMTP_USER}"
       SMTP_PASS: "${SMTP_PASS}"
       SMTP_SENDER: "${SMTP_SENDER}"
+      AUTH_EVENT_VALUE: '${AUTH_EVENT_VALUE}'
     volumes:
       - ./app:/app
       - ./custom:/opt/src/hasura/app/custom
@@ -60,6 +61,8 @@ services:
       HASURA_GRAPHQL_JWT_SECRET: "${HASURA_GRAPHQL_JWT_SECRET}"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
+      SERVER_URL: '${SERVER_URL}'
+      AUTH_EVENT_VALUE: '${AUTH_EVENT_VALUE}'
   hbp:
     container_name: hbp
     image: nhost/hasura-backend-plus:v2.2.3

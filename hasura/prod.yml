@@ -19,6 +19,7 @@ services:
       IPFS_URL: '${IPFS_URL}'
       IPFS_WEB_URL: '${IPFS_WEB_URL}'
       SIGNING_SERVER_MNEMONIC: '${SIGNING_SERVER_MNEMONIC}'
+      AUTH_EVENT_VALUE: '${AUTH_EVENT_VALUE}'
     ports:
       - '8091:8091'
       - '8092:8092'
@@ -72,6 +73,8 @@ services:
       HASURA_GRAPHQL_JWT_SECRET: '${HASURA_GRAPHQL_JWT_SECRET}'
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
+      SERVER_URL: '${SERVER_URL}'
+      AUTH_EVENT_VALUE: '${AUTH_EVENT_VALUE}'
   hbp:
     container_name: hbp
     image: nhost/hasura-backend-plus:v2.2.3
