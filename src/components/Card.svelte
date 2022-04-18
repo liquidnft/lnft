@@ -1,8 +1,8 @@
 <script>
   import { Avatar, ArtworkMedia, Heart } from "$comp";
   import countdown from "$lib/countdown";
-  import { fade, goto, units } from "$lib/utils";
-  import { onMount } from "svelte";
+  import { fade, units } from "$lib/utils";
+  import { onDestroy, onMount } from "svelte";
   import { loaded } from "$lib/store";
 
   export let justScrolled = false;
@@ -25,13 +25,16 @@
   }
 
   let start_counter, end_counter;
+  let timeout;
   let count = () => {
     if (!artwork) return;
     start_counter = countdown(new Date(artwork.auction_start));
     end_counter = countdown(new Date(artwork.auction_end));
-    setTimeout(count, 1000);
+    timeout = setTimeout(count, 1000);
   };
-  count();
+
+  onMount(count);
+  onDestroy(() => clearTimeout(timeout));
 </script>
 
 <div
