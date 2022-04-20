@@ -1,10 +1,10 @@
 table:
-  name: account_providers
   schema: auth
+  name: account_providers
 object_relationships:
-- name: account
-  using:
-    foreign_key_constraint_on: account_id
-- name: provider
-  using:
-    foreign_key_constraint_on: auth_provider
+  - name: account
+    using:
+      foreign_key_constraint_on: account_id
+  - name: provider
+    using:
+      foreign_key_constraint_on: auth_provider

@@ -1,43 +1,43 @@
 table:
-  name: favorites
   schema: public
+  name: favorites
 object_relationships:
-- name: artwork
-  using:
-    foreign_key_constraint_on: artwork_id
-- name: user
-  using:
-    foreign_key_constraint_on: user_id
+  - name: artwork
+    using:
+      foreign_key_constraint_on: artwork_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
 insert_permissions:
-- permission:
-    backend_only: false
-    check:
-      user_id:
-        _eq: X-Hasura-User-Id
-    columns:
-    - artwork_id
-    - user_id
-    set:
-      user_id: x-hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-User-Id
+      columns:
+        - artwork_id
+        - user_id
+      backend_only: false
 select_permissions:
-- permission:
-    allow_aggregations: true
-    columns:
-    - user_id
-    - artwork_id
-    filter: {}
-  role: anonymous
-- permission:
-    allow_aggregations: true
-    columns:
-    - user_id
-    - artwork_id
-    filter: {}
-  role: user
+  - role: anonymous
+    permission:
+      columns:
+        - user_id
+        - artwork_id
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+        - user_id
+        - artwork_id
+      filter: {}
+      allow_aggregations: true
 delete_permissions:
-- permission:
-    filter:
-      user_id:
-        _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id

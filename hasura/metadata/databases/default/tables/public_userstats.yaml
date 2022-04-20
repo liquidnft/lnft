@@ -1,13 +1,13 @@
 table:
-  name: userstats
   schema: public
+  name: userstats
 select_permissions:
-- permission:
-    columns:
-    - users
-    - artworks
-    - is_artist
-    - user_created
-    - artwork_created
-    filter: {}
-  role: user
+  - role: user
+    permission:
+      columns:
+        - users
+        - artworks
+        - is_artist
+        - user_created
+        - artwork_created
+      filter: {}

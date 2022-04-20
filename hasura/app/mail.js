@@ -7,7 +7,7 @@ import { auth } from "./auth.js";
 import {
   getUser,
   getArtworkWithBidTransactionByHash,
-  getArtworkByPk,
+  getArtwork,
   getCurrentUser,
   getTransferTransactionsByPsbt,
 } from "./queries.js";
@@ -193,7 +193,7 @@ app.post("/mail-purchase-successful", auth, async (req, res) => {
     }
     let { users_by_pk: user } = await query(getUser, { id });
 
-    const { artworks_by_pk: artwork } = await query(getArtworkByPk, {
+    const { artworks_by_pk: artwork } = await query(getArtwork, {
       id: artworkId,
     });
 
@@ -229,7 +229,7 @@ app.post("/mail-artwork-minted", auth, async (req, res) => {
     }
     let { users_by_pk: user } = await query(getUser, { id });
 
-    const { artworks_by_pk: artwork } = await query(getArtworkByPk, {
+    const { artworks_by_pk: artwork } = await query(getArtwork, {
       id: artworkId,
     });
 
@@ -264,7 +264,7 @@ app.post("/mail-artwork-sold", auth, async (req, res) => {
     }
     let { users_by_pk: user } = await query(getUser, { id });
 
-    const { artworks_by_pk: artwork } = await query(getArtworkByPk, {
+    const { artworks_by_pk: artwork } = await query(getArtwork, {
       id: artworkId,
     });
 
@@ -308,7 +308,7 @@ app.post("/mail-event-actions", async (req, res) => {
 
   const getArtworkById = async (artworkId) => {
     let { artworks_by_pk: artwork } = artworkId
-      ? await query(getArtworkByPk, {
+      ? await query(getArtwork, {
           id: artworkId,
         })
       : { artworks_by_pk: null };

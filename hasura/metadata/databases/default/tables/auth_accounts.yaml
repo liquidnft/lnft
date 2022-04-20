@@ -1,49 +1,49 @@
 table:
-  name: accounts
   schema: auth
+  name: accounts
 object_relationships:
-- name: role
-  using:
-    foreign_key_constraint_on: default_role
-- name: user
-  using:
-    foreign_key_constraint_on: user_id
+  - name: role
+    using:
+      foreign_key_constraint_on: default_role
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
 array_relationships:
-- name: account_providers
-  using:
-    foreign_key_constraint_on:
-      column: account_id
-      table:
-        name: account_providers
-        schema: auth
-- name: account_roles
-  using:
-    foreign_key_constraint_on:
-      column: account_id
-      table:
-        name: account_roles
-        schema: auth
-- name: refresh_tokens
-  using:
-    foreign_key_constraint_on:
-      column: account_id
-      table:
-        name: refresh_tokens
-        schema: auth
+  - name: account_providers
+    using:
+      foreign_key_constraint_on:
+        column: account_id
+        table:
+          schema: auth
+          name: account_providers
+  - name: account_roles
+    using:
+      foreign_key_constraint_on:
+        column: account_id
+        table:
+          schema: auth
+          name: account_roles
+  - name: refresh_tokens
+    using:
+      foreign_key_constraint_on:
+        column: account_id
+        table:
+          schema: auth
+          name: refresh_tokens
 select_permissions:
-- permission:
-    columns:
-    - email
-    filter:
-      user_id:
-        _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      columns:
+        - email
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - email
-    filter:
-      user_id:
-        _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      columns:
+        - email
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+      check: null

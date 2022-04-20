@@ -1,49 +1,49 @@
 table:
-  name: tags
   schema: public
+  name: tags
 object_relationships:
-- name: artwork
-  using:
-    foreign_key_constraint_on: artwork_id
+  - name: artwork
+    using:
+      foreign_key_constraint_on: artwork_id
 insert_permissions:
-- permission:
-    backend_only: false
-    check:
-      artwork:
-        owner_id:
-          _eq: X-Hasura-User-Id
-    columns:
-    - tag
-    - artwork_id
-  role: user
+  - role: user
+    permission:
+      check:
+        artwork:
+          owner_id:
+            _eq: X-Hasura-User-Id
+      columns:
+        - tag
+        - artwork_id
+      backend_only: false
 select_permissions:
-- permission:
-    columns:
-    - tag
-    - artwork_id
-    filter: {}
-  role: anonymous
-- permission:
-    columns:
-    - artwork_id
-    - tag
-    filter: {}
-  role: user
+  - role: anonymous
+    permission:
+      columns:
+        - tag
+        - artwork_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - artwork_id
+        - tag
+      filter: {}
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - tag
-    - artwork_id
-    filter:
-      artwork:
-        owner_id:
-          _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      columns:
+        - tag
+        - artwork_id
+      filter:
+        artwork:
+          owner_id:
+            _eq: X-Hasura-User-Id
+      check: null
 delete_permissions:
-- permission:
-    filter:
-      artwork:
-        owner_id:
-          _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      filter:
+        artwork:
+          owner_id:
+            _eq: X-Hasura-User-Id

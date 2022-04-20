@@ -1,4 +1,4 @@
-import { api, adminApi } from "./api.js";
+import { api, q } from "./api.js";
 import { formatISO, compareAsc, parseISO } from "date-fns";
 import { combine, release, sign, broadcast } from "./wallet.js";
 import { check } from "./signing.js";
@@ -81,28 +81,19 @@ setInterval(async () => {
       } 
     }`;
 
-    let res = await adminApi.post({ query }).json();
-    let { data, errors } = res;
-    if (errors) throw new Error(errors[0].message);
-    let { artworks } = data;
+    let { artworks } = await q(query);
 
     for (let i = 0; i < artworks.length; i++) {
       let artwork = artworks[i];
       let { bid } = artwork;
 
-      hasura
-        .post({
-          query: close,
-          variables: {
-            id: artwork.id,
-            artwork: {
-              auction_start: null,
-              auction_end: null,
-            },
-          },
-        })
-        .json()
-        .catch(console.log);
+      await q(close, {
+        id: artwork.id,
+        artwork: {
+          auction_start: null,
+          auction_end: null,
+        },
+      });
 
       console.log("finalizing auction for", artwork.slug);
       console.log("reserve price", artwork.reserve_price);
@@ -123,21 +114,16 @@ setInterval(async () => {
         let psbt = await sign(combined);
         await broadcast(psbt);
 
-        await hasura
-          .post({
-            query: releaseQuery,
-            variables: {
-              id: artwork.id,
-              owner_id: bid.user.id,
-              amount: bid.amount,
-              hash: psbt.extractTransaction().getId(),
-              psbt: psbt.toBase64(),
-              asset: artwork.asking_asset,
-              bid_id: bid.id,
-              type: "release",
-            },
-          })
-          .json();
+        await q(releaseQuery, {
+          id: artwork.id,
+          owner_id: bid.user.id,
+          amount: bid.amount,
+          hash: psbt.extractTransaction().getId(),
+          psbt: psbt.toBase64(),
+          asset: artwork.asking_asset,
+          bid_id: bid.id,
+          type: "release",
+        });
 
         console.log("released to high bidder");
       } catch (e) {
@@ -150,23 +136,15 @@ setInterval(async () => {
 
           console.log("released to current owner");
 
-          let result = await hasura
-            .post({
-              query: releaseQuery,
-              variables: {
-                id: artwork.id,
-                owner_id: artwork.owner.id,
-                amount: 0,
-                hash: psbt.extractTransaction().getId(),
-                psbt: psbt.toBase64(),
-                asset: artwork.asking_asset,
-                type: "return",
-              },
-            })
-            .json();
-
-          if (result.errors && result.errors.length)
-            throw new Error(JSON.stringify(result.errors[0].message));
+          await q(releaseQuery, {
+            id: artwork.id,
+            owner_id: artwork.owner.id,
+            amount: 0,
+            hash: psbt.extractTransaction().getId(),
+            psbt: psbt.toBase64(),
+            asset: artwork.asking_asset,
+            type: "return",
+          });
         } catch (e) {
           console.log("problem releasing", e);
         }

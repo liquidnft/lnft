@@ -1,40 +1,40 @@
 table:
-  name: samples
   schema: public
+  name: samples
 object_relationships:
-- name: user
-  using:
-    foreign_key_constraint_on: user_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
 insert_permissions:
-- permission:
-    backend_only: false
-    check: {}
-    columns:
-    - id
-    - type
-    - url
-    - user_id
-  role: user
+  - role: user
+    permission:
+      check: {}
+      columns:
+        - id
+        - type
+        - url
+        - user_id
+      backend_only: false
 select_permissions:
-- permission:
-    columns:
-    - type
-    - url
-    - id
-    - user_id
-    filter: {}
-  role: approver
-- permission:
-    columns:
-    - id
-    - type
-    - url
-    - user_id
-    filter:
-      user_id:
-        _eq: X-Hasura-User-Id
-  role: user
+  - role: approver
+    permission:
+      columns:
+        - type
+        - url
+        - id
+        - user_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - id
+        - type
+        - url
+        - user_id
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
 delete_permissions:
-- permission:
-    filter: {}
-  role: approver
+  - role: approver
+    permission:
+      filter: {}

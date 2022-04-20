@@ -1,7 +1,7 @@
 table:
-  name: refresh_tokens
   schema: auth
+  name: refresh_tokens
 object_relationships:
-- name: account
-  using:
-    foreign_key_constraint_on: account_id
+  - name: account
+    using:
+      foreign_key_constraint_on: account_id

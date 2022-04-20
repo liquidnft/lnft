@@ -1,28 +1,28 @@
 table:
-  name: artists
   schema: public
+  name: artists
 select_permissions:
-- permission:
-    columns:
-    - id
-    - username
-    - avatar_url
-    - creations
-    - sold
-    - avg_sale
-    - highest_sale
-    - total_sales
-    filter: {}
-  role: anonymous
-- permission:
-    columns:
-    - creations
-    - sold
-    - avg_sale
-    - highest_sale
-    - total_sales
-    - avatar_url
-    - username
-    - id
-    filter: {}
-  role: user
+  - role: anonymous
+    permission:
+      columns:
+        - id
+        - username
+        - avatar_url
+        - creations
+        - sold
+        - avg_sale
+        - highest_sale
+        - total_sales
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - creations
+        - sold
+        - avg_sale
+        - highest_sale
+        - total_sales
+        - avatar_url
+        - username
+        - id
+      filter: {}

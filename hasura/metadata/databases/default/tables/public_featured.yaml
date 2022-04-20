@@ -1,26 +1,26 @@
 table:
-  name: featured
   schema: public
+  name: featured
 object_relationships:
-- name: artwork
-  using:
-    foreign_key_constraint_on: artwork_id
+  - name: artwork
+    using:
+      foreign_key_constraint_on: artwork_id
 select_permissions:
-- permission:
-    columns:
-    - id
-    - white
-    - start_date
-    - end_date
-    - artwork_id
-    filter: {}
-  role: anonymous
-- permission:
-    columns:
-    - white
-    - end_date
-    - start_date
-    - artwork_id
-    - id
-    filter: {}
-  role: user
+  - role: anonymous
+    permission:
+      columns:
+        - id
+        - white
+        - start_date
+        - end_date
+        - artwork_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - white
+        - end_date
+        - start_date
+        - artwork_id
+        - id
+      filter: {}

@@ -1,11 +1,11 @@
 table:
-  name: providers
   schema: auth
+  name: providers
 array_relationships:
-- name: account_providers
-  using:
-    foreign_key_constraint_on:
-      column: auth_provider
-      table:
-        name: account_providers
-        schema: auth
+  - name: account_providers
+    using:
+      foreign_key_constraint_on:
+        column: auth_provider
+        table:
+          schema: auth
+          name: account_providers

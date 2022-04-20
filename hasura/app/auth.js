@@ -87,6 +87,7 @@ app.post("/register", async (req, res) => {
       .json();
 
     if (response.errors) {
+      console.log(response.errors);
       let deleteQuery = `mutation { 
         delete_users(where: { account: { email: { _eq: "${email}" } } }) 
         { 

@@ -1,71 +1,71 @@
 table:
-  name: royalty_recipients
   schema: public
+  name: royalty_recipients
 object_relationships:
-- name: artwork
-  using:
-    foreign_key_constraint_on: artwork_id
+  - name: artwork
+    using:
+      foreign_key_constraint_on: artwork_id
 insert_permissions:
-- permission:
-    backend_only: false
-    check:
-      artwork:
-        owner_id:
-          _eq: X-Hasura-User-Id
-    columns:
-    - address
-    - amount
-    - artwork_id
-    - asking_asset
-    - name
-    - type
-  role: user
+  - role: user
+    permission:
+      check:
+        artwork:
+          owner_id:
+            _eq: X-Hasura-User-Id
+      columns:
+        - address
+        - amount
+        - artwork_id
+        - asking_asset
+        - name
+        - type
+      backend_only: false
 select_permissions:
-- permission:
-    allow_aggregations: true
-    columns:
-    - address
-    - amount
-    - artwork_id
-    - asking_asset
-    - created_at
-    - id
-    - name
-    - type
-    - updated_at
-    filter: {}
-  role: anonymous
-- permission:
-    allow_aggregations: true
-    columns:
-    - address
-    - amount
-    - artwork_id
-    - asking_asset
-    - created_at
-    - id
-    - name
-    - type
-    - updated_at
-    filter: {}
-  role: user
+  - role: anonymous
+    permission:
+      columns:
+        - address
+        - amount
+        - artwork_id
+        - asking_asset
+        - created_at
+        - id
+        - name
+        - type
+        - updated_at
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+        - address
+        - amount
+        - artwork_id
+        - asking_asset
+        - created_at
+        - id
+        - name
+        - type
+        - updated_at
+      filter: {}
+      allow_aggregations: true
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - address
-    - amount
-    - asking_asset
-    - name
-    filter:
-      artwork:
-        owner_id:
-          _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      columns:
+        - address
+        - amount
+        - asking_asset
+        - name
+      filter:
+        artwork:
+          owner_id:
+            _eq: X-Hasura-User-Id
+      check: null
 delete_permissions:
-- permission:
-    filter:
-      artwork:
-        owner_id:
-          _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      filter:
+        artwork:
+          owner_id:
+            _eq: X-Hasura-User-Id

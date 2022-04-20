@@ -1,5 +1,5 @@
 <script context="module">
-  import { post } from "$lib/api";
+  import { api, post } from "$lib/api";
   import { browser } from "$app/env";
   import branding from "$lib/branding";
   import { host } from "$lib/utils";
@@ -15,6 +15,7 @@
         status: 404,
       };
 
+    await api.url("/held").post({ id: artwork.id }).json();
     if (!browser) {
       try {
         await post("/artworks/viewed", { id: artwork.id }, fetch).res();
@@ -92,7 +93,7 @@
     releaseToSelf,
   } from "$lib/wallet";
   import { Psbt } from "liquidjs-lib";
-  import { api, query } from "$lib/api";
+  import { query } from "$lib/api";
 
   export let artwork, others, metadata, views;
 

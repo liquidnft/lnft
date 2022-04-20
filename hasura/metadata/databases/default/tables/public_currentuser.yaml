@@ -1,35 +1,35 @@
 table:
-  name: currentuser
   schema: public
+  name: currentuser
 select_permissions:
-- permission:
-    columns:
-    - address
-    - avatar_url
-    - bio
-    - blindkey
-    - confidential
-    - created_at
-    - display_name
-    - email
-    - full_name
-    - has_samples
-    - id
-    - info
-    - instagram
-    - is_admin
-    - is_artist
-    - location
-    - mnemonic
-    - multisig
-    - prompt_sign
-    - pubkey
-    - twitter
-    - updated_at
-    - username
-    - wallet_initialized
-    - website
-    filter:
-      id:
-        _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      columns:
+        - address
+        - avatar_url
+        - bio
+        - blindkey
+        - confidential
+        - created_at
+        - display_name
+        - email
+        - full_name
+        - has_samples
+        - id
+        - info
+        - instagram
+        - is_admin
+        - is_artist
+        - location
+        - mnemonic
+        - multisig
+        - prompt_sign
+        - pubkey
+        - twitter
+        - updated_at
+        - username
+        - wallet_initialized
+        - website
+      filter:
+        id:
+          _eq: X-Hasura-User-Id

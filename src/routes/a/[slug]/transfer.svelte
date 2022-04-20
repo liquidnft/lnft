@@ -45,6 +45,8 @@
       : recipient.address
     : "";
 
+  console.log($addresses);
+
   let loading;
 
   let send = async (e) => {
@@ -56,24 +58,19 @@
       $psbt = await pay(artwork, address, 1);
       await sign();
 
-      let transaction = {
-        amount: 1,
-        artwork_id: artwork.id,
-        asset: artwork.asset,
-        hash: $psbt.extractTransaction().getId(),
-        psbt: $psbt.toBase64(),
-        type: "transfer",
-      };
-
-      query(createTransaction, { transaction });
+      if (artwork.held === "multisig") $psbt = await requestSignature($psbt);
 
       await api
         .auth(`Bearer ${$token}`)
         .url("/transfer")
-        .post({ address, transaction })
+        .post({ address, artwork, psbt: $psbt.toBase64() })
         .json();
 
-      info(`Artwork sent to ${recipient ? recipient.username : `${address.slice(0, 21)}...`}!`);
+      info(
+        `Artwork sent to ${
+          recipient ? recipient.username : `${address.slice(0, 21)}...`
+        }!`
+      );
       goto(`/a/${artwork.slug}`);
     } catch (e) {
       err(e);

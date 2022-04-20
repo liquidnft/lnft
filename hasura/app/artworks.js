@@ -56,24 +56,38 @@ app.post("/cancel", auth, async (req, res) => {
 });
 
 app.post("/transfer", auth, async (req, res) => {
+  let receipt_id, transfer_id;
   try {
     let sender = await getUser(req);
-    let { address, transaction } = req.body;
+    let { address, artwork, psbt } = req.body;
+
+    let transaction = {
+      amount: 1,
+      artwork_id: artwork.id,
+      asset: artwork.asset,
+      hash: Psbt.fromBase64(psbt).extractTransaction().getId(),
+      psbt,
+      type: "transfer",
+    };
+
+    let result = await api(req.headers)
+      .post({ query: createTransaction, variables: { transaction } })
+      .json();
+
+    if (result.errors) throw new Error(result.errors[0].message);
+    transfer_id = result.data.insert_transactions_one.id;
 
     let { users } = await q(getUserByAddress, { address });
-    let transaction_id;
 
     if (users.length) {
       let { id } = users[0];
-
-      console.log("transferring", transaction);
 
       transaction.user_id = id;
       transaction.type = "receipt";
       let { insert_transactions_one: r } = await q(createTransaction, {
         transaction,
       });
-      transaction_id = r.id;
+      receipt_id = r.id;
 
       await q(updateArtwork, {
         artwork: {
@@ -87,7 +101,7 @@ app.post("/transfer", auth, async (req, res) => {
       await broadcast(Psbt.fromBase64(transaction.psbt));
     } catch (e) {
       if (users.length) {
-        await q(deleteTransaction, { id: transaction_id });
+        await q(deleteTransaction, { id: receipt_id });
         await q(updateArtwork, {
           artwork: {
             owner_id: sender.id,
@@ -101,15 +115,21 @@ app.post("/transfer", auth, async (req, res) => {
 
     res.send({});
   } catch (e) {
+    try {
+      await q(deleteTransaction, { id: transfer_id });
+    } catch (e) {
+      console.log("failed to rollback transfer transaction", e);
+    }
+
     console.log("problem transferring artwork", e);
     res.code(500).send(e.message);
   }
 });
 
-app.post("/viewed", async (req, res) => {
+app.post("/held", async (req, res) => {
   try {
-    let { update_artworks_by_pk } = await q(updateViews, { id: req.body.id });
-    let { asset, owner } = update_artworks_by_pk;
+    let { artworks_by_pk: artwork } = await q(getArtwork, { id: req.body.id });
+    let { asset, owner } = artwork;
     let { address, multisig } = owner;
 
     let find = async (a) =>
@@ -121,8 +141,18 @@ app.post("/viewed", async (req, res) => {
     if (await find(address)) held = "single";
     if (await find(multisig)) held = "multisig";
 
-    await q(setHeld, { id: req.body.id, held });
+    let result = await q(setHeld, { id: req.body.id, held });
 
+    res.send({});
+  } catch (e) {
+    console.log(e);
+    res.code(500).send(e.message);
+  }
+});
+
+app.post("/viewed", async (req, res) => {
+  try {
+    let { update_artworks_by_pk } = await q(updateViews, { id: req.body.id });
     res.send({});
   } catch (e) {
     console.log(e);

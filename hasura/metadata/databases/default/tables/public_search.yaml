@@ -1,18 +1,18 @@
 table:
-  name: search
   schema: public
+  name: search
 select_permissions:
-- permission:
-    columns:
-    - s
-    - type
-    - id
-    filter: {}
-  role: anonymous
-- permission:
-    columns:
-    - id
-    - s
-    - type
-    filter: {}
-  role: user
+  - role: anonymous
+    permission:
+      columns:
+        - s
+        - type
+        - id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - id
+        - s
+        - type
+      filter: {}

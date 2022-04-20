@@ -892,6 +892,7 @@ export const signOver = async ({ asset }, tx) => {
       .get()
       .json();
     let prevout = utxos.find((o) => o.asset === asset);
+
     let hex = await getHex(prevout.txid);
     tx = Transaction.fromHex(hex);
   }
