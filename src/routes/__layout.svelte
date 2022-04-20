@@ -73,7 +73,7 @@
       }
     } catch (e) {
       console.log(e);
-    } 
+    }
   };
 
   if (browser) {
@@ -90,12 +90,12 @@
     $user = $session.user;
     $token = $session.jwt;
 
-    refreshInterval = setInterval(refresh, 60000);
+    refreshInterval = setInterval(refresh, 720000);
     authCheckInterval = setInterval(authCheck, 5000);
 
-    unsubscribeFromSession = session.subscribe(value => {
+    unsubscribeFromSession = session.subscribe((value) => {
       value.user && checkAuthFromLocalStorage(value.user);
-    })
+    });
   }
 
   let open = false;
