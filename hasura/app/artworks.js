@@ -219,13 +219,13 @@ app.post("/transaction", auth, async (req, res) => {
       console.error(err);
     }
 
-    ({ data, errors } = await api(req.headers)
+    let result = await api(req.headers)
       .post({ query: createTransaction, variables: { transaction } })
-      .json());
+      .json();
 
-    if (errors) throw new Error(errors[0].message);
+    if (result.errors) throw new Error(result.errors[0].message);
 
-    res.send(data.insert_transactions_one);
+    res.send(result.data.insert_transactions_one);
   } catch (e) {
     console.log("problem creating transaction", e);
     res.code(500).send(e.message);

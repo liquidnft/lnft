@@ -135,32 +135,10 @@ export const setPsbt = `mutation update_transaction($id: uuid!, $psbt: String!) 
     _set: {
       psbt: $psbt,
       bid_id: $bid_id,
-    }) {
-      id,
-      artwork_id
-    }
-  }`,
-  updateUser: `mutation update_user($user: users_set_input!, $id: uuid!) {
-    update_users_by_pk(pk_columns: { id: $id }, _set: $user) {
-      id
-    }
-  }`,
-  getUser: `query get_user_by_pk($id: uuid!) {
-    users_by_pk(id: $id) {
-      display_name
-      full_name
-      username
-    }
-  }`,
-  getAvatars: `query { users { id, avatar_url }}`,
-  getActiveBids: `query {
-    activebids(where: { type: { _eq: "bid" }}) {
-      id
-      artwork_id
-      psbt
     }
   ) {
-    id
+    id,
+    artwork_id
   }
 }`;
 
@@ -416,24 +394,22 @@ export const getUtxos = `query($address: String!) {
     vout
     asset
     value
-  }`,
-
-export const getTransferTransactionsByPsbt = `
-  query($psbt: String!) {
-    transactions(
-      where: {
-        psbt: {_eq: $psbt}, 
-        type: {_eq: "transfer"}
-      },
-      limit: 1
-    ) {
-      id
-      amount
-      user_id
-    }
   }
-`,
-};
+}`;
+
+export const getTransferTransactionsByPsbt = `query($psbt: String!) {
+  transactions(
+    where: {
+      psbt: {_eq: $psbt}, 
+      type: {_eq: "transfer"}
+    },
+    limit: 1
+  ) {
+    id
+    amount
+    user_id
+  }
+}`;
 
 export const createArtwork = `mutation ($artwork: artworks_insert_input!, $tags: [tags_insert_input!]!, $transaction: transactions_insert_input!) {
   insert_artworks_one(object: $artwork) {
