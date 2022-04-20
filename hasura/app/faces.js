@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   "https://images.generated.photos/69cuWuFIQPKqG-CyBUn3qLOCNq4A748EjpRrv-o8iqU/rs:fit:256:256/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zL3Yz/XzA4OTgyMjIuanBn.jpg",
   "https://images.generated.photos/-qOlZ_Q-3AunB0vZV_mzHFoDjhWKgASeA9ah-4sSC1c/rs:fit:256:256/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zL3Yz/XzA4NDkzNDcuanBn.jpg",
   "https://images.generated.photos/ZuI4qUS0t2LEyfhlfyHap77wjsSHCk9h_omgtJJXYus/rs:fit:256:256/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zL3Yz/XzA1MTQzODMuanBn.jpg",

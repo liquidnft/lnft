@@ -1,5 +1,6 @@
-const proxy = require("fastify-http-proxy");
-const httpProxy = require("http-proxy");
+import proxy from "fastify-http-proxy";
+import httpProxy from "http-proxy";
+import { app } from "./app.js";
 
 const { LIQUID_ELECTRS_URL, HBP_URL, IPFS_WEB_URL, HASURA_URL } = process.env;
 

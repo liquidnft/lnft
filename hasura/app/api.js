@@ -1,5 +1,5 @@
-const wretch = require("wretch");
-const fetch = require("node-fetch");
+import wretch from "wretch";
+import fetch from "node-fetch";
 const w = wretch().polyfills({ fetch });
 const {
   LIQUID_ELECTRS_URL,
@@ -33,16 +33,18 @@ const ddequeue = () => {
   timer = setTimeout(dequeue, DELAY);
 };
 
-const hasura = wretch().url(`${HASURA_URL}/v1/graphql`);
-const api = (h) => hasura.headers(h);
-const adminApi = hasura.headers({ "x-hasura-admin-secret": HASURA_SECRET });
+export const hasura = wretch().url(`${HASURA_URL}/v1/graphql`);
+export const api = (h) => hasura.headers(h);
+export const adminApi = hasura.headers({
+  "x-hasura-admin-secret": HASURA_SECRET,
+});
 
-const electrs = wretch().middlewares([enqueue]).url(LIQUID_ELECTRS_URL);
-const registry = wretch().url("https://assets.blockstream.info/");
-const coinos = wretch().url(COINOS_URL).auth(`Bearer ${COINOS_TOKEN}`);
-const ipfs = wretch().url(IPFS_WEB_URL);
+export const electrs = wretch().middlewares([enqueue]).url(LIQUID_ELECTRS_URL);
+export const registry = wretch().url("https://assets.blockstream.info/");
+export const coinos = wretch().url(COINOS_URL).auth(`Bearer ${COINOS_TOKEN}`);
+export const ipfs = wretch().url(IPFS_WEB_URL);
 
-const q = async (query, variables) => {
+export const q = async (query, variables) => {
   let { data, errors } = await adminApi.post({ query, variables }).json();
   if (errors) {
     for (let index = 0; index < errors.length; index++) {
@@ -53,27 +55,13 @@ const q = async (query, variables) => {
   return data;
 };
 
-const cf = wretch()
+export const cf = wretch()
   .url(
     `https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records`
   )
   .auth(`Bearer ${CLOUDFLARE_TOKEN}`);
 
-const hbp = wretch().url(HBP_URL);
+export const hbp = wretch().url(HBP_URL);
 
 const { APP_URL } = process.env;
-const lnft = wretch().url(APP_URL);
-
-module.exports = {
-  hasura: adminApi,
-  api,
-  electrs,
-  registry,
-  cf,
-  hbp,
-  coinos,
-  ipfs,
-  lnft,
-  q,
-  w,
-};
+export const lnft = wretch().url(APP_URL);

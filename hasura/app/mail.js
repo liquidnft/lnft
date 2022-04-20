@@ -1,16 +1,27 @@
-const Email = require("email-templates");
-const nodemailer = require("nodemailer");
-const { q: query, api } = require("./api");
-const {
+import Email from "email-templates";
+import nodemailer from "nodemailer";
+import { q as query, api } from "./api.js";
+import { app } from "./app.js";
+import { auth } from "./auth.js";
+
+import {
   getUser,
   getArtworkWithBidTransactionByHash,
   getArtworkByPk,
   getCurrentUser,
   getTransferTransactionsByPsbt,
-} = require("./queries");
-const constants = require("./const");
+} from "./queries.js";
 
-const { SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_PORT, SMTP_SENDER, AUTH_EVENT_VALUE } = process.env;
+import constants from "./const.js";
+
+const {
+  SMTP_HOST,
+  SMTP_USER,
+  SMTP_PASS,
+  SMTP_PORT,
+  SMTP_SENDER,
+  AUTH_EVENT_VALUE,
+} = process.env;
 const TRANSACTION_DEPOSIT = "deposit";
 const TRANSACTION_RECEIPT = "receipt";
 const TRANSACTION_WITHDRAWAL = "withdrawal";
@@ -25,7 +36,7 @@ let transport = nodemailer.createTransport({
   },
 });
 
-mail = new Email({
+export const mail = new Email({
   transport,
   message: { from: SMTP_SENDER },
   send: true,
@@ -100,7 +111,10 @@ app.post("/offer-notifications", auth, async (req, res) => {
 
     const { artworks_by_pk: artwork, transactions } = await query(
       getArtworkWithBidTransactionByHash,
-      { id: artworkId, hash: transactionHash }
+      {
+        id: artworkId,
+        hash: transactionHash,
+      }
     );
 
     const transaction = transactions.length ? transactions[0] : null;
@@ -279,7 +293,7 @@ app.post("/mail-artwork-sold", auth, async (req, res) => {
 });
 
 app.post("/mail-event-actions", async (req, res) => {
-  if(!req.headers.auth_event || req.headers.auth_event !== AUTH_EVENT_VALUE){
+  if (!req.headers.auth_event || req.headers.auth_event !== AUTH_EVENT_VALUE) {
     res.status(401).send("Unauthorized!");
   }
   const transaction = req.body.event.data.new;
