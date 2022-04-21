@@ -218,12 +218,12 @@
           <td class="py-4 px-6 text-sm ">
             <div class="flex">
               <div class="pr-1">
-                <Avatar size="xs" user={offer.transaction.user} />
+                <Avatar size="xs" user={offer.transaction.artwork.owner} />
               </div>
               <a
-                href={`/${offer.transaction.user.username}`}
+                href={`/${offer.transaction.artwork.owner.username}`}
                 class="secondary-color py-3"
-                >@{offer.transaction.user.username}</a
+                >@{offer.transaction.artwork.owner.username}</a
               >
             </div>
           </td>
