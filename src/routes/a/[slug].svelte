@@ -31,7 +31,7 @@
     metadata.title = metadata.title + " - " + artwork.title;
     metadata.keywords =
       metadata.keywords + " " + artwork.tags.map((t) => t.tag).join(" ");
-    metadata.description = artwork.description;
+    metadata.description = artwork.description.replace(/(?:\r\n|\r|\n)/g, " ");
 
     let type = "image";
     metadata[type] = `${host}/api/public/${artwork.filename}.png`;

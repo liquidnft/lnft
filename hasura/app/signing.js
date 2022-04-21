@@ -66,8 +66,6 @@ app.post("/sign", auth, async (req, res) => {
 export const check = async (psbt) => {
   const [txid, inputs, outputs] = await parse(psbt);
 
-  console.log("SIGNING");
-
   const multisig = (
     await hasura.post({ query: allMultisig }).json().catch(console.log)
   ).data.users.map((u) => u.multisig);

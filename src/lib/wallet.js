@@ -909,7 +909,7 @@ export const signOver = async ({ asset }, tx) => {
   });
 
   psbt.set(p);
-  sign(noneAnyoneCanPay);
+  await sign(noneAnyoneCanPay);
   return tx;
 };
 

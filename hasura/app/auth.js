@@ -3,6 +3,11 @@ import jwt from "jsonwebtoken";
 const { HASURA_JWT } = process.env;
 import { q, cf, hasura, hbp } from "./api.js";
 import wretch from "wretch";
+import {
+  deleteUserByEmail,
+  getUserByEmail,
+  updateUserByEmail,
+} from "./queries.js";
 
 export let auth = {
   preValidation(req, res, done) {
@@ -23,15 +28,9 @@ export let auth = {
 
 app.post("/login", async (req, res) => {
   let { email, password } = req.body;
-  let query = `query  users($email: String!) {
-    users(where: {_or: [{display_name: {_eq: $email}}, {username: {_eq: $email }}]}, limit: 1) {
-      display_name
-    }
-  }`;
-
   try {
     let user;
-    let { users } = await q(query, { email });
+    let { users } = await q(getUserByEmail, { email });
 
     if (users.length) {
       user = users[0];
@@ -63,41 +62,22 @@ app.post("/register", async (req, res) => {
       .post({ email, password })
       .res();
 
-    let query = `mutation ($user: users_set_input!, $email: String!) {
-      update_users(where: {display_name: {_eq: $email}}, _set: $user) {
-        affected_rows 
-      }
-    }`;
-
-    response = await hasura
-      .post({
-        query,
-        variables: {
-          email,
-          user: {
-            full_name: username,
-            username,
-            address,
-            pubkey,
-            mnemonic,
-            multisig,
-          },
+    try {
+      await q(updateUserByEmail, {
+        email,
+        user: {
+          full_name: username,
+          username,
+          address,
+          pubkey,
+          mnemonic,
+          multisig,
         },
-      })
-      .json();
+      });
+    } catch (e) {
+      await q(deleteUserByEmail, { email });
+      if (e.message.includes("Unique")) throw new Error("Username taken");
 
-    if (response.errors) {
-      console.log(response.errors);
-      let deleteQuery = `mutation { 
-        delete_users(where: { account: { email: { _eq: "${email}" } } }) 
-        { 
-          affected_rows 
-        } 
-      }`;
-
-      await hasura.post({ query: deleteQuery }).json();
-      if (response.errors.find((e) => e.message.includes("Unique")))
-        throw new Error("Username taken");
       throw new Error("There was an error during registration");
     }
 

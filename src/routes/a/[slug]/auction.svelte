@@ -257,6 +257,7 @@
 
       if (artwork.held === "multisig") {
         tx = await signOver(artwork);
+        await tick();
         artwork.auction_tx = $psbt.toBase64();
       } else {
         $psbt = await sendToMultisig(artwork);
@@ -265,6 +266,7 @@
         tx = $psbt.extractTransaction();
 
         tx = await signOver(artwork, tx);
+        await tick();
         artwork.auction_tx = $psbt.toBase64();
 
         artwork.auction_release_tx = (

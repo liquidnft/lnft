@@ -33,6 +33,16 @@ export const cancelBid = `mutation ($id: uuid!) {
   }
 }`;
 
+export const cancelBids = `mutation ($artwork_id: uuid!, $start: timestamptz!, $end: timestamptz!) {
+  update_transactions(where: { artwork_id: { _eq: $artwork_id }, created_at: { _gte: $start, _lte: $end }},
+    _set: {
+      type: "cancelled_bid"
+    }
+  ) {
+    affected_rows
+  }
+}`;
+
 export const createUtxo = `mutation create_utxo($utxo: utxos_insert_input!) {
   insert_utxos_one(object: $utxo) {
     id
@@ -416,7 +426,7 @@ export const getTransferTransactionsByPsbt = `query($psbt: String!) {
   }
 }`;
 
-export const createArtwork = `mutation ($artwork: artworks_insert_input!, $tags: [tags_insert_input!]!, $transaction: transactions_insert_input!) {
+export const createArtwork = `mutation($artwork: artworks_insert_input!, $tags: [tags_insert_input!]!, $transaction: transactions_insert_input!) {
   insert_artworks_one(object: $artwork) {
     id
   }
@@ -428,8 +438,103 @@ export const createArtwork = `mutation ($artwork: artworks_insert_input!, $tags:
   } 
 }`;
 
-export const createComment = `mutation ($comment: comments_insert_input!) {
+export const createComment = `mutation($comment: comments_insert_input!) {
   insert_comments_one(object: $comment) {
     id
   }
+}`;
+
+export const getUserByEmail = `query($email: String!) {
+  users(where: {_or: [{display_name: {_eq: $email}}, {username: {_eq: $email }}]}, limit: 1) {
+    display_name
+  }
+}`;
+
+export const updateUserByEmail = `mutation($user: users_set_input!, $email: String!) {
+  update_users(where: {display_name: {_eq: $email}}, _set: $user) {
+    affected_rows 
+  }
+}`;
+
+export const deleteUserByEmail = `mutation($email: String!) { 
+  delete_users(where: { account: { email: { _eq: $email } } }) 
+  { 
+    affected_rows 
+  } 
+}`;
+
+export const closeAuction = `mutation update_artwork($id: uuid!, $artwork: artworks_set_input!) {
+  update_artworks_by_pk(
+    pk_columns: { id: $id }, 
+    _set: $artwork
+  ) {
+    id
+  }
+}`;
+
+export const releaseToken = `mutation update_artwork($id: uuid!, $owner_id: uuid!, $amount: Int!, $psbt: String!, $asset: String!, $hash: String!, $bid_id: uuid, $type: String!) {
+  update_artworks_by_pk(
+    pk_columns: { id: $id }, 
+    _set: { 
+      owner_id: $owner_id,
+      auction_release_tx: null,
+      auction_tx: null,
+      reserve_price: null,
+    }
+  ) {
+    id
+  }
+  insert_transactions_one(object: {
+    artwork_id: $id,
+    asset: $asset,
+    type: $type,
+    amount: $amount,
+    hash: $hash,
+    psbt: $psbt,
+    bid_id: $bid_id,
+    user_id: $owner_id,
+  }) {
+    id,
+    artwork_id
+  } 
+}`;
+
+export const getFinishedAuctions = `query($now: timestamptz!) {
+  artworks(where: { _and: [
+      { auction_end: { _lte: $now }}, 
+      { auction_tx: { _is_null: false }}
+    ]}) {
+    id
+    title
+    slug
+    filename
+    filetype
+    reserve_price
+    asking_asset
+    has_royalty
+    auction_end
+    transferred_at
+    list_price_tx
+    auction_tx
+    auction_release_tx
+    artist {
+      id
+      username
+      avatar_url
+    } 
+    owner {
+      id
+      username
+      avatar_url
+    } 
+    bid {
+      id
+      amount
+      psbt
+      user {
+        id
+        username
+      } 
+    } 
+  } 
 }`;

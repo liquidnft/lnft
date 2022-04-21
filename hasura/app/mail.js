@@ -1,5 +1,6 @@
 import Email from "email-templates";
 import nodemailer from "nodemailer";
+import path from "path";
 import { q as query, api } from "./api.js";
 import { app } from "./app.js";
 import { auth } from "./auth.js";
@@ -41,7 +42,7 @@ export const mail = new Email({
   message: { from: SMTP_SENDER },
   send: true,
   views: {
-    // root: path.resolve(process.env.PWD || ".", "../custom/emails"),
+    root: path.resolve(process.env.PWD || ".", "emails"),
     options: {
       extension: "ejs",
     },
