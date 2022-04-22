@@ -302,20 +302,29 @@ const issue = async (
   issuances[issuance] = { length: transactions.length, i: 0 };
   let tries = 0;
   let i = 0;
+  let contract, psbt;
 
-  while (i < transactions.length && tries < 40) {
-    let slug;
+  let tags = artwork.tags.map(({ tag }) => ({
+    tag,
+    artwork_id: artwork.id,
+  }));
+
+  delete artwork.tags;
+
+  let { id } = await getUser({ headers });
+  artwork.artist_id = id;
+  artwork.owner_id = id;
+
+  while (i < transactions.length && tries < 60) {
     try {
       artwork.id = ids[i];
       artwork.edition = i + 1;
       artwork.slug = kebab(artwork.title || "untitled");
 
       if (i > 0) artwork.slug += "-" + i + 1;
-
       artwork.slug += "-" + artwork.id.substr(0, 5);
-      if (i === 0) slug = artwork.slug;
 
-      let { contract, psbt } = transactions[i];
+      ({ contract, psbt } = transactions[i]);
       let p = Psbt.fromBase64(psbt);
       await broadcast(p);
       let tx = p.extractTransaction();
@@ -325,62 +334,28 @@ const issue = async (
         tx.outs.find((o) => parseAsset(o.asset) !== btc).asset
       );
 
-      let tags = artwork.tags.map(({ tag }) => ({
-        tag,
-        artwork_id: artwork.id,
-      }));
-
-      let {
-        id,
-        asset,
-        title,
-        description,
-        edition,
-        editions,
-        filename,
-        filetype,
-        is_physical,
-      } = artwork;
-
-      let variables = {
-        artwork: {
-          id,
-          title,
-          description,
-          asset,
-          slug,
-          edition,
-          editions,
-          filename,
-          filetype,
-          is_physical,
-        },
+      await q(createArtwork, {
+        artwork,
         transaction: {
-          artwork_id: id,
+          artwork_id: artwork.id,
+          user_id: artwork.artist_id,
           type: "creation",
           hash,
           contract,
-          asset,
+          asset: artwork.asset,
           amount: 1,
           psbt: p.toBase64(),
         },
         tags,
-      };
-
-      let result = await api(headers)
-        .post({ query: createArtwork, variables })
-        .json();
-
-      if (result.errors) {
-        console.log(variables);
-        throw new Error(errors[0].message);
-      }
+      });
 
       tries = 0;
       issuances[issuance].i = ++i;
       issuances[issuance].asset = artwork.asset;
+
+      console.log("issued", artwork.slug);
     } catch (e) {
-      console.log("failed issuance", e);
+      console.log("failed issuance", e, psbt);
       await sleep(5000);
       tries++;
     }
@@ -400,6 +375,7 @@ const issue = async (
 };
 
 app.post("/issue", auth, async (req, res) => {
+  let tries = 0;
   try {
     let { artwork, transactions } = req.body;
     let issuance = v4();
@@ -409,13 +385,10 @@ app.post("/issue", auth, async (req, res) => {
     let { address } = await getUser(req);
 
     await wait(async () => {
-      try {
-        if (!issuances[issuance]) return;
-        let utxos = await lnft.url(`/address/${address}/utxo`).get().json();
-        return utxos.find((tx) => tx.asset === issuances[issuance].asset);
-      } catch (e) {
-        console.log("failed to get utxos", e);
-      }
+      if (++tries > 40) throw new Error("Issuance timed out");
+      if (!(issuances[issuance].i > 0)) return false;
+      let utxos = await lnft.url(`/address/${address}/utxo`).get().json();
+      return utxos.find((tx) => tx.asset === issuances[issuance].asset);
     });
 
     res.send({ id: ids[0], asset: issuances[issuance].asset, issuance, slug });

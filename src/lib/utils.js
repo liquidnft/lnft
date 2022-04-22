@@ -20,6 +20,8 @@ const cad = import.meta.env.VITE_CAD;
 const usd = import.meta.env.VITE_USD;
 const host = import.meta.env.VITE_HOST;
 
+const sleep = (n) => new Promise((r) => setTimeout(r, n));
+
 const fade = (n, o) => svelteFade(n, { ...o, duration: 50 });
 
 const publicPages = [
@@ -342,6 +344,7 @@ export {
   pick,
   post,
   sats,
+  sleep,
   kebab,
   ticker,
   tickers,

@@ -7,6 +7,7 @@ const sleep = (n) => new Promise((r) => setTimeout(r, n));
 import { btc, network } from "./wallet.js";
 import { app } from "./app.js";
 import { auth } from "./auth.js";
+import { wait } from "./utils.js";
 
 import {
   cancelBid,
@@ -270,12 +271,17 @@ let getTxns = async (address, latest) => {
     txns.push(...curr);
   }
 
-  let index = txns.reduce((a, b, i) => (latest.includes(b.txid) ? a : i), 0);
-  ++index >= 0 && txns.splice(index);
+  let index = txns.reduce((a, b, i) => (latest.includes(b.txid) ? a : i), -1);
+  if (index < 0) return [];
+  txns.splice(index + 1);
   return txns;
 };
 
+let updating = {};
 let updateTransactions = async (address, user_id) => {
+  await wait(() => !updating[address]);
+  updating[address] = true;
+
   let { transactions } = await q(getLastTransactionsForAddress, { address });
   let txns = (
     await getTxns(
@@ -355,14 +361,17 @@ let updateTransactions = async (address, user_id) => {
         let {
           insert_transactions_one: { id },
         } = await q(createTransaction, { transaction });
+        console.log("inserting transaction", type, txid);
         transactions.push(transaction);
       } catch (e) {
-        // console.log(e);
+        console.log(e, type, txid, asset, user_id);
         continue;
       }
     }
   }
 
+  if (txns.length) console.log("done updating", address);
+  delete updating[address];
   return txns;
 };
 

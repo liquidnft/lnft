@@ -292,7 +292,6 @@ export const getLastTransactionsForAddress = `query($address: String!) {
       address: {_eq: $address}, 
       type: {_in: ["deposit", "withdrawal"]}
     },
-    limit: 50,
     order_by: [{ sequence: desc }]
   ) {
     hash
