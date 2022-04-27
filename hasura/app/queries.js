@@ -387,6 +387,7 @@ export const getArtwork = `query($id: uuid!) {
       address
       multisig
     } 
+    owner_id
     asset
     title
     slug

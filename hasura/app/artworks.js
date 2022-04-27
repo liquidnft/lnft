@@ -422,29 +422,24 @@ app.post("/comment", auth, async (req, res) => {
         artwork_id,
         asset: btc,
         hash: Psbt.fromBase64(psbt).extractTransaction().getId(),
+        user_id: user.id,
         psbt,
         type: "comment",
       };
 
-      let { data, errors } = await api(req.headers)
-        .post({ query: createTransaction, variables: { transaction } })
-        .json();
-
-      if (errors) throw new Error(errors[0].message);
+      await q(createTransaction, { transaction });
     }
 
     let comment = {
       artwork_id,
+      user_id: user.id,
       comment: commentBody,
     };
 
-    ({ data, errors } = await api(req.headers)
-      .post({ query: createComment, variables: { comment } })
-      .json());
+    let r = await q(createComment, { comment });
+    console.log("R", r);
 
-    if (errors) throw new Error(errors[0].message);
-
-    res.send(data);
+    res.send({ ok: true });
   } catch (e) {
     console.log(e);
     res.code(500).send(e.message);
