@@ -313,11 +313,16 @@ let updateTransactions = async (address, user_id) => {
     for (let j = 0; j < vin.length; j++) {
       let { txid: prev, vout } = vin[j];
 
-      let tx = txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
-      txcache[prev] = tx;
+      try {
+        let tx =
+          txcache[prev] || (await electrs.url(`/tx/${prev}`).get().json());
+        txcache[prev] = tx;
 
-      let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
-      if (address === a) total[asset] = (total[asset] || 0) - parseInt(value);
+        let { asset, value, scriptpubkey_address: a } = tx.vout[vout];
+        if (address === a) total[asset] = (total[asset] || 0) - parseInt(value);
+      } catch (e) {
+        console.log("problem finding input", prev, e);
+      }
     }
 
     for (let k = 0; k < vout.length; k++) {
