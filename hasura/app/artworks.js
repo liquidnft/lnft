@@ -320,6 +320,7 @@ const issue = async (
       artwork.id = ids[i];
       artwork.edition = i + 1;
       artwork.slug = kebab(artwork.title || "untitled");
+      tags.map((tag) => (tag.artwork_id = ids[i]));
 
       if (i > 0) artwork.slug += "-" + i + 1;
       artwork.slug += "-" + artwork.id.substr(0, 5);
