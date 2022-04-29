@@ -331,7 +331,7 @@ const issue = async (
       try {
         await broadcast(p);
       } catch (e) {
-        if (!e.message.includes("Already")) throw e;
+        if (!e.message.includes("already")) throw e;
       }
 
       let tx = p.extractTransaction();
