@@ -38,7 +38,7 @@
     try {
       if ($asset !== btc && !artwork) artwork = { asset: $asset };
       $psbt = await pay(artwork, to.trim(), sats($asset, amount));
-      await sign();
+      $psbt = await sign();
 
       if (artwork && (artwork.auction_end || artwork.has_royalty)) {
         $psbt = await requestSignature($psbt);
