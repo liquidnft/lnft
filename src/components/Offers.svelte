@@ -106,7 +106,7 @@
         <tr>
           <td class="py-4 pr-6 text-sm ">
             <div class="flex flex-wrap justify-center items-center">
-              <div class="w-16 rounded-md">
+              <div class="w-16 rounded-md mr-1">
                 <ArtworkMedia
                   artwork={offer.transaction.artwork}
                   classes="rounded-md"
@@ -194,7 +194,7 @@
         <tr>
           <td class="py-4 pr-6 text-sm ">
             <div class="flex flex-wrap justify-center items-center">
-              <div class="w-16 rounded-md">
+              <div class="w-16 rounded-md mr-1">
                 <ArtworkMedia
                   artwork={offer.transaction.artwork}
                   classes="rounded-md"
