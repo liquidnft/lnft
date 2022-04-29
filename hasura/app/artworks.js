@@ -326,7 +326,13 @@ const issue = async (
 
       ({ contract, psbt } = transactions[i]);
       let p = Psbt.fromBase64(psbt);
-      await broadcast(p);
+
+      try {
+        await broadcast(p);
+      } catch (e) {
+        if (!e.message.includes("Already")) throw e;
+      }
+
       let tx = p.extractTransaction();
       let hash = tx.getId();
       contract = JSON.stringify(contract);
@@ -355,7 +361,7 @@ const issue = async (
 
       console.log("issued", artwork.slug);
     } catch (e) {
-      console.log("failed issuance", e, psbt);
+      console.log("failed issuance", e, artwork, psbt);
       await sleep(5000);
       tries++;
     }
