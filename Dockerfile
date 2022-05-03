@@ -5,6 +5,7 @@ ENV NODE_ENV $NODE_ENV
 
 WORKDIR /app
 COPY . .
+RUN pnpm i
 RUN pnpm build
 
 CMD ["node", "build"]
