@@ -1,9 +1,10 @@
 FROM node:17-alpine
 
-RUN apk add git python3 build-base
+RUN apk add git python3 build-base sed
 RUN npm i -g pnpm
 
 COPY package.json .
+RUN sed -i '/cypress/d' package.json
 RUN NODE_ENV=development pnpm i
 
 COPY . .
