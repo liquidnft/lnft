@@ -7,6 +7,3 @@ WORKDIR /app
 COPY package.json .
 RUN sed -i '/cypress/d' package.json
 RUN NODE_ENV=development pnpm i
-
-COPY . .
-RUN NODE_ENV=development pnpm i
