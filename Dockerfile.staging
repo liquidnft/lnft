@@ -3,6 +3,7 @@ FROM gcr.io/coinos-326717/github.com/tokenocean/raretoshi:base
 ENV NODE_ENV staging
 
 WORKDIR /app
+COPY . .
 RUN pnpm build
 
 CMD ["node", "build"]
