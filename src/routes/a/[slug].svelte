@@ -91,6 +91,7 @@
     sign,
     broadcast,
     releaseToSelf,
+    ACCEPTED,
   } from "$lib/wallet";
   import { Psbt } from "liquidjs-lib";
   import { query } from "$lib/api";
@@ -264,10 +265,11 @@
 
   let handleDelete = async () => {
     try {
-      await confirm();
-      await query(deleteArtwork, { id: artwork.id });
-      info("Artwork deleted");
-      goto("/market");
+      if ((await confirm()) === ACCEPTED) {
+        await query(deleteArtwork, { id: artwork.id });
+        info("Artwork deleted");
+        goto("/market");
+      }
     } catch (e) {
       err(e);
     }

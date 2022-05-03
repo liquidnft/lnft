@@ -1,13 +1,13 @@
 table:
-  schema: public
   name: tags
+  schema: public
 object_relationships:
   - name: artwork
     using:
       foreign_key_constraint_on: artwork_id
 insert_permissions:
-  - role: user
-    permission:
+  - permission:
+      backend_only: false
       check:
         artwork:
           owner_id:
@@ -15,23 +15,23 @@ insert_permissions:
       columns:
         - tag
         - artwork_id
-      backend_only: false
+    role: user
 select_permissions:
-  - role: anonymous
-    permission:
+  - permission:
       columns:
         - tag
         - artwork_id
       filter: {}
-  - role: user
-    permission:
+    role: anonymous
+  - permission:
       columns:
         - artwork_id
         - tag
       filter: {}
+    role: user
 update_permissions:
-  - role: user
-    permission:
+  - permission:
+      check: null
       columns:
         - tag
         - artwork_id
@@ -39,11 +39,11 @@ update_permissions:
         artwork:
           owner_id:
             _eq: X-Hasura-User-Id
-      check: null
+    role: user
 delete_permissions:
-  - role: user
-    permission:
+  - permission:
       filter:
         artwork:
           owner_id:
             _eq: X-Hasura-User-Id
+    role: user

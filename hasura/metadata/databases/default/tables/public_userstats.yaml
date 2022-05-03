@@ -1,9 +1,8 @@
 table:
-  schema: public
   name: userstats
+  schema: public
 select_permissions:
-  - role: user
-    permission:
+  - permission:
       columns:
         - users
         - artworks
@@ -11,3 +10,4 @@ select_permissions:
         - user_created
         - artwork_created
       filter: {}
+    role: user

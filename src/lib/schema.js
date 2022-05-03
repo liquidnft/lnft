@@ -4846,8 +4846,34 @@ export default {
             ],
           },
           {
+            name: "delete_comments",
+            type: { kind: "OBJECT", name: "comments_mutation_response" },
+            args: [
+              {
+                name: "where",
+                type: {
+                  kind: "NON_NULL",
+                  ofType: { kind: "SCALAR", name: "Any" },
+                },
+              },
+            ],
+          },
+          {
             name: "delete_artworks_by_pk",
             type: { kind: "OBJECT", name: "artworks" },
+            args: [
+              {
+                name: "id",
+                type: {
+                  kind: "NON_NULL",
+                  ofType: { kind: "SCALAR", name: "Any" },
+                },
+              },
+            ],
+          },
+          {
+            name: "delete_comments_by_pk",
+            type: { kind: "OBJECT", name: "comments" },
             args: [
               {
                 name: "id",

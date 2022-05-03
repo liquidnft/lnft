@@ -1,6 +1,6 @@
 table:
-  schema: auth
   name: account_providers
+  schema: auth
 object_relationships:
   - name: account
     using:

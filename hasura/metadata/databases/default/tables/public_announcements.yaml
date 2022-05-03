@@ -1,9 +1,9 @@
 table:
-  schema: public
   name: announcements
+  schema: public
 select_permissions:
-  - role: anonymous
-    permission:
+  - permission:
+      allow_aggregations: true
       columns:
         - dismissible
         - text
@@ -14,9 +14,9 @@ select_permissions:
         - visible_start
         - id
       filter: {}
+    role: anonymous
+  - permission:
       allow_aggregations: true
-  - role: approver
-    permission:
       columns:
         - dismissible
         - text
@@ -27,9 +27,9 @@ select_permissions:
         - visible_start
         - id
       filter: {}
+    role: approver
+  - permission:
       allow_aggregations: true
-  - role: user
-    permission:
       columns:
         - id
         - type
@@ -40,4 +40,4 @@ select_permissions:
         - visible_start
         - visible_end
       filter: {}
-      allow_aggregations: true
+    role: user

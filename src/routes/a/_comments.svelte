@@ -9,10 +9,10 @@
   import { requirePassword } from "$lib/auth";
   import { psbt, user, token } from "$lib/store";
   import { api, query } from "$lib/api";
-  import { createComment } from "$queries/artworks";
-  import { btc, err } from "$lib/utils";
-  import { broadcast, sign, pay } from "$lib/wallet";
- import { session } from "$app/stores";
+  import { createComment, deleteComment } from "$queries/artworks";
+  import { btc, err, confirm, info } from "$lib/utils";
+  import { broadcast, sign, pay, ACCEPTED } from "$lib/wallet";
+  import { session } from "$app/stores";
 
   export let artwork;
   export let refreshArtwork;
@@ -50,6 +50,21 @@
     comment = "";
     loading = false;
   };
+
+  let handleDelete = async (commentId) => {
+    try {
+      if ((await confirm()) === ACCEPTED) {
+        await query(deleteComment, { id: commentId });
+        info("Comment deleted");
+        const findComment = (comment) => comment.id === commentId;
+        let index = artwork.comments.findIndex(findComment);
+        artwork.comments.splice(index, 1);
+        artwork.comments = artwork.comments;
+      }
+    } catch (e) {
+      err(e);
+    }
+  };
 </script>
 
 <div class="border rounded-lg mt-12 p-4">
@@ -85,6 +100,12 @@
             {formatDistanceStrict(new Date(comment.created_at), new Date())}
             ago
           </div>
+          {#if $session.user.id === comment.user.id || $session.user.id === artwork.owner_id || $session.user.is_admin}
+            <button
+              class="text-red-500 text-xs hover:text-red-700"
+              on:click={() => handleDelete(comment.id)}>Delete</button
+            >
+          {/if}
         </div>
       </div>
     {/each}
@@ -98,23 +119,23 @@
           class="w-full mt-8 border rounded"
           bind:value={comment}
         />
-{#if $session.user && $session.user.id !== artwork.owner_id || !$session.user}
-        <div class="relative pt-1">
-          <label for="customRange1" class="form-label"
-            >Artist Donation (min. 1000 sats)<br />
-            Amount: <b>{amount} sats</b>
-          </label>
-          <input
-            type="range"
-            class="form-range w-full"
-            id="customRange1"
-            min="1000"
-            step="100"
-            max="100000"
-            on:input={(e) => (amount = e.target.value)}
-          />
-        </div>
-{/if}
+        {#if ($session.user && $session.user.id !== artwork.owner_id) || !$session.user}
+          <div class="relative pt-1">
+            <label for="customRange1" class="form-label"
+              >Artist Donation (min. 1000 sats)<br />
+              Amount: <b>{amount} sats</b>
+            </label>
+            <input
+              type="range"
+              class="form-range w-full"
+              id="customRange1"
+              min="1000"
+              step="100"
+              max="100000"
+              on:input={(e) => (amount = e.target.value)}
+            />
+          </div>
+        {/if}
         <button type="submit" class="primary-btn ml-auto">Add comment</button>
       </form>
     {/if}

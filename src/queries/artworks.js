@@ -186,9 +186,11 @@ export const getArtworkBySlug = `query($slug: String!) {
     comments {
       created_at
       comment
+      id
       user {
         username
         avatar_url
+        id
       }
     }
     transactions(where: { type: { _neq: "royalty" }}, order_by: { created_at: desc }) {
@@ -231,6 +233,12 @@ export const deleteArtwork = `mutation delete_artwork($id: uuid!) {
   }
 }`;
 
+export const deleteComment = `mutation delete_comment($id: uuid!) {
+  delete_comments_by_pk(id: $id) {
+    id
+  }
+}`;
+
 export const updateArtworkWithRoyaltyRecipients = `mutation update_artwork_with_royalty_recipients($artwork: artworks_set_input!, $id: uuid!, $royaltyRecipients: [royalty_recipients_insert_input!]!) {
   update_artworks_by_pk(pk_columns: { id: $id }, _set: $artwork) {
     id
@@ -258,9 +266,11 @@ export const getArtwork = `query($id: uuid!) {
     comments {
       created_at
       comment
+      id
       user {
         username
         avatar_url
+        id
       }
     }
     tags {

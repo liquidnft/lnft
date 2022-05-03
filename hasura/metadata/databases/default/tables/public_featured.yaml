@@ -1,13 +1,12 @@
 table:
-  schema: public
   name: featured
+  schema: public
 object_relationships:
   - name: artwork
     using:
       foreign_key_constraint_on: artwork_id
 select_permissions:
-  - role: anonymous
-    permission:
+  - permission:
       columns:
         - id
         - white
@@ -15,8 +14,8 @@ select_permissions:
         - end_date
         - artwork_id
       filter: {}
-  - role: user
-    permission:
+    role: anonymous
+  - permission:
       columns:
         - white
         - end_date
@@ -24,3 +23,4 @@ select_permissions:
         - artwork_id
         - id
       filter: {}
+    role: user

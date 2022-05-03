@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: favorites
+  schema: public
 object_relationships:
   - name: artwork
     using:
@@ -9,35 +9,35 @@ object_relationships:
     using:
       foreign_key_constraint_on: user_id
 insert_permissions:
-  - role: user
-    permission:
+  - permission:
+      backend_only: false
       check:
         user_id:
           _eq: X-Hasura-User-Id
+      columns:
+        - artwork_id
+        - user_id
       set:
         user_id: x-hasura-User-Id
-      columns:
-        - artwork_id
-        - user_id
-      backend_only: false
+    role: user
 select_permissions:
-  - role: anonymous
-    permission:
+  - permission:
+      allow_aggregations: true
       columns:
         - user_id
         - artwork_id
       filter: {}
+    role: anonymous
+  - permission:
       allow_aggregations: true
-  - role: user
-    permission:
       columns:
         - user_id
         - artwork_id
       filter: {}
-      allow_aggregations: true
+    role: user
 delete_permissions:
-  - role: user
-    permission:
+  - permission:
       filter:
         user_id:
           _eq: X-Hasura-User-Id
+    role: user

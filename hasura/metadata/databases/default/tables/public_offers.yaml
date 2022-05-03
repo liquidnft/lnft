@@ -1,36 +1,35 @@
 table:
-  schema: public
   name: offers
+  schema: public
 object_relationships:
   - name: artwork
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: artworks
-        insertion_order: null
         column_mapping:
           artwork_id: id
+        insertion_order: null
+        remote_table:
+          name: artworks
+          schema: public
   - name: transaction
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: transactions
-        insertion_order: null
         column_mapping:
           id: id
+        insertion_order: null
+        remote_table:
+          name: transactions
+          schema: public
 select_permissions:
-  - role: anonymous
-    permission:
+  - permission:
       columns:
         - amount
         - artwork_id
         - id
         - psbt
       filter: {}
-  - role: user
-    permission:
+    role: anonymous
+  - permission:
       columns:
         - amount
         - artwork_id
@@ -40,3 +39,4 @@ select_permissions:
         artwork:
           owner_id:
             _eq: X-Hasura-User-Id
+    role: user
