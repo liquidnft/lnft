@@ -13,6 +13,7 @@
 
 <script>
   import { session } from "$app/stores";
+  import { artworksLimit } from "$lib/store";
   import Fa from "svelte-fa";
   import {
     faEnvelope,
@@ -25,6 +26,7 @@
   import { err, goto } from "$lib/utils";
   import { Avatar, Card, Offers, ProgressLinear } from "$comp";
   import { createFollow, deleteFollow } from "$queries/follows";
+  import { getUserByUsername } from "$queries/users";
   import Menu from "./_menu.svelte";
   import { query } from "$lib/api";
 
@@ -36,6 +38,18 @@
   const pageChange = ({ params }) => {
     if (params.id) ({ id } = params);
     else ({ id } = subject);
+  };
+
+  let refreshUser = async () => {
+    try {
+      let { users } = await query(getUserByUsername, {
+        username: subject.username,
+        artworksLimit: $artworksLimit,
+      });
+      subject = users[0];
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   let follow = () => {
@@ -184,6 +198,15 @@
               {:else}
                 <div class="mx-auto">No creations yet</div>
               {/each}
+              {#if $artworksLimit !== undefined && subject.creations.length}
+                <button
+                  class="primary-btn w-full"
+                  on:click={() => {
+                    $artworksLimit = undefined;
+                    refreshUser();
+                  }}>Show all</button
+                >
+              {/if}
             </div>
           </div>
         {:else if tab === "collection"}
@@ -196,6 +219,15 @@
               {:else}
                 <div class="mx-auto">Nothing collected yet</div>
               {/each}
+              {#if $artworksLimit !== undefined && subject.holdings.length}
+                <button
+                  class="primary-btn w-full"
+                  on:click={() => {
+                    $artworksLimit = undefined;
+                    refreshUser();
+                  }}>Show all</button
+                >
+              {/if}
             </div>
           </div>
         {:else if tab === "offers"}
