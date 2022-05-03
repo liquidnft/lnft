@@ -66,8 +66,6 @@ app.post("/updateAvatars", async (req, res) => {
   }
 });
 
-const transferOwnership = async (transaction) => {};
-
 const isSpent = async ({ ins }, artwork_id) => {
   try {
     let { transactions } = await q(getLastTransaction, { artwork_id });

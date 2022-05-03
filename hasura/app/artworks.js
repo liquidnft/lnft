@@ -444,7 +444,6 @@ app.post("/comment", auth, async (req, res) => {
     };
 
     let r = await q(createComment, { comment });
-    console.log("R", r);
 
     res.send({ ok: true });
   } catch (e) {
