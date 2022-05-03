@@ -5,7 +5,7 @@ import postcss from "postcss-preset-env";
 import nesting from "postcss-nesting";
 import path from "path";
 import node from "@sveltejs/adapter-node";
-import shim from "./streamShim.js";
+import shim from "@asoltys/vite-plugin-stream-shim";
 
 export default {
   kit: {
