@@ -5,7 +5,7 @@ import postcss from "postcss-preset-env";
 import nesting from "postcss-nesting";
 import path from "path";
 import node from "@sveltejs/adapter-node";
-import shim from "vite-plugin-shim-react-pdf";
+import shim from "./streamShim.js";
 
 export default {
   kit: {
