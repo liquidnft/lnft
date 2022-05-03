@@ -109,7 +109,7 @@
     {#if loading}
       <ProgressLinear />
     {:else}
-      {#if $commentsLimit !== undefined}
+      {#if $commentsLimit !== undefined && artwork.comments.length}
         <button
           class="primary-btn w-full"
           on:click={() => {
