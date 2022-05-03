@@ -16,7 +16,7 @@ export async function get({ request: { headers }, locals, params }) {
     if (validate(slug)) {
       ({ artworks_by_pk: artwork } = await q(getArtwork, { id: slug }));
     } else {
-      let { artworks } = await q(getArtworkBySlug, { slug });
+      let { artworks } = await q(getArtworkBySlug, { slug, limit: 10 });
       artwork = artworks[0];
     }
 

@@ -180,10 +180,11 @@ export const getArtworkByAsset = (asset) => `query {
   }
 }`;
 
-export const getArtworkBySlug = `query($slug: String!) {
+export const getArtworkBySlug = `query($slug: String!, $limit: Int) {
   artworks(where: {slug : {_eq: $slug}}, limit: 1) {
     ${fields}
-    comments {
+    comments_aggregate{aggregate{count}}
+    comments(limit: $limit, order_by: {created_at: desc}) {
       created_at
       comment
       id

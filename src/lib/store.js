@@ -6,6 +6,7 @@ export const artworks = writable([]);
 export const asset = writable();
 export const assets = writable([]);
 export const balances = writable({});
+export const commentsLimit = writable(10);
 export const edition = writable();
 export const error = writable();
 export const fee = writable(100);

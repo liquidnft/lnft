@@ -57,7 +57,7 @@
     faChevronUp,
     faTimes,
   } from "@fortawesome/free-solid-svg-icons";
-  import { getArtwork, deleteArtwork } from "$queries/artworks";
+  import { getArtworkBySlug, deleteArtwork } from "$queries/artworks";
   import { faHeart, faImage } from "@fortawesome/free-regular-svg-icons";
   import { page } from "$app/stores";
   import { compareAsc, format, parseISO } from "date-fns";
@@ -71,7 +71,7 @@
   } from "$comp";
   import Sidebar from "./_sidebar.svelte";
   import { tick, onDestroy } from "svelte";
-  import { art, meta, prompt, password, psbt } from "$lib/store";
+  import { art, meta, prompt, password, psbt, commentsLimit } from "$lib/store";
   import countdown from "$lib/countdown";
   import {
     confirm,
@@ -117,9 +117,11 @@
 
   let refreshArtwork = async () => {
     try {
-      ({ artworks_by_pk: artwork } = await query(getArtwork, {
-        id: artwork.id,
-      }));
+      let { artworks } = await query(getArtworkBySlug, {
+        slug: artwork.slug,
+        limit: $commentsLimit,
+      });
+      artwork = artworks[0];
       artwork.views = views;
     } catch (e) {
       console.log(e);

@@ -7,7 +7,7 @@
     faChevronRight,
   } from "@fortawesome/free-solid-svg-icons";
   import { requirePassword } from "$lib/auth";
-  import { psbt, user, token } from "$lib/store";
+  import { psbt, user, token, commentsLimit } from "$lib/store";
   import { api, query } from "$lib/api";
   import { createComment, deleteComment } from "$queries/artworks";
   import { btc, err, confirm, info } from "$lib/utils";
@@ -56,10 +56,7 @@
       if ((await confirm()) === ACCEPTED) {
         await query(deleteComment, { id: commentId });
         info("Comment deleted");
-        const findComment = (comment) => comment.id === commentId;
-        let index = artwork.comments.findIndex(findComment);
-        artwork.comments.splice(index, 1);
-        artwork.comments = artwork.comments;
+        await refreshArtwork();
       }
     } catch (e) {
       err(e);
@@ -112,6 +109,16 @@
     {#if loading}
       <ProgressLinear />
     {:else}
+      {#if $commentsLimit !== undefined}
+        <button
+          class="primary-btn w-full"
+          on:click={() => {
+            $commentsLimit = undefined;
+
+            refreshArtwork();
+          }}>Show all</button
+        >
+      {/if}
       <form on:submit|preventDefault={submit}>
         <textarea
           name="name"
