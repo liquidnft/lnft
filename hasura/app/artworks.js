@@ -224,31 +224,6 @@ app.post("/transaction", auth, async (req, res) => {
       url: `${SERVER_URL}/a/${slug}`,
     };
 
-    try {
-      await mail.send({
-        template: "notify-bid",
-        locals,
-        message: {
-          to: owner.display_name,
-        },
-      });
-
-      if (bid && bid.user) {
-        locals.outbid = true;
-
-        await mail.send({
-          template: "notify-bid",
-          locals,
-          message: {
-            to: bid.user.display_name,
-          },
-        });
-      }
-    } catch (err) {
-      console.error("Unable to send email");
-      console.error(err);
-    }
-
     let result = await api(req.headers)
       .post({ query: createTransaction, variables: { transaction } })
       .json();
