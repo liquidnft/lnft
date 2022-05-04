@@ -45,8 +45,6 @@
       : recipient.address
     : "";
 
-  console.log($addresses);
-
   let loading;
 
   let send = async (e) => {
