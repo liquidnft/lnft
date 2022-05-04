@@ -1,8 +1,9 @@
 table:
-  name: artists
   schema: public
+  name: artists
 select_permissions:
-  - permission:
+  - role: anonymous
+    permission:
       columns:
         - id
         - username
@@ -13,8 +14,8 @@ select_permissions:
         - highest_sale
         - total_sales
       filter: {}
-    role: anonymous
-  - permission:
+  - role: user
+    permission:
       columns:
         - creations
         - sold
@@ -25,4 +26,3 @@ select_permissions:
         - username
         - id
       filter: {}
-    role: user

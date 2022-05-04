@@ -1,8 +1,9 @@
 table:
-  name: collectors
   schema: public
+  name: collectors
 select_permissions:
-  - permission:
+  - role: anonymous
+    permission:
       columns:
         - id
         - username
@@ -14,8 +15,8 @@ select_permissions:
         - total_price
         - address
       filter: {}
-    role: anonymous
-  - permission:
+  - role: user
+    permission:
       columns:
         - collected
         - owned
@@ -27,4 +28,3 @@ select_permissions:
         - username
         - id
       filter: {}
-    role: user

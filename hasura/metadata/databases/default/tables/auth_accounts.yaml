@@ -1,6 +1,6 @@
 table:
-  name: accounts
   schema: auth
+  name: accounts
 object_relationships:
   - name: role
     using:
@@ -14,36 +14,36 @@ array_relationships:
       foreign_key_constraint_on:
         column: account_id
         table:
-          name: account_providers
           schema: auth
+          name: account_providers
   - name: account_roles
     using:
       foreign_key_constraint_on:
         column: account_id
         table:
-          name: account_roles
           schema: auth
+          name: account_roles
   - name: refresh_tokens
     using:
       foreign_key_constraint_on:
         column: account_id
         table:
-          name: refresh_tokens
           schema: auth
+          name: refresh_tokens
 select_permissions:
-  - permission:
+  - role: user
+    permission:
       columns:
         - email
       filter:
         user_id:
           _eq: X-Hasura-User-Id
-    role: user
 update_permissions:
-  - permission:
-      check: null
+  - role: user
+    permission:
       columns:
         - email
       filter:
         user_id:
           _eq: X-Hasura-User-Id
-    role: user
+      check: null

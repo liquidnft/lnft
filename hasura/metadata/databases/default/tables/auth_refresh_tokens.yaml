@@ -1,6 +1,6 @@
 table:
-  name: refresh_tokens
   schema: auth
+  name: refresh_tokens
 object_relationships:
   - name: account
     using:

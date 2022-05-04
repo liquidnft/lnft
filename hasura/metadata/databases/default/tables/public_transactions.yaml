@@ -1,6 +1,6 @@
 table:
-  name: transactions
   schema: public
+  name: transactions
 object_relationships:
   - name: artwork
     using:
@@ -10,39 +10,41 @@ object_relationships:
       foreign_key_constraint_on:
         column: bid_id
         table:
-          name: artworks
           schema: public
+          name: artworks
   - name: bid
     using:
       foreign_key_constraint_on: bid_id
   - name: user
     using:
       manual_configuration:
+        remote_table:
+          schema: public
+          name: users
+        insertion_order: null
         column_mapping:
           user_id: id
-        insertion_order: null
-        remote_table:
-          name: users
-          schema: public
 array_relationships:
   - name: transactions
     using:
       foreign_key_constraint_on:
         column: bid_id
         table:
-          name: transactions
           schema: public
+          name: transactions
   - name: utxos
     using:
       foreign_key_constraint_on:
         column: transaction_id
         table:
-          name: utxos
           schema: public
+          name: utxos
 insert_permissions:
-  - permission:
-      backend_only: false
+  - role: user
+    permission:
       check: {}
+      set:
+        user_id: x-hasura-User-Id
       columns:
         - amount
         - artwork_id
@@ -53,11 +55,10 @@ insert_permissions:
         - id
         - psbt
         - type
-      set:
-        user_id: x-hasura-User-Id
-    role: user
+      backend_only: false
 select_permissions:
-  - permission:
+  - role: anonymous
+    permission:
       columns:
         - amount
         - artwork_id
@@ -80,8 +81,8 @@ select_permissions:
                     _is_null: false
                 - asking_asset:
                     _is_null: false
-    role: anonymous
-  - permission:
+  - role: user
+    permission:
       columns:
         - amount
         - artwork_id
@@ -107,4 +108,3 @@ select_permissions:
                     _is_null: false
                 - artist_id:
                     _eq: X-Hasura-User-Id
-    role: user

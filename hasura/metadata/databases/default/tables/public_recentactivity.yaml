@@ -1,36 +1,37 @@
 table:
-  name: recentactivity
   schema: public
+  name: recentactivity
 object_relationships:
   - name: artwork
     using:
       manual_configuration:
+        remote_table:
+          schema: public
+          name: artworks
+        insertion_order: null
         column_mapping:
           artwork_id: id
-        insertion_order: null
-        remote_table:
-          name: artworks
-          schema: public
   - name: bid
     using:
       manual_configuration:
+        remote_table:
+          schema: public
+          name: transactions
+        insertion_order: null
         column_mapping:
           bid_id: id
-        insertion_order: null
-        remote_table:
-          name: transactions
-          schema: public
   - name: user
     using:
       manual_configuration:
+        remote_table:
+          schema: public
+          name: users
+        insertion_order: null
         column_mapping:
           user_id: id
-        insertion_order: null
-        remote_table:
-          name: users
-          schema: public
 select_permissions:
-  - permission:
+  - role: anonymous
+    permission:
       columns:
         - confirmed
         - amount
@@ -45,8 +46,8 @@ select_permissions:
         - id
         - user_id
       filter: {}
-    role: anonymous
-  - permission:
+  - role: user
+    permission:
       columns:
         - id
         - hash
@@ -61,4 +62,3 @@ select_permissions:
         - bid_id
         - contract
       filter: {}
-    role: user

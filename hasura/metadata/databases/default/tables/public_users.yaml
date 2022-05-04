@@ -1,136 +1,144 @@
 table:
-  name: users
   schema: public
+  name: users
 configuration:
+  custom_root_fields: {}
   custom_column_names:
     multisig: multisig
-  custom_root_fields: {}
 object_relationships:
   - name: account
     using:
       manual_configuration:
+        remote_table:
+          schema: auth
+          name: accounts
+        insertion_order: null
         column_mapping:
           id: user_id
-        insertion_order: null
-        remote_table:
-          name: accounts
-          schema: auth
 array_relationships:
   - name: activebids
     using:
       manual_configuration:
+        remote_table:
+          schema: public
+          name: activebids
+        insertion_order: null
         column_mapping:
           id: user_id
-        insertion_order: null
-        remote_table:
-          name: activebids
-          schema: public
   - name: artworks
     using:
       foreign_key_constraint_on:
         column: artist_id
         table:
-          name: artworks
           schema: public
+          name: artworks
   - name: artworksByOwnerId
     using:
       foreign_key_constraint_on:
         column: owner_id
         table:
-          name: artworks
           schema: public
+          name: artworks
+  - name: comments
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          schema: public
+          name: comments
   - name: creations
     using:
       manual_configuration:
+        remote_table:
+          schema: public
+          name: artworks
+        insertion_order: null
         column_mapping:
           id: artist_id
-        insertion_order: null
-        remote_table:
-          name: artworks
-          schema: public
   - name: favorites
     using:
       foreign_key_constraint_on:
         column: user_id
         table:
-          name: favorites
           schema: public
+          name: favorites
   - name: follows
     using:
       foreign_key_constraint_on:
         column: follower_id
         table:
-          name: follows
           schema: public
+          name: follows
   - name: followsByUserId
     using:
       foreign_key_constraint_on:
         column: user_id
         table:
-          name: follows
           schema: public
+          name: follows
   - name: holdings
     using:
       manual_configuration:
+        remote_table:
+          schema: public
+          name: artworks
+        insertion_order: null
         column_mapping:
           id: owner_id
-        insertion_order: null
-        remote_table:
-          name: artworks
-          schema: public
   - name: offers
     using:
       manual_configuration:
+        remote_table:
+          schema: public
+          name: offers
+        insertion_order: null
         column_mapping:
           id: owner_id
-        insertion_order: null
-        remote_table:
-          name: offers
-          schema: public
   - name: samples
     using:
       foreign_key_constraint_on:
         column: user_id
         table:
-          name: samples
           schema: public
+          name: samples
   - name: transactions
     using:
       foreign_key_constraint_on:
         column: user_id
         table:
-          name: transactions
           schema: public
+          name: transactions
   - name: utxos
     using:
       foreign_key_constraint_on:
         column: user_id
         table:
-          name: utxos
           schema: public
+          name: utxos
 computed_fields:
-  - comment: ""
+  - name: followed
     definition:
       function:
-        name: user_followed
         schema: public
+        name: user_followed
       session_argument: hasura_session
       table_argument: user_row
-    name: followed
-  - comment: ""
+    comment: ""
+  - name: num_followers
     definition:
       function:
+        schema: public
         name: user_followers
-        schema: public
-    name: num_followers
-  - comment: ""
+    comment: ""
+  - name: num_follows
     definition:
       function:
-        name: user_follows
         schema: public
-    name: num_follows
+        name: user_follows
+    comment: ""
 select_permissions:
-  - permission:
+  - role: anonymous
+    permission:
       columns:
         - address
         - avatar_url
@@ -155,8 +163,8 @@ select_permissions:
         - num_followers
         - num_follows
       filter: {}
-    role: anonymous
-  - permission:
+  - role: approver
+    permission:
       columns:
         - address
         - avatar_url
@@ -186,8 +194,8 @@ select_permissions:
         - num_followers
         - num_follows
       filter: {}
-    role: approver
-  - permission:
+  - role: user
+    permission:
       columns:
         - address
         - avatar_url
@@ -213,18 +221,17 @@ select_permissions:
         - num_followers
         - num_follows
       filter: {}
-    role: user
 update_permissions:
-  - permission:
-      check: {}
+  - role: approver
+    permission:
       columns:
         - info
         - is_artist
         - prompt_sign
       filter: {}
-    role: approver
-  - permission:
       check: {}
+  - role: user
+    permission:
       columns:
         - address
         - avatar_url
@@ -248,4 +255,4 @@ update_permissions:
       filter:
         id:
           _eq: X-Hasura-User-Id
-    role: user
+      check: {}

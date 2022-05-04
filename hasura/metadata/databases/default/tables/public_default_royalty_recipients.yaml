@@ -1,9 +1,9 @@
 table:
-  name: default_royalty_recipients
   schema: public
+  name: default_royalty_recipients
 select_permissions:
-  - permission:
-      allow_aggregations: true
+  - role: anonymous
+    permission:
       columns:
         - address
         - amount
@@ -12,9 +12,9 @@ select_permissions:
         - name
         - updated_at
       filter: {}
-    role: anonymous
-  - permission:
       allow_aggregations: true
+  - role: user
+    permission:
       columns:
         - address
         - amount
@@ -23,4 +23,4 @@ select_permissions:
         - name
         - updated_at
       filter: {}
-    role: user
+      allow_aggregations: true

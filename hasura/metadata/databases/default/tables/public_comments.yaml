@@ -1,6 +1,6 @@
 table:
-  name: comments
   schema: public
+  name: comments
 object_relationships:
   - name: artwork
     using:
@@ -9,44 +9,45 @@ object_relationships:
     using:
       foreign_key_constraint_on: user_id
 insert_permissions:
-  - permission:
-      backend_only: false
+  - role: user
+    permission:
       check:
         user_id:
           _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-User-Id
       columns:
         - artwork_id
         - comment
-      set:
-        user_id: x-hasura-User-Id
-    role: user
+      backend_only: false
 select_permissions:
-  - permission:
+  - role: anonymous
+    permission:
       columns:
         - comment
         - created_at
         - id
         - user_id
       filter: {}
-    role: anonymous
-  - permission:
+  - role: user
+    permission:
+      columns:
+        - comment
+        - created_at
+        - id
+        - user_id
+      filter: {}
       allow_aggregations: true
-      columns:
-        - comment
-        - created_at
-        - id
-        - user_id
-      filter: {}
-    role: user
 update_permissions:
-  - permission:
-      check: null
+  - role: user
+    permission:
       columns:
         - comment
       filter: {}
-    role: user
+      check: null
 delete_permissions:
-  - permission:
+  - role: user
+    permission:
       filter:
         _or:
           - user_id:
@@ -54,4 +55,3 @@ delete_permissions:
           - artwork:
               owner_id:
                 _eq: X-Hasura-User-Id
-    role: user

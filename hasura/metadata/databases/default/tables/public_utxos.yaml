@@ -1,6 +1,6 @@
 table:
-  name: utxos
   schema: public
+  name: utxos
 object_relationships:
   - name: tx
     using:

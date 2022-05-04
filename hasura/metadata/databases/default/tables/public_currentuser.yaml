@@ -1,8 +1,9 @@
 table:
-  name: currentuser
   schema: public
+  name: currentuser
 select_permissions:
-  - permission:
+  - role: user
+    permission:
       columns:
         - address
         - avatar_url
@@ -32,4 +33,3 @@ select_permissions:
       filter:
         id:
           _eq: X-Hasura-User-Id
-    role: user
