@@ -1,0 +1,11 @@
+FROM gcr.io/coinos-326717/github.com/tokenocean/raretoshi:base
+
+ENV NODE_ENV production
+
+WORKDIR /app
+COPY . .
+RUN sed -i '/cypress/d' package.json
+RUN pnpm i
+RUN pnpm build
+
+CMD ["node", "build"]
