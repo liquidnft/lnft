@@ -73,6 +73,9 @@
                   Math.abs(tx.amount)
                 )}
               </div>
+              <div class="ml-8 text-sm text-gray-500">
+                {tx.type.toUpperCase()}
+              </div>
             </div>
 
             <div class="">{assetLabel(tx.asset)}</div>
