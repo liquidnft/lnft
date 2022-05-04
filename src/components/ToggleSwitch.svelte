@@ -4,7 +4,9 @@
   export let checked = false;
 </script>
 
-<div class="relative inline-block w-10 mr-2 align-middle select-none ease-in">
+<div
+  class="relative inline-block w-10 mr-2 align-middle select-none ease-in my-auto"
+>
   <input
     type="checkbox"
     name="toggle"

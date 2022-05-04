@@ -7,7 +7,7 @@
   import { asset, assets } from "$lib/store";
   import { assetLabel, val, units } from "$lib/utils";
 
-  let show = false;
+  let show = true;
 
   let txns = [];
   let getTransactions = () =>
@@ -24,7 +24,8 @@
         $assets = txns
           .map(({ asset }) => ({ name: assetLabel(asset), asset }))
           .sort((a, b) => a.name.localeCompare(b.name))
-          .filter((a, i, r) => a && (!i || a.asset != r[i - 1].asset));
+          .filter((a, i, r) => a && (!i || a.asset != r[i - 1].asset))
+          .sort((a, b) => (a.name === "L-BTC" ? -1 : 1));
       });
 
   let poll;
@@ -45,10 +46,11 @@
 
 <div class="px-5 sm:px-0">
   {#if txns.length}
-    <div class="my-7 flex">
-      <div class="flex-1">Show all history</div>
+    <div class="my-7 flex justify-center">
+      <div class="my-auto mr-2">Show all</div>
       <ToggleSwitch
         id="toggle"
+        checked={show}
         label={`Show only ${assetLabel($asset)}`}
         on:change={(e) => {
           show = !show;
@@ -72,9 +74,6 @@
                   tx.asset,
                   Math.abs(tx.amount)
                 )}
-              </div>
-              <div class="ml-8 text-sm text-gray-500">
-                {tx.type.toUpperCase()}
               </div>
             </div>
 
