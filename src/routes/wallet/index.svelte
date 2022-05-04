@@ -68,7 +68,7 @@
         <a class="secondary-color" href="/wallet/asset">
           <div class="flex">
             <div class="px-5 md:px-0">
-              {$assets.length}
+              {Object.keys($balances).length}
               assets available in this wallet
             </div>
             <div class="my-auto ml-1">

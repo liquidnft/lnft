@@ -34,24 +34,26 @@
     </div>
     <div class="dark-bg p-4 rounded-lg">
       {#each $assets as a}
-        <div
-          class="flex mb-2 cursor-pointer"
-          on:click={() => {
-            $asset = a.asset;
-            goto("/wallet");
-          }}
-        >
-          <div class={`py-2 ${outer(a.asset)} w-3 rounded-l-lg`} />
+        {#if val(a.asset, $balances[a.asset] || 0) > 0}
           <div
-            class={`flex ${bg(
-              a.asset
-            )} text-gray-300 rounded-r-lg p-4 flex-grow ${border(a.asset)}`}
-            class:active={$asset === a.asset}
+            class="flex mb-2 cursor-pointer"
+            on:click={() => {
+              $asset = a.asset;
+              goto("/wallet");
+            }}
           >
-            <div class="flex-grow">{a.name}</div>
-            <div>{val(a.asset, $balances[a.asset] || 0)}</div>
+            <div class={`py-2 ${outer(a.asset)} w-3 rounded-l-lg`} />
+            <div
+              class={`flex ${bg(
+                a.asset
+              )} text-gray-300 rounded-r-lg p-4 flex-grow ${border(a.asset)}`}
+              class:active={$asset === a.asset}
+            >
+              <div class="flex-grow">{a.name}</div>
+              <div>{val(a.asset, $balances[a.asset] || 0)}</div>
+            </div>
           </div>
-        </div>
+        {/if}
       {/each}
     </div>
   </div>
