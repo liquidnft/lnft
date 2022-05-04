@@ -2,17 +2,17 @@ import cookie from "cookie";
 import wretch from "wretch";
 import * as middlewares from "wretch-middlewares";
 import { get as getStore } from "svelte/store";
-import { err } from "$lib/utils";
+import { err, host } from "$lib/utils";
 import { token } from "$lib/store";
 
 const { retry } = middlewares.default || middlewares;
 
-export const api = wretch().url("/api");
-export const electrs = wretch().url("/api/el");
+export const api = wretch().url(`${host}/api`);
+export const electrs = wretch().url(`${host}/api/el`);
 
 export const hasura = wretch()
   .middlewares([retry({ maxAttempts: 2 })])
-  .url("/api/v1/graphql");
+  .url(`${host}/api/v1/graphql`);
 
 export const query = async (query, variables, headers = {}) => {
   let jwt = getStore(token);
