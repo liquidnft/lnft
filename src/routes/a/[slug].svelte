@@ -558,9 +558,11 @@
       </div>
 
       <!-- Comments -->
-      <div class="mt-64">
-        <Comments bind:artwork bind:refreshArtwork />
-      </div>
+      {#if artwork.held}
+        <div class="mt-64">
+          <Comments bind:artwork bind:refreshArtwork />
+        </div>
+      {/if}
 
       {#if others.length}
         <div class="w-full mb-4">
