@@ -129,7 +129,7 @@
         {#if ($session.user && $session.user.id !== artwork.owner_id) || !$session.user}
           <div class="relative pt-1">
             <label for="customRange1" class="form-label"
-              >Artist Donation (min. 1000 sats)<br />
+              >Owner Donation (min. 1000 sats)<br />
               Amount: <b>{amount} sats</b>
             </label>
             <input
