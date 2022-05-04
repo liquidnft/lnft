@@ -7,6 +7,6 @@ COPY . .
 RUN sed -i '/cypress/d' package.json
 RUN sed -i 's/raretoshi.com/raretoshi.blockstream.com/g' .env.production
 RUN pnpm i
-RUN MODE=pnpm build
+RUN pnpm build
 
 CMD ["node", "build"]
