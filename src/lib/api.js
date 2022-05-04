@@ -52,6 +52,7 @@ export const getQ = (defaultHeaders) => {
       let r = await fn(q, v, h);
       return r;
     } catch (e) {
+      console.log("query error", e);
       if (h.authorization) delete h.authorization;
       let r = await fn(q, v, h);
       return r;
