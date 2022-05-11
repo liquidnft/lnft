@@ -13,7 +13,7 @@ const {
   IPFS_WEB_URL,
 } = process.env;
 
-const DELAY = LIQUID_ELECTRS_URL.includes("blockstream") ? 25 : 0;
+const DELAY = LIQUID_ELECTRS_URL.includes("blockstream") ? 40 : 0;
 
 const queue = [];
 
