@@ -291,6 +291,7 @@ const issue = async (
   artwork.owner_id = id;
 
   while (i < transactions.length && tries < 60) {
+    await sleep(600);
     try {
       artwork.id = ids[i];
       artwork.edition = i + 1;
