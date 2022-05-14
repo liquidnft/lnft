@@ -269,11 +269,7 @@ app.post("/accept", auth, async (req, res) => {
 });
 
 const issuances = {};
-const issue = async (
-  issuance,
-  ids,
-  { body: { artwork, transactions }, headers }
-) => {
+const issue = async (issuance, ids, { artwork, transactions, user_id }) => {
   issuances[issuance] = { length: transactions.length, i: 0 };
   let tries = 0;
   let i = 0;
@@ -286,9 +282,8 @@ const issue = async (
 
   delete artwork.tags;
 
-  let { id } = await getUser({ headers });
-  artwork.artist_id = id;
-  artwork.owner_id = id;
+  artwork.artist_id = user_id;
+  artwork.owner_id = user_id;
 
   while (i < transactions.length && tries < 60) {
     await sleep(600);
@@ -360,12 +355,16 @@ const issue = async (
 app.post("/issue", auth, async (req, res) => {
   let tries = 0;
   try {
+    let { address, id: user_id } = await getUser(req);
     let { artwork, transactions } = req.body;
     let issuance = v4();
     let ids = transactions.map((t) => v4());
-    issue(issuance, ids, req);
+    issue(issuance, ids, {
+      artwork,
+      transactions,
+      user_id,
+    });
     let slug = kebab(artwork.title || "untitled") + "-" + ids[0].substr(0, 5);
-    let { address } = await getUser(req);
 
     await wait(async () => {
       if (++tries > 40) throw new Error("Issuance timed out");
